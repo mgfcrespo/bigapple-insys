@@ -29,9 +29,7 @@ class Employee(models.Model):
         ('CC', 'Credits and Collection Personnel'),
         ('SV', 'Supervisor'),
         ('LL', 'Line Leader'),
-        ('PM', 'Production Manager'),
-        ('CT', 'Client')
-
+        ('PM', 'Production Manager')
     )
 
     # age = models.IntegerField('age')
