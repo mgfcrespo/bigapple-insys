@@ -61,4 +61,9 @@ class Client(models.Model):
     contact_number = models.ForeignKey(ContactNumber, on_delete=models.CASCADE)
     accounts = models.OneToOneField(Account, on_delete=models.CASCADE)
 
+class ClientOrders(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    order_id = models.CharField('order_id', min_length=10)
+
+
 
