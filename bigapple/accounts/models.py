@@ -26,10 +26,12 @@ class Employee(models.Model):
         ('GM', 'General Manager'),
         ('SC', 'Sales Coordinator'),
         ('SA', 'Sales Agent'),
-        ('CC', 'Credits and Collection'),
+        ('CC', 'Credits and Collection Personnel'),
         ('SV', 'Supervisor'),
         ('LL', 'Line Leader'),
         ('PM', 'Production Manager'),
+        ('CT', 'Client')
+
     )
 
     # age = models.IntegerField('age')
