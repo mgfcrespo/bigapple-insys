@@ -5,14 +5,7 @@ from accounts.models import Client
 
 # Create your models here.
 
-class Customer(models.Model):
-    customers = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
-
-    def __str__(self):
-        return self.name
-
-
-class CustomerItem(models.Model):
+class ClientItem(models.Model):
     item_type = models.CharField('item_type', max_length=200)
     description = models.CharField('description', max_length=200)
     width = models.IntegerField('width')
@@ -21,7 +14,7 @@ class CustomerItem(models.Model):
     gusset = models.CharField('gusset', max_length=200)
     quantity = models.IntegerField('quantity')
     price = models.IntegerField('price')
-    total_amount = models.IntegerField('total_amount')
+
 
     # sample_layout = models.CharField('sample_layout', max_length=200)
 
@@ -29,14 +22,14 @@ class CustomerItem(models.Model):
         return self.item_type
 
 #could be substitute for quotation request
-class CustomerPO(models.Model):
+class ClientPO(models.Model):
     date_issued = models.DateField('date_issued')
     date_required = models.DateField('date_required')
     terms = models.CharField('name', max_length=250)
     other_info = models.CharField('other_info', max_length=250)
-    customers = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    customer_items = models.ManyToManyField(CustomerItem)
-
+    clients = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
+    client_items = models.ManyToManyField(ClientItem)
+    total_amount = models.IntegerField('total_amount')
     '''
     def po_number(self):
         return 'PO%s' % (self.)
@@ -46,11 +39,18 @@ class CustomerPO(models.Model):
 
 '''
 class Quotation(models.Model):
-    customer_po = models.OnetoOne(CustomerPO)
+    client_po = models.OnetoOne(CustomerPO)
     approval = models.BooleanField('approval', default=False)
     #bom = models.ForeignKey()
+    
+class OrderSheet(models.Model):
+    client_po = models.OnetoOneField(ClientPO, on_delete=models.CASCADE, null=True)
+    #schedule of production?
+    production_is_done = model.BooleanField('production_is_done', default=False)
 '''
 
 # class CostingSheet(models.Model)
 
-#class CreditStatus(models.Model)
+class ClientCreditStatus(models.Model):
+    clients = models.ForeignKey(Client, on_delete=models.CASCADE)
+    credit_status = models.BooleanField('credit_status', default=True)

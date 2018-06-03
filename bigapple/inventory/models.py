@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import date
-
+from accounts.models import Employee
 
 # Create your models here.
 
@@ -28,12 +28,16 @@ class SupplierPO(models.Model):
     quantity = models.IntegerField('quantity')
     delivery_date = models.DateField('delivery_date')
 
+class SupplierPOTracking(models.Model):
+    supplier_po = models.ForeignKey(SupplierPO, on_delete=models.CASCADE)
+    retrieved = models.BooleanField('retrieved', default=False)
+    date_retrieved = models.DateField('date_retrieved', blank=True, default='not yet retrieved')
 
 class MaterialRequisition(models.Model):
     SHIFTS = (
-        ('A', 'shift 1'),
-        ('B', 'shift 2'),
-        ('C', 'shift 3')
+        ('1', 'shift 1'),
+        ('2', 'shift 2'),
+        ('3', 'shift 3')
     )
     date_issued = models.DateField('date_issued')
     issued_to = models.CharField('issued_to', max_length=200)
@@ -46,8 +50,7 @@ class MaterialRequisition(models.Model):
 
 
 class PurchaseRequisition(models.Model):
-    # placed_by = models.ForeignKey(Accounts.name)
-    # department = models.ForeignKey(Accounts.department)
+    placed_by = models.ForeignKey(Employee, on_delete = models.CASCADE, null=True)
     date_issued = models.DateField('date_issued')
     date_required = models.DateField('date_required')
     # supplier may not be specified on request-- supplier = models.ForeignKey(Supplier, on_delete = models.CASCADE)
