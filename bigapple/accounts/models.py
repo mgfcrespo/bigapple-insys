@@ -26,7 +26,7 @@ class Employee(models.Model):
         ('GM', 'General Manager'),
         ('SC', 'Sales Coordinator'),
         ('SA', 'Sales Agent'),
-        ('CC', 'Credits and Collection'),
+        ('CC', 'Credits and Collection Personnel'),
         ('SV', 'Supervisor'),
         ('LL', 'Line Leader'),
         ('PM', 'Production Manager'),
@@ -37,6 +37,8 @@ class Employee(models.Model):
         ('W', 'Warehouse'),
         ('U', 'Utility'),
         ('M', 'Maintenance')
+        ('PM', 'Production Manager')
+
     )
 
     # age = models.IntegerField('age')
@@ -80,8 +82,16 @@ class Client(models.Model):
     tin = models.CharField('tin', max_length=200, blank=True)
     accounts = models.OneToOneField(Account, on_delete=models.CASCADE)
 
+
     @property
     def full_name(self):
         "Returns the person's full name."
         return '%s %s' % (self.first_name, self.last_name)
+
+class ClientOrders(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    order_id = models.CharField('order_id', min_length=10)
+
+
+
 
