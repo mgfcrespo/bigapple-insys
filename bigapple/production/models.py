@@ -27,18 +27,23 @@ class WorkerSchedule(models.Model):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     working_date = models.DateField('working_date')
 
+#might be transferred to sales
+class SalesInvoice(models.Model):
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+    article = models.CharField('article', max_length=200, default='none', blank=True)
+    vat = models.DecimalField('vat', default=0, blank=True, decimal_places=3, max_digits=12)
+
 '''    
 class MachineSchedule(models.Model):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-    
-class SalesInvoice(models.Model):
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
-    article = models.CharField(article, default='none', blank=True
-
 
 class CuttingSchedule(models.Model):
+    
+    
 class PrintingSchedule(models.Model):
 class ExtruderSchedule(models.Model):
+
+
 '''
 
 

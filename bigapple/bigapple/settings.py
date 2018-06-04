@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'production.apps.ProductionConfig',
     'inventory.apps.InventoryConfig',
     'accounts.apps.AccountsConfig',
-    'home.apps.HomeConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<h1>PURCHASE ORDER</h1>
+<form action="{% url 'sales:client-po-form-add' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% include 'sales/template_form.html' %}
+
+      <div class = "form-group">
+          <div class="col-sm-2 col-sm-10">
+            <button type="submit" class ="btn btn-success">Submit</button>
+          </div>
+      </div>
+</form>
+
+</body>
+</html>
