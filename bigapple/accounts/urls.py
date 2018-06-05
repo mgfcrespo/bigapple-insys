@@ -1,10 +1,11 @@
 from django.urls import path
 from django.conf.urls import include, url
 from . import views
-from django.contrib.auth import views as auth_views
+from django.contrib import admin, auth
+#from django.contrib.auth.views import auth_login, auth_logout, logout_then_login
 
 app_name='accounts'
-urlpatterns = [
-         url(r'^login/$', auth_views.login, name='login'),
-         url(r'^logout/$', auth_views.logout, name='logout')
-        ]
+urlpatterns = (
+
+)
+
