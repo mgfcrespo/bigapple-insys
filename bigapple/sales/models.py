@@ -4,8 +4,6 @@ from datetime import date
 from django.urls import reverse
 from accounts.models import Client
 
-
-
 # Create your models here.
 
 class Product(models.Model):
