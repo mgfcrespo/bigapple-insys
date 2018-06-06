@@ -4,5 +4,5 @@ from . import views
 
 app_name='accounts'
 urlpatterns = [
-        url(r'^accountDetails/', views.accountDetails, name='accountDetails')
+        url(r'^account_details/', views.account_details, name='account_details')
 ];

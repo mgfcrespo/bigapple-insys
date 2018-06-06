@@ -2,13 +2,16 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from .models import Account
+from .models import Address
+from .models import ContactNumber
+from .models import Email
+from .models import Employee
+from .models import Client
 
 # Create your views here.
-def accountDetails(request):
-    #return HttpResponse('HELLO FROM POSTS')
-
+def account_details(request):
     context = {
-        'title': 'Accounts'
+        'title': 'Account Content'
     }
 
-    return render(request, 'accounts/accountDetails.html', context)
+    return render(request, 'accounts/account_details.html', context)
