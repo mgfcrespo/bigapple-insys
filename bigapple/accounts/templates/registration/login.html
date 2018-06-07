@@ -8,7 +8,7 @@
 <h2>Login</h2>
 
 {%if form.errors %}
-<p>error!</p>
+<p>Error, incorrect username or password.</p>
 {% endif %}
 
 {% if next %}
@@ -17,7 +17,6 @@
 
 <form method = "post" action = "{% url 'login' %}" >
 {% csrf_token %}
-
     <p>Username: {{form.username}} </p>
     <p>Password: {{form.password}} </p>
 

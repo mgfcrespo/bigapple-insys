@@ -2,758 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="44100258-e655-4ddd-99f4-1a8c04b20571" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/bigapple/accounts/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/bigapple-insys.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/bigapple-insys.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/accounts/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bigapple/accounts/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/global_base_ui.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/client_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/client_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/credit_and_collection_personnel_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/credit_and_collection_personnel_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/general_manager_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/general_manager_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/line_leader_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/line_leader_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/production_manager_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/production_manager_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_agent_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_agent_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_coordinator_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_coordinator_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/supervisor_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/supervisor_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/registration/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/registration/login.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bigapple/accounts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bigapple/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bigapple/bigapple/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/bigapple/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/bigapple/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/bigapple/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/Gruntfile.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/cards-basic.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css-color.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css-typography.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/custom/custom.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/custom/custom.min.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/material-design-icons/LICENSE.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/material-design-icons/MaterialIcons-Regular.eot" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/material-design-icons/MaterialIcons-Regular.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/material-design-icons/MaterialIcons-Regular.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/material-design-icons/MaterialIcons-Regular.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/material-design-icons/MaterialIcons-Regular.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/roboto/Roboto-Bold.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/roboto/Roboto-Bold.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/roboto/Roboto-Light.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/roboto/Roboto-Light.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/roboto/Roboto-Medium.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/roboto/Roboto-Medium.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/roboto/Roboto-Regular.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/roboto/Roboto-Regular.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/roboto/Roboto-Thin.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/fonts/roboto/Roboto-Thin.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/materialize.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/css/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/material-design-icons/LICENSE.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/material-design-icons/MaterialIcons-Regular.eot" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/material-design-icons/MaterialIcons-Regular.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/material-design-icons/MaterialIcons-Regular.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/material-design-icons/MaterialIcons-Regular.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/material-design-icons/MaterialIcons-Regular.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/roboto/Roboto-Bold.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/roboto/Roboto-Bold.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/roboto/Roboto-Light.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/roboto/Roboto-Light.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/roboto/Roboto-Medium.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/roboto/Roboto-Medium.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/roboto/Roboto-Regular.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/roboto/Roboto-Regular.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/roboto/Roboto-Thin.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/fonts/roboto/Roboto-Thin.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/form-layouts.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-10.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-11.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-12.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-13.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-14.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-15.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-16.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-17.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-5.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-6.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-7.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-8.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/avatar/avatar-9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/favicon/Oapple-touch-icon-152x152.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/favicon/Ofavicon-32x32.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/favicon/Omstile-144x144.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/favicon/apple-touch-icon-152x152.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/favicon/favicon-32x32.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/favicon/mstile-144x144.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/10.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/11.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/12.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/13.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/14.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/15.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/16.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/17.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/18.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/19.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/20.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/21.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/22.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/23.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/24.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/25.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/26.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/27.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/28.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/29.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/30.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/31.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/32.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/33.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/5.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/6.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/7.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/8.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/gallary/9.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/icon/apple-watch.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/icon/bowling.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/icon/football.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/icon/laptop.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/icon/map-marker.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/icon/printer.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/logo/generic-logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/logo/login-logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/logo/materialize-logo-color.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/images/logo/materialize-logo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/custom-script.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/custom-script.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/animation.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/bin/materialize.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/bin/materialize.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/buttons.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/cards.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/carousel.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/character_counter.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/chips.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/collapsible.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/date_picker/picker.date.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/date_picker/picker.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/date_picker/picker.time.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/dropdown.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/forms.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/global.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/hammer.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/initial.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/jquery.easing.1.4.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/jquery.hammer.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/materialbox.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/modal.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/parallax.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/pushpin.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/scrollFire.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/scrollspy.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/sideNav.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/slider.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/tabs.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/tapTarget.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/toasts.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/tooltip.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/transitions.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/velocity.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize-plugin/waves.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/materialize.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/plugins.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/js/plugins.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_badges.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_buttons.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_cards.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_carousel.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_chips.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_collapsible.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_color.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_dropdown.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_global.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_grid.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_icons-material-design.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_materialbox.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_mixins.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_modal.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_navbar.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_normalize.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_preloader.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_pulse.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_roboto.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_sideNav.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_slider.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_table_of_contents.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_tabs.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_tapTarget.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_toast.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_tooltip.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_transitions.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_typography.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_variables.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/_waves.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/date_picker/_default.date.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/date_picker/_default.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/date_picker/_default.time.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/forms/_checkboxes.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/forms/_file-input.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/forms/_forms.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/forms/_input-fields.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/forms/_radio-buttons.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/forms/_range.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/forms/_select.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/components/forms/_switches.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/custom/custom.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/materialize.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/style.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_avatar.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_breadcrumb.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_card.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_color.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_footer.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_forms.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_global.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_header.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_helper.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_icons.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_miscellaneous.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_preloader.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_sidebar.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_slideout.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_table.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_typography.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/_variables.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/pages/_dashboard.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme-components/pages/_icon.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/theme.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/themes/fixed-menu/_theme.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/themes/fixed-menu/_typography.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/sass/themes/fixed-menu/_variables.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/static/js/jquery-3.2.1.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/table-basic.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/ui-basic-buttons.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/ui-icons.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/css/flag-icon.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/css/flag-icon.min.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ad.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ae.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/af.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ag.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ai.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/al.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/am.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ao.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/aq.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ar.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/as.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/at.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/au.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/aw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ax.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/az.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ba.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bb.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bd.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/be.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bh.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bi.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bj.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bl.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bo.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bq.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/br.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bs.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bt.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bv.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/by.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/bz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ca.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/cc.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/cd.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/cf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/cg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ch.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ci.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ck.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/cl.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/cm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/cn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/co.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/cr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/cu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/cv.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/cw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/cx.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/cy.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/cz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/de.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/dj.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/dk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/dm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/do.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/dz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ec.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ee.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/eg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/eh.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/er.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/es-ct.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/es.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/et.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/eu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/fi.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/fj.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/fk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/fm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/fo.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/fr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ga.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gb-eng.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gb-nir.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gb-sct.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gb-wls.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gb.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gd.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ge.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gh.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gi.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gl.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gp.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gq.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gs.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gt.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/gy.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/hk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/hm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/hn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/hr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ht.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/hu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/id.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ie.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/il.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/im.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/in.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/io.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/iq.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ir.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/is.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/it.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/je.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/jm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/jo.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/jp.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ke.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/kg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/kh.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ki.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/km.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/kn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/kp.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/kr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/kw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ky.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/kz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/la.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/lb.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/lc.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/li.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/lk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/lr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ls.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/lt.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/lu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/lv.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ly.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ma.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mc.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/md.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/me.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mh.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ml.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mo.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mp.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mq.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ms.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mt.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mv.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mx.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/my.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/mz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/na.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/nc.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ne.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/nf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ng.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ni.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/nl.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/no.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/np.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/nr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/nu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/nz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/om.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/pa.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/pe.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/pf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/pg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ph.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/pk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/pl.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/pm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/pn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/pr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ps.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/pt.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/pw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/py.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/qa.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/re.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ro.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/rs.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ru.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/rw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sa.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sb.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sc.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sd.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/se.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sh.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/si.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sj.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sl.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/so.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ss.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/st.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sv.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sx.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sy.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/sz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/tc.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/td.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/tf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/tg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/th.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/tj.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/tk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/tl.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/tm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/tn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/to.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/tr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/tt.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/tv.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/tw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/tz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ua.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ug.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/um.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/un.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/us.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/uy.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/uz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/va.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/vc.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ve.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/vg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/vi.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/vn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/vu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/wf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ws.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/ye.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/yt.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/za.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/zm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/1x1/zw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ad.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ae.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/af.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ag.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ai.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/al.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/am.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ao.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/aq.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ar.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/as.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/at.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/au.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/aw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ax.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/az.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ba.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bb.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bd.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/be.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bh.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bi.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bj.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bl.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bo.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bq.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/br.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bs.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bt.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bv.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/by.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/bz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ca.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/cc.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/cd.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/cf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/cg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ch.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ci.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ck.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/cl.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/cm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/cn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/co.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/cr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/cu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/cv.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/cw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/cx.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/cy.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/cz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/de.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/dj.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/dk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/dm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/do.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/dz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ec.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ee.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/eg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/eh.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/er.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/es-ct.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/es.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/et.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/eu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/fi.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/fj.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/fk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/fm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/fo.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/fr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ga.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gb-eng.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gb-nir.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gb-sct.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gb-wls.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gb.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gd.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ge.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gh.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gi.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gl.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gp.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gq.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gs.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gt.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/gy.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/hk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/hm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/hn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/hr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ht.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/hu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/id.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ie.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/il.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/im.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/in.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/io.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/iq.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ir.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/is.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/it.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/je.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/jm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/jo.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/jp.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ke.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/kg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/kh.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ki.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/km.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/kn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/kp.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/kr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/kw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ky.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/kz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/la.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/lb.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/lc.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/li.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/lk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/lr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ls.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/lt.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/lu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/lv.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ly.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ma.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mc.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/md.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/me.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mh.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ml.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mo.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mp.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mq.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ms.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mt.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mv.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mx.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/my.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/mz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/na.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/nc.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ne.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/nf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ng.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ni.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/nl.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/no.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/np.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/nr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/nu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/nz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/om.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/pa.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/pe.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/pf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/pg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ph.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/pk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/pl.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/pm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/pn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/pr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ps.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/pt.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/pw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/py.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/qa.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/re.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ro.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/rs.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ru.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/rw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sa.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sb.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sc.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sd.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/se.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sh.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/si.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sj.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sl.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/so.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ss.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/st.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sv.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sx.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sy.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/sz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/tc.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/td.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/tf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/tg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/th.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/tj.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/tk.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/tl.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/tm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/tn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/to.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/tr.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/tt.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/tv.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/tw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/tz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ua.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ug.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/um.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/un.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/us.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/uy.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/uz.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/va.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/vc.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ve.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/vg.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/vi.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/vn.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/vu.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/wf.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ws.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/ye.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/yt.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/za.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/zm.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/flag-icon/flags/4x3/zw.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/jquery-3.2.1.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/perfect-scrollbar/perfect-scrollbar.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/perfect-scrollbar/perfect-scrollbar.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/prism/prism.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/front end/Materialize/vendors/prism/prism.js" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -767,8 +29,8 @@
       <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bigapple/accounts/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="8" selection-start-line="8" selection-end-line="8" />
+            <state relative-caret-position="153">
+              <caret line="9" column="73" selection-start-line="9" selection-start-column="73" selection-end-line="9" selection-end-column="73" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
@@ -776,81 +38,26 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bigapple/accounts/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="28" selection-start-line="7" selection-start-column="28" selection-end-line="7" selection-end-column="28" />
+            <state relative-caret-position="484">
+              <caret line="37" column="51" selection-start-line="37" selection-start-column="51" selection-end-line="37" selection-end-column="51" />
               <folding>
-                <element signature="e#0#59#0" expanded="true" />
+                <element signature="e#0#66#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bigapple/sales/urls.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" selection-start-line="12" selection-end-line="12" />
-              <folding>
-                <element signature="e#0#28#0" expanded="true" />
-                <marker date="1528165715183" expanded="true" signature="170:247" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="32" selection-start-column="32" selection-end-column="32" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bigapple/bigapple/urls.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="25" column="18" selection-start-line="25" selection-start-column="18" selection-end-line="25" selection-end-column="18" />
-              <folding>
-                <element signature="e#632#665#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="models.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bigapple/accounts/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="61" column="36" selection-start-line="61" selection-start-column="36" selection-end-line="61" selection-end-column="40" />
+            <state relative-caret-position="-272">
+              <caret line="44" column="29" selection-start-line="44" selection-start-column="29" selection-end-line="44" selection-end-column="29" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="admin.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bigapple/accounts/admin.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="27" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
-              <folding>
-                <element signature="e#0#32#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="login.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/registration/login.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="23" column="33" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -875,14 +82,6 @@
         <option value="$PROJECT_DIR$/bigapple/sales/forms.py" />
         <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/template_form.html" />
         <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/general_manager_page.html" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_coordinator_page.html" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_agent_page.html" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/credit_and_collection_personnel_page.html" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/supervisor_page.html" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/line_leader_page.html" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/production_manager_page.html" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/client_page.html" />
         <option value="$PROJECT_DIR$/bigapple/sales/models.py" />
         <option value="$PROJECT_DIR$/bigapple/sales/views.py" />
         <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/global_base_ui.html" />
@@ -890,22 +89,30 @@
         <option value="$PROJECT_DIR$/bigapple/sales/urls.py" />
         <option value="$PROJECT_DIR$/bigapple/accounts/forms.py" />
         <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/home.html" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/views.py" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/login.html" />
-        <option value="$PROJECT_DIR$/bigapple/bigapple/settings.py" />
         <option value="$PROJECT_DIR$/bigapple/bigapple/urls.py" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/urls.py" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/templates/registration/login.html" />
         <option value="$PROJECT_DIR$/bigapple/accounts/admin.py" />
+        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/login.html" />
+        <option value="$PROJECT_DIR$/bigapple/accounts/templates/registration/login.html" />
+        <option value="$PROJECT_DIR$/bigapple/bigapple/settings.py" />
+        <option value="$PROJECT_DIR$/bigapple/accounts/urls.py" />
+        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/general_manager_page.html" />
+        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_coordinator_page.html" />
+        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/production_manager_page.html" />
+        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/credit_and_collection_personnel_page.html" />
+        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/line_leader_page.html" />
+        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_agent_page.html" />
+        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/supervisor_page.html" />
+        <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/client_page.html" />
         <option value="$PROJECT_DIR$/bigapple/accounts/models.py" />
+        <option value="$PROJECT_DIR$/bigapple/accounts/views.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-72" />
-    <option name="y" value="31" />
+    <option name="x" value="447" />
+    <option name="y" value="-17" />
     <option name="width" value="1226" />
-    <option name="height" value="766" />
+    <option name="height" value="684" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -915,8 +122,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -953,14 +160,14 @@
     <frame x="-8" y="-8" width="1382" height="784" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1647145" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.1647145" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Python Console" order="7" />
+      <window_info anchor="bottom" id="Python Console" order="7" weight="0.32869565" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32869565" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -972,6 +179,26 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" />
     </layout>
+    <layout-to-restore>
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1647145" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="right" id="Data View" order="3" />
+      <window_info anchor="bottom" id="Python Console" order="7" weight="0.32869565" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32869565" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+    </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
@@ -985,7 +212,6 @@
         <state relative-caret-position="204">
           <caret line="12" selection-start-line="12" selection-end-line="12" />
           <folding>
-            <element signature="e#0#28#0" expanded="true" />
             <marker date="1528165715183" expanded="true" signature="170:247" ph="..." />
           </folding>
         </state>
@@ -1022,7 +248,6 @@
         <state relative-caret-position="136">
           <caret line="11" column="9" selection-start-line="11" selection-start-column="9" selection-end-line="11" selection-end-column="9" />
           <folding>
-            <element signature="e#0#28#0" expanded="true" />
             <marker date="1528165715183" expanded="true" signature="170:247" ph="..." />
           </folding>
         </state>
@@ -1059,7 +284,6 @@
         <state relative-caret-position="136">
           <caret line="11" column="9" selection-start-line="11" selection-start-column="9" selection-end-line="11" selection-end-column="9" />
           <folding>
-            <element signature="e#0#28#0" expanded="true" />
             <marker date="1528165715183" expanded="true" signature="170:247" ph="..." />
           </folding>
         </state>
@@ -1108,69 +332,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="5" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/general_manager_page.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="16" selection-start-line="4" selection-start-column="11" selection-end-line="4" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_coordinator_page.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="16" selection-start-line="4" selection-start-column="11" selection-end-line="4" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_agent_page.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="26" lean-forward="true" selection-start-line="3" selection-start-column="26" selection-end-line="3" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/credit_and_collection_personnel_page.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="16" selection-start-line="4" selection-start-column="11" selection-end-line="4" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/supervisor_page.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="16" selection-start-line="4" selection-start-column="11" selection-end-line="4" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/line_leader_page.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="16" selection-start-line="4" selection-start-column="11" selection-end-line="4" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/production_manager_page.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="16" selection-start-line="4" selection-start-column="11" selection-end-line="4" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/client_page.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="16" selection-start-line="4" selection-start-column="11" selection-end-line="4" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/sales/admin.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
@@ -1188,13 +349,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/global_base_ui.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="17" selection-start-column="17" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/global_base_ui.html" />
     <entry file="file://$USER_HOME$/Documents/DLSU/SYSDEVE/appdev-master/accounts/templates/accounts/home.html">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1213,13 +368,6 @@
         <state relative-caret-position="-1620" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/home.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/template_form.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
@@ -1227,73 +375,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/login.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="6" selection-start-line="21" selection-start-column="6" selection-end-line="21" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/bigapple/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1677">
-          <caret line="136" column="23" selection-start-line="136" selection-start-column="23" selection-end-line="136" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" selection-start-line="2" selection-end-line="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" selection-start-line="12" selection-end-line="12" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-            <marker date="1528165715183" expanded="true" signature="170:247" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/global_base_ui.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
           <caret line="3" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="32" selection-start-column="32" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/bigapple/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="25" column="18" selection-start-line="25" selection-start-column="18" selection-end-line="25" selection-end-column="18" />
-          <folding>
-            <element signature="e#632#665#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/registration/login.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="33" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
         </state>
       </provider>
     </entry>
@@ -1307,10 +392,149 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/urls.py">
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" selection-end-column="45" />
+          <folding>
+            <marker date="1528165715183" expanded="true" signature="170:247" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" selection-start-line="2" selection-end-line="2" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="5" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/bigapple/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="25" column="18" selection-start-line="25" selection-start-column="18" selection-end-line="25" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/home.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/login.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="45" selection-start-line="17" selection-start-column="45" selection-end-line="17" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/registration/login.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="45" selection-start-line="17" selection-start-column="45" selection-end-line="17" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/bigapple/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="488">
+          <caret line="136" column="46" selection-start-line="136" selection-start-column="46" selection-end-line="136" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_coordinator_page.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
+          <caret line="8" column="36" selection-start-line="8" selection-start-column="36" selection-end-line="8" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/general_manager_page.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" selection-start-line="7" selection-end-line="8" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/production_manager_page.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="14" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/line_leader_page.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="15" selection-start-line="7" selection-start-column="15" selection-end-line="7" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_agent_page.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="15" selection-start-line="7" selection-start-column="15" selection-end-line="7" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/credit_and_collection_personnel_page.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="25" selection-start-line="7" selection-start-column="25" selection-end-line="7" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/supervisor_page.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="18" selection-start-line="7" selection-start-column="18" selection-end-line="7" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/accounts/client_page.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="7" lean-forward="true" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="73" selection-start-line="9" selection-start-column="73" selection-end-line="9" selection-end-column="73" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-272">
+          <caret line="44" column="29" selection-start-line="44" selection-start-column="29" selection-end-line="44" selection-end-column="29" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
           </folding>
@@ -1319,20 +543,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/accounts/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="28" selection-start-line="7" selection-start-column="28" selection-end-line="7" selection-end-column="28" />
+        <state relative-caret-position="484">
+          <caret line="37" column="51" selection-start-line="37" selection-start-column="51" selection-end-line="37" selection-end-column="51" />
           <folding>
-            <element signature="e#0#59#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="61" column="36" selection-start-line="61" selection-start-column="36" selection-end-line="61" selection-end-column="40" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
+            <element signature="e#0#66#0" expanded="true" />
           </folding>
         </state>
       </provider>

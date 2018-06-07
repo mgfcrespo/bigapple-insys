@@ -43,7 +43,6 @@ class Employee(models.Model):
         ('W', 'Warehouse'),
         ('U', 'Utility'),
         ('M', 'Maintenance'),
-        ('PM', 'Production Manager')
 
     )
 

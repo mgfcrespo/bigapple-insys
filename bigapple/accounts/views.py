@@ -1,16 +1,38 @@
-from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render
+from django.contrib.auth import authenticate, login, logout, forms
+from django.shortcuts import render, reverse, HttpResponseRedirect
+from django.contrib import messages
+
+from django.contrib.sessions.models import Session
+from .models import Client, Employee, User
+
 
 # Create your views here.
 
-def login_view(request):
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        # Redirect to a success page.
-        ...
-    else:
-        # Return an 'invalid login' error message.
-        return render(request, 'accounts/home.html')
+def user_page_view(request):
+
+        user = request.user
+        username = request.user.username
+
+        request.session['session_username'] = username
+
+        if user.employee is not None:
+            employee_id = user.employee.id
+            employee = Employee.objects.get(id=employee_id)
+
+            if employee.position == 'GM':
+                return render(request, 'accounts/general_manager_page.html')
+            elif employee.position == 'SC':
+                return render(request, 'accounts/sales_coordinator_page.html')
+            elif employee.position == 'SA':
+                return render(request, 'accounts/sales_agent_page.html')
+            elif employee.position == 'CC':
+                return render(request, 'accounts/credit_and_collection_page.html')
+            elif employee.position == 'SV':
+                return render(request, 'accounts/supervisor_page.html')
+            elif employee.position == 'PM':
+                return render(request, 'accounts/production_manager_page.html')
+            elif employee.position == 'LL':
+                return render(request, 'accounts/line_leader_page.html')
+
+        else:
+            return render(request, 'accounts/client_page.html')
