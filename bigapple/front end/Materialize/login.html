@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!--================================================================================
+	Item Name: Materialize - Material Design Admin Template
+	Version: 4.0
+	Author: PIXINVENT
+	Author URL: https://themeforest.net/user/pixinvent/portfolio
+  ================================================================================ -->
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="description" content="Materialize is a Material Design Admin Template,It's modern, responsive and based on Material Design by Google. ">
+    <meta name="keywords" content="materialize, admin template, dashboard template, flat admin template, responsive admin template,">
+    <title>Big Apple Plastic Manufacturing Co.</title>
+    <!-- Favicons-->
+    <link rel="icon" href="images/favicon/favicon-32x32.png" sizes="32x32">
+    <!-- Favicons-->
+    <link rel="apple-touch-icon-precomposed" href="images/favicon/apple-touch-icon-152x152.png">
+    <!-- For iPhone -->
+    <meta name="msapplication-TileColor" content="#00bcd4">
+    <meta name="msapplication-TileImage" content="images/favicon/mstile-144x144.png">
+    <!-- For Windows Phone -->
+    <!-- CORE CSS-->
+    <link href="css//materialize.css" type="text/css" rel="stylesheet">
+    <link href="css//style.css" type="text/css" rel="stylesheet">
+    <!-- Custome CSS-->
+    <link href="css/custom/custom.css" type="text/css" rel="stylesheet">
+    <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+    <link href="vendors/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet">
+    <link href="vendors/flag-icon/css/flag-icon.min.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <header>
+    <!-- Start Page Loading -->
+    <div id="loader-wrapper">
+      <div id="loader"></div>
+      <div class="loader-section section-left"></div>
+      <div class="loader-section section-right"></div>
+    </div>
+    <!-- end header nav-->
+    </header>
+    <!-- END HEADER -->
+    
+    <!-- //////////////////////////////////////////////////////////////////////////// -->
+    
+    <!-- START MAIN -->
+	
+	<div class="container">
+		<ul class="tabs">
+			<li>		
+			<div id="loginPanel">
+				<div class="card">
+					<div class ="card-content black-text">
+						<span class="card-title"><h1>Login</h1></span>
+						<!--form-->
+						<form>
+         					<div class="input-field">
+           						<input type="text" id="username">
+        	   					<label class="active" for="username">Username</label>
+    	     				</div>
+	           				<div class="input-field">
+           						<input type="password" id="lastName">
+           						<label class="active" for="password">Password</label>
+         					</div>
+         				</form>
+         			</div>
+				</div>
+			</div>
+		</li>
+		<li>
+			<div id="registerPanel">
+				<div class="card">
+        	   		<div class="card-content black-text">
+            	 	<span class="card-title"><h1>Register</h1></span>
+             		
+             		<!--form-->
+       					<form>
+         					<div class="input-field">
+           						<input type="text" id="firstName">
+	           					<label class="active" for="firstName">First Name</label>
+	         				</div>
+    	       				<div class="input-field">
+        	   					<input type="text" id="lastName">
+           						<label class="active" for="lastName">Last Name</label>
+         					</div>
+           					<div class="input-field">
+           						<input type="text" id="idNumber">
+           						<label class="active" for="idNumber">ID Number</label>
+	         				</div>
+    	     				<div class="input-field">
+        	   					<input type="email" id="email" class="validate">
+           						<label class="active" for="email">Email</label>
+         					</div>
+           					<div class="input-field">
+           						<input type="text" id="department">
+           						<label class="active" for="department">Department</label>
+	         				</div>
+    	       				<div class="input-field">
+        	   					<input type="text" id="username">
+           						<label class="active" for="username">Username</label>
+         					</div>
+           					<div class="input-field">
+           						<input type="password" id="password">
+           						<label class="active" for="password">Password</label>
+	         				</div>
+    	       				<div class="input-field">
+        	   					<input type="password" id="confirmPassword">
+           						<label class="active" for="confirmPassword">Confirm Password</label>
+         					</div>         				         				
+       					</form>
+             		</div>
+           		</div>
+			</div>
+		</li>
+	</div>
+		
+    <!-- END MAIN -->
+    <!-- //////////////////////////////////////////////////////////////////////////// -->
+    <!-- START FOOTER -->
+    <footer class="page-footer gradient-45deg-light-blue-cyan">
+        <div class="footer-copyright">
+          <div class="container">
+            <span>Copyright ©
+              <script type="text/javascript">
+                document.write(new Date().getFullYear());
+              </script> <a class="grey-text text-lighten-2" href="http://themeforest.net/user/pixinvent/portfolio?ref=pixinvent" target="_blank">PIXINVENT</a> All rights reserved.</span>
+            <span class="right hide-on-small-only"> Design and Developed by <a class="grey-text text-lighten-2" href="https://pixinvent.com/">PIXINVENT</a></span>
+          </div>
+        </div>
+    </footer>
+    <!-- END FOOTER -->
+    <!-- ================================================
+    Scripts
+    ================================================ -->
+    <!-- jQuery Library -->
+    <script type="text/javascript" src="vendors/jquery-3.2.1.min.js"></script>
+    <!--materialize js-->
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <!--scrollbar-->
+    <script type="text/javascript" src="vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <!--plugins.js - Some Specific JS codes for Plugin Settings-->
+    <script type="text/javascript" src="js/plugins.js"></script>
+    <!--custom-script.js - Add your own theme custom JS-->
+    <script type="text/javascript" src="js/custom-script.js"></script>
+    <script>
+		document.addEventListener('DOMContentLoaded', function() {
+    	var elems = document.querySelectorAll('.dropdown-trigger');
+    	var instances = M.Dropdown.init(elems, options);});
+		// Or with jQuery
+  		$('.dropdown-trigger').dropdown();
+		</script>
+  </body>
+</html>

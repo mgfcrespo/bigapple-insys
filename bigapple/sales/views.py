@@ -4,6 +4,13 @@ from .models import ClientItem, ClientPO, ClientCreditStatus, Client
 
 
 # Create your views here.
+def sales_details(request):
+    context = {
+        'title': 'Sales Content'
+    }
+
+    return render(request, 'sales/sales_details.html', context)
+
 class POListView(generic.ListView):
     template_name = 'sales/clientPO_list.html'
 

@@ -1,3 +1,4 @@
+
 from django.contrib.auth import authenticate, login, logout, forms
 from django.shortcuts import render, reverse, HttpResponseRedirect
 from django.contrib import messages
@@ -6,7 +7,19 @@ from django.contrib.sessions.models import Session
 from .models import Client, Employee, User
 
 
+from django.http import HttpResponse
+from django.shortcuts import render
+
+
+
+from .models import Address
+from .models import ContactNumber
+from .models import Email
+from .models import Employee
+from .models import Client
+
 # Create your views here.
+
 
 def user_page_view(request):
 
@@ -36,3 +49,11 @@ def user_page_view(request):
 
         else:
             return render(request, 'accounts/client_page.html')
+
+
+def account_details(request):
+    context = {
+        'title': 'Account Content'
+    }
+    return render(request, 'accounts/account_details.html', context)
+

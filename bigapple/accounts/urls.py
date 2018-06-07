@@ -7,6 +7,10 @@ from django.views.generic import TemplateView
 
 app_name='accounts'
 urlpatterns = [
+
     path('user-page-view/', views.user_page_view, name='user-page-view'),
+    url(r'^account_details/', views.account_details, name='account_details')
 ]
+
+
 
