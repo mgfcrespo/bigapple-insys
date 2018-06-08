@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    
+    <!--materialize css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+    
+    <!--javascript-->
+    <script src=""></script>
+
+    <!--jquery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+    
+    <title>BigApple</title>
+</head>
+<body>
+  <!-- Dropdown Structure -->
+    <ul id="dropdown1" class="dropdown-content">
+        <li><a href="#!">one</a></li>
+        <li><a href="#!">two</a></li>
+        <li class="divider"></li>
+        <li><a href="#!">three</a></li>
+    </ul>
+    <nav>
+        <div class="nav-wrapper red lighten-1">
+            <a href="#!" class="brand-logo">Logo</a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="/accounts/account_details/">Account Details</a></li>
+                    <li><a href="">something2</a></li>
+                    <li><a href="">something3</a></li>
+                    <li><a href="">something4</a></li>
+                    <!-- Dropdown Trigger -->
+                    <!--<li><a class="dropdown-trigger" href="#!" data-target="dropdown1">Dropdown<i class="material-icons right">arrow_drop_down</i></a></li>-->
+                </ul>
+        </div>
+    </nav>
+
+    <div class = "container">
+        {% block content %}
+        
+        {% endblock%}
+    </div>
+
+    <script>
+       $( document ).ready(function() {
+           $(".dropdown-trigger").dropdown();
+        });
+    </script>
+</body>
+</html>

@@ -1,15 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
 from datetime import date
+from django.conf import settings
 
 
 # Create your models here.
-
-class Account(models.Model):
-    username = models.CharField('username', max_length=200)
-    password = models.CharField('password', max_length=200)
-
-    def __str__(self):
-        return self.username
 
 class Address(models.Model):
     address = models.CharField('address', max_length=200)
@@ -48,7 +43,6 @@ class Employee(models.Model):
         ('W', 'Warehouse'),
         ('U', 'Utility'),
         ('M', 'Maintenance'),
-        ('PM', 'Production Manager')
 
     )
 
@@ -64,7 +58,7 @@ class Employee(models.Model):
     pagibig = models.CharField('pagibig', max_length=200, blank =True)
     tin = models.CharField('tin', max_length=200, blank=True)
     position = models.CharField('position', choices=POSITION, max_length=200, default='not specified')
-    accounts = models.OneToOneField(Account, on_delete=models.CASCADE, null=True)
+    accounts = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
     @property
     def full_name(self):
@@ -93,7 +87,7 @@ class Client(models.Model):
     email = models.ForeignKey(Email, on_delete=models.CASCADE)
     contact_number = models.ForeignKey(ContactNumber, on_delete=models.CASCADE)
     tin = models.CharField('tin', max_length=200, blank=True)
-    accounts = models.OneToOneField(Account, on_delete=models.CASCADE, null=True)
+    accounts = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
     @property
     def full_name(self):
