@@ -1,7 +1,7 @@
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import ClientItem, ClientPO, ClientCreditStatus, Client
-
+from django.shortcuts import render, reverse, HttpResponseRedirect
 
 # Create your views here.
 def sales_details(request):
@@ -10,6 +10,14 @@ def sales_details(request):
     }
 
     return render(request, 'sales/sales_details.html', context)
+
+
+def add_supplier(request):
+    context = {
+        'title': 'Add Supplier'
+    }
+
+    return render(request, 'sales/add_supplier.html', context)
 
 class POListView(generic.ListView):
     template_name = 'sales/clientPO_list.html'

@@ -52,6 +52,7 @@ def user_page_view(request):
 
 
 def account_details(request):
+    #return HttpResponse('HELLO FROM POSTS')
     context = {
         'title': 'Account Content'
     }
