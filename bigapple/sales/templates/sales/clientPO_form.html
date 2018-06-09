@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Create Purchase Order</title>
 </head>
 <body>
 
+{% include 'global_base_ui.html' %}
 
 <h1>PURCHASE ORDER</h1>
 <form action="{% url 'sales:client-po-form-add' %}" method="post" enctype="multipart/form-data">

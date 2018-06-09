@@ -1,7 +1,9 @@
 from django.views import generic
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
 from .models import ClientItem, ClientPO, ClientCreditStatus, Client
-
+from django.shortcuts import render
+from .forms import ClientPOForm, ClientPOFormset
+from django.urls import reverse_lazy, reverse
 
 # Create your views here.
 def sales_details(request):
@@ -23,7 +25,19 @@ class PODetailView(generic.DetailView):
     template_name = 'sales/clientPO_detail.html'
 
 
-class POFormCreateView(CreateView):
-    model = ClientItem
+class POFormCreateView(FormView):
+    form_class = ClientPOForm
     template_name = 'sales/clientPO_form.html'
     fields = ('products', 'note', 'width', 'length', 'color', 'gusset', 'quantity')
+    success_url = reverse_lazy('accounts:user-page-view')
+
+    def form_valid(self, form):
+        form.save()
+        return super(POFormCreateView, self).form_valid(form)
+
+
+class POFormsetCreateView(FormView):
+    form_class = ClientPOFormset
+    template_name = 'sales/clientPO_form.html'
+
+
