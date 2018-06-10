@@ -54,7 +54,8 @@ class ExtruderSchedule(models.Model):
     operator = models.CharField('operator', max_length=200)
     date = models.DateField('date')
     number_rolls = models.FloatField('number_rolls')
-
+    weight_rolls = models.FloatField('weight_rolls')
+    #core_weight, net_weight, str_scrap, ext_scrap, bal, remarks
 
 
 
