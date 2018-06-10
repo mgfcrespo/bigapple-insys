@@ -175,64 +175,57 @@
                 <div class="row">
                   <div class="col s4 offset-s4">
                     <div class="card-panel">
-                      <h4 class="header1">Purchase Order</h4>
+                      <h4 class="header1">New Supplier</h4>
                       <div class="row">
                         
                         <form class="col s12">
                          
                           <div class="row">
                             <div class="input-field col s12">
-                              <input id="name" type="text">
-                              <label for="name">Name</label>
+                              <input id="name" type="text" required="true">
+                              <label for="name">Company Name</label>
                             </div>
                           </div>
                           <div class="row">
-                             <div class="input-field col s6">
-								<input type="text" class="datepicker" placeholder="Date Set">
-								<label for="dateSet"></label>
-							 </div>
-                             <div class="input-field col s6">
-								<input type="text" class="datepicker" placeholder="Date Needed">
-								<label for="dateNeeded"></label>
-							 </div>
-                          <div class="row">
                             <div class="input-field col s12">
-                              <input id="terms" type="text">
-                              <label for="terms">Terms</label>
+                              <input id="contactPerson" type="text" required="true">
+                              <label for="contactPerson">Contact Person</label>
+                            </div>
                           </div>
                           <div class="row">
                             <div class="input-field col s12">
-                              <input id="item" type="text">
-                              <label for="item">Item</label>
-                          </div>
+                              <input id="contactEmail" type="email" required="true">
+                              <label for="contactEmail">Email Address</label>
+                            </div>
+                          </div>                                                    
                           <div class="row">
                             <div class="input-field col s12">
                               <input id="description" type="text">
                               <label for="description">Description</label>
                           </div>
-                          <div class="row">
-                            <div class="input-field col s4">
-                              <input id="quantity" type="text">
-                              <label for="quantity">Quantity</label>
-                            </div>
-                            <div class="input-field col s4">
-                              <input id="unitPrice" type="text" disabled="true">
-                              <label for="unitPrice">Unit Price</label>
-                            </div>
-                            <div class="input-field col s4">
-                              <input id="amount" type="text" disabled="true">
-                              <label for="amount">Amount</label>
-                            </div>
                           </div>
-    	
-    					  </form>
-    	                  
+		           		  <div class="row">
+							<select class="browser-default" required="true">  
+								<option value="" disabled selected>Sales Agent Responsible</option>
+								<option value="1">Name 1</option>
+    							<option value="2">Name 2</option>
+    							<option value="3">Name 3</option>
+    							<option value="4">Name 4</option>
+								<option value="5">Name 5</option>
+    							<option value="6">Name 6</option>
+    							<option value="7">Name 7</option>
+    							<option value="8">Name 9</option>									
+  							</select>
+	         			</div>
     	                  <div class="row">
     						<div class="center">
-         						<button class="btn btn-small green" type="submit">Submit</button>
+         						<button class="btn btn-small green" type="submit">Add</button>
          						<button class="btn btn-small red" typle="clear">Clear</button>
          					</div>
                           </div>
+	         			
+	         			</div>
+					  </form>
                       </div>
                     </div>                        
                 </div>
@@ -240,9 +233,7 @@
                         
                       </div>
                     </div>
-                  </div>
-                <!-- End placeholder -->
-            </div>
+        <!-- End placeholder -->
         <!--end container-->
      
         <!-- END CONTENT -->
@@ -515,8 +506,8 @@
           </ul>
         </aside>
         <!-- END RIGHT SIDEBAR NAV-->
-      </div>
-      <!-- END WRAPPER -->
+      
+    <!-- END WRAPPER -->
     <!-- END MAIN -->
   
     <!-- //////////////////////////////////////////////////////////////////////////// -->
