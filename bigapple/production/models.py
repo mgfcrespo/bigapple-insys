@@ -46,7 +46,15 @@ class PrintingSchedule(models.Model):
 '''
 
 class ExtruderSchedule(models.Model):
-    jo_number = models.ForeignKey(OrderSheet, on_delete=models.CASCADE)
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+    jo_number = models.IntegerField('jo_number', min_length=6)
+    stock_kind = models.CharField('stock_kind', max_length=250)
+    kilos = models.FloatField('kilos')
+    treating = models.CharField('treating', max_length=200);
+    operator = models.CharField('operator', max_length=200)
+
+    date = models.DateField('date')
+
 
 
 
