@@ -7,7 +7,7 @@ from accounts.models import Client
 # Create your models here.
 
 class Product(models.Model):
-    products = models.CharField('products', max_length=200)
+    product = models.CharField('product', max_length=200)
     description = models.CharField('description', max_length=200)
 
     def __str__(self):
@@ -19,7 +19,7 @@ class ClientPO(models.Model):
     date_required = models.DateField('date_required')
     terms = models.CharField('name', max_length=250)
     other_info = models.CharField('other_info', max_length=250)
-    clients = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     #client_items = models.ManyToManyField(ClientItem)
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
 
@@ -73,5 +73,5 @@ class OrderSheet(models.Model):
 # class CostingSheet(models.Model)
 
 class ClientCreditStatus(models.Model):
-    clients = models.ForeignKey(Client, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
     credit_status = models.BooleanField('credit_status', default=True)
