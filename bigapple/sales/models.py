@@ -22,6 +22,7 @@ class ClientPO(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     #client_items = models.ManyToManyField(ClientItem)
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
+    sales_agent = models.CharField('sales_agent', max_length=200)
 
     def po_number(self):
         return 'PO%s' % (self.id)
