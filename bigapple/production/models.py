@@ -39,9 +39,14 @@ class SalesInvoice(models.Model):
 class MachineSchedule(models.Model):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
 
+class MaterialSchedule(models.Model):
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+    rm_name = models.CharField('rm_name')
+    rm_type = models.CharField('rm_type')
+    quantity = models.IntegerField('quantity')
+'''
 class PrintingSchedule(models.Model):
 
-'''
 
 class CuttingSchedule(models.Model):
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
@@ -59,7 +64,6 @@ class CuttingSchedule(models.Model):
     starting_scrap = models.FloatField('starting_scrap')
     cutting_scrap = models.FloatField('cutting_scrap')
     remarks = models.CharField('remarks', max_length=1000)
-
 
 class ExtruderSchedule(models.Model):
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
