@@ -30,7 +30,8 @@ class WorkerSchedule(models.Model):
         ('2', 'shift 2'),
         ('3', 'shift 3')
     )
-    workers = models.ForeignKey(Employee, on_delete=models.CASCADE)
+
+    worker = models.ForeignKey(Employee, on_delete=models.CASCADE)
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     working_date = models.DateField('working_date')
@@ -53,11 +54,19 @@ class PrintingSchedule(models.Model):
         ('3', 'shift 3')
     )
 
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+    machine = models.IntegerFieldField('machine')
     operator = models.CharField('operator', max_length=200)
     date = models.DateField('date')
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     time_in = models.TimeField('time_in')
     time_out = models.TimeField('time_out')
+    repeat_order = models.BooleanField('repeat_order', default=true)
+    output_kilos = models.FloatField('output_kilos')
+    number_rolls = models.FloatField('number_rolls')
+    starting_scrap = models.FloatField('starting_scrap')
+    printing_scrap = models.FloatField('printing_scrap')
+    remarks = models.CharField('remarks', max_length=1000)
 
 class CuttingSchedule(models.Model):
     SHIFTS = (
@@ -70,6 +79,7 @@ class CuttingSchedule(models.Model):
     print_name = models.CharField('print_name')
     sealing = models.CharField('sealing')
     handle = models.CharField('handle')
+    machine = models.IntegerFieldField('machine')
     operator = models.CharField('operator', max_length=200)
     date = models.DateField('date')
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
@@ -77,7 +87,7 @@ class CuttingSchedule(models.Model):
     time_out = models.TimeField('time_out')
     line = models.IntegerField('line', min_length=1)
     quantity = models.FloatField('quantity')
-    kilos = models.FloatField('kilos')
+    output_kilos = models.FloatField('output_kilos')
     number_rolls = models.FloatField('number_rolls')
     starting_scrap = models.FloatField('starting_scrap')
     cutting_scrap = models.FloatField('cutting_scrap')
@@ -91,10 +101,10 @@ class ExtruderSchedule(models.Model):
     )
 
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
-    jo_number = models.IntegerField('jo_number', min_length=6)
     stock_kind = models.CharField('stock_kind', max_length=250)
     material = models.CharField('material', max_length=200)
-    treating = models.CharField('treating', max_length=200);
+    treating = models.CharField('treating', max_length=200)
+    machine = models.IntegerFieldField('machine')
     operator = models.CharField('operator', max_length=200)
     date = models.DateField('date')
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
