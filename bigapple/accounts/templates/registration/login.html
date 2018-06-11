@@ -8,7 +8,7 @@
     <title>Big Apple Plastic Manufacturing Co.</title>
 
     <!-- Favicons-->
-    <link rel="icon" href="images/BAicon.png" sizes="32x32">
+    <link rel="icon" href="../../images/BAicon.png" sizes="32x32">
 
 	<!-- CORE CSS-->
     <link href="../../static/css/materialize.css" type="text/css" rel="stylesheet">
@@ -64,7 +64,7 @@
                                 {% csrf_token %}
         		 					<div class="input-field">
            								<input type="text" required="true" id="username">
-        	   							<label class="active" for="username">Username: {{form.username}}</label>
+										<label>Username:{{form.username}}</label>
     	     						</div>
 	           						<div class="input-field">
            								<input type="password" required="true" id="password">
