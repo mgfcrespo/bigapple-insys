@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
 from .models import ClientItem, ClientPO, ClientCreditStatus, Client, Product
@@ -6,12 +6,12 @@ from django.shortcuts import render
 from .forms import ClientPOFormItems, ClientPOForm
 from django.urls import reverse_lazy
 from django.forms import formset_factory, inlineformset_factory
-=======
+
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import ClientItem, ClientPO, ClientCreditStatus, Client
 from django.shortcuts import render, reverse, HttpResponseRedirect
->>>>>>> a9bf0b8dbe9542f09e4a6e4318e3d5f45e3fae7e
+
 
 # Create your views here.
 def sales_details(request):
@@ -21,10 +21,6 @@ def sales_details(request):
 
     return render(request, 'sales/sales_details.html', context)
 
-<<<<<<< HEAD
-class POListView(ListView):
-=======
-
 def add_supplier(request):
     context = {
         'title': 'Add Supplier'
@@ -33,7 +29,6 @@ def add_supplier(request):
     return render(request, 'sales/add_supplier.html', context)
 
 class POListView(generic.ListView):
->>>>>>> a9bf0b8dbe9542f09e4a6e4318e3d5f45e3fae7e
     template_name = 'sales/clientPO_list.html'
 
     def get_queryset(self):

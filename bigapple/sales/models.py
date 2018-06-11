@@ -8,12 +8,8 @@ from decimal import Decimal
 # Create your models here.
 
 class Product(models.Model):
-<<<<<<< HEAD
     products = models.CharField('products', max_length=200)
     prod_price = models.DecimalField('prod_price', decimal_places=3, max_digits=12, default=0)
-=======
-    product = models.CharField('product', max_length=200)
->>>>>>> a9bf0b8dbe9542f09e4a6e4318e3d5f45e3fae7e
     description = models.CharField('description', max_length=200)
 
     def __str__(self):
@@ -26,16 +22,11 @@ class ClientPO(models.Model):
     date_required = models.DateTimeField('date_required', auto_now_add=True, blank=True)
     terms = models.CharField('terms', max_length=250)
     other_info = models.CharField('other_info', max_length=250)
-<<<<<<< HEAD
     clients = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
-    #client_item = models.ForeignKey(ClientItem, on_delete=models.CASCADE)
-=======
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     #client_items = models.ManyToManyField(ClientItem)
-    total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
-    sales_agent = models.CharField('sales_agent', max_length=200)
->>>>>>> a9bf0b8dbe9542f09e4a6e4318e3d5f45e3fae7e
+    #sales_agent = models.CharField('sales_agent', max_length=200)
+
 
     '''
     def po_number(self):
