@@ -1,17 +1,9 @@
+{% extends 'sales/home.html' %}
+
+{% block content %}
+    
 <!DOCTYPE html>
 <html lang="en">
-<<<<<<< HEAD
-<head>
-    <meta charset="UTF-8">
-    <title>Create Purchase Order</title>
-</head>
-<body>
-
-{% include 'global_base_ui.html' %}
-
-<h1>PURCHASE ORDER</h1>
-<form id = "myForm" action="{% url 'sales:client-po-form-add' %}" method="post" enctype="multipart/form-data">
-=======
   <!--================================================================================
 	Item Name: Materialize - Material Design Admin Template
 	Version: 4.0
@@ -183,7 +175,7 @@
                 <div class="row">
                   <div class="col s4 offset-s4">
                     <div class="card-panel">
-                      <h4 class="header1">Purchase Order</h4>
+                      <h4 class="header1">New Supplier</h4>
                       <div class="row">
                         
                         <form class="col s12">
@@ -191,85 +183,43 @@
                           <div class="row">
                             <div class="input-field col s12">
                               <input id="name" type="text" required="true">
-                              <label for="name">Name</label>
+                              <label for="name">Company Name</label>
                             </div>
                           </div>
                           <div class="row">
-                             <div class="input-field col s6">
-								<input type="text" class="datepicker" required="true" placeholder="Date Set">
-								<label for="dateSet"></label>
-							 </div>
-                             <div class="input-field col s6">
-								<input type="text" class="datepicker" required="true">
-								<label for="dateNeeded">Date Needed</label>
-							 </div>
-                          <div class="row">
                             <div class="input-field col s12">
-                              <input id="terms" type="text" required="true">
-                              <label for="terms">Terms</label>
+                              <input id="contactPerson" type="text" required="true">
+                              <label for="contactPerson">Contact Person</label>
+                            </div>
                           </div>
-		           		  <div class="row">
-							<select class="browser-default" required="true">  
-								<option value="" disabled selected>Item</option>
-								<option value="1">Item 1</option>
-    							<option value="2">Item 2</option>
-    							<option value="3">Item 3</option>
-    							<option value="4">Item 4</option>
-								<option value="5">Item 5</option>
-    							<option value="6">Item 6</option>
-    							<option value="7">Item 7</option>
-    							<option value="8">Item 9</option>									
-  							</select>
-	         			</div>
                           <div class="row">
                             <div class="input-field col s12">
-                              <input id="description" type="text" required="true">
+                              <input id="contactEmail" type="email" required="true">
+                              <label for="contactEmail">Email Address</label>
+                            </div>
+                          </div>                                                    
+                          <div class="row">
+                            <div class="input-field col s12">
+                              <input id="description" type="text">
                               <label for="description">Description</label>
-                          </div>
-                          <div class="row">
-                            <div class="input-field col s4">
-                              <input id="quantity" type="text" required="true">
-                              <label for="quantity">Quantity</label>
-                            </div>
-                            <div class="input-field col s4">
-                              <input id="unitPrice" type="text" disabled="true">
-                              <label for="unitPrice">Unit Price</label>
-                            </div>
-                            <div class="input-field col s4">
-                              <input id="amount" type="text" disabled="true">
-                              <label for="amount">Amount</label>
-                            </div>
                           </div>
     	                  <div class="row">
     						<div class="center">
-         						<button class="btn btn-small green" type="submit">Submit</button>
+         						<button class="btn btn-small green" type="submit">Add</button>
          						<button class="btn btn-small red" typle="clear">Clear</button>
          					</div>
                           </div>
-    					  </form>
+	         			
+	         			</div>
+					  </form>
                       </div>
                     </div>                        
                 </div>
             </div>
                         
-<form action="{% url 'sales:client-po-form-add' %}" method="post" enctype="multipart/form-data">
->>>>>>> a9bf0b8dbe9542f09e4a6e4318e3d5f45e3fae7e
-    {% csrf_token %}
-    {% include 'sales/template_form.html' %}
-    {% include 'sales/template_formset.html' %}
-
-      <div class = "form-group">
-          <div class="col-sm-2 col-sm-10">
-            <button type="submit" class ="btn btn-success">Submit</button>
-          </div>
-      </div>
-</form>
-
                       </div>
                     </div>
-                  </div>
-                <!-- End placeholder -->
-            </div>
+        <!-- End placeholder -->
         <!--end container-->
      
         <!-- END CONTENT -->
@@ -542,8 +492,8 @@
           </ul>
         </aside>
         <!-- END RIGHT SIDEBAR NAV-->
-      </div>
-      <!-- END WRAPPER -->
+      
+    <!-- END WRAPPER -->
     <!-- END MAIN -->
   
     <!-- //////////////////////////////////////////////////////////////////////////// -->
@@ -576,3 +526,15 @@
     <script type="text/javascript" src="/Users/martincrespo/Documents/Thesis/bigapple/frontend/static/js/custom-script.js"></script>
   </body>
 </html>
+
+    {% for field in form %}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <span class ="text-danger small">{{field.errors}}</span>
+            </div>
+            <label class = "control-label col-sm-2">{{field.label_tag}}</label>
+            <div class="col-sm-10">{{field}}</div>
+        </div>
+    {% endfor %}
+
+{% endblock %}
