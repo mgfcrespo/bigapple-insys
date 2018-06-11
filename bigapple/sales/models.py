@@ -13,44 +13,50 @@ class Product(models.Model):
     description = models.CharField('description', max_length=200)
 
     def __str__(self):
-        return self.products
+        return self.products + " : Php." + str(self.prod_price) + "/piece"
+
 
 #could be substitute for quotation request
 class ClientPO(models.Model):
     date_issued = models.DateTimeField('date_issued', auto_now_add=True, blank=True)
-    date_required = models.DateTimeField('date_required')
-    terms = models.CharField('name', max_length=250)
+    date_required = models.DateTimeField('date_required', auto_now_add=True, blank=True)
+    terms = models.CharField('terms', max_length=250)
     other_info = models.CharField('other_info', max_length=250)
     clients = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
-    #client_items = models.ManyToManyField(ClientItem)
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
+    #client_item = models.ForeignKey(ClientItem, on_delete=models.CASCADE)
 
+    '''
     def po_number(self):
         return 'PO%s' % (self.id)
 
     def __str__(self):
         return self.po_number()
-
-    '''
-    def passes_MOQ(self)
-
-    def get_absolute_url(self):
-        return reverse('sales')
     '''
 
 
 class ClientItem(models.Model):
-    clients = models.ForeignKey(Client, on_delete=models.CASCADE, null=True) #to allow item suggestions suggestions
+    COLOR =(
+        ('R', 'Red'),
+        ('B', 'Blue'),
+        ('Y', 'Yellow'),
+        ('O', 'Orange'),
+        ('G', 'Green'),
+        ('V', 'Violet'),
+        ('Blk', 'Black'),
+        ('Wht', 'White'),
+        ('P', 'Plain')
+    )
+
     products = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     note = models.CharField('note', max_length=200, default ='')
     width = models.DecimalField('width', decimal_places=3, max_digits=12)
     length = models.DecimalField('length', decimal_places=3, max_digits=12)
-    color = models.CharField('color', max_length=200)
+    color = models.CharField('color', choices=COLOR, max_length=200)
     gusset = models.DecimalField('gusset', decimal_places=3, max_digits=12)
     quantity = models.IntegerField('quantity')
     item_price = models.DecimalField('price', decimal_places=3, max_digits=12, default=0)
-    client_po = models.ManyToManyField(ClientPO)
-
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
     # sample_layout = models.CharField('sample_layout', max_length=200)
 
     def get_absolute_url(self):
@@ -65,8 +71,14 @@ class ClientItem(models.Model):
         return total
 
     def save(self, *args, **kwargs):
-        self.item_price = self.calculate_item_total()
+        if self.products is not None:
+            self.item_price = self.calculate_item_total()
+        else:
+            self.item_price = Decimal(0.0)
         super(ClientItem, self).save(*args, **kwargs)
+
+
+
 
 '''
 class Quotation(models.Model):

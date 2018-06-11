@@ -1,16 +1,23 @@
-from django import forms
-from django.forms import BaseModelFormSet, ModelForm, modelformset_factory
+from django.forms import ModelForm, ValidationError
 from .models import ClientItem, ClientPO, Product, Client
+from decimal import Decimal
+from django.contrib.admin.widgets import AdminDateWidget
 
-class ClientPOForm(forms.ModelForm):
+#Example for simple modelforms
+class ClientPOFormItems(ModelForm):
 
     class Meta:
         model = ClientItem
         fields = ('products', 'note', 'width', 'length', 'color', 'gusset', 'quantity')
 
 
-class ClientPOFormset(forms.BaseModelFormSet):
+class ClientPOForm(ModelForm):
 
     class Meta:
-        clientpo_formset = modelformset_factory(ClientItem, form=ClientPOForm, fields=('products', 'note', 'width', 'length', 'color', 'gusset', 'quantity'), max_num=10, extra=5)
-        formset = clientpo_formset()
+        model = ClientPO
+        fields = ('terms', 'other_info')
+        #widgets = {'date_required':DateTimePicker(options={"format": "YYYY-MM-DD", "pickSeconds": False}}
+
+
+
+
