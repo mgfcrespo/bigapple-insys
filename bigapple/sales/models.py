@@ -28,16 +28,13 @@ class ClientPO(models.Model):
     #sales_agent = models.CharField('sales_agent', max_length=200)
 
 
-    '''
-    def po_number(self):
-        return 'PO%s' % (self.id)
-
     def __str__(self):
-        return self.po_number()
-    '''
+        return 'PO_%s' % (self.id)
+
 
 
 class ClientItem(models.Model):
+
     COLOR =(
         ('R', 'Red'),
         ('B', 'Blue'),
@@ -58,7 +55,7 @@ class ClientItem(models.Model):
     gusset = models.DecimalField('gusset', decimal_places=3, max_digits=12)
     quantity = models.IntegerField('quantity')
     item_price = models.DecimalField('price', decimal_places=3, max_digits=12, default=0)
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, null=True)
     # sample_layout = models.CharField('sample_layout', max_length=200)
 
     def get_absolute_url(self):

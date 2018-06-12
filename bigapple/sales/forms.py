@@ -3,7 +3,7 @@ from .models import ClientItem, ClientPO, Product, Client
 from decimal import Decimal
 from django.contrib.admin.widgets import AdminDateWidget
 
-#Example for simple modelforms
+
 class ClientPOFormItems(ModelForm):
 
     class Meta:

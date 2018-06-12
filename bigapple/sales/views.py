@@ -11,7 +11,7 @@ from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import ClientItem, ClientPO, ClientCreditStatus, Client
 from django.shortcuts import render, reverse, HttpResponseRedirect
-
+from django.db.models import aggregates
 
 # Create your views here.
 def sales_details(request):
@@ -52,28 +52,39 @@ class POFormCreateView(FormView):
         return super(POFormCreateView, self).form_valid(form)
 '''
 
-
+#SAMPLE DYNAMIC FORM
 def display_client_po(request):
-    clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=1)
+    #note:instance should be an object
+    clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=1, can_delete=True)
     if request.method == "POST":
         form = ClientPOForm(request.POST)
+
+        new_form = form.save()
+        new_form = new_form.pk
+        form_instance = ClientPO.objects.get(id=new_form)
+
         if (form.is_valid()):
             message = "Thank you"
-            form.save()
-
-        formset = clientpo_item_formset(request.POST, instance=form)
-
+            formset = clientpo_item_formset(request.POST, instance=form_instance)
 
         if (formset.is_valid()):
-            form.save()
             message = "Thank you"
             for form in formset:
-                print(form)
                 form.save()
+
+            formset_items = ClientItem.objects.filter(client_po_id = new_form)
+            formset_item_total = formset_items.aggregate(sum=aggregates.Sum('item_price'))['sum'] or 0
+
+            totalled_clientpo = ClientPO.objects.get(id=new_form)
+            totalled_clientpo.total_amount = formset_item_total
+            totalled_clientpo.save()
+
+
+
         else:
-            form = ClientPOForm()
-            formset = clientpo_item_formset(instance=ClientPO)
-            message = "Something went wrong"
+            #form = ClientPOForm()
+            #formset = clientpo_item_formset(instance=ClientPOform)
+            message = "Forms are not valid"
 
 
         return render(request, 'index.html',

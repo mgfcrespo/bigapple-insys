@@ -20,7 +20,7 @@ class SalesInvoice(models.Model):
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
     article = models.CharField('article', max_length=200, default='none', blank=True)
     vat = models.DecimalField('vat', default=0, blank=True, decimal_places=3, max_digits=12)
-    date_paid = models.DateField('date_paid')
+    date_paid = models.DateField('date_paid', auto_now_add=True, blank=True)
     payment_type = models.CharField('payment_type', max_length=200, default='none')
 
 
