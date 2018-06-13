@@ -61,7 +61,7 @@ class PrintingSchedule(models.Model):
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     time_in = models.TimeField('time_in')
     time_out = models.TimeField('time_out')
-    repeat_order = models.BooleanField('repeat_order', default=true)
+    repeat_order = models.BooleanField('repeat_order', default='true')
     output_kilos = models.FloatField('output_kilos')
     number_rolls = models.FloatField('number_rolls')
     starting_scrap = models.FloatField('starting_scrap')
