@@ -36,10 +36,20 @@ class WorkerSchedule(models.Model):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     working_date = models.DateField('working_date')
 
-'''    
 class MachineSchedule(models.Model):
+    SHIFTS = (
+        ('1', 'shift 1'),
+        ('2', 'shift 2'),
+        ('3', 'shift 3')
+    )
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
+    job_task = models.CharField('job_task')
+    client_po = models.CharField('client_po')
+    shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
+    working_date = models.DateField('working_date')
+    operator = models.CharField('operator', max_length=200)
 
+'''    
 class MaterialSchedule(models.Model):
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
     rm_name = models.CharField('rm_name')
