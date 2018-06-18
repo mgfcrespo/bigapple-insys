@@ -23,7 +23,6 @@ class ClientPO(models.Model):
     client_items = models.ManyToManyField(ClientItem)
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
     laminate = models.BooleanField('laminate', default=0)
-    expected_date = models.DateField('expected_date')
     confirmed = models.BooleanField('confirmed', default=0)
 
     def po_number(self):
