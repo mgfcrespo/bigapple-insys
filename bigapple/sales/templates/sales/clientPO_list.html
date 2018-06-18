@@ -1,12 +1,42 @@
+{% includes "global_base_ui.html" %}
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Client Purchase Orders</title>
 </head>
+
+{% block content %}
+
 <body>
 
+    {% if all_PO %}
+    <ul>
+
+      {% for ClientPO in all_PO %}
+      <li>
+        <a href="{{ ClientPO.get_absolute_url }}">{{ __str__ }}</a>
+          ({{ ClientPO.client }})
+          ({{ ClientPO.client_items }})
+          ({{ ClientPO.date_issued }})
+          ({{ ClientPO.date_required }})
+          ({{ ClientPO.laminate }})
+          ({{ ClientPO.confirmed }})
+          ({{ ClientPO.total_amount }})
+
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>There are no Purchases Orders in the database.</p>
+    {% endif %}
 </body>
+
+
+{% endblock %}
 </html>
 
 
