@@ -64,11 +64,9 @@ def display_client_po(request):
         form_instance = ClientPO.objects.get(id=new_form)
 
         if (form.is_valid()):
-            message = "Thank you"
             formset = clientpo_item_formset(request.POST, instance=form_instance)
 
         if (formset.is_valid()):
-            message = "Thank you"
             for form in formset:
                 form.save()
 
@@ -78,15 +76,14 @@ def display_client_po(request):
             totalled_clientpo = ClientPO.objects.get(id=new_form)
             totalled_clientpo.total_amount = formset_item_total
             totalled_clientpo.save()
-
+            message = "Thank you"
 
 
         else:
-            #form = ClientPOForm()
-            #formset = clientpo_item_formset(instance=ClientPOform)
             message = "Forms are not valid"
 
 
+        #todo change index.html. page should be redirected after successful submission
         return render(request, 'index.html',
                               {'message': message}
                               )

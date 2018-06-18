@@ -3,42 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="44100258-e655-4ddd-99f4-1a8c04b20571" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/accounts/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/accounts/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/accounts/migrations/0002_auto_20180601_1028.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/accounts/migrations/0003_auto_20180603_1451.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/accounts/migrations/0004_auto_20180605_2138.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/accounts/migrations/0005_auto_20180605_2220.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/accounts/migrations/0006_auto_20180607_2126.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/static/js/jquery.formset.js" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/static/js/jquery.formset.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/global_base_ui.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/global_base_ui.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/registration/create_account.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/registration/create_account.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/registration/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/registration/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/bigapple/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/bigapple/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/frontend/index_GM.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/frontend/index_salesagent.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/frontend/login.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/inventory/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/inventory/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/inventory/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/inventory/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/inventory/migrations/0002_auto_20180531_1935.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/inventory/migrations/0003_auto_20180601_1028.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/production/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/production/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/production/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/production/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/production/migrations/0002_salesinvoice.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/production/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/production/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/sales/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/apps.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bigapple/sales/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0002_auto_20180530_1222.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0003_auto_20180531_1935.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0004_auto_20180601_1028.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0005_auto_20180603_1451.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0006_auto_20180603_2210.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0007_auto_20180604_1414.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0008_auto_20180609_1823.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0009_auto_20180609_1841.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0010_auto_20180609_2110.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0011_auto_20180611_0103.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/bigapple/sales/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/templates/sales/template_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/templates/sales/template_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bigapple/sales/templates/sales/template_formset.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/templates/sales/template_formset.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bigapple/sales/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/views.py" afterDir="false" />
     </list>
@@ -51,23 +21,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="582">
-              <caret line="81" lean-forward="true" selection-start-line="81" selection-end-line="81" />
-              <folding>
-                <element signature="e#1#54#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bigapple/sales/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="629">
-              <caret line="57" column="79" selection-start-line="57" selection-start-column="79" selection-end-line="57" selection-end-column="79" />
+            <state relative-caret-position="969">
+              <caret line="62" selection-start-line="62" selection-end-line="62" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
@@ -75,11 +33,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bigapple/bigapple/settings.py">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="43" column="4" selection-start-line="43" selection-start-column="4" selection-end-line="43" selection-end-column="4" />
+            <state relative-caret-position="459">
+              <caret line="57" column="103" selection-start-line="57" selection-start-column="103" selection-end-line="57" selection-end-column="103" />
+              <folding>
+                <element signature="e#1#54#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -87,11 +48,17 @@
       <file leaf-file-name="forms.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bigapple/sales/forms.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" selection-start-line="5" selection-end-line="5" />
-              <folding>
-                <element signature="e#0#51#0" expanded="true" />
-              </folding>
+            <state>
+              <caret column="44" selection-start-column="44" selection-end-column="44" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="clientPO_form.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="442">
+              <caret line="26" column="7" lean-forward="true" selection-start-line="26" selection-start-column="7" selection-end-line="26" selection-end-column="7" />
             </state>
           </provider>
         </entry>
@@ -99,8 +66,8 @@
       <file leaf-file-name="template_formset.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/template_formset.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="31" selection-start-line="1" selection-start-column="31" selection-end-line="1" selection-end-column="31" />
+            <state relative-caret-position="-107">
+              <caret line="7" column="62" selection-start-line="7" selection-start-column="62" selection-end-line="7" selection-end-column="62" />
               <folding>
                 <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
               </folding>
@@ -108,16 +75,32 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="clientPO_form.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html">
-          <provider selected="true" editor-type-id="text-editor" />
+      <file leaf-file-name="template_form.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/template_form.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="51">
+              <caret line="3" column="10" selection-start-line="3" selection-start-column="10" selection-end-line="3" selection-end-column="66" />
+              <folding>
+                <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
+              </folding>
+            </state>
+          </provider>
         </entry>
       </file>
       <file leaf-file-name="global_base_ui.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/global_base_ui.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="539">
-              <caret line="500" column="61" lean-forward="true" selection-start-line="500" selection-start-column="61" selection-end-line="500" selection-end-column="61" />
+            <state relative-caret-position="471">
+              <caret line="501" column="18" selection-start-line="501" selection-start-column="18" selection-end-line="501" selection-end-column="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="jquery.formset.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bigapple/accounts/static/js/jquery.formset.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="345">
+              <caret line="221" column="68" lean-forward="true" selection-start-line="221" selection-start-column="68" selection-end-line="221" selection-end-column="68" />
             </state>
           </provider>
         </entry>
@@ -132,6 +115,13 @@
       </list>
     </option>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>addTex</find>
+      <find>add-row</find>
+      <find>prefix</find>
+    </findStrings>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -139,8 +129,6 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/index.html" />
-        <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/template_form.html" />
-        <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html" />
         <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/global_base_ui.html" />
         <option value="$PROJECT_DIR$/bigapple/accounts/forms.py" />
         <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/home.html" />
@@ -160,32 +148,37 @@
         <option value="$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/dynamic_forms/models.py" />
         <option value="$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/dynamic_forms/urls.py" />
         <option value="$PROJECT_DIR$/bigapple/bigapple/urls.py" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/static/js/jquery.formset.js" />
         <option value="$PROJECT_DIR$/bigapple/sales/template_formset.html" />
         <option value="$PROJECT_DIR$/bigapple/accounts/views.py" />
         <option value="$PROJECT_DIR$/bigapple/sales/index.html" />
         <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/index.html" />
         <option value="$PROJECT_DIR$/bigapple/sales/urls.py" />
         <option value="$PROJECT_DIR$/bigapple/sales/templates/index.html" />
-        <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html" />
+        <option value="$PROJECT_DIR$/bigapple/production/models.py" />
+        <option value="$PROJECT_DIR$/bigapple/bigapple/settings.py" />
+        <option value="$PROJECT_DIR$/bigapple/sales/models.py" />
+        <option value="$PROJECT_DIR$/bigapple/sales/models.py" />
+        <option value="$PROJECT_DIR$/bigapple/accounts/templates/global_base_ui.html" />
+        <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/template_form.html" />
         <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/template_form.html" />
         <option value="$PROJECT_DIR$/bigapple/sales/forms.py" />
-        <option value="$PROJECT_DIR$/bigapple/production/models.py" />
-        <option value="$PROJECT_DIR$/bigapple/sales/models.py" />
-        <option value="$PROJECT_DIR$/bigapple/sales/models.py" />
-        <option value="$PROJECT_DIR$/bigapple/bigapple/settings.py" />
         <option value="$PROJECT_DIR$/bigapple/sales/forms.py" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/templates/global_base_ui.html" />
+        <option value="$PROJECT_DIR$/../django-dynamic-formset-master/demo/urls.py" />
+        <option value="$PROJECT_DIR$/../django-dynamic-formset-master/demo/settings.py" />
+        <option value="$PROJECT_DIR$/../django-dynamic-formset-master/demo/example/models.py" />
+        <option value="$PROJECT_DIR$/../django-dynamic-formset-master/demo/example/urls.py" />
+        <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html" />
+        <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html" />
         <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/template_formset.html" />
+        <option value="$PROJECT_DIR$/bigapple/accounts/static/js/jquery.formset.js" />
         <option value="$PROJECT_DIR$/bigapple/sales/views.py" />
         <option value="$PROJECT_DIR$/bigapple/sales/views.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="517" />
-    <option name="y" value="129" />
-    <option name="width" value="735" />
+    <option name="x" value="66" />
+    <option name="width" value="1108" />
     <option name="height" value="684" />
   </component>
   <component name="ProjectView">
@@ -193,7 +186,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -217,13 +209,15 @@
               <item name="bigapple-insys" type="462c0819:PsiDirectoryNode" />
               <item name="bigapple" type="462c0819:PsiDirectoryNode" />
               <item name="accounts" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="bigapple-insys" type="b2602c69:ProjectViewProjectNode" />
               <item name="bigapple-insys" type="462c0819:PsiDirectoryNode" />
               <item name="bigapple" type="462c0819:PsiDirectoryNode" />
-              <item name="bigapple" type="462c0819:PsiDirectoryNode" />
+              <item name="accounts" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="js" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="bigapple-insys" type="b2602c69:ProjectViewProjectNode" />
@@ -250,6 +244,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -343,16 +338,16 @@
     <frame x="-8" y="-8" width="1382" height="784" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26427525" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16032211" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
+      <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -375,6 +370,244 @@
     <option name="LAST_COMMIT_MESSAGE" value="updated models" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="969">
+          <caret line="62" selection-start-line="62" selection-end-line="62" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="44" selection-start-column="44" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="27" lean-forward="true" selection-start-line="22" selection-start-column="27" selection-end-line="22" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/template_formset.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="62" selection-start-line="7" selection-start-column="62" selection-end-line="7" selection-end-column="62" />
+          <folding>
+            <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/template_form.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="10" selection-start-line="3" selection-start-column="10" selection-end-line="3" selection-end-column="66" />
+          <folding>
+            <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/global_base_ui.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8517">
+          <caret line="501" column="18" lean-forward="true" selection-start-line="501" selection-start-column="18" selection-end-line="501" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/static/js/jquery.formset.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3706">
+          <caret line="218" column="14" selection-start-line="218" selection-start-column="8" selection-end-line="218" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1037">
+          <caret line="61" column="29" selection-start-line="61" selection-start-column="29" selection-end-line="61" selection-end-column="29" />
+          <folding>
+            <element signature="e#1#54#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="22" column="63" selection-start-line="22" selection-start-column="63" selection-end-line="22" selection-end-column="63" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1122">
+          <caret line="66" column="56" selection-start-line="66" selection-start-column="56" selection-end-line="66" selection-end-column="56" />
+          <folding>
+            <element signature="e#1#54#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="56" selection-start-line="3" selection-start-column="56" selection-end-line="3" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" column="12" selection-start-line="13" selection-start-column="12" selection-end-line="13" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/global_base_ui.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8534">
+          <caret line="502" column="36" selection-start-line="502" selection-start-column="36" selection-end-line="502" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/template_formset.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
+          <folding>
+            <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="22" column="63" selection-start-line="22" selection-start-column="63" selection-end-line="22" selection-end-column="63" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="56" selection-start-line="3" selection-start-column="56" selection-end-line="3" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/template_formset.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="34" selection-start-line="6" selection-start-column="34" selection-end-line="6" selection-end-column="34" />
+          <folding>
+            <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/global_base_ui.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8483">
+          <caret line="499" column="79" selection-start-line="499" selection-start-column="79" selection-end-line="499" selection-end-column="79" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/static/js/jquery.formset.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/bigapple/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="731">
+          <caret line="43" column="4" selection-start-line="43" selection-start-column="4" selection-end-line="43" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1122">
+          <caret line="66" column="56" lean-forward="true" selection-start-line="66" selection-start-column="56" selection-end-line="66" selection-end-column="56" />
+          <folding>
+            <element signature="e#1#54#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="765">
+          <caret line="57" column="103" selection-start-line="57" selection-start-column="103" selection-end-line="57" selection-end-column="103" />
+          <folding>
+            <element signature="e#1#54#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="969">
+          <caret line="57" column="79" selection-start-line="57" selection-start-column="79" selection-end-line="57" selection-end-column="79" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/bigapple/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="731">
+          <caret line="43" column="4" selection-start-line="43" selection-start-column="4" selection-end-line="43" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/template_formset.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" column="23" selection-start-line="15" selection-start-column="23" selection-end-line="15" selection-end-column="23" />
+          <folding>
+            <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/global_base_ui.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8517">
+          <caret line="501" column="70" selection-start-line="501" selection-start-column="70" selection-end-line="501" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1003">
@@ -396,69 +629,114 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/forms.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/bigapple/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="43" column="4" selection-start-line="43" selection-start-column="4" selection-end-line="43" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/urls.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../django-dynamic-formset-master/demo/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../django-dynamic-formset-master/demo/example/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="34" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../django-dynamic-formset-master/demo/example/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../django-dynamic-formset-master/demo/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="369">
+          <caret line="91" column="5" selection-start-line="91" selection-start-column="5" selection-end-line="91" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/accounts/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-595">
+        <state relative-caret-position="-1105" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="969">
+          <caret line="62" selection-start-line="62" selection-end-line="62" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/forms.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/bigapple/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="43" column="4" selection-start-line="43" selection-start-column="4" selection-end-line="43" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/sales/forms.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
-          <folding>
-            <element signature="e#0#51#0" expanded="true" />
-          </folding>
+        <state>
+          <caret column="44" selection-start-column="44" selection-end-column="44" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/global_base_ui.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="539">
-          <caret line="500" column="61" lean-forward="true" selection-start-line="500" selection-start-column="61" selection-end-line="500" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/template_formset.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="31" selection-start-line="1" selection-start-column="31" selection-end-line="1" selection-end-column="31" />
+        <state relative-caret-position="-107">
+          <caret line="7" column="62" selection-start-line="7" selection-start-column="62" selection-end-line="7" selection-end-column="62" />
           <folding>
             <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/models.py">
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/template_form.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="57" column="79" selection-start-line="57" selection-start-column="79" selection-end-line="57" selection-end-column="79" />
+        <state relative-caret-position="51">
+          <caret line="3" column="10" selection-start-line="3" selection-start-column="10" selection-end-line="3" selection-end-column="66" />
           <folding>
-            <element signature="e#0#28#0" expanded="true" />
+            <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/templates/global_base_ui.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="471">
+          <caret line="501" column="18" selection-start-line="501" selection-start-column="18" selection-end-line="501" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/static/js/jquery.formset.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="221" column="68" lean-forward="true" selection-start-line="221" selection-start-column="68" selection-end-line="221" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="26" column="7" lean-forward="true" selection-start-line="26" selection-start-column="7" selection-end-line="26" selection-end-column="7" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="582">
-          <caret line="81" lean-forward="true" selection-start-line="81" selection-end-line="81" />
+        <state relative-caret-position="459">
+          <caret line="57" column="103" selection-start-line="57" selection-start-column="103" selection-end-line="57" selection-end-column="103" />
           <folding>
             <element signature="e#1#54#0" expanded="true" />
           </folding>

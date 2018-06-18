@@ -9,14 +9,19 @@
 {% include 'global_base_ui.html' %}
 <form id="myForm" action="{% url 'sales:client-po-form-add' %}" method="post" enctype="multipart/form-data">
 
-    {% csrf_token %}
-    {% include 'sales/template_form.html' %}
-    {% include 'sales/template_formset.html' %}
+            {% csrf_token %}
+            {% include 'sales/template_form.html' %}
+            {% include 'sales/template_formset.html' %}
 
-      <div class = "form-group">
-          <div class="col-sm-2 col-sm-10">
+            {{formset.management_form}}
             <button type="submit" class ="btn btn-success">Submit</button>
-          </div>
-      </div>
+
 </form>
+<script type="text/javascript">
+            $(function() {
+                 $('#myForm .formset_class').formset({
+                  prefix: '{{ formset.prefix }}'
+                  });
+                  })
+    </script>
 </body>
