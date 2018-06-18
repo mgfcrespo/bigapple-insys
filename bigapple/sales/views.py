@@ -35,3 +35,9 @@ class POFormCreateView(CreateView):
     model = ClientItem
     template_name = 'sales/clientPO_form.html'
     fields = ('products', 'note', 'width', 'length', 'color', 'gusset', 'quantity')
+
+class JOListView(generic.ListView):
+    template_name = 'sales/JO_list.html'
+
+    def get_queryset(self):
+    return ClientPO.objects.get(confirmed=1)
