@@ -20,9 +20,10 @@ class ClientPO(models.Model):
     terms = models.CharField('name', max_length=250)
     other_info = models.CharField('other_info', max_length=250)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
-    #client_items = models.ManyToManyField(ClientItem)
+    client_items = models.ManyToManyField(ClientItem)
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
-    sales_agent = models.CharField('sales_agent', max_length=200)
+    laminate = models.BooleanField('laminate', default=0)
+    expected_date = models.DateField('expected_date')
 
     def po_number(self):
         return 'PO%s' % (self.id)
