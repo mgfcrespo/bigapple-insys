@@ -3,41 +3,93 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Client Purchase Orders</title>
-</head>
-
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="msapplication-tap-highlight" content="no">
+    <title>Big Apple Plastic Manufacturing Co.</title>
+ 
+    <!-- Favicons-->
+    <link rel="icon" href="../../../accounts/images/BAicon.png" sizes="32x32">
+     
+    <!-- CORE CSS-->
+    <link href="../../../accounts/static/css/materialize.css" type="text/css" rel="stylesheet">
+ 	<link href="../../../accounts/static/css/style.css" type="text/css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Custom CSS-->
+    <link href="../../../frontend/static/css/custom.css" type="text/css" rel="stylesheet">
+    
+    <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+    <link href="../../../accounts/static/vendors/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet">
+    <link href="../../../accounts/static/vendors/prism/prism.css" type="text/css" rel="stylesheet">
+ 	
+  </head>
+  
 {% block content %}
 
 <body>
 
-    {% if all_PO %}
-    <ul>
+	<div class="wrapper">
+		<table>
+        	<thead>
+          	<tr>
+          	  <th>Purchase Order ID</th>
+              <th>Client</th>
+              <th>Items</th>
+              <th>Date Issued</th>
+              <th>Date Required</th>
+              <th>Date Laminate</th>
+              <th>Date Confirmed</th>
+              <th>Total Amount</th>
+          	</tr>
+    		</thead>
+    		<tbody>
+    		
+    		    {% if all_PO %}
+    				{% for ClientPO in all_PO %}
+    			<tr>
+    				<td>
+    				<a href="{{ ClientPO.get_absolute_url }}">{{ __str__ }}</a>
+    				</td>
+    				<td>
+    				({{ ClientPO.client }})
+    				</td>
+    				<td>
+    				({{ ClientPO.client_items }})
+    				</td>
+    				<td>
+		          	({{ ClientPO.date_issued }})
+    				</td>
+    				<td>
+    				({{ ClientPO.date_required }})
+    				</td>
+    				<td>
+    				({{ ClientPO.laminate }})
+    				</td>
+    				<td>
+    				({{ ClientPO.confirmed }})
+    				</td>
+    				<td>
+    				({{ ClientPO.total_amount }})
+    				</td>
+    			</tr>
+    		{% endfor %}
+    		
+    		{% else %}
+      		<p>There are no Purchases Orders in the database.</p>
+    
+    		{% endif %}
+			</tbody>
+    	</table>
+	</div>
 
-      {% for ClientPO in all_PO %}
-      <li>
-        <a href="{{ ClientPO.get_absolute_url }}">{{ __str__ }}</a>
-          ({{ ClientPO.client }})
-          ({{ ClientPO.client_items }})
-          ({{ ClientPO.date_issued }})
-          ({{ ClientPO.date_required }})
-          ({{ ClientPO.laminate }})
-          ({{ ClientPO.confirmed }})
-          ({{ ClientPO.total_amount }})
-
-      </li>
-      {% endfor %}
-
-    </ul>
-    {% else %}
-      <p>There are no Purchases Orders in the database.</p>
-    {% endif %}
 </body>
 
 
 {% endblock %}
 </html>
+
 
 
 <!--
