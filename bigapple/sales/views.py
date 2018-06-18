@@ -40,4 +40,5 @@ class JOListView(generic.ListView):
     template_name = 'sales/JO_list.html'
 
     def get_queryset(self):
-    return ClientPO.objects.get(confirmed=1)
+    #return JobOrder.objects.all()
+
