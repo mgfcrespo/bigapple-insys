@@ -1,19 +1,18 @@
 from django.db import models
 from accounts.models import Employee
 from sales.models import ClientPO
-#from sales.models import OrderSheet
+
+# from sales.models import OrderSheet
 # Create your models here.
 
-<<<<<<< HEAD
 
 SHIFTS = (
-        ('1', 'shift 1'),
-        ('2', 'shift 2'),
-        ('3', 'shift 3')
-    )
+    ('1', 'shift 1'),
+    ('2', 'shift 2'),
+    ('3', 'shift 3')
+)
 
-=======
->>>>>>> e5f911b99e40e38559ac6ae70022645178288ee1
+
 class Machine(models.Model):
     MACHINE_TYPE = (
         ('C', 'Cutting'),
@@ -21,18 +20,10 @@ class Machine(models.Model):
         ('E', 'Extruder')
     )
 
-    machine_type =  models.CharField('machine_type', choices=MACHINE_TYPE, max_length=200, default='not specified')
+    machine_type = models.CharField('machine_type', choices=MACHINE_TYPE, max_length=200, default='not specified')
     machine_number = models.CharField('machine_number', max_length=10)
 
-class JobOrder(models.Model):
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
-    status = models.CharField('status', max_length=100)
-    remarks = models.CharField('remarks', max_length=250)
-    extruder_schedule = models.ForeignKey(ExtruderSchedule, on_delete=models.CASCADE)
-    printing_schedule = models.ForeignKey(PrintingScheduleSchedule, on_delete=models.CASCADE)
-    cutting_schedule = models.ForeignKey(CuttingSchedule, on_delete=models.CASCADE)
-
-#might be transferred to sales
+# might be transferred to sales
 class SalesInvoice(models.Model):
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
     article = models.CharField('article', max_length=200, default='none', blank=True)
@@ -42,23 +33,20 @@ class SalesInvoice(models.Model):
 
 
 class WorkerSchedule(models.Model):
-
-
     worker = models.ForeignKey(Employee, on_delete=models.CASCADE)
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     working_date = models.DateField('working_date')
 
 
-
 class MachineSchedule(models.Model):
-
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     job_task = models.CharField('job_task', max_length=200, default='none', blank=True)
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, null=True)
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     working_date = models.DateField('working_date', auto_now_add=True, blank=True)
-    operator = models.CharField('operator', max_length=200)
+    operator = models.ForeignKey(WorkerSchedule, on_delete=models.CASCADE)
+
 
 '''    
 class MaterialSchedule(models.Model):
@@ -68,102 +56,68 @@ class MaterialSchedule(models.Model):
     quantity = models.IntegerField('quantity')
 '''
 
-class PrintingSchedule(models.Model):
 
+class PrintingSchedule(models.Model):
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
-<<<<<<< HEAD
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-    operator = models.CharField('operator', max_length=200)
-=======
-    machine = models.ManyToManyField(Machine)
-    operator = models.ManyToManyField(Employee)
->>>>>>> e5f911b99e40e38559ac6ae70022645178288ee1
+    operator = models.ForeignKey(WorkerSchedule, on_delete=models.CASCADE)
     date = models.DateField('date')
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     time_in = models.TimeField('time_in')
     time_out = models.TimeField('time_out')
     repeat_order = models.BooleanField('repeat_order', default=True)
-    repeat_order = models.BooleanField('repeat_order', default='True')
     output_kilos = models.DecimalField('output_kilos', decimal_places=3, max_digits=12)
     number_rolls = models.DecimalField('number_rolls', decimal_places=3, max_digits=12)
     starting_scrap = models.DecimalField('starting_scrap', decimal_places=3, max_digits=12)
     printing_scrap = models.DecimalField('printing_scrap', decimal_places=3, max_digits=12)
     remarks = models.CharField('remarks', max_length=1000)
 
-class CuttingSchedule(models.Model):
 
+class CuttingSchedule(models.Model):
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
-<<<<<<< HEAD
-    print_name = models.CharField('print_name', max_length=200)
-    sealing = models.CharField('sealing', max_length=200)
-    handle = models.CharField('handle', max_length=200)
-    print_name = models.CharField('print_name', max_length=200)
-    sealing = models.CharField('sealing', max_length=200)
-    handle = models.CharField('handle', max_length=200)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-    operator = models.CharField('operator', max_length=200)
+    operator = models.ForeignKey(WorkerSchedule, on_delete=models.CASCADE)
+    print_name = models.CharField('print_name', max_length=200)
+    sealing = models.CharField('sealing', max_length=200)
+    handle = models.CharField('handle', max_length=200)
     date = models.DateField('date', auto_now_add=True, blank=True)
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     time_in = models.TimeField('time_in', auto_now_add=True, blank=True)
     time_out = models.TimeField('time_out', auto_now_add=True, blank=True)
-    line = models.IntegerField('line', default=1)
+    line = models.CharField('line', default='1', max_length=200)
     quantity = models.DecimalField('quantity', decimal_places=3, max_digits=12)
     output_kilos = models.DecimalField('output_kilos', decimal_places=3, max_digits=12)
     number_rolls = models.DecimalField('number_rolls', decimal_places=3, max_digits=12)
     starting_scrap = models.DecimalField('starting_scrap', decimal_places=3, max_digits=12)
     cutting_scrap = models.DecimalField('cutting_scrap', decimal_places=3, max_digits=12)
-=======
-    print_name = models.CharField('print_name')
-    sealing = models.CharField('sealing')
-    handle = models.CharField('handle')
-    machine = models.ManyToManyField(Machine)
-    operator = models.ManyToManyField(Employee)
-    date = models.DateField('date')
-    shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
-    time_in = models.TimeField('time_in')
-    time_out = models.TimeField('time_out')
-    line = models.IntegerField('line')
-    quantity = models.FloatField('quantity')
-    output_kilos = models.FloatField('output_kilos')
-    number_rolls = models.FloatField('number_rolls')
-    starting_scrap = models.FloatField('starting_scrap')
-    cutting_scrap = models.FloatField('cutting_scrap')
->>>>>>> e5f911b99e40e38559ac6ae70022645178288ee1
     remarks = models.CharField('remarks', max_length=1000)
 
-class ExtruderSchedule(models.Model):
 
+class ExtruderSchedule(models.Model):
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
+    operator = models.ForeignKey(WorkerSchedule, on_delete=models.CASCADE)
     stock_kind = models.CharField('stock_kind', max_length=250)
     material = models.CharField('material', max_length=200)
     treating = models.CharField('treating', max_length=200)
-<<<<<<< HEAD
-    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-    operator = models.CharField('operator', max_length=200)
     date = models.DateField('date', auto_now_add=True, blank=True)
-=======
-    machine = models.ManyToManyField(Machine)
-    operator = models.ManyToManyField(Employee)
-    date = models.DateField('date')
->>>>>>> e5f911b99e40e38559ac6ae70022645178288ee1
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     time_in = models.TimeField('time_in', auto_now_add=True, blank=True)
     time_out = models.TimeField('time_out', auto_now_add=True, blank=True)
-    output_kilos = models.DecimalField('output_kilos', decimal_places=3, max_digits=12)
-    number_rolls = models.DecimalField('number_rolls', decimal_places=3, max_digits=12)
     weight_rolls = models.DecimalField('weight_rolls', decimal_places=3, max_digits=12)
     core_weight = models.DecimalField('core_weight', decimal_places=3, max_digits=12)
-    net_weight = models.DecimalField('net_weight', decimal_places=3, max_digits=12) # idk if necessary
+    net_weight = models.DecimalField('net_weight', decimal_places=3, max_digits=12)  # idk if necessary
+    output_kilos = models.DecimalField('output_kilos', decimal_places=3, max_digits=12)
+    number_rolls = models.DecimalField('number_rolls', decimal_places=3, max_digits=12)
     starting_scrap = models.DecimalField('starting_scrap', decimal_places=3, max_digits=12)
     extruder_scrap = models.DecimalField('extruder_scrap', decimal_places=3, max_digits=12)
     remarks = models.CharField('remarks', max_length=1000)
 
 
-
-
-
-
-
-
-
-
+class JobOrder(models.Model):
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+    status = models.CharField('status', max_length=100)
+    remarks = models.CharField('remarks', max_length=250)
+    extruder_schedule = models.ForeignKey(ExtruderSchedule, on_delete=models.CASCADE)
+    printing_schedule = models.ForeignKey(PrintingSchedule, on_delete=models.CASCADE)
+    cutting_schedule = models.ForeignKey(CuttingSchedule, on_delete=models.CASCADE)

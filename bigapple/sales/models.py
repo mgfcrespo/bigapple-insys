@@ -23,19 +23,11 @@ class ClientPO(models.Model):
     note = models.CharField('note', max_length=200, default='')
     terms = models.CharField('terms', max_length=250)
     other_info = models.CharField('other_info', max_length=250)
-<<<<<<< HEAD
-    clients = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
-    total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
-    #client_items = models.ManyToManyField(ClientItem)
-    #sales_agent = models.CharField('sales_agent', max_length=200)
-=======
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
-    client_items = models.ManyToManyField(ClientItem)
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
     laminate = models.BooleanField('laminate', default=0)
-    expected_date = models.DateField('expected_date')
     confirmed = models.BooleanField('confirmed', default=0)
->>>>>>> e5f911b99e40e38559ac6ae70022645178288ee1
+
 
 
     def __str__(self):
@@ -73,7 +65,7 @@ class ClientItem(models.Model):
     def __str__(self):
         return self.item_type
 
-<<<<<<< HEAD
+
     def calculate_item_total(self):
         total = Decimal('0.0')
         total += (self.products.prod_price * self.quantity)
@@ -87,8 +79,6 @@ class ClientItem(models.Model):
         super(ClientItem, self).save(*args, **kwargs)
 
 
-=======
->>>>>>> e5f911b99e40e38559ac6ae70022645178288ee1
 # class CostingSheet(models.Model)
 
 class ClientCreditStatus(models.Model):

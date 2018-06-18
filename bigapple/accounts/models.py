@@ -88,7 +88,7 @@ class Client(models.Model):
     contact_number = models.ForeignKey(ContactNumber, on_delete=models.CASCADE)
     tin = models.CharField('tin', max_length=200, blank=True)
     accounts = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
-    sales_agent = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    sales_agent = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True)
 
     @property
     def full_name(self):

@@ -20,7 +20,6 @@ from .models import Client
 
 # Create your views here.
 
-
 def user_page_view(request):
 
         user = request.user
@@ -46,7 +45,6 @@ def user_page_view(request):
                 return render(request, 'accounts/production_manager_page.html')
             elif employee.position == 'LL':
                 return render(request, 'accounts/line_leader_page.html')
-
         else:
             return render(request, 'accounts/client_page.html')
 

@@ -60,20 +60,23 @@
 						<div class="card">
 							<div class ="card-content black-text">
 							<!--form-->
-								<form method = "post" action = "{% url 'login' %}" >
-                                {% csrf_token %}
+									<form method = "post" action = "{% url 'login' %}" >
+                                	{% csrf_token %}
+										<label>Username: {{form.username}}</label>
+										<label>Password: {{form.password}}</label>
+										<!--
         		 					<div class="input-field">
-           								<input type="text" required="true" id="username">
-										<label>Username:{{form.username}}</label>
+										<label>Username</label>
+           								<input type="text" required="true" id="username" >
     	     						</div>
 	           						<div class="input-field">
+										<label>Password</label>
            								<input type="password" required="true" id="password">
-           								<label class="active" for="password">Password: {{form.password}}</label>
          							</div>
+         							-->
            							<div class="center">
          								<input type="submit" value="Login"></input>
-										<input type="hidden" name="next" value = {{next}}">
-	    								<button class="btn btn-small red" onclick="document.getElementByID('username').value=''">Clear</button>
+
 	   								</div>
             						</form>
     	     				</div>
