@@ -24,6 +24,7 @@ class ClientPO(models.Model):
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
     laminate = models.BooleanField('laminate', default=0)
     expected_date = models.DateField('expected_date')
+    confirmed = models.BooleanField('confirmed', default=0)
 
     def po_number(self):
         return 'PO%s' % (self.id)
@@ -59,18 +60,6 @@ class ClientItem(models.Model):
 
     def __str__(self):
         return self.item_type
-
-'''
-class Quotation(models.Model):
-    client_po = models.OnetoOne(CustomerPO)
-    approval = models.BooleanField('approval', default=False)
-    #bom = models.ForeignKey()
-
-class OrderSheet(models.Model):
-    client_po = models.OnetoOneField(ClientPO, on_delete=models.CASCADE, null=True)
-    #schedule of production?
-    production_is_done = model.BooleanField('production_is_done', default=False)
-'''
 
 # class CostingSheet(models.Model)
 

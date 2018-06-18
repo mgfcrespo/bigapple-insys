@@ -97,11 +97,5 @@ class Client(models.Model):
 
     def __str__(self):
         return self.full_name
-'''
-class ClientOrders(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    order_id = models.CharField('order_id', min_length=10)
-'''
-
 
 
