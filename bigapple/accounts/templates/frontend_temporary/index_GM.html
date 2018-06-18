@@ -1,11 +1,16 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
+
   <!--================================================================================
 	Item Name: Materialize - Material Design Admin Template
 	Version: 4.0
 	Author: PIXINVENT
 	Author URL: https://themeforest.net/user/pixinvent/portfolio
   ================================================================================ -->
+
+
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,6 +18,7 @@
     <meta name="msapplication-tap-highlight" content="no">
     <title>Big Apple Plastic Manufacturing Co.</title>
  
+
     <!-- Favicons-->
     <link rel="icon" href="images/BAicon.png" sizes="32x32">
  
@@ -35,9 +41,29 @@
     <link href="static/vendors/prism/prism.css" type="text/css" rel="stylesheet">
  	
   </head>
-  
+
+    <!-- Favicons-->
+    <link rel="icon" href="../../images/BAicon.png" sizes="32x32">
+    
+    <!-- CORE CSS-->
+    <link href="../../static/css/materialize.css" type="text/css" rel="stylesheet">
+ 	<link href="../../static/css/style.css" type="text/css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Custom CSS-->
+    <link href="../../static/css/custom.css" type="text/css" rel="stylesheet">
+    
+    <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+    <link href="../../static/vendors/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet">
+    <link href="../../static/vendors/prism/prism.css" type="text/css" rel="stylesheet">
+ 	
+  </head>
+
+
   <body>
-    <!-- Start Page Loading -->
+
+	{{request.session.session_username}}
+
+	<!-- Start Page Loading -->
     <div id="loader-wrapper">
       <div id="loader"></div>
       <div class="loader-section section-left"></div>
@@ -60,10 +86,12 @@
                 </h1>
               </li>
             </ul>
+
             <div class="header-search-wrapper hide-on-med-and-down">
               <i class="material-icons">search</i>
               <input type="text" name="Search" class="header-search-input z-depth-2" placeholder="Search" />
             </div>
+
             <ul class="right hide-on-med-and-down">
               <li>
                 <a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen">
@@ -90,6 +118,7 @@
                   <i class="material-icons">format_indent_increase</i>
                 </a>
               </li>
+
             </ul>
             <!-- notifications-dropdown -->
             <ul id="notifications-dropdown" class="dropdown-content">
@@ -152,6 +181,7 @@
           </div>
         </nav>
       </div>
+
       <!-- end header nav-->
     </header>
     <!-- END HEADER -->
@@ -789,6 +819,18 @@
               </script> <a class="grey-text text-lighten-2" href="http://themeforest.net/user/pixinvent/portfolio?ref=pixinvent" target="_blank">PIXINVENT</a> All rights reserved.</span>
             <span class="right hide-on-small-only"> Design and Developed by <a class="grey-text text-lighten-2" href="https://pixinvent.com/">PIXINVENT</a></span>
           </div>
+
+      
+          <footer class="page-footer gradient-45deg-light-blue-cyan">
+        <div class="footer-copyright">
+          <div class="container">
+            <span>Copyright ©
+              <script type="text/javascript">
+                document.write(new Date().getFullYear());
+              </script> <a class="grey-text text-lighten-2" href="http://themeforest.net/user/pixinvent/portfolio?ref=pixinvent" target="_blank">PIXINVENT</a> All rights reserved.</span>
+            <span class="right hide-on-small-only"> Design and Developed by <a class="grey-text text-lighten-2" href="https://pixinvent.com/">PIXINVENT</a></span>
+          </div>
+
         </div>
     </footer>
     <!-- END FOOTER -->
@@ -796,6 +838,7 @@
     Scripts
     ================================================ -->
     <!-- jQuery Library -->
+
     <script type="text/javascript" src="static/vendors/jquery-3.2.1.min.js"></script>
     <!--materialize js-->
     <script type="text/javascript" src="static/js/materialize.min.js"></script>
@@ -806,4 +849,7 @@
     <!--custom-script.js - Add your own theme custom JS-->
     <script type="text/javascript" src="static/js/custom-script.js"></script>
   </body>
+  
+
 </html>
+

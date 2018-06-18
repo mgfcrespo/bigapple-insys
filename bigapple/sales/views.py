@@ -45,6 +45,7 @@ class PODetailView(DetailView):
 class POFormCreateView(FormView):
     form_class = ClientPOForm
     template_name = 'sales/clientPO_form.html'
+<<<<<<< HEAD
     success_url = reverse_lazy('accounts:user-page-view')
 
     def form_valid(self, form):
@@ -92,3 +93,13 @@ def display_client_po(request):
                               {'formset': clientpo_item_formset(),
                                'form': ClientPOForm}
                               )
+=======
+    fields = ('products', 'note', 'width', 'length', 'color', 'gusset', 'quantity')
+
+class JOListView(generic.ListView):
+    template_name = 'sales/JO_list.html'
+
+    def get_queryset(self):
+    #return JobOrder.objects.all()
+
+>>>>>>> e5f911b99e40e38559ac6ae70022645178288ee1

@@ -88,6 +88,7 @@ class Client(models.Model):
     contact_number = models.ForeignKey(ContactNumber, on_delete=models.CASCADE)
     tin = models.CharField('tin', max_length=200, blank=True)
     accounts = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    sales_agent = models.ForeignKey(Employee, on_delete=models.CASCADE)
 
     @property
     def full_name(self):
@@ -96,11 +97,5 @@ class Client(models.Model):
 
     def __str__(self):
         return self.full_name
-'''
-class ClientOrders(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    order_id = models.CharField('order_id', min_length=10)
-'''
-
 
 

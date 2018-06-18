@@ -4,6 +4,7 @@ from sales.models import ClientPO
 #from sales.models import OrderSheet
 # Create your models here.
 
+<<<<<<< HEAD
 
 SHIFTS = (
         ('1', 'shift 1'),
@@ -11,6 +12,8 @@ SHIFTS = (
         ('3', 'shift 3')
     )
 
+=======
+>>>>>>> e5f911b99e40e38559ac6ae70022645178288ee1
 class Machine(models.Model):
     MACHINE_TYPE = (
         ('C', 'Cutting'),
@@ -20,6 +23,14 @@ class Machine(models.Model):
 
     machine_type =  models.CharField('machine_type', choices=MACHINE_TYPE, max_length=200, default='not specified')
     machine_number = models.CharField('machine_number', max_length=10)
+
+class JobOrder(models.Model):
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+    status = models.CharField('status', max_length=100)
+    remarks = models.CharField('remarks', max_length=250)
+    extruder_schedule = models.ForeignKey(ExtruderSchedule, on_delete=models.CASCADE)
+    printing_schedule = models.ForeignKey(PrintingScheduleSchedule, on_delete=models.CASCADE)
+    cutting_schedule = models.ForeignKey(CuttingSchedule, on_delete=models.CASCADE)
 
 #might be transferred to sales
 class SalesInvoice(models.Model):
@@ -60,8 +71,13 @@ class MaterialSchedule(models.Model):
 class PrintingSchedule(models.Model):
 
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+<<<<<<< HEAD
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.CharField('operator', max_length=200)
+=======
+    machine = models.ManyToManyField(Machine)
+    operator = models.ManyToManyField(Employee)
+>>>>>>> e5f911b99e40e38559ac6ae70022645178288ee1
     date = models.DateField('date')
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     time_in = models.TimeField('time_in')
@@ -77,6 +93,7 @@ class PrintingSchedule(models.Model):
 class CuttingSchedule(models.Model):
 
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+<<<<<<< HEAD
     print_name = models.CharField('print_name', max_length=200)
     sealing = models.CharField('sealing', max_length=200)
     handle = models.CharField('handle', max_length=200)
@@ -95,6 +112,23 @@ class CuttingSchedule(models.Model):
     number_rolls = models.DecimalField('number_rolls', decimal_places=3, max_digits=12)
     starting_scrap = models.DecimalField('starting_scrap', decimal_places=3, max_digits=12)
     cutting_scrap = models.DecimalField('cutting_scrap', decimal_places=3, max_digits=12)
+=======
+    print_name = models.CharField('print_name')
+    sealing = models.CharField('sealing')
+    handle = models.CharField('handle')
+    machine = models.ManyToManyField(Machine)
+    operator = models.ManyToManyField(Employee)
+    date = models.DateField('date')
+    shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
+    time_in = models.TimeField('time_in')
+    time_out = models.TimeField('time_out')
+    line = models.IntegerField('line')
+    quantity = models.FloatField('quantity')
+    output_kilos = models.FloatField('output_kilos')
+    number_rolls = models.FloatField('number_rolls')
+    starting_scrap = models.FloatField('starting_scrap')
+    cutting_scrap = models.FloatField('cutting_scrap')
+>>>>>>> e5f911b99e40e38559ac6ae70022645178288ee1
     remarks = models.CharField('remarks', max_length=1000)
 
 class ExtruderSchedule(models.Model):
@@ -103,9 +137,15 @@ class ExtruderSchedule(models.Model):
     stock_kind = models.CharField('stock_kind', max_length=250)
     material = models.CharField('material', max_length=200)
     treating = models.CharField('treating', max_length=200)
+<<<<<<< HEAD
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.CharField('operator', max_length=200)
     date = models.DateField('date', auto_now_add=True, blank=True)
+=======
+    machine = models.ManyToManyField(Machine)
+    operator = models.ManyToManyField(Employee)
+    date = models.DateField('date')
+>>>>>>> e5f911b99e40e38559ac6ae70022645178288ee1
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     time_in = models.TimeField('time_in', auto_now_add=True, blank=True)
     time_out = models.TimeField('time_out', auto_now_add=True, blank=True)
