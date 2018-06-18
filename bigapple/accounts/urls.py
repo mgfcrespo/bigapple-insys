@@ -8,7 +8,11 @@ from django.views.generic import TemplateView
 app_name='accounts'
 urlpatterns = [
     path('user-page-view/', views.user_page_view, name='user-page-view'),
-    path('account_details/', views.account_details, name='account_details')
+    path('account_details/', views.account_details, name='account_details'),
+    path('general-manager-page/', TemplateView.as_view(template_name='general_manager_page.html')),
+    path('credit-and-collection-personnel-page/', TemplateView.as_view(template_name='credit_and_collection_personnel_page.html')),
+    path('client-page/', TemplateView.as_view(template_name='client_page.html')),
+
 
 ]
 

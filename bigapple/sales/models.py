@@ -25,7 +25,6 @@ class ClientPO(models.Model):
     other_info = models.CharField('other_info', max_length=250)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
-    laminate = models.BooleanField('laminate', default=0)
     confirmed = models.BooleanField('confirmed', default=0)
 
 
@@ -50,6 +49,7 @@ class ClientItem(models.Model):
     )
 
     products = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
+    laminate = models.BooleanField('laminate', default=0)
     width = models.DecimalField('width', decimal_places=3, max_digits=12)
     length = models.DecimalField('length', decimal_places=3, max_digits=12)
     color = models.CharField('color', choices=COLOR, max_length=200)

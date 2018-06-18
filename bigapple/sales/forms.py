@@ -8,7 +8,7 @@ class ClientPOFormItems(ModelForm):
 
     class Meta:
         model = ClientItem
-        fields = ('products', 'width', 'length', 'color', 'gusset', 'quantity')
+        fields = ('products', 'laminate', 'width', 'length', 'color', 'gusset', 'quantity')
 
 
 class ClientPOForm(ModelForm):

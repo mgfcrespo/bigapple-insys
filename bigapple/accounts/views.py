@@ -38,7 +38,7 @@ def user_page_view(request):
             elif employee.position == 'SA':
                 return render(request, 'accounts/sales_agent_page.html')
             elif employee.position == 'CC':
-                return render(request, 'accounts/credit_and_collection_page.html')
+                return render(request, 'accounts/credit_and_collection_personnel_page.html')
             elif employee.position == 'SV':
                 return render(request, 'accounts/supervisor_page.html')
             elif employee.position == 'PM':
