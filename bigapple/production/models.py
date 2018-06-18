@@ -5,6 +5,12 @@ from sales.models import ClientPO
 # Create your models here.
 
 
+SHIFTS = (
+        ('1', 'shift 1'),
+        ('2', 'shift 2'),
+        ('3', 'shift 3')
+    )
+
 class Machine(models.Model):
     MACHINE_TYPE = (
         ('C', 'Cutting'),
@@ -19,27 +25,31 @@ class Machine(models.Model):
 class SalesInvoice(models.Model):
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
     article = models.CharField('article', max_length=200, default='none', blank=True)
-    vat = models.DecimalField('vat', default=0, blank=True, decimal_places=3, max_digits=12)
+    vat = models.DecimalField('vat', default=0.0, blank=True, decimal_places=3, max_digits=12)
     date_paid = models.DateField('date_paid', auto_now_add=True, blank=True)
     payment_type = models.CharField('payment_type', max_length=200, default='none')
 
 
 class WorkerSchedule(models.Model):
-    SHIFTS = (
-        ('1', 'shift 1'),
-        ('2', 'shift 2'),
-        ('3', 'shift 3')
-    )
+
 
     worker = models.ForeignKey(Employee, on_delete=models.CASCADE)
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     working_date = models.DateField('working_date')
 
-'''    
-class MachineSchedule(models.Model):
-    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
 
+
+class MachineSchedule(models.Model):
+
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
+    job_task = models.CharField('job_task', max_length=200, default='none', blank=True)
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, null=True)
+    shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
+    working_date = models.DateField('working_date', auto_now_add=True, blank=True)
+    operator = models.CharField('operator', max_length=200)
+
+'''    
 class MaterialSchedule(models.Model):
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
     rm_name = models.CharField('rm_name')
@@ -48,75 +58,64 @@ class MaterialSchedule(models.Model):
 '''
 
 class PrintingSchedule(models.Model):
-    SHIFTS = (
-        ('1', 'shift 1'),
-        ('2', 'shift 2'),
-        ('3', 'shift 3')
-    )
 
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
-    machine = models.IntegerField('machine')
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.CharField('operator', max_length=200)
     date = models.DateField('date')
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     time_in = models.TimeField('time_in')
     time_out = models.TimeField('time_out')
     repeat_order = models.BooleanField('repeat_order', default=True)
-    output_kilos = models.FloatField('output_kilos')
-    number_rolls = models.FloatField('number_rolls')
-    starting_scrap = models.FloatField('starting_scrap')
-    printing_scrap = models.FloatField('printing_scrap')
+    repeat_order = models.BooleanField('repeat_order', default='true')
+    output_kilos = models.DecimalField('output_kilos', decimal_places=3, max_digits=12)
+    number_rolls = models.DecimalField('number_rolls', decimal_places=3, max_digits=12)
+    starting_scrap = models.DecimalField('starting_scrap', decimal_places=3, max_digits=12)
+    printing_scrap = models.DecimalField('printing_scrap', decimal_places=3, max_digits=12)
     remarks = models.CharField('remarks', max_length=1000)
 
 class CuttingSchedule(models.Model):
-    SHIFTS = (
-        ('1', 'shift 1'),
-        ('2', 'shift 2'),
-        ('3', 'shift 3')
-    )
 
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
     print_name = models.CharField('print_name', max_length=200)
     sealing = models.CharField('sealing', max_length=200)
     handle = models.CharField('handle', max_length=200)
-    machine = models.IntegerField('machine')
+    print_name = models.CharField('print_name', max_length=200)
+    sealing = models.CharField('sealing', max_length=200)
+    handle = models.CharField('handle', max_length=200)
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.CharField('operator', max_length=200)
-    date = models.DateField('date')
+    date = models.DateField('date', auto_now_add=True, blank=True)
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
-    time_in = models.TimeField('time_in')
-    time_out = models.TimeField('time_out')
+    time_in = models.TimeField('time_in', auto_now_add=True, blank=True)
+    time_out = models.TimeField('time_out', auto_now_add=True, blank=True)
     line = models.IntegerField('line', default=1)
-    quantity = models.FloatField('quantity')
-    output_kilos = models.FloatField('output_kilos')
-    number_rolls = models.FloatField('number_rolls')
-    starting_scrap = models.FloatField('starting_scrap')
-    cutting_scrap = models.FloatField('cutting_scrap')
+    quantity = models.DecimalField('quantity', decimal_places=3, max_digits=12)
+    output_kilos = models.DecimalField('output_kilos', decimal_places=3, max_digits=12)
+    number_rolls = models.DecimalField('number_rolls', decimal_places=3, max_digits=12)
+    starting_scrap = models.DecimalField('starting_scrap', decimal_places=3, max_digits=12)
+    cutting_scrap = models.DecimalField('cutting_scrap', decimal_places=3, max_digits=12)
     remarks = models.CharField('remarks', max_length=1000)
 
 class ExtruderSchedule(models.Model):
-    SHIFTS = (
-        ('1', 'shift 1'),
-        ('2', 'shift 2'),
-        ('3', 'shift 3')
-    )
 
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
     stock_kind = models.CharField('stock_kind', max_length=250)
     material = models.CharField('material', max_length=200)
     treating = models.CharField('treating', max_length=200)
-    machine = models.IntegerField('machine')
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.CharField('operator', max_length=200)
-    date = models.DateField('date')
+    date = models.DateField('date', auto_now_add=True, blank=True)
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
-    time_in = models.TimeField('time_in')
-    time_out = models.TimeField('time_out')
-    output_kilos = models.FloatField('output_kilos')
-    number_rolls = models.FloatField('number_rolls')
-    weight_rolls = models.FloatField('weight_rolls')
-    core_weight = models.FloatField('core_weight')
-    net_weight = models.FloatField('net_weight') # idk if necessary
-    starting_scrap = models.FloatField('starting_scrap')
-    extruder_scrap = models.FloatField('extruder_scrap')
+    time_in = models.TimeField('time_in', auto_now_add=True, blank=True)
+    time_out = models.TimeField('time_out', auto_now_add=True, blank=True)
+    output_kilos = models.DecimalField('output_kilos', decimal_places=3, max_digits=12)
+    number_rolls = models.DecimalField('number_rolls', decimal_places=3, max_digits=12)
+    weight_rolls = models.DecimalField('weight_rolls', decimal_places=3, max_digits=12)
+    core_weight = models.DecimalField('core_weight', decimal_places=3, max_digits=12)
+    net_weight = models.DecimalField('net_weight', decimal_places=3, max_digits=12) # idk if necessary
+    starting_scrap = models.DecimalField('starting_scrap', decimal_places=3, max_digits=12)
+    extruder_scrap = models.DecimalField('extruder_scrap', decimal_places=3, max_digits=12)
     remarks = models.CharField('remarks', max_length=1000)
 
 

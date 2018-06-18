@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-
-</head>
-
 <body>
 {% include 'global_base_ui.html' %}
 <form id="myForm" action="{% url 'sales:client-po-form-add' %}" method="post" enctype="multipart/form-data">
@@ -15,6 +11,7 @@
 
             {{formset.management_form}}
             <button type="submit" class ="btn btn-success">Submit</button>
+
 
 </form>
 <script type="text/javascript">
