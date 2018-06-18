@@ -77,20 +77,6 @@ class ClientItem(models.Model):
         super(ClientItem, self).save(*args, **kwargs)
 
 
-
-
-'''
-class Quotation(models.Model):
-    client_po = models.OnetoOne(CustomerPO)
-    approval = models.BooleanField('approval', default=False)
-    #bom = models.ForeignKey()
-
-class OrderSheet(models.Model):
-    client_po = models.OnetoOneField(ClientPO, on_delete=models.CASCADE, null=True)
-    #schedule of production?
-    production_is_done = model.BooleanField('production_is_done', default=False)
-'''
-
 # class CostingSheet(models.Model)
 
 class ClientCreditStatus(models.Model):

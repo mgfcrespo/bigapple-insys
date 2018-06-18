@@ -67,7 +67,7 @@ class PrintingSchedule(models.Model):
     time_in = models.TimeField('time_in')
     time_out = models.TimeField('time_out')
     repeat_order = models.BooleanField('repeat_order', default=True)
-    repeat_order = models.BooleanField('repeat_order', default='true')
+    repeat_order = models.BooleanField('repeat_order', default='True')
     output_kilos = models.DecimalField('output_kilos', decimal_places=3, max_digits=12)
     number_rolls = models.DecimalField('number_rolls', decimal_places=3, max_digits=12)
     starting_scrap = models.DecimalField('starting_scrap', decimal_places=3, max_digits=12)
