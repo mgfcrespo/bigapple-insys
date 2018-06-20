@@ -2,6 +2,7 @@ from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import ClientItem, ClientPO, ClientCreditStatus, Client
 from django.shortcuts import render, reverse, HttpResponseRedirect
+from bigapple.apps.production.models import JobOrder
 
 # Create your views here.
 def sales_details(request):
@@ -20,15 +21,13 @@ def add_supplier(request):
     return render(request, 'sales/add_supplier.html', context)
 
 class POListView(generic.ListView):
+    model = ClientPO
+    all_PO = ClientPO.objects.all()
     template_name = 'sales/clientPO_list.html'
-
-    def get_queryset(self):
-        return ClientPO.objects.all()
-
 
 class PODetailView(generic.DetailView):
     model = ClientPO
-    template_name = 'sales/clientPO_detail.html'
+    template_name = 'sales/clientPO_details.html'
 
 
 class POFormCreateView(CreateView):
@@ -37,8 +36,7 @@ class POFormCreateView(CreateView):
     fields = ('products', 'note', 'width', 'length', 'color', 'gusset', 'quantity')
 
 class JOListView(generic.ListView):
+    model = JobOrder
+    all_JO = JobOrder.objects.all()
     template_name = 'sales/JO_list.html'
-
-    def get_queryset(self):
-    #return JobOrder.objects.all()
 
