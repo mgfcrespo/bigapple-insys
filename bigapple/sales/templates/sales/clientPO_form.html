@@ -7,7 +7,9 @@
 	Author URL: https://themeforest.net/user/pixinvent/portfolio
   ================================================================================ -->
   <head>
-      {% includes "global_base_ui.html" %}
+    
+    {% includes "global_base_ui.html" %}
+    
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -59,7 +61,7 @@
                       <h4 class="header1">Purchase Order</h4>
                       <div class="row">
                         
-                        <form class="col s12">
+                        <form class="col s12"action="{% url 'sales:client-po-form-add' %}" method="post" enctype="multipart/form-data">
                          
                           <div class="row">
                             <div class="input-field col s12">
@@ -74,16 +76,15 @@
 								<label for="dateSet">Date Needed</label>
 							 </div>
 						  
-                             <div class="input-field col s8">
-								<p>
-									<label>
-										<span>Laminate?</span>
-										<input type="checkbox" class="filled-in">
-									</label>
-								</p>	
-							 </div>
-						  	 
+                              <!--radio button
+                              
+                             <div class="input-field col s8 ">
+                                 <label>Laminate?</label><br>
+                                 <input id="laminateTrue" name="yes" type="radio">
+                             </div>
 						  
+                              -->
+                              
 						  </div>
 
                           <div class="row">
@@ -127,32 +128,22 @@
                           </div>
     	                  <div class="row">
     						<div class="center">
-         						<button class="btn btn-small green" type="submit">Submit</button>
-         						<button class="btn btn-small red" typle="clear">Clear</button>
-         					</div>
+                                
+                            {% csrf_token %}
+    				        {% include 'sales/template_form.html' %}
+    
+         						<button class="btn btn-small green" type="submit" style="width: 200px;">Submit</button>
+         						<button class="btn btn-small red" typle="reset" style="width: 200px;">Clear</button>
+                            </div>
                           </div>
-    					  
-    					  <form action="{% url 'sales:client-po-form-add' %}" method="post" enctype="multipart/form-data">
-    					  {% csrf_token %}
-    					  {% include 'sales/template_form.html' %}
-	
-				      	   <div class = "form-group">
-          				     <div class="col-sm-2 col-sm-10">
-            					<button type="submit" class ="btn btn-success">Submit</button>
-          					 </div>
-      					   </div>
-						  </form>
-
-    					  
-    					  </form>
+                          
+                          </form>
                       </div>
                     </div>                        
                 </div>
             </div>
-                        
-
-						</div>
-					</div>
+        </div>
+    </div>
 
 <!-- End placeholder -->
 <!--end container-->

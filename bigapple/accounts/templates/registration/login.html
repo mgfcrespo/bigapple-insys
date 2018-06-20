@@ -71,9 +71,9 @@
            								<label class="active" for="password">Password: {{form.password}}</label>
          							</div>
            							<div class="center">
-         								<input type="submit" value="Login"></input>
-										<input type="hidden" name="next" value = {{next}}">
-	    								<button class="btn btn-small red" onclick="document.getElementByID('username').value=''">Clear</button>
+         								<input class="btn btn-small green" type="submit" value="Login">
+										<input type="hidden" name="next" value = {{next}}>
+	    								<button class="btn btn-small red" type="reset" onclick="document.getElementByID('username').value=''">Clear</button>
 	   								</div>
             						</form>
     	     				</div>
@@ -127,7 +127,7 @@
 	         						</div>
          							<div class="center">
          								<button class="btn btn-small green" type="submit">Submit</button>
-         								<button class="btn btn-small red" typle="clear">Clear</button>
+         								<button class="btn btn-small red" type="reset">Clear</button>
 	       							</div>
     	   						</form>
 	             			</div>
