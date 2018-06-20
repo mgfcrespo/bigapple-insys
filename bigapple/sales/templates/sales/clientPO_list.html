@@ -55,8 +55,10 @@
     				({{ ClientPO.client }})
     				</td>
     				<td>
-    				({{ ClientPO.client_items }})
-						#modify; will return multiple items
+    				{% for client_items in ClientPO.client_items.all %}
+                        {{ client_items }}
+                        <br/>
+                        {% endfor %}
     				</td>
     				<td>
 		          	({{ ClientPO.date_issued }})

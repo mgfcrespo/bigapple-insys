@@ -58,8 +58,10 @@
     				({{ JobOrder.client_po.client }})
     				</td>
     				<td>
-		          	({{ JobOrder.client_po.client_items }})
-                        #modify; will return multiple items
+		          	{% for client_items in JobOrder.client_po.client_items.all %}
+                        {{ client_items }}
+                        <br/>
+                        {% endfor %}
     				</td>
     				<td>
     				({{ JobOrder.client_po.date_issued }})
