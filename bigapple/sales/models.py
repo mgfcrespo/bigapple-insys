@@ -37,7 +37,7 @@ class ClientItem(models.Model):
 class ClientPO(models.Model):
     date_issued = models.DateField('date_issued')
     date_required = models.DateField('date_required')
-    terms = models.CharField('name', max_length=250)
+    terms = models.CharField('terms', max_length=250)
     other_info = models.CharField('other_info', max_length=250)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     client_items = models.ManyToManyField(ClientItem)
@@ -67,6 +67,20 @@ class ClientCreditStatus(models.Model):
         verbose_name_plural = "Client credit status"
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     credit_status = models.BooleanField('credit_status', default=True)
+    outstanding_balance = models.DecimalField('outstanding_balance')
+    invoice_issued = models.CharField(SalesInvoice.id) #modify
+    total_paid = models.DecimalField('total_paid')
+    date_due = models.DateField('date_due')
+
+class SalesInvoice(models.Model):
+    invoice_number = models.PositiveIntegerField('invoice_number')
+    client = models.ForeignKey(Client)
+    client_po = models.ForeignKey(ClientPO)
+    date_issued = models.DateField('date_issued')
+    total_amount = models.DecimalField('total_amount')
+    discount = models.DecimalField('discount')
+    net_vat = models.DecimalField('net_vat')
+    amount_due = models.DecimalField('amount_due')
 
 class Supplier(models.Model):
     DEPARTMENT = (
