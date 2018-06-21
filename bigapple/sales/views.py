@@ -5,6 +5,7 @@ from bigapple.apps.production.models import JobOrder
 
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client
 from .forms import AddSupplier_Form
+from .forms import CLientPOForm
 
 # Create your views here.
 def sales_details(request):
@@ -14,6 +15,7 @@ def sales_details(request):
 
     return render(request, 'sales/sales_details.html', context)
 
+# CRUD SUPPLIER
 def supplier_list(request):
     query = Supplier.objects.all() 
     
@@ -63,6 +65,55 @@ def delete_supplier(request, id):
     supplier.delete()
     return HttpResponseRedirect('../supplier_list')
 
+# CRUD PO
+
+def add_clientPO(request):
+        query = ClientPO.objects.all()
+        context = {
+            'title': "New Purchase Order",
+            'actiontype': "Add",
+            'query': query,
+        }
+
+        if request.method == 'POST':
+            date_issued = request.POST['date_issued']
+            date_required = request.POST['date_required']
+            terms = request.POST['terms']
+            other_info = request.POST['other_info']
+            client = request.POST[Client] #modify, get Client.name
+            client_items = request.POST.getlist('client_items') #modify, make loop for item list
+            total_amount = request.POST['total_amount'] #system should calculate; NOT AN INPUT
+            laminate = request.POST[laminate]
+            confirmed = request.POST[confirmed]
+
+            result = ClientPO(date_issued=date_issued, date_required=date_required, terms=terms, other_info=other_info, client=client, client_items=client_items
+                              total_amount=total_amount, laminate=laminate, confirmed=confirmed)
+            result.save()
+            return HttpResponseRedirect('../clientPO_list')
+
+        else:
+            return render(request, 'sales/clientPO_form.html', context)
+
+def edit_clientPO(request, id):
+        client_po = ClientPO.objects.get(id=id)
+
+        context = {
+            'title': "Edit Purchase Order",
+            'actiontype': "Edit",
+            'client_po': client_po,
+        }
+
+        return render(request, 'sales/edit_clientPO.html/', context)
+
+def delete_clientPO(request, id):
+        client_po = ClientPO.objects.get(id=id)
+        client_po.delete()
+        return HttpResponseRedirect('../clientPO_list')
+
+# CRUD JO
+
+# List views
+
 class POListView(generic.ListView):
     model = ClientPO
     all_PO = ClientPO.objects.all()
@@ -71,7 +122,6 @@ class POListView(generic.ListView):
 class PODetailView(generic.DetailView):
     model = ClientPO
     template_name = 'sales/clientPO_details.html'
-
 
 class POFormCreateView(CreateView):
     model = ClientItem
