@@ -47,21 +47,47 @@ def add_supplier(request):
     else:
         return render(request, 'sales/add_supplier.html', context)
 
-def edit_supplier(request, id):
-    supplier = Supplier.objects.get(id=id)
+def supplier_details(request, pk):
+    if pk:
+        supplier = Supplier.objects.get(pk=pk)
+        context = {
+            'title' : "Edit Supplier",
+            'actiontype' : "Edit",
+            'supplier' : supplier,
+        }
+
+        return render(request, 'sales/edit_supplier.html', context)
+
+
+def edit_supplier(request, pk):
+    # supplier = Supplier.objects.get(pk=pk)
+
+    data = {'company_name': request.POST['company_name']}
+
+    Supplier.objects.filter(pk=pk).update(data)
     
-    context = {
-        'title' : "Edit Supplier",
-        'actiontype' : "Edit",
-        'supplier' : supplier,
-    }
+    # if request.method == 'POST':
+    #     company_name = request.POST['company_name']
+    #     contact_person = request.POST['contact_person']
+    #     department = request.POST['department']
+    #     mobile_number = request.POST['mobile_number']
+    #     email_address = request.POST['email_address']
+    #     supplier_type = request.POST['supplier_type']
+    #     description = request.POST['description']
 
-    return render(request, 'sales/edit_supplier.html/', context)
+    #     result = Supplier(company_name=company_name, contact_person=contact_person, department=department,
+    #     mobile_number=mobile_number, email_address=email_address, supplier_type=supplier_type, 
+    #     description=description)
+        
+    #     supplier.save(result)
+        
+    return HttpResponseRedirect('../../supplier_list')
 
-def delete_supplier(request, id):
-    supplier = Supplier.objects.get(id=id)
-    supplier.delete()
-    return HttpResponseRedirect('../supplier_list')
+def delete_supplier(request, pk):
+    if pk:
+        supplier = Supplier.objects.get(pk=pk)
+        supplier.delete()
+        return HttpResponseRedirect('../../supplier_list')
 
 class POListView(generic.ListView):
     model = ClientPO
