@@ -8,7 +8,6 @@ from django import forms
 from .models import ClientItem, ClientPO, Product, Supplier
 
 
-
 class ClientPOFormItems(ModelForm):
 
     class Meta:
@@ -20,11 +19,10 @@ class ClientPOForm(ModelForm):
 
     class Meta:
         model = ClientPO
-        fields = ('terms', 'other_info')
+        fields = ('date_issued', 'date_required', 'terms', 'other_info')
         #widgets = {'date_required':DateTimePicker(options={"format": "YYYY-MM-DD", "pickSeconds": False}}
 
-        fields = '__all__'
-		
+
 
 class AddSupplier_Form(forms.Form):    
     model = Supplier

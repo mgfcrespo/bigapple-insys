@@ -20,9 +20,9 @@ from django.conf.urls import url
 
 urlpatterns = [
     path(r'admin/', admin.site.urls),
-    path('sales/', include ('sales.urls')),
-    path('inventory/', include('inventory.urls')),
-    path('production/', include('production.urls')),
-    path('accounts/', include ('accounts.urls')),
-    path('profile/', include('django.contrib.auth.urls'))
+    path('sales/', include ('sales.urls', namespace='sales')),
+    path('inventory/', include('inventory.urls', namespace='inventory')),
+    path('production/', include('production.urls', namespace='production')),
+    path('accounts/', include ('accounts.urls', namespace='accounts')),
+    path('profile/', include('django.contrib.auth.urls', namespace='profile'))
 ]

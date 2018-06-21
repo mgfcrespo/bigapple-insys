@@ -12,7 +12,8 @@
 				<th>Contact Person</th>
             	<th>Department</th>
               	<th>Mobile Number</th>
-              	<th>Email</th>
+				<th>Email</th>
+				<th>ID</th>
           	</tr>
     		</thead>
     		<tbody>
@@ -26,14 +27,12 @@
     				<td>{{ query.mobile_number }}</td>
 					<td>{{ query.email_address }}</td>
 					<td>
-						<a class="amber btn" href="" style="font-size:12px;">Edit</a>
-						<a class="red btn" href="{% url 'delete_supplier' query.id  %}" style="font-size:12px;">Delete</a>
-						<!-- <a class="red btn" href="{% url 'delete_supplier' query.id  %}" style="font-size:12px;">Delete</a> -->
+						<a class="amber btn" href="{% url 'sales:supplier_details' pk=query.id %}" style="font-size:12px;">Edit</a>
+						<a class="red btn" href="{% url 'sales:delete_supplier' pk=query.id %}" style="font-size:12px;">Delete</a>
 					</td>
     			</tr>
 				{% endfor %}
 			</tbody>
     	</table>
 	</div>
-
 {% endblock %}

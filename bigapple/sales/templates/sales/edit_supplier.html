@@ -8,8 +8,9 @@
         <h4 class="header1">{{ title }}</h4>
         <div class="row">
           
-          <form class="col s12" action = "#" method="POST" role="form">
+          <form class="col s12" action = "{% url 'sales:edit_supplier' pk=supplier.id %}" method="POST" role="form">
             {% csrf_token %}
+            <p hidden name = "pk_id" id = "pk_id">{{ supplier.id }}</p>
             <div class="row">
               <div class="input-field col s12">
                 <input id="company_name"  name = "company_name" type="text" required="true" value= "{{ supplier.company_name }}">
@@ -58,8 +59,8 @@
               </div>
               <div class="row">
                 <div class="center">
-                  <button class="btn btn-small green" type="submit">{{ actiontype }}</button>
-                  <button class="btn btn-small red" typle="clear">Clear</button>
+                  <button class="btn btn-small green" type="sumbit">{{ actiontype }}</button>
+                  <button class="btn btn-small red" type="clear">Clear</button>
                 </div>
               </div>
             </div>
