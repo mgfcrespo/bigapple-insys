@@ -14,7 +14,7 @@ from django.db.models import aggregates
 from production.models import JobOrder
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client
 from .forms import AddSupplier_Form
-from .forms import CLientPOForm
+from .forms import ClientPOForm
 
 
 # Create your views here.

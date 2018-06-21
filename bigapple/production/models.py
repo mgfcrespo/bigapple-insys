@@ -1,6 +1,6 @@
 from django.db import models
 from accounts.models import Employee
-from sales.models import ClientPO
+from sales.models import ClientPO, SalesInvoice
 
 # from sales.models import OrderSheet
 # Create your models here.
@@ -22,14 +22,6 @@ class Machine(models.Model):
 
     machine_type = models.CharField('machine_type', choices=MACHINE_TYPE, max_length=200, default='not specified')
     machine_number = models.CharField('machine_number', max_length=10)
-
-# might be transferred to sales
-class SalesInvoice(models.Model):
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
-    article = models.CharField('article', max_length=200, default='none', blank=True)
-    vat = models.DecimalField('vat', default=0.0, blank=True, decimal_places=3, max_digits=12)
-    date_paid = models.DateField('date_paid', auto_now_add=True, blank=True)
-    payment_type = models.CharField('payment_type', max_length=200, default='none')
 
 
 class WorkerSchedule(models.Model):

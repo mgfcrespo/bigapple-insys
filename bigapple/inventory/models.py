@@ -1,13 +1,14 @@
 from django.db import models
 from datetime import date
 from accounts.models import Employee
+from sales.models import Supplier
 
 # Create your models here.
 
-class Supplier(models.Model):
-    name = models.CharField('name', max_length=200)
-    address = models.CharField('address', max_length=200)
-    contact_number = models.CharField('contact_number', max_length=45)
+# class Supplier(models.Model):
+#     name = models.CharField('name', max_length=200)
+#     address = models.CharField('address', max_length=200)
+#     contact_number = models.CharField('contact_number', max_length=45)
 
 
 class SupplierItems(models.Model):

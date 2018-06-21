@@ -20,7 +20,7 @@ class Product(models.Model):
 #could be substitute for quotation request
 class ClientPO(models.Model):
     date_issued = models.DateTimeField('date_issued', auto_now_add=True, blank=True)
-    date_required = models.DateTimeField('date_required', auto_now_add=True, blank=True)
+    date_required = models.DateTimeField('date_required', blank=True)
     note = models.CharField('note', max_length=200, default='')
     terms = models.CharField('terms', max_length=250)
     other_info = models.CharField('other_info', max_length=250)
@@ -83,25 +83,27 @@ class ClientItem(models.Model):
 
 # class CostingSheet(models.Model)
 
-class ClientCreditStatus(models.Model):
-    class Meta:
-        verbose_name_plural = "Client credit status"
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    credit_status = models.BooleanField('credit_status', default=True)
-    outstanding_balance = models.DecimalField('outstanding_balance')
-    invoice_issued = models.CharField(SalesInvoice.id) #modify
-    total_paid = models.DecimalField('total_paid')
-    date_due = models.DateField('date_due')
+
 
 class SalesInvoice(models.Model):
-    invoice_number = models.PositiveIntegerField('invoice_number')
-    client = models.ForeignKey(Client)
-    client_po = models.ForeignKey(ClientPO)
-    date_issued = models.DateField('date_issued')
-    total_amount = models.DecimalField('total_amount')
-    discount = models.DecimalField('discount')
-    net_vat = models.DecimalField('net_vat')
-    amount_due = models.DecimalField('amount_due')
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+    date_issued = models.DateField('date_issued', auto_now_add=True, blank=True)
+    total_amount = models.DecimalField('total_amount', blank=True, decimal_places=3, max_digits=12)
+    discount = models.DecimalField('discount', blank=True, decimal_places=3, max_digits=12)
+    net_vat = models.DecimalField('net_vat', blank=True, decimal_places=3, max_digits=12)
+    amount_due = models.DecimalField('amount_due', blank=True, decimal_places=3, max_digits=12)
+
+class ClientCreditStatus(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    credit_status = models.BooleanField('credit_status', default=True)
+    outstanding_balance = models.DecimalField('outstanding_balance', decimal_places=3, max_digits=12)
+    invoice_issued = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE)
+    total_paid = models.DecimalField('total_paid', decimal_places=3, max_digits=12)
+    date_due = models.DateField('date_due', auto_now_add=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = "Client credit status"
 
 class Supplier(models.Model):
     DEPARTMENT = (
@@ -133,4 +135,4 @@ class Supplier(models.Model):
     department = models.CharField('department', choices=DEPARTMENT, max_length=200, default='not specified')
 
     def __str__(self):
-        return self.company_name    
+        return self.company_name
