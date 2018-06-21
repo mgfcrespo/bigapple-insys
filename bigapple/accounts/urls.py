@@ -12,8 +12,6 @@ urlpatterns = [
     path('general-manager-page/', TemplateView.as_view(template_name='general_manager_page.html')),
     path('credit-and-collection-personnel-page/', TemplateView.as_view(template_name='credit_and_collection_personnel_page.html')),
     path('client-page/', TemplateView.as_view(template_name='client_page.html')),
-
-
 ]
 
 

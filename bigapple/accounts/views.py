@@ -27,7 +27,7 @@ def user_page_view(request):
 
         request.session['session_username'] = username
 
-        if user.employee is not None:
+        if hasattr(request.user, 'employee'):
             employee_id = user.employee.id
             employee = Employee.objects.get(id=employee_id)
 
