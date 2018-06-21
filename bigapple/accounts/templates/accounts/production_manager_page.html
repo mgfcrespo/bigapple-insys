@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+
+    {% includes "global_base_ui.html" %}
+      
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -84,7 +87,7 @@
                 <li class="bold">
                   <a href="orders_page.html" class="waves-effect waves-cyan">
                       <i class="material-icons">note</i>
-                      <span class="nav-text">Work Orders</span>
+                      <span class="nav-text">Job Orders</span>
                     </a>
                 </li>
                 <li class="bold">
@@ -116,54 +119,94 @@
         <!-- //////////////////////////////////////////////////////////////////////////// -->
         <!-- START CONTENT -->
         <section id="content">
-          <!--start container-->
-          <div class="container">
             <!--card stats start-->
             <div id="card-stats">
-              <div class="row mt-1">
-                <div class="col s4">
-                  <div class="card gradient-45deg-light-blue-cyan gradient-shadow min-height-100 white-text">
-                    <div class="padding-4">
+              <div class="row">
+                <div class="col s2">
+                  <div class="card #b71c1c red darken-4 min-height-100 white-text">
+                    <div class="padding-1">
                       <div class="col s7 m7">
-                        <i class="material-icons background-round mt-5">add_shopping_cart</i>
-                        <p>Orders</p>
+                        <p>Incoming Job Orders:</p>
                       </div>
                       <div class="col s5 m5 right-align">
-                        <h5 class="mb-0">20</h5>
-                        <p class="no-margin">Rush Orders</p>
-                        <p>6,00,00</p>
+                        <p>60</p>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="col s4">
-                  <div class="card gradient-45deg-red-pink gradient-shadow min-height-100 white-text">
-                    <div class="padding-4">
+                <div class="col s2">
+                  <div class="card #b71c1c red darken-4 min-height-100 white-text">
+                    <div class="padding-1">
                       <div class="col s7 m7">
-                        <i class="material-icons background-round mt-5">payment</i>
-                        <p>Payments</p>
+                        <p>Extrusion</p>
                       </div>
                       <div class="col s5 m5 right-align">
-                        <h5 class="mb-0">1885</h5>
-                        <p class="no-margin">New</p>
-                        <p>1,12,900</p>
-                      </div>
+                        <p>Zalora</p>
+                     </div>
+                        <div class="progress">
+                            <div class="determinate" style="width: 36%"></div>
+                        </div>
                     </div>
                   </div>
                 </div>
-                <div class="col s4">
-                  <div class="card gradient-45deg-amber-amber gradient-shadow min-height-100 white-text">
-                    <div class="padding-4">
+                <div class="col s2">
+                  <div class="card #ffb300 amber darken-1 min-height-100 white-text">
+                    <div class="padding-1">
                       <div class="col s7 m7">
-                        <i class="material-icons background-round mt-5">timeline</i>
-                        <p>Sales</p>
+                        <p>Printing</p>
                       </div>
                       <div class="col s5 m5 right-align">
-                        <h5 class="mb-0">Zalora</h5>
-                        <p class="no-margin">Current task</p>
-                        <p>3,42,230</p>
+                        <p>Lazada</p>
                       </div>
+                        <div class="progress">
+                            <div class="determinate" style="width: 50%"></div>
+                        </div>
                     </div>
+                  </div>
+                </div>
+                <div class="col s2">
+                  <div class="card #d4e157 lime lighten-1 min-height-100 white-text">
+                    <div class="padding-1">
+                      <div class="col s7 m7">
+                        <p>Cutting</p>
+                      </div>
+                      <div class="col s5 m5 right-align">
+                        <p>McDonald's</p>
+                      </div>
+                        <div class="progress">
+                            <div class="determinate" style="width: 75%"></div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col s2">
+                  <div class="card #66bb6a green lighten-1 min-height-100 white-text">
+                    <div class="padding-1">
+                      <div class="col s7 m7">
+                        <p>Lamination</p>
+                      </div>
+                      <div class="col s5 m5 right-align">
+                        <p>Mcdonald's</p>
+                      </div>
+                      <div class="progress">
+                            <div class="determinate" style="width: 80%"></div>
+                    </div>
+                   </div>
+                  </div>
+                </div>
+                <div class="col s2">
+                  <div class="card #1b5e20 green darken-4 min-height-100 white-text">
+                    <div class="padding-1">
+                      <div class="col s7 m7">
+                        <p>Packaging and Q/A</p>
+                      </div>
+                      <div class="col s5 m5 right-align">
+                        <p>Zalora</p>
+                      </div>
+                      <div class="progress">
+                            <div class="determinate" style="width: 10%"></div>
+                        </div>
+                      </div>
                   </div>
                 </div>
               </div>
@@ -193,7 +236,22 @@
                       		</p>
                     	</li>
                     	<li>
-                    		<h1>*Gantt Chart will be shown here.</h1>
+                    		<table class="highlight centered">
+        						<thead>
+          							<tr>
+                                        <th>Job Order Number</th>
+                                        <th>Status</th>
+                                    </tr>
+        						</thead>
+                                
+								<tbody>
+          							<tr>
+                                        <td>1282085024</td>
+                                        <td>
+                                        </td>
+          							</tr>
+        						</tbody>
+      						</table>
                     	</li>
                   	</ul>
                 </div>

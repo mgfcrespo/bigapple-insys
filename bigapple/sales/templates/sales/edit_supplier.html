@@ -24,10 +24,8 @@
             </div>
             <div class="row">
               <div class="input-field col s12">
-                <select id="department" name = "department" type="text" required="true" value= "{{ supplier.get_department_display }}">
-                  {% for query in query  %}
-                  <option value = "{{ query.department }}">{{ query.get_department_display }}</option>
-                  {% endfor %}
+                <select id="department" name = "department" type="text" required="true">
+                  <option value = "{{ supplier.department }}"></option>
                 </select>
                 <label for="department">Department</label>
               </div>
@@ -46,10 +44,8 @@
             </div>    
             <div class="row">
               <div class="input-field col s12">
-                <select id="supplier_type" name = "supplier_type" type="text" required="true" value= "{{ supplier.get_supplier_type_display }}">
-                  {% for query in query  %}
-                  <option value = "{{ query.supplier_type }}">{{ query.get_supplier_type_display }}</option>
-                  {% endfor %}
+                <select id="supplier_type" name = "supplier_type" type="text" required="true">
+                  <option value = "{{ supplier.supplier_type }}">{{ supplier.get_supplier_type_display }}</option>
                 </select>
                 <label for="supplier_type">Type of Supplier</label>
                 
@@ -57,7 +53,7 @@
             </div>                                                             
             <div class="row">
               <div class="input-field col s12">
-                <input id="description" name = "description" type="text">
+                <input id="description" name = "description" type="text" value="{{ supplier.description }}">
                 <label for="description">Description</label>
               </div>
               <div class="row">

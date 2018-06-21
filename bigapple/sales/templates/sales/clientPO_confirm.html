@@ -1,31 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<html>
-
-<body>
-
-{% include 'global_base_ui.html' %}
-<form id="myForm" action="{% url 'sales:client-po-form-add' %}" method="post" enctype="multipart/form-data">
-
-            {% csrf_token %}
-            {% include 'sales/template_form.html' %}
-            {% include 'sales/template_formset.html' %}
-
-            {{formset.management_form}}
-            <button type="submit" class ="btn btn-success">Submit</button>
-
-</form>
-<script type="text/javascript">
-            $(function() {
-                 $('#myForm .formset_class').formset({
-                  prefix: '{{ formset.prefix }}'
-                  });
-                  })
-    </script>
-</body>
-
-</html>
   <!--================================================================================
 	Item Name: Materialize - Material Design Admin Template
 	Version: 4.0
@@ -57,48 +31,42 @@
     <link href="../../../accounts/static/vendors/prism/prism.css" type="text/css" rel="stylesheet">
  	
   </head>
-  
-  <body>
+
+    
+   <body>
+       
+    
+    
     <!-- Start Page Loading -->
     <div id="loader-wrapper">
       <div id="loader"></div>
       <div class="loader-section section-left"></div>
       <div class="loader-section section-right"></div>
     </div>
-    <!-- End Page Loading -->
-    <!-- //////////////////////////////////////////////////////////////////////////// -->
-    <!-- START HEADER -->
-    <!-- END HEADER -->
-    <!-- //////////////////////////////////////////////////////////////////////////// -->
-    <!-- START MAIN -->
-      <!-- START WRAPPER -->
-      <div class="wrapper">
-        <!-- START LEFT SIDEBAR NAV-->
-        <!-- END LEFT SIDEBAR NAV-->
-        
-        <!-- //////////////////////////////////////////////////////////////////////////// -->
-        
-        <!-- START CONTENT -->
-        	<!--Start Form-->
+       
+       
+    <div class="wrapper">
+    {% block content %}
+    
               <div id="basic-form" class="section">
                 <div class="row">
                   <div class="col s4 offset-s4">
                     <div class="card-panel">
-                      <h4 class="header1">Purchase Order</h4>
+                      <h4 class="header1">Confirm Purchase Order</h4>
                       <div class="row">
-                        
-                        <form class="col s12"action="{% url 'sales:client-po-form-add' %}" method="post" enctype="multipart/form-data">
-                         
+                          
+                        <form>
+                          
                           <div class="row">
                             <div class="input-field col s12">
-                              <input id="name" type="text" required="true">
-                              <label for="name">Name</label>
+                              <input id="name" type="text" disabled="true">
+                              <label for="name">Company Name</label>
                             </div>
                           </div>
                           <div class="row">
                              
                              <div class="input-field col s4">
-								<input type="text" class="datepicker" placeholder="Date Needed">
+								<input type="text" class="datepicker" placeholder="Date Needed" disabled="true">
 								<label for="dateSet">Date Needed</label>
 							 </div>
 						  
@@ -115,14 +83,14 @@
 
                           <div class="row">
                             <div class="input-field col s12">
-                              <input id="terms" type="text" required="true">
+                              <input id="terms" type="text" disabled="true">
                               <label for="terms">Terms</label>
                               </div>
                           </div>
 		           		  <div class="row">
-							<select class="browser-default" required="true">  
-								<option value="" disabled selected>Item</option>
-								<option value="1">Item 1</option>
+							<select class="browser-default" disabled="true">  
+								<option value="" disabled>Item</option>
+								<option value="1" selected>Item 1</option>
     							<option value="2">Item 2</option>
     							<option value="3">Item 3</option>
     							<option value="4">Item 4</option>
@@ -134,13 +102,13 @@
    	         			  </div>
                           <div class="row">
                             <div class="input-field col s12">
-                              <input id="description" type="text" required="true">
+                              <input id="description" type="text" disabled="true">
                               <label for="description">Description</label>
                           	</div>
                           </div>
                           <div class="row">
                             <div class="input-field col s4">
-                              <input id="quantity" type="text" required="true">
+                              <input id="quantity" type="text" disabled="true">
                               <label for="quantity">Quantity</label>
                             </div>
                             <div class="input-field col s4">
@@ -153,40 +121,21 @@
                             </div>
                           </div>
     	                  <div class="row">
-    						<div class="center">
-                                
-                            {% csrf_token %}
-    				        {% include 'sales/template_form.html' %}
-    
-         						<button class="btn btn-small green" type="submit" style="width: 200px;">Submit</button>
-         						<button class="btn btn-small red" typle="reset" style="width: 200px;">Clear</button>
+    						<div class= "center">    
+                                <button id="deleteBTN" class="btn btn-small green" type="button" style="width: 200px;">Confirm</button>
                             </div>
                           </div>
-                          
                           </form>
                       </div>
                     </div>                        
                 </div>
             </div>
-        </div>
+        </div>        
+    {% endblock %}      
     </div>
+    
+    <!-- ================================================Scripts================================================ -->
 
-<!-- End placeholder -->
-<!--end container-->
-     
-        <!-- END CONTENT -->
-        <!-- START RIGHT SIDEBAR NAV-->
-        <!-- END RIGHT SIDEBAR NAV-->
-      <!-- END WRAPPER -->
-    <!-- END MAIN -->
-  
-    <!-- //////////////////////////////////////////////////////////////////////////// -->
-  
-    <!-- START FOOTER -->
-    <!-- END FOOTER -->
-    <!-- ================================================
-    Scripts
-    ================================================ -->
     <!-- jQuery Library -->
     <script type="text/javascript" src="../../../accounts/static/js/jquery-3.2.1.min.js"></script>
     <!--materialize js-->
@@ -197,6 +146,7 @@
     <script type="text/javascript" src="../../../accounts/static/js/plugins.js"></script>
     <!--custom-script.js - Add your own theme custom JS-->
     <script type="text/javascript" src="../../../accounts/static/js/custom-script.js"></script>
+     
   </body>
+    
 </html>
-

@@ -16,6 +16,7 @@ class Product(models.Model):
         return self.products + " : Php." + str(self.prod_price) + "/piece"
 
 
+
 #could be substitute for quotation request
 class ClientPO(models.Model):
     date_issued = models.DateTimeField('date_issued', auto_now_add=True, blank=True)
@@ -31,6 +32,7 @@ class ClientPO(models.Model):
 
     def __str__(self):
         return 'PO_%s' % (self.id)
+
 
 
 
@@ -63,7 +65,7 @@ class ClientItem(models.Model):
         return reverse('accounts:user-page-view')
 
     def __str__(self):
-        return self.item_type
+        return self.id
 
 
     def calculate_item_total(self):
@@ -82,5 +84,39 @@ class ClientItem(models.Model):
 # class CostingSheet(models.Model)
 
 class ClientCreditStatus(models.Model):
+    class Meta:
+        verbose_name_plural = "Client credit status"
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     credit_status = models.BooleanField('credit_status', default=True)
+
+class Supplier(models.Model):
+    DEPARTMENT = (
+        ('AF', 'Accounting and Finance'),
+        ('HR', 'Human Resource'),
+        ('IT', 'Information Technology'),
+        ('M', 'Marketing'),
+        ('P', 'Purchasing'),
+        ('RD', 'Research and Development'),
+        ('S', 'Sales'),
+        ('O', 'Others'),
+
+    )
+
+    SUPPLIERTYPE = (
+        ('RM', 'Raw Material'),
+        ('MP', 'Machinery/Parts'),
+        ('I', 'Ink'),
+        ('O', 'Others'),
+
+    )
+
+    company_name = models.CharField('company_name', max_length=200)
+    contact_person = models.CharField('contact_person', max_length=200)
+    mobile_number = models.CharField('mobile_number', max_length=11)
+    email_address = models.CharField('email_address', max_length=200)
+    description = models.CharField('description', max_length=200, blank =True)
+    supplier_type = models.CharField('suppier_type', choices=SUPPLIERTYPE, max_length=200, default='not specified')
+    department = models.CharField('department', choices=DEPARTMENT, max_length=200, default='not specified')
+
+    def __str__(self):
+        return self.company_name    
