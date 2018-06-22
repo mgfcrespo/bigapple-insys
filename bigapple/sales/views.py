@@ -230,4 +230,9 @@ class JOListView(generic.ListView):
     #def get_queryset(self):
     #return JobOrder.objects.all()
 
+class ClientCreditStatusListView(generic.ListView):
+    model = ClientCreditStatus
+    all_credit_status = ClientCreditStatus.objects.all()
+    template_name = 'sales/client_payment_monitoring.html'
+
 

@@ -32,53 +32,45 @@
 		<table>
         	<thead>
           	<tr>
-          	  <th>Purchase Order ID</th>
-              <th>Client</th>
-              <th>Items</th>
-              <th>Date Issued</th>
-              <th>Date Required</th>
-              <th>Date Laminate</th>
-              <th>Date Confirmed</th>
-              <th>Total Amount</th>
+          	  <th>Client</th>
+          	  <th>Credit Status</th>
+          	  <th>Invoice Issued</th>
+          	  <th>Total Paid</th>
+          	  <th>Outstanding Balance</th>
+          	  <th>Date Due</th>
           	</tr>
     		</thead>
     		<tbody>
 
-    		    {% if all_PO %}
-    				{% for ClientPO in all_PO %}
+    		    {% if all_credit_status %}
+    				{% for ClientCreditStatus in all_credit_status %}
     			<tr>
     				<td>
-    				<a href="{{ ClientPO.get_absolute_url }}">{{ __str__ }}</a>
+    				<a href="{{ ClientCreditStatus.get_absolute_url }}">{{ __str__ }}</a>
     				</td>
     				<td>
-    				({{ ClientPO.client }})
+    				({{ ClientCreditStatus.client }})
     				</td>
     				<td>
-    				{% for client_items in ClientPO.client_items.all %}
-                        {{ client_items }}
-                        <br/>
-                        {% endfor %}
+    				({{ ClientCreditStatus.credit_status }})
     				</td>
     				<td>
-		          	({{ ClientPO.date_issued }})
+		          	({{ ClientCreditStatus.invoice_issued.id }})
     				</td>
     				<td>
-    				({{ ClientPO.date_required }})
+    				({{ ClientCreditStatus.total_paid }})
     				</td>
     				<td>
-    				({{ ClientPO.laminate }})
+    				({{ ClientCreditStatus.outstanding_balance }})
     				</td>
     				<td>
-    				({{ ClientPO.confirmed }})
-    				</td>
-    				<td>
-    				({{ ClientPO.total_amount }})
+    				({{ ClientCreditStatus.date_due }})
     				</td>
     			</tr>
     		{% endfor %}
 
     		{% else %}
-      		<p>There are no Purchases Orders in the database.</p>
+      		<p>There are no Client Payments in the database.</p>
 
     		{% endif %}
 			</tbody>
