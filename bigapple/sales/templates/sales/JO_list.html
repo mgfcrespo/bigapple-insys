@@ -58,7 +58,7 @@
     				({{ JobOrder.client_po.client }})
     				</td>
     				<td>
-		          	{% for client_items in JobOrder.client_po.client_items.all %}
+		          	{% for client_items in JobOrder.client_po.client_items.all %} #modify!
                         {{ client_items }}
                         <br/>
                         {% endfor %}

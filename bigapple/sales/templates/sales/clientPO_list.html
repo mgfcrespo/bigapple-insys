@@ -57,7 +57,7 @@
     				({{ ClientPO.client }})
     				</td>
     				<td>
-    				{% for client_items in ClientPO.client_items.all %}
+    				{% for client_items in ClientPO.client_items.all %} #modify!
                         {{ client_items }}
                         <br/>
                         {% endfor %}
