@@ -9,7 +9,7 @@ from .models import MaterialRequisition
 from .models import PurchaseRequisition
 from .models import Inventory
 from .models import InventoryCountAsof
-
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 def inventory_details(request):
     context = {

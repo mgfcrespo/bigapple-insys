@@ -76,5 +76,9 @@ class Inventory(models.Model):
 
 class InventoryCountAsof(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
-    new_count = models.IntegerField('new_count')
-    date_counted = models.DateField('date_counted')
+    new_count = models.IntegerField('new_count', default=0)
+    date_counted = models.DateField('date_counted', )
+
+
+class CurrentRMinProduction(models.Model):
+    raw_material = models.ForeignKey(Inventory, on_delete = models.CASCADE, null=True)
