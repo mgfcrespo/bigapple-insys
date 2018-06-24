@@ -180,7 +180,7 @@ class POFormCreateView(CreateView):
 '''
 
 #SAMPLE DYNAMIC FORM
-def display_client_po(request):
+def create_client_po(request):
     #note:instance should be an object
     clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=2, can_delete=True)
     if request.method == "POST":

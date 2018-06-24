@@ -33,8 +33,11 @@
 
 {% endblock %}
 
+
+<!-- LOGIN/REGISTER------------------->
+
 {% block register %}
-<form method="post"  action = "{% url 'accounts:signup' %}">
+<form method="post" action = "{% url 'accounts:register' %}">
 									{% csrf_token %}
 									   {% for field in form %}
       							<p>
@@ -50,7 +53,7 @@
    										 {% endfor %}
 
          							<div class="center">
-         								<button class="btn btn-small green" type="submit">Submit</button>
+         								<button class="btn btn-small green" type="submit" value="Register">Register</button>
 	       							</div>
     	   						</form>
 {% endblock %}

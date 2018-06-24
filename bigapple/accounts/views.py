@@ -17,7 +17,7 @@ from .models import Client
 
 # Create your views here.
 
-def signup(request):
+def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
