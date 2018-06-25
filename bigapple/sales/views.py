@@ -1,4 +1,4 @@
-
+from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
 from .models import ClientItem, ClientPO, ClientCreditStatus, Client, Product
@@ -167,10 +167,10 @@ class PODetailView(DetailView):
 #Example for simple modelforms(for testing)
 class POFormCreateView(FormView):
     form_class = ClientPOForm
-=======
+
+
 class POFormCreateView(CreateView):
     model = ClientItem
->>>>>>> 01a70349f15de86f3a74d8127c6f0d7cccf5ba6c
     template_name = 'sales/clientPO_form.html'
     success_url = reverse_lazy('accounts:user-page-view')
 
@@ -180,7 +180,7 @@ class POFormCreateView(CreateView):
 '''
 
 #SAMPLE DYNAMIC FORM
-def display_client_po(request):
+def create_client_po(request):
     #note:instance should be an object
     clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=2, can_delete=True)
     if request.method == "POST":

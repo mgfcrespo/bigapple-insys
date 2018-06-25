@@ -169,21 +169,37 @@
     <!-- END HEADER -->
     <!-- //////////////////////////////////////////////////////////////////////////// -->
     <!-- START MAIN -->
+    <div id="main">
       <!-- START WRAPPER -->
       <div class="wrapper">
         <!-- START LEFT SIDEBAR NAV-->
+
+        {% block left_sidebar %}
+
+        {%endblock %}
+
         <!-- END LEFT SIDEBAR NAV-->
 
         <!-- //////////////////////////////////////////////////////////////////////////// -->
 
         <!-- START CONTENT -->
+        <div>
+          <div>
+            <div>
+              <div>
+                <div>
+                  <div>
+                    <div>
+
+        {% block content %}
+
+        {% endblock %}
+
 
                       </div>
                     </div>
                 </div>
             </div>
-
-
 
                       </div>
                     </div>
@@ -464,6 +480,8 @@
         <!-- END RIGHT SIDEBAR NAV-->
       </div>
       <!-- END WRAPPER -->
+  </div>
+
     <!-- END MAIN -->
 
     <!-- //////////////////////////////////////////////////////////////////////////// -->
@@ -498,6 +516,11 @@
     <script type="text/javascript" src="{% static 'js/custom-script.js' %}"></script>
     <!--Formset files-->
     <script src="{% static 'js/jquery.formset.js' %}" charset="utf-8"></script>
+
+
+        {% block formset_script %}
+
+        {%endblock %}
 
     {% endblock %}
 

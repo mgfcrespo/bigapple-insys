@@ -1,16 +1,13 @@
-
-from django.contrib.auth import authenticate, login, logout, forms
-from django.shortcuts import render, reverse, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from django.contrib.sessions.models import Session
-from .models import Client, Employee, User
-
 
 from django.http import HttpResponse
-from django.shortcuts import render
 
-
+from django.contrib.auth import login, authenticate, forms
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
 
 from .models import Address
 from .models import ContactNumber
@@ -20,16 +17,34 @@ from .models import Client
 
 # Create your views here.
 
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'login.html', {'form': form})
+
+
 def user_page_view(request):
 
         user = request.user
         username = request.user.username
 
         request.session['session_username'] = username
-
         if hasattr(request.user, 'employee'):
             employee_id = user.employee.id
             employee = Employee.objects.get(id=employee_id)
+            position = employee.position
+            request.session['session_position'] = employee.position
+            request.session['session_fullname'] = employee.full_name
+
 
             if employee.position == 'GM':
                 return render(request, 'accounts/general_manager_page.html')
@@ -46,11 +61,14 @@ def user_page_view(request):
             elif employee.position == 'LL':
                 return render(request, 'accounts/line_leader_page.html')
         else:
+            client_id = user.client.id
+            client = Client.objects.get(id=client_id)
+            request.session['session_position'] = 'Client'
+            request.session['session_fullname'] = client.full_name
             return render(request, 'accounts/client_page.html')
 
 
 def account_details(request):
-    #return HttpResponse('HELLO FROM POSTS')
     context = {
         'title': 'Account Content'
     }

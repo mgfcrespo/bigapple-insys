@@ -28,7 +28,7 @@ class WorkerSchedule(models.Model):
     worker = models.ForeignKey(Employee, on_delete=models.CASCADE)
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-    working_date = models.DateField('working_date')
+    working_date = models.DateTimeField('working_date', auto_now_add=True, blank=True)
 
 
 class MachineSchedule(models.Model):
