@@ -11,7 +11,7 @@ from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, reverse, HttpResponseRedirect
 from django.db.models import aggregates
-from .models import JobOrder
+from bigapple.production.models import JobOrder
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client
 from .forms import AddSupplier_Form
 from .forms import ClientPOForm
