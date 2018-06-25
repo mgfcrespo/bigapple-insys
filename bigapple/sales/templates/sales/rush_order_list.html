@@ -1,11 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    {% includes "global_base_ui.html" %}
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+  <head>
+	  {% includes "global_base_ui.html" %}
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="msapplication-tap-highlight" content="no">
+    <title>Big Apple Plastic Manufacturing Co.</title>
+
+    <!-- Favicons-->
+    <link rel="icon" href="../../../accounts/images/BAicon.png" sizes="32x32">
+
+    <!-- CORE CSS-->
+    <link href="../../../accounts/static/css/materialize.css" type="text/css" rel="stylesheet">
+ 	<link href="../../../accounts/static/css/style.css" type="text/css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Custom CSS-->
+    <link href="../../../frontend/static/css/custom.css" type="text/css" rel="stylesheet">
+
+    <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+    <link href="../../../accounts/static/vendors/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet">
+    <link href="../../../accounts/static/vendors/prism/prism.css" type="text/css" rel="stylesheet">
+
+  </head>
+
+{% block content %}
+
 <body>
 
+	<div class="wrapper">
+		<table>
+        	<thead>
+          	<tr>
+          	  <th>Client</th>
+          	  <th>Credit Status</th>
+          	  <th>Invoice Issued</th>
+          	  <th>Total Paid</th>
+          	  <th>Outstanding Balance</th>
+          	  <th>Date Due</th>
+          	</tr>
+    		</thead>
+    		<tbody>
+
+    		    {% if all_credit_status %}
+    				{% for ClientCreditStatus in all_credit_status %}
+    			<tr>
+    				<td>
+    				<a href="{{ ClientCreditStatus.get_absolute_url }}">{{ __str__ }}</a>
+    				</td>
+    				<td>
+    				({{ ClientCreditStatus.client }})
+    				</td>
+    				<td>
+    				({{ ClientCreditStatus.credit_status }})
+    				</td>
+    				<td>
+		          	({{ ClientCreditStatus.invoice_issued.id }})
+    				</td>
+    				<td>
+    				({{ ClientCreditStatus.total_paid }})
+    				</td>
+    				<td>
+    				({{ ClientCreditStatus.outstanding_balance }})
+    				</td>
+    				<td>
+    				({{ ClientCreditStatus.date_due }})
+    				</td>
+    			</tr>
+    		{% endfor %}
+
+    		{% else %}
+      		<p>There are no Client Payments in the database.</p>
+
+    		{% endif %}
+			</tbody>
+    	</table>
+	</div>
+
 </body>
+
+
+{% endblock %}
 </html>

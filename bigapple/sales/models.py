@@ -4,6 +4,7 @@ from datetime import date
 from django.urls import reverse
 from accounts.models import Client
 from decimal import Decimal
+from datetime import date
 
 # Create your models here.
 
@@ -27,13 +28,12 @@ class ClientPO(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
     confirmed = models.BooleanField('confirmed', default=False)
-
-
+    d0 = date(date_issued)
+    d1 = date(date_required)
+    lead_time = d1 - d0
 
     def __str__(self):
         return 'PO_%s' % (self.id)
-
-
 
 
 class ClientItem(models.Model):

@@ -235,4 +235,7 @@ class ClientCreditStatusListView(generic.ListView):
     all_credit_status = ClientCreditStatus.objects.all()
     template_name = 'sales/client_payment_monitoring.html'
 
-
+class RushOrderListView(generic.ListView):
+    model = ClientPO
+    all_rush_order = ClientPO.objects.filter(ClientPO.lead_time<=14)
+    template_name = 'sales/rush_order_list.html'
