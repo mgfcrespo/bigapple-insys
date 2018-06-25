@@ -2,6 +2,8 @@
 {% extends "client_page_ui.html" %}
 
 {% block content %}
+
+<h3>PO List</h3>
 <body>
 
 	<div class="wrapper">
@@ -10,53 +12,40 @@
           	<tr>
           	  <th>Purchase Order ID</th>
               <th>Client</th>
-              <th>Items</th>
               <th>Date Issued</th>
               <th>Date Required</th>
-              <th>Date Laminate</th>
               <th>Date Confirmed</th>
               <th>Total Amount</th>
           	</tr>
     		</thead>
     		<tbody>
-    		
-    		    {% if all_PO %}
-    				{% for ClientPO in all_PO %}
+
+
+    				{% for ClientPO in object_list %}
     			<tr>
     				<td>
-    				<a href="{{ ClientPO.get_absolute_url }}"></a>
+
+    				<a href="{% url 'sales:po-detail-view' ClientPO.id %}">PO #{{ ClientPO.id}}</a>
     				</td>
     				<td>
-    				({{ ClientPO.client }})
+    				{{ ClientPO.client }}
     				</td>
     				<td>
-    				{% for ClientItem in client_items) %}
-                        {{ ClientItem.products }}
-                        <br/>
-                        {% endfor %}
+		          	{{ ClientPO.date_issued }}
     				</td>
     				<td>
-		          	({{ ClientPO.date_issued }})
+    				{{ ClientPO.date_required }}
     				</td>
     				<td>
-    				({{ ClientPO.date_required }})
+    				{{ ClientPO.confirmed }}
     				</td>
     				<td>
-    				({{ ClientPO.laminate }})
-    				</td>
-    				<td>
-    				({{ ClientPO.confirmed }})
-    				</td>
-    				<td>
-    				({{ ClientPO.total_amount }})
+    				{{ ClientPO.total_amount }}
     				</td>
     			</tr>
     		{% endfor %}
-    		
-    		{% else %}
-      		<p>There are no Purchases Orders in the database.</p>
-    
-    		{% endif %}
+
+
 			</tbody>
     	</table>
 	</div>

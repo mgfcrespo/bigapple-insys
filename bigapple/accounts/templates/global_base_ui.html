@@ -44,6 +44,9 @@
     <link href="{% static 'vendors/perfect-scrollbar/perfect-scrollbar.css' %}" type="text/css" rel="stylesheet">
     <link href="{% static 'vendors/prism/prism.css' %}" type="text/css" rel="stylesheet">
 
+    <!-- GANTT CHART RESOURCES -->
+    <link rel="stylesheet" href="../../static/gantt chart/dist/frappe-gantt.css" />
+	<script src="../../static/gantt chart/dist/frappe-gantt.js"></script>
 
   </head>
 
@@ -518,9 +521,9 @@
     <script src="{% static 'js/jquery.formset.js' %}" charset="utf-8"></script>
 
 
-        {% block formset_script %}
+        {% block script %}
 
-        {%endblock %}
+        {% endblock %}
 
     {% endblock %}
 

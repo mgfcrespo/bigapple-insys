@@ -31,7 +31,7 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'login.html', {'form': form})
 
-
+@login_required(login_url='/profile/login/')
 def user_page_view(request):
 
         user = request.user

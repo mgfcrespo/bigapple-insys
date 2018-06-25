@@ -1,146 +1,66 @@
 
-{% include 'base_ui/global_base_ui.html' %}
-
-<!DOCTYPE html>
-<html lang="en">
-  <!--================================================================================
-	Item Name: Materialize - Material Design Admin Template
-	Version: 4.0
-	Author: PIXINVENT
-	Author URL: https://themeforest.net/user/pixinvent/portfolio
-  ================================================================================ -->
-  <head>
-    
-    {% includes "global_base_ui.html" %}
-    
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="msapplication-tap-highlight" content="no">
-    <title>Big Apple Plastic Manufacturing Co.</title>
- 
-    <!-- Favicons-->
-    <link rel="icon" href="../../../accounts/images/BAicon.png" sizes="32x32">
-    
-    <!-- CORE CSS-->
-    <link href="../../../accounts/static/css/materialize.css" type="text/css" rel="stylesheet">
- 	<link href="../../../accounts/static/css/style.css" type="text/css" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Custom CSS-->
-    <link href="../../../accounts/static/css/custom.css" type="text/css" rel="stylesheet">
-    
-    <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
-    <link href="../../../accounts/static/vendors/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet">
-    <link href="../../../accounts/static/vendors/prism/prism.css" type="text/css" rel="stylesheet">
- 	
-  </head>
->>>>>>> 4181cb6abeb791bc9cc0c00a93f05d4b691f2c80
-
-    
-   <body>
-       
-    
-    
-    <!-- Start Page Loading -->
-    <div id="loader-wrapper">
-      <div id="loader"></div>
-      <div class="loader-section section-left"></div>
-      <div class="loader-section section-right"></div>
-    </div>
-       
-       
-    <div class="wrapper">
+    {% extends "client_page_ui.html" %}
     {% block content %}
-    
-              <div id="basic-form" class="section">
-                <div class="row">
-                  <div class="col s4 offset-s4">
-                    <div class="card-panel">
-                      <h4 class="header1">Purchase Order Details</h4>
-                      <div class="row">
-                          
-                        <form>
-                          
-                          <div class="row">
-                            <div class="input-field col s12">
-                              <input id="name" type="text" disabled="true">
-                              <label for="name">Company Name</label>
-                            </div>
-                          </div>
-                          <div class="row">
-                             
-                             <div class="input-field col s4">
-								<input type="text" class="datepicker" placeholder="Date Needed" disabled="true">
-								<label for="dateSet">Date Needed</label>
-							 </div>
-						  
-                              <!--radio button
-                              
-                             <div class="input-field col s8 ">
-                                 <label>Laminate?</label><br>
-                                 <input id="laminateTrue" name="yes" type="radio">
-                             </div>
-						  
-                              -->
-                              
-						  </div>
+<p>{{ ClientPO.id }}</p>
+<body>
+	<div class="wrapper">
 
-                          <div class="row">
-                            <div class="input-field col s12">
-                              <input id="terms" type="text" disabled="true">
-                              <label for="terms">Terms</label>
-                              </div>
-                          </div>
-		           		  <div class="row">
-							<select class="browser-default" disabled="true">  
-								<option value="" disabled>Item</option>
-								<option value="1" selected>Item 1</option>
-    							<option value="2">Item 2</option>
-    							<option value="3">Item 3</option>
-    							<option value="4">Item 4</option>
-								<option value="5">Item 5</option>
-    							<option value="6">Item 6</option>
-    							<option value="7">Item 7</option>
-    							<option value="8">Item 9</option>									
-  							</select>
-   	         			  </div>
-                          <div class="row">
-                            <div class="input-field col s12">
-                              <input id="description" type="text" disabled="true">
-                              <label for="description">Description</label>
-                          	</div>
-                          </div>
-                          <div class="row">
-                            <div class="input-field col s4">
-                              <input id="quantity" type="text" disabled="true">
-                              <label for="quantity">Quantity</label>
-                            </div>
-                            <div class="input-field col s4">
-                              <input id="unitPrice" type="text" disabled="true">
-                              <label for="unitPrice">Unit Price</label>
-                            </div>
-                            <div class="input-field col s4">
-                              <input id="amount" type="text" disabled="true">
-                              <label for="amount">Amount</label>
-                            </div>
-                          </div>
-    	                  <div class="row">
-    						<div class="center">    
-         						<button id="editBTN" class="btn btn-small #fbc02d yellow darken-2" type="button" style="width: 200px;">Edit</button>
-                                <button id="deleteBTN" class="btn btn-small red" type="button" style="width: 200px;">Delete</button>
-                            </div>
-                          </div>
-                          </form>
-                      </div>
-                    </div>                        
-                </div>
-            </div>
-        </div>        
+		<table>
+        	<thead>
+          	<tr>
+          	  <th>Laminate</th>
+              <th>Width</th>
+              <th>Length</th>
+              <th>Color</th>
+              <th>Gusset</th>
+              <th>Quantity</th>
+              <th>Item Price Sub-Total</th>
+          	</tr>
+    		</thead>
+    		<tbody>
+
+
+    				{% for ClientItem in ClientPO.client_item_set.all %}
+    			<tr>
+    				<td>
+    				{{ ClientItem.laminate }}
+    				</td>
+    				<td>
+		          	{{ ClientItem.width }}
+    				</td>
+    				<td>
+    				{{ ClientItem.length}}
+    				</td>
+    				<td>
+    				{{ ClientItem.color }}
+    				</td>
+    				<td>
+    				{{ ClientItem.gusset}}
+    				</td>
+    				<td>
+    				{{ ClientItem.quantity }}
+    				</td>
+                    <td>
+    				{{ ClientItem.item_price}}
+    				</td>
+    			</tr>
+    		{% endfor %}
+
+
+			</tbody>
+    	</table>
+	</div>
+
+</body>
+
+
     {% endblock %}      
-    </div>
+
     
     <!-- ================================================Scripts================================================ -->
 
+
+    {% block script %}
     <script>
         $(document).ready(function(){
             $('#editBTN').click(function(){
@@ -154,19 +74,4 @@
             });
         })
     </script>
-
-       
-    <!-- jQuery Library -->
-    <script type="text/javascript" src="../../../accounts/static/js/jquery-3.2.1.min.js"></script>
-    <!--materialize js-->
-    <script type="text/javascript" src="../../../accounts/static/js/materialize.min.js"></script>
-    <!--scrollbar-->
-    <script type="text/javascript" src="../../../accounts/static/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <!--plugins.js - Some Specific JS codes for Plugin Settings-->
-    <script type="text/javascript" src="../../../accounts/static/js/plugins.js"></script>
-    <!--custom-script.js - Add your own theme custom JS-->
-    <script type="text/javascript" src="../../../accounts/static/js/custom-script.js"></script>
-     
-  </body>
-    
-</html>
+    {% endblock %}

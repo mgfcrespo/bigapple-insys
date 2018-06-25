@@ -28,13 +28,14 @@ class ClientPO(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
     confirmed = models.BooleanField('confirmed', default=False)
-    d0 = date(date_issued)
-    d1 = date(date_required)
-    lead_time = d1 - d0
 
     def __str__(self):
         return 'PO_%s' % (self.id)
 
+    '''
+    def calculate_leadtime(self):
+        return self.date_required.year - self.date_issued.year
+    '''
 
 class ClientItem(models.Model):
 
@@ -61,8 +62,10 @@ class ClientItem(models.Model):
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, null=True)
     # sample_layout = models.CharField('sample_layout', max_length=200)
 
+    '''
     def get_absolute_url(self):
         return reverse('accounts:user-page-view')
+    '''
 
     def __str__(self):
         return self.id

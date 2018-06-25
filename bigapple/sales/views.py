@@ -26,8 +26,6 @@ def sales_details(request):
     return render(request, 'sales/sales_details.html', context)
 
 
-
-
 def edit_clientPO(request, id):
         client_po = ClientPO.objects.get(id=id)
 
@@ -48,19 +46,22 @@ def delete_clientPO(request, id):
 
 # List views
 
-class POListView(generic.ListView):
-    model = ClientPO
-    all_PO = ClientPO.objects.all()
+class POListView(ListView):
     template_name = 'sales/clientPO_list.html'
 
-    for ClientPO in all_PO:
-        client_items = ClientItem.objects.get(client_po=ClientPO.id)
+    def get_queryset(self):
+        return ClientPO.objects.all()
+
 
 class PODetailView(DetailView):
     model = ClientPO
-    template_name = 'sales/clientPO_details.html'
+    template_name = 'sales/clientPO_detail.html'
 
-
+    '''
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+    '''
 
 '''
 #Example for simple modelforms(for testing)
@@ -133,14 +134,16 @@ class JOListView(generic.ListView):
     template_name = 'sales/JO_list.html'
 
     for JobOrder in all_JO:
-        client_items = ClientItem.objects.get(client_po=JobOrder.client_po.id)
+        client_items = ClientItem.objects.filter(client_po_id=JobOrder.client_po.id)
 
 class ClientCreditStatusListView(generic.ListView):
     model = ClientCreditStatus
     all_credit_status = ClientCreditStatus.objects.all()
     template_name = 'sales/client_payment_monitoring.html'
 
+'''
 class RushOrderListView(generic.ListView):
     model = ClientPO
     all_rush_order = ClientPO.objects.get(ClientPO.lead_time<=14)
     template_name = 'sales/rush_order_list.html'
+'''
