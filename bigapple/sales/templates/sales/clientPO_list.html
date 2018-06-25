@@ -37,7 +37,6 @@
           	<tr>
           	  <th>Purchase Order ID</th>
               <th>Client</th>
-              <th>Items</th>
               <th>Date Issued</th>
               <th>Date Required</th>
               <th>Date Laminate</th>
@@ -47,20 +46,14 @@
     		</thead>
     		<tbody>
     		
-    		    {% if all_PO %}
-    				{% for ClientPO in all_PO %}
+    		    {% if object_list %}
+    				{% for ClientPO in object_list %}
     			<tr>
     				<td>
     				<a href="{{ ClientPO.get_absolute_url }}"></a>
     				</td>
     				<td>
     				({{ ClientPO.client }})
-    				</td>
-    				<td>
-    				{% for ClientItem in client_items) %}
-                        {{ ClientItem.products }}
-                        <br/>
-                        {% endfor %}
     				</td>
     				<td>
 		          	({{ ClientPO.date_issued }})

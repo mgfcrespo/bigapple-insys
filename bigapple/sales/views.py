@@ -11,7 +11,7 @@ from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, reverse, HttpResponseRedirect
 from django.db.models import aggregates
-from bigapple.production.models import JobOrder
+from production.models import JobOrder
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client
 from .forms import AddSupplier_Form
 from .forms import ClientPOForm
@@ -156,23 +156,15 @@ class POListView(generic.ListView):
     model = ClientPO
     template_name = 'sales/clientPO_list.html'
 
-    def get_PO(request, self):
+    def get_queryset(request, self):
         if request.session['session_position'] == 'GM':
-            all_PO = self.model.objects.all()
+            return self.model.objects.all()
         elif request.session['session_position'] == 'SC':
-            all_PO = self.model.objects.all()
+            return self.model.objects.all()
         elif request.session['session_position'] == 'SA':
-            all_PO = self.model.objects.filter(client_po_id = ClientPO.id) #fix!
+            return self.model.objects.filter(client_po_id = ClientPO.id) #fix!
         else:
-            all_PO = self.model.objects.filter() #fix!
-
-        return render(request, 'sales/clientPO_list.html', {all_PO})
-
-    def get_items(request, all_PO):
-        for ClientPO in all_PO:
-            client_items = ClientItem.objects.filter(client_po_id = ClientPO.id)
-
-            return render(request, 'sales/clientPO_list.html', {client_items})
+            return self.model.objects.filter() #fix!
 
 class PODetailView(DetailView):
     model = ClientPO
@@ -243,7 +235,7 @@ class JOListView(generic.ListView):
     template_name = 'sales/JO_list.html'
 
     for JobOrder in all_JO:
-        client_items = ClientItem.objects.get(client_po=JobOrder.client_po.id)
+        client_items = ClientItem.objects.get(client_po_id=JobOrder.client_po.id)
 
 class ClientCreditStatusListView(generic.ListView):
     model = ClientCreditStatus
