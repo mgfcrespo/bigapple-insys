@@ -33,20 +33,20 @@
         	<thead>
           	<tr>
           	  <th>Client</th>
-          	  <th>Credit Status</th>
-          	  <th>Invoice Issued</th>
-          	  <th>Total Paid</th>
-          	  <th>Outstanding Balance</th>
-          	  <th>Date Due</th>
+          	  <th>Purchase Order ID</th>
+          	  <th>Date Issued</th>
+          	  <th>Date Required</th>
+          	  <th>Lead Time</th>
+          	  <th>Items</th>
           	</tr>
     		</thead>
     		<tbody>
 
-    		    {% if all_credit_status %}
-    				{% for ClientCreditStatus in all_credit_status %}
+    		    {% if all_rush_order %}
+    				{% for ClientPO in all_rush_order %}
     			<tr>
     				<td>
-    				<a href="{{ ClientCreditStatus.get_absolute_url }}">{{ __str__ }}</a>
+    				<a href="{{ ClientPO.get_absolute_url }}">{{ __str__ }}</a>
     				</td>
     				<td>
     				({{ ClientCreditStatus.client }})
