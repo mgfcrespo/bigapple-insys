@@ -97,6 +97,9 @@ class SalesInvoice(models.Model):
     net_vat = models.DecimalField('net_vat', blank=True, decimal_places=3, max_digits=12)
     amount_due = models.DecimalField('amount_due', blank=True, decimal_places=3, max_digits=12)
 
+    def __str__(self):
+        return 'PO_%s' % (self.id)
+
 class ClientCreditStatus(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     credit_status = models.BooleanField('credit_status', default=True)
@@ -109,24 +112,23 @@ class ClientCreditStatus(models.Model):
         verbose_name_plural = "Client credit status"
 
 class Supplier(models.Model):
-    DEPARTMENT = (
-        ('AF', 'Accounting and Finance'),
-        ('HR', 'Human Resource'),
-        ('IT', 'Information Technology'),
-        ('M', 'Marketing'),
-        ('P', 'Purchasing'),
-        ('RD', 'Research and Development'),
-        ('S', 'Sales'),
-        ('O', 'Others'),
 
+    DEPARTMENT = (
+        ('Accounting and Finance', 'Accounting and Finance'),
+        ('Human Resource', 'Human Resource'),
+        ('Information Technology', 'Information Technology'),
+        ('Marketing', 'Marketing'),
+        ('Purchasing', 'Purchasing'),
+        ('Research and Development', 'Research and Development'),
+        ('Sales', 'Sales'),
+        ('Others', 'Others'),
     )
 
     SUPPLIERTYPE = (
-        ('RM', 'Raw Material'),
-        ('MP', 'Machinery/Parts'),
-        ('I', 'Ink'),
-        ('O', 'Others'),
-
+        ('Raw Material', 'Raw Material'),
+        ('Machinery/Parts', 'Machinery/Parts'),
+        ('Ink', 'Ink'),
+        ('Others', 'Others'),
     )
 
     company_name = models.CharField('company_name', max_length=200)
@@ -134,8 +136,8 @@ class Supplier(models.Model):
     mobile_number = models.CharField('mobile_number', max_length=11)
     email_address = models.CharField('email_address', max_length=200)
     description = models.CharField('description', max_length=200, blank =True)
-    supplier_type = models.CharField('suppier_type', choices=SUPPLIERTYPE, max_length=200, default='not specified')
-    department = models.CharField('department', choices=DEPARTMENT, max_length=200, default='not specified')
+    supplier_type = models.CharField('suppier_type', max_length=200, default='not specified', choices=SUPPLIERTYPE)
+    department = models.CharField('department', max_length=200, default='not specified', choices=DEPARTMENT)
 
     def __str__(self):
         return self.company_name

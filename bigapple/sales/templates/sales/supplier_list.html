@@ -1,34 +1,31 @@
-{% extends 'base_ui/global_base_ui.html' %}
+{% extends 'sales_coordinator_page_ui.html' %}
 
   {% block content %}
 
 	<div class="wrapper container">
-		<table class="striped">
+		<table class="striped" style = "font-size:12px;">
         	<thead>
           	<tr>
           	  	<th>Company</th>
 				<th>Type of Supplier</th>
-			  	<th>Description</th>
 				<th>Contact Person</th>
             	<th>Department</th>
               	<th>Mobile Number</th>
 				<th>Email</th>
-				<th>ID</th>
           	</tr>
     		</thead>
     		<tbody>
-				{% for query in query  %}
+				{% for supplier in supplier  %}
     			<tr>
-    				<td>{{ query.company_name }}</td>
-    				<td>{{ query.get_supplier_type_display }}</td>
-    				<td>{{ query.description }}</td>
-    				<td>{{ query.contact_person }}</td>
-    				<td>{{ query.get_department_display }}</td>
-    				<td>{{ query.mobile_number }}</td>
-					<td>{{ query.email_address }}</td>
+    				<td>{{ supplier.company_name }}</td>
+    				<td>{{ supplier.supplier_type }}</td>
+    				<td>{{ supplier.contact_person }}</td>
+    				<td>{{ supplier.department }}</td>
+    				<td>{{ supplier.mobile_number }}</td>
+					<td>{{ supplier.email_address }}</td>
 					<td>
-						<a class="amber btn" href="{% url 'sales:supplier_details' pk=query.id %}" style="font-size:12px;">Edit</a>
-						<a class="red btn" href="{% url 'sales:delete_supplier' pk=query.id %}" style="font-size:12px;">Delete</a>
+						<a class="amber btn" href="{% url 'sales:supplier_edit' supplier.id %}" style="font-size:12px;">View</a>
+						<a class="red btn" href="{% url 'sales:supplier_delete' supplier.id %}" style="font-size:12px;">Delete</a>
 					</td>
     			</tr>
 				{% endfor %}

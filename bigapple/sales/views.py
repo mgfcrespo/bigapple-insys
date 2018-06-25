@@ -2,106 +2,65 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
 from .models import ClientItem, ClientPO, ClientCreditStatus, Client, Product
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .forms import ClientPOFormItems, ClientPOForm
 from django.urls import reverse_lazy
 from django.forms import formset_factory, inlineformset_factory
 
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.shortcuts import render, reverse, HttpResponseRedirect
+from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse
 from django.db.models import aggregates
 from production.models import JobOrder
-from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client
-from .forms import AddSupplier_Form
-from .forms import ClientPOForm
+from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice
+from .forms import ClientPOForm, SupplierForm
 
 
 # Create your views here.
-def sales_details(request):
-    context = {
-        'title': 'Sales Content'
-    }
-
-    return render(request, 'sales/sales_details.html', context)
-
-
 # CRUD SUPPLIER
-def supplier_list(request):
-    query = Supplier.objects.all()
-    context = {
-        'query' : query,
-    }
-    return render(request, 'sales/supplier_list.html', context)
-
-
-def add_supplier(request):
-    query = Supplier.objects.all() 
-    context = {
-        'title' : "New Supplier",
-        'actiontype' : "Add",
-        'query' : query,
-    }
-
+def supplier_add(request):
+    form = SupplierForm(request.POST)
     if request.method == 'POST':
-        company_name = request.POST['company_name']
-        contact_person = request.POST['contact_person']
-        department = request.POST['department']
-        mobile_number = request.POST['mobile_number']
-        email_address = request.POST['email_address']
-        supplier_type = request.POST['supplier_type']
-        description = request.POST['description']
+        HttpResponse(print(form.errors))
+        if form.is_valid():
+            form.save()
+            return redirect('sales:supplier_list')
 
-        result = Supplier(company_name=company_name, contact_person=contact_person, department=department,
-        mobile_number=mobile_number, email_address=email_address, supplier_type=supplier_type, description=description)
-        result.save()
-        return HttpResponseRedirect('../supplier_list')
+    context = {
+        'form' : form,
+        'title' : "Add Supplier",
+        'actiontype' : "Add",
+    }
+    return render(request, 'sales/supplier_add.html', context)
+
+def supplier_list(request):
+    supplier = Supplier.objects.all()
+    context = {
+        'supplier' : supplier 
+    }
+    return render (request, 'sales/supplier_list.html', context)
+
+def supplier_edit(request, id):
+    supplier = Supplier.objects.get(id=id)
+    form = SupplierForm(request.POST or None, instance=supplier)
+
+    if form.is_valid():
+        form.save()
+        return redirect('sales:supplier_list')
     
-    else:
-        return render(request, 'sales/add_supplier.html', context)
+    context = {
+        'form' : form,
+        'supplier' : supplier,
+        'title' : "Edit Supplier",
+        'actiontype' : "Edit",
+    }
+    return render(request, 'sales/supplier_add.html', context)
 
-def supplier_details(request, pk):
-    if pk:
-        supplier = Supplier.objects.get(pk=pk)
-        context = {
-            'title' : "Edit Supplier",
-            'actiontype' : "Edit",
-            'supplier' : supplier,
-        }
-
-        return render(request, 'sales/edit_supplier.html', context)
-
-
-def edit_supplier(request, pk):
-    # supplier = Supplier.objects.get(pk=pk)
-
-    data = {'company_name': request.POST['company_name']}
-
-    Supplier.objects.filter(pk=pk).update(data)
+def supplier_delete(request, id):
+    supplier = Supplier.objects.get(id=id)
+    supplier.delete()
+    return redirect('sales:supplier_list')
     
-    # if request.method == 'POST':
-    #     company_name = request.POST['company_name']
-    #     contact_person = request.POST['contact_person']
-    #     department = request.POST['department']
-    #     mobile_number = request.POST['mobile_number']
-    #     email_address = request.POST['email_address']
-    #     supplier_type = request.POST['supplier_type']
-    #     description = request.POST['description']
-
-    #     result = Supplier(company_name=company_name, contact_person=contact_person, department=department,
-    #     mobile_number=mobile_number, email_address=email_address, supplier_type=supplier_type, 
-    #     description=description)
-        
-    #     supplier.save(result)
-        
-    return HttpResponseRedirect('../../supplier_list')
-
-def delete_supplier(request, pk):
-    if pk:
-        supplier = Supplier.objects.get(pk=pk)
-        supplier.delete()
-        return HttpResponseRedirect('../../supplier_list')
-
 # CRUD PO
 '''
 def add_clientPO(request):
@@ -258,3 +217,20 @@ class RushOrderListView(generic.ListView):
     model = ClientPO
     # all_rush_order = ClientPO.objects.get(ClientPO.lead_time<=14)
     template_name = 'sales/rush_order_list.html'
+
+#SALES INVOICE CRUD
+def sales_invoice_list(request):
+    sales_invoice = SalesInvoice.objects.all()
+    context = {
+        'sales_invoice' : sales_invoice 
+    }
+    return render (request, 'sales/sales_invoice_list.html', context)
+
+def sales_invoice_details(request, id):
+    sales_invoice = SalesInvoice.objects.get(id=id)
+  
+    context = {
+        'sales_invoice' : sales_invoice,
+        'title' : sales_invoice.id,
+    }
+    return render(request, 'sales/sales_invoice_details.html', context)
