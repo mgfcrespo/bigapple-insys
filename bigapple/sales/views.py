@@ -11,7 +11,7 @@ from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, reverse, HttpResponseRedirect
 from django.db.models import aggregates
-from production.models import JobOrder
+from .models import JobOrder
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client
 from .forms import AddSupplier_Form
 from .forms import ClientPOForm
@@ -156,26 +156,27 @@ class POListView(generic.ListView):
     model = ClientPO
     template_name = 'sales/clientPO_list.html'
 
-    def get_PO(request):
-        if request.session['session_position'] = 'GM':
-            all_PO = ClientPO.objects.all()
-        elif request.session['session_position'] = 'SC':
-            all_PO = ClientPO.objects.all()
-        elif request.session['session_position'] = 'SA':
-        # all_PO = ClientPO.objects.get(client = )
+    def get_PO(request, model):
+        if request.session['session_position'] == 'GM':
+            all_PO = model.objects.all()
+        elif request.session['session_position'] == 'SC':
+            all_PO = model.objects.all()
+        elif request.session['session_position'] == 'SA':
+            all_PO = model.objects.filter(client_po_id = ClientPO.id) #fix!
         else:
-        # all_PO = ClientPO.objects.get
+            all_PO = model.objects.filter() #fix!
 
         return render(request, 'sales/clientPO_list.html', {all_PO})
 
-    for ClientPO in all_PO:
-        client_items = ClientItem.objects.get(client_po_id=ClientPO.id)
+    def get_items(request, all_PO):
+        for ClientPO in all_PO:
+            client_items = ClientItem.objects.filter(client_po_id = ClientPO.id)
+
+            return render(request, 'sales/clientPO_list.html', {client_items})
 
 class PODetailView(DetailView):
     model = ClientPO
     template_name = 'sales/clientPO_details.html'
-
-
 
 '''
 #Example for simple modelforms(for testing)
