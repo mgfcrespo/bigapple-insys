@@ -53,6 +53,9 @@ class POListView(generic.ListView):
     all_PO = ClientPO.objects.all()
     template_name = 'sales/clientPO_list.html'
 
+    for ClientPO in all_PO:
+        client_items = ClientItem.objects.get(client_po=ClientPO.id)
+
 class PODetailView(DetailView):
     model = ClientPO
     template_name = 'sales/clientPO_details.html'
@@ -129,7 +132,15 @@ class JOListView(generic.ListView):
     all_JO = JobOrder.objects.all()
     template_name = 'sales/JO_list.html'
 
-    #def get_queryset(self):
-    #return JobOrder.objects.all()
+    for JobOrder in all_JO:
+        client_items = ClientItem.objects.get(client_po=JobOrder.client_po.id)
 
+class ClientCreditStatusListView(generic.ListView):
+    model = ClientCreditStatus
+    all_credit_status = ClientCreditStatus.objects.all()
+    template_name = 'sales/client_payment_monitoring.html'
 
+class RushOrderListView(generic.ListView):
+    model = ClientPO
+    all_rush_order = ClientPO.objects.get(ClientPO.lead_time<=14)
+    template_name = 'sales/rush_order_list.html'
