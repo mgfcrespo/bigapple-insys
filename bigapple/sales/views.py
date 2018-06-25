@@ -154,11 +154,22 @@ def delete_clientPO(request, id):
 
 class POListView(generic.ListView):
     model = ClientPO
-    all_PO = ClientPO.objects.all()
     template_name = 'sales/clientPO_list.html'
 
+    def get_PO(request):
+        if request.session['session_position'] = 'GM':
+            all_PO = ClientPO.objects.all()
+        elif request.session['session_position'] = 'SC':
+            all_PO = ClientPO.objects.all()
+        elif request.session['session_position'] = 'SA':
+        # all_PO = ClientPO.objects.get(client = )
+        else:
+        # all_PO = ClientPO.objects.get
+
+        return render(request, 'sales/clientPO_list.html', {all_PO})
+
     for ClientPO in all_PO:
-        client_items = ClientItem.objects.get(client_po=ClientPO.id)
+        client_items = ClientItem.objects.get(client_po=ClientPO.client_po_id)
 
 class PODetailView(DetailView):
     model = ClientPO
@@ -240,5 +251,5 @@ class ClientCreditStatusListView(generic.ListView):
 
 class RushOrderListView(generic.ListView):
     model = ClientPO
-    all_rush_order = ClientPO.objects.get(ClientPO.lead_time<=14)
+    # all_rush_order = ClientPO.objects.get(ClientPO.lead_time<=14)
     template_name = 'sales/rush_order_list.html'
