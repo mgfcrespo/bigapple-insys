@@ -169,7 +169,7 @@ class POListView(generic.ListView):
         return render(request, 'sales/clientPO_list.html', {all_PO})
 
     for ClientPO in all_PO:
-        client_items = ClientItem.objects.get(client_po=ClientPO.client_po_id)
+        client_items = ClientItem.objects.get(client_po_id=ClientPO.id)
 
 class PODetailView(DetailView):
     model = ClientPO
