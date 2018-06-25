@@ -156,15 +156,15 @@ class POListView(generic.ListView):
     model = ClientPO
     template_name = 'sales/clientPO_list.html'
 
-    def get_PO(request, model):
+    def get_PO(request, self):
         if request.session['session_position'] == 'GM':
-            all_PO = model.objects.all()
+            all_PO = self.model.objects.all()
         elif request.session['session_position'] == 'SC':
-            all_PO = model.objects.all()
+            all_PO = self.model.objects.all()
         elif request.session['session_position'] == 'SA':
-            all_PO = model.objects.filter(client_po_id = ClientPO.id) #fix!
+            all_PO = self.model.objects.filter(client_po_id = ClientPO.id) #fix!
         else:
-            all_PO = model.objects.filter() #fix!
+            all_PO = self.model.objects.filter() #fix!
 
         return render(request, 'sales/clientPO_list.html', {all_PO})
 
