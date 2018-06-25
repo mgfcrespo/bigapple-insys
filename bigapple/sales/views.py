@@ -231,11 +231,21 @@ def create_client_po(request):
 
 class JOListView(generic.ListView):
     model = JobOrder
-    all_JO = JobOrder.objects.all()
     template_name = 'sales/JO_list.html'
 
-    for JobOrder in all_JO:
-        client_items = ClientItem.objects.get(client_po_id=JobOrder.client_po.id)
+    def get_queryset(request, self):
+        if request.session['session_position'] == 'GM':
+            return self.model.objects.all()
+        elif request.session['session_position'] == 'PM':
+            return self.model.objects.all()
+        elif request.session['session_position'] == 'SV':
+            return self.model.objects.all()
+        elif request.session['session_position'] == 'LL':
+            return self.model.objects.all()
+        elif request.session['session_position'] == 'SC':
+            return self.model.objects.all()
+        elif request.session['session_position'] == 'SA':
+            return self.model.objects.filter(client_po_id = ClientPO.id) #fix!
 
 class ClientCreditStatusListView(generic.ListView):
     model = ClientCreditStatus
