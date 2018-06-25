@@ -249,8 +249,10 @@ class JOListView(generic.ListView):
 
 class ClientCreditStatusListView(generic.ListView):
     model = ClientCreditStatus
-    all_credit_status = ClientCreditStatus.objects.all()
     template_name = 'sales/client_payment_monitoring.html'
+
+    def get_queryset(self):
+        return ClientCreditStatus.objects.all()
 
 class RushOrderListView(generic.ListView):
     model = ClientPO
