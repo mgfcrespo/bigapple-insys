@@ -19,7 +19,7 @@ class ClientPOForm(ModelForm):
 
     class Meta:
         model = ClientPO
-        fields = ('date_required', 'terms', 'other_info')
+        fields = ('terms', 'other_info')
         #widgets = {'date_required':DateTimePicker(options={"format": "YYYY-MM-DD", "pickSeconds": False}}
 
 

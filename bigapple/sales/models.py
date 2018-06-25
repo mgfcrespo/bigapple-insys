@@ -20,7 +20,7 @@ class Product(models.Model):
 #could be substitute for quotation request
 class ClientPO(models.Model):
     date_issued = models.DateTimeField('date_issued', auto_now_add=True, blank=True)
-    date_required = models.DateTimeField('date_required', blank=True)
+    date_required = models.DateTimeField('date_required', auto_now_add=True, blank=True)
     note = models.CharField('note', max_length=200, default='')
     terms = models.CharField('terms', max_length=250)
     other_info = models.CharField('other_info', max_length=250)
@@ -51,7 +51,7 @@ class ClientItem(models.Model):
     )
 
     products = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
-    laminate = models.BooleanField('laminate', default=0)
+    laminate = models.BooleanField('laminate', default=False)
     width = models.DecimalField('width', decimal_places=3, max_digits=12)
     length = models.DecimalField('length', decimal_places=3, max_digits=12)
     color = models.CharField('color', choices=COLOR, max_length=200)
