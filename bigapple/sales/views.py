@@ -233,9 +233,6 @@ class JOListView(generic.ListView):
     for JobOrder in all_JO:
         client_items = ClientItem.objects.get(client_po=JobOrder.client_po.id)
 
-    #def get_queryset(self):
-    #return JobOrder.objects.all()
-
 class ClientCreditStatusListView(generic.ListView):
     model = ClientCreditStatus
     all_credit_status = ClientCreditStatus.objects.all()
