@@ -57,18 +57,14 @@
               </div>
             </div>
             <div id="card-widgets">
-            	            	<div class="row">
+            	<div class="row">
                 	<div class="col s12">
                   		<ul id="task-card" class="collection with-header">
                     		<li class="collection-header teal accent-4">
 		                      	<a href=#>
         	              	<h4 class="task-card-title"><i class="material-icons">event_note</i> Production Schedule</h4>
             	          	</a>
-                	    </li>
-                        <li>
-                            <div class="container"> 
-                                
-                            <p class="task-card-date">For the month of
+                	      	<p class="task-card-date">For the month of
                       
                     	  	<script type="text/javascript">
                       		var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -83,77 +79,10 @@
         	              	</script>
                       
                       		</p>
-                                
-                            <div class="gantt-target"></div>
-                            </div>
-                            <script>
-                                var tasks = [
-                                    {
-                                        start: '2018-10-01',
-                                        end: '2018-10-08',
-                                        name: 'Redesign website',
-                                        id: "Task 0",
-                                        progress: 20
-                                    },
-                                    {
-                                        start: '2018-10-03',
-                                        end: '2018-10-06',
-                                        name: 'Write new content',
-                                        id: "Task 1",
-                                        progress: 5,
-                                        dependencies: 'Task 0'
-                                    },
-                                    {
-                                        start: '2018-10-04',
-                                        end: '2018-10-08',
-                                        name: 'Apply new styles',
-                                        id: "Task 2",
-                                        progress: 10,
-                                        dependencies: 'Task 1'
-                                    },
-                                    {
-                                        start: '2018-10-08',
-                                        end: '2018-10-09',
-                                        name: 'Review',
-                                        id: "Task 3",
-                                        progress: 5,
-                                        dependencies: 'Task 2'
-                                    },
-                                    {
-                                        start: '2018-10-08',
-                                        end: '2018-10-10',
-                                        name: 'Deploy',
-                                        id: "Task 4",
-                                        progress: 0,
-                                        dependencies: 'Task 2'
-                                    },
-                                    {
-                                        start: '2018-10-11',
-                                        end: '2018-10-11',
-                                        name: 'Go Live!',
-                                        id: "Task 5",
-                                        progress: 0,
-                                        dependencies: 'Task 4',
-                                        custom_class: 'bar-milestone'
-                                    },
-                                ]
-                                var gantt_chart = new Gantt(".gantt-target", tasks, {
-                                    on_click: function (task) {
-                                        console.log(task);
-                                    },
-                                    on_date_change: function(task, start, end) {
-                                        console.log(task, start, end);
-                                    },
-                                    on_progress_change: function(task, progress) {
-                                        console.log(task, progress);
-                                    },
-                                    on_view_change: function(mode) {
-                                        console.log(mode);
-                                    }
-                                });
-                                console.log(gantt_chart);
-	                       </script>
-                        </li>
+                    	</li>
+                    	<li>
+                    		<h1>*Gantt Chart will be shown here.</h1>
+                    	</li>
                   	</ul>
                 </div>
             </div>

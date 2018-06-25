@@ -46,7 +46,6 @@ def delete_clientPO(request, id):
 
 # List views
 
-<<<<<<< HEAD
 class POListView(ListView):
     template_name = 'sales/clientPO_list.html'
 
@@ -63,25 +62,6 @@ class PODetailView(DetailView):
         context = super().get_context_data(**kwargs)
         return context
     '''
-=======
-class POListView(generic.ListView):
-    model = ClientPO
-    template_name = 'sales/clientPO_list.html'
-
-    def get_queryset(request, self):
-        if request.session['session_position'] == 'GM':
-            return self.model.objects.all()
-        elif request.session['session_position'] == 'SC':
-            return self.model.objects.all()
-        elif request.session['session_position'] == 'SA':
-            return self.model.objects.filter(client_po_id = ClientPO.id) #fix!
-        else:
-            return self.model.objects.filter() #fix!
-
-class PODetailView(DetailView):
-    model = ClientPO
-    template_name = 'sales/clientPO_details.html'
->>>>>>> d90f47610df1c6e29be720c51f85c542ef22e2fc
 
 '''
 #Example for simple modelforms(for testing)
@@ -150,40 +130,20 @@ def create_client_po(request):
 
 class JOListView(generic.ListView):
     model = JobOrder
+    all_JO = JobOrder.objects.all()
     template_name = 'sales/JO_list.html'
 
-<<<<<<< HEAD
     for JobOrder in all_JO:
         client_items = ClientItem.objects.filter(client_po_id=JobOrder.client_po.id)
-=======
-    def get_queryset(request, self):
-        if request.session['session_position'] == 'GM':
-            return self.model.objects.all()
-        elif request.session['session_position'] == 'PM':
-            return self.model.objects.all()
-        elif request.session['session_position'] == 'SV':
-            return self.model.objects.all()
-        elif request.session['session_position'] == 'LL':
-            return self.model.objects.all()
-        elif request.session['session_position'] == 'SC':
-            return self.model.objects.all()
-        elif request.session['session_position'] == 'SA':
-            return self.model.objects.filter(client_po_id = ClientPO.id) #fix!
->>>>>>> d90f47610df1c6e29be720c51f85c542ef22e2fc
 
 class ClientCreditStatusListView(generic.ListView):
     model = ClientCreditStatus
+    all_credit_status = ClientCreditStatus.objects.all()
     template_name = 'sales/client_payment_monitoring.html'
 
-<<<<<<< HEAD
 '''
-=======
-    def get_queryset(self):
-        return ClientCreditStatus.objects.all()
-
->>>>>>> d90f47610df1c6e29be720c51f85c542ef22e2fc
 class RushOrderListView(generic.ListView):
     model = ClientPO
-    # all_rush_order = ClientPO.objects.get(ClientPO.lead_time<=14)
+    all_rush_order = ClientPO.objects.get(ClientPO.lead_time<=14)
     template_name = 'sales/rush_order_list.html'
 '''

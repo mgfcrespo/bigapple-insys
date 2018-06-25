@@ -42,8 +42,8 @@
     		</thead>
     		<tbody>
 
-    		    {% if object_list %}
-    				{% for ClientCreditStatus in object_list %}
+    		    {% if all_credit_status %}
+    				{% for ClientCreditStatus in all_credit_status %}
     			<tr>
     				<td>
     				<a href="{{ ClientCreditStatus.get_absolute_url }}">{{ __str__ }}</a>

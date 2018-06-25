@@ -19,7 +19,6 @@
           	</tr>
     		</thead>
     		<tbody>
-<<<<<<< HEAD
 
 
     				{% for ClientPO in object_list %}
@@ -30,20 +29,6 @@
     				</td>
     				<td>
     				{{ ClientPO.client }}
-=======
-    		
-    		    {% if object_list %}
-    				{% for ClientPO in object_list %}
-    			<tr>
-    				<td>
-    				<a href="{{ ClientPO.get_absolute_url }}"></a>
-    				</td>
-    				<td>
-    				({{ ClientPO.client }})
-    				</td>
-    				<td>
-		          	({{ ClientPO.date_issued }})
->>>>>>> d90f47610df1c6e29be720c51f85c542ef22e2fc
     				</td>
     				<td>
 		          	{{ ClientPO.date_issued }}

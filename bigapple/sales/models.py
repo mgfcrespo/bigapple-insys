@@ -28,15 +28,6 @@ class ClientPO(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
     confirmed = models.BooleanField('confirmed', default=False)
-<<<<<<< HEAD
-=======
-    '''
-    for rush order
-    start_date = datetime.datetime.strptime(self.request.data.get('date_issued'), "%Y-%m-%d %H:%M")
-    end_date = datetime.datetime.strptime(self.request.data.get('date_required'), "%Y-%m-%d %H:%M")
-    lead_time = abs((end_date - start_date).days)
-    '''
->>>>>>> d90f47610df1c6e29be720c51f85c542ef22e2fc
 
     def __str__(self):
         return 'PO_%s' % (self.id)
