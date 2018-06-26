@@ -1,11 +1,10 @@
 
     {% extends "client_page_ui.html" %}
     {% block content %}
-<p>{{ ClientPO.id }}</p>
 <body>
 	<div class="wrapper">
-
-		<table>
+		<h3>PO {{clientpo.id}}</h3>
+		<table class="striped">
         	<thead>
           	<tr>
           	  <th>Laminate</th>
@@ -19,33 +18,32 @@
     		</thead>
     		<tbody>
 
-
-    				{% for ClientItem in ClientPO.client_item_set.all %}
+    				{% for clientitem in clientpo.clientitem_set.all %}
     			<tr>
     				<td>
-    				{{ ClientItem.laminate }}
+    				{{ clientitem.laminate }}
     				</td>
     				<td>
-		          	{{ ClientItem.width }}
+		          	{{ clientitem.width }}
     				</td>
     				<td>
-    				{{ ClientItem.length}}
+    				{{ clientitem.length}}
     				</td>
     				<td>
-    				{{ ClientItem.color }}
+    				{{ clientitem.color }}
     				</td>
     				<td>
-    				{{ ClientItem.gusset}}
+    				{{ clientitem.gusset}}
     				</td>
     				<td>
-    				{{ ClientItem.quantity }}
+    				{{ clientitem.quantity }}
     				</td>
                     <td>
-    				{{ ClientItem.item_price}}
+    				{{ clientitem.item_price}}
     				</td>
     			</tr>
     		{% endfor %}
-
+			<tr>Total: {{clientpo.total_amount}}</tr>
 
 			</tbody>
     	</table>

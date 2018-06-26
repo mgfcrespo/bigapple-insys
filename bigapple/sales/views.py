@@ -68,7 +68,6 @@ class PODetailView(DetailView):
 class POFormCreateView(FormView):
     form_class = ClientPOForm
 
-
 class POFormCreateView(CreateView):
     model = ClientItem
     template_name = 'sales/clientPO_form.html'
@@ -83,10 +82,11 @@ class POFormCreateView(CreateView):
 def create_client_po(request):
     #note:instance should be an object
     clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=2, can_delete=True)
+
     if request.method == "POST":
         form = ClientPOForm(request.POST)
         message = ""
-
+        print(form)
         if form.is_valid():
             new_form = form.save()
             new_form = new_form.pk
@@ -94,7 +94,7 @@ def create_client_po(request):
 
 
             formset = clientpo_item_formset(request.POST, instance=form_instance)
-
+            print(formset)
             if formset.is_valid():
                 for form in formset:
                     form.save()
@@ -109,11 +109,9 @@ def create_client_po(request):
 
             else:
                 message += "Formset error"
-                print(formset.errors)
-
 
         else:
-            message = form.errors
+            message = ""
 
 
         #todo change index.html. page should be redirected after successful submission

@@ -4,12 +4,12 @@
     <tbody>
     {% for form in formset %}
     <tr id="{{ form.prefix }}-row" class="formset_class">
+        {% for field in form.hidden_fields %}{{ field }}{% endfor %}
         {% for field in form %}
         {% if form.instance.pk %} {{ form.DELETE }}{% endif %}
                 <span class ="text-danger small">{{field.errors}}</span>
                 <th>{{field.label_tag}}</th>
                 <td>{{field}}</td>
-
         {% endfor %}
     </tr>
     {% endfor %}
