@@ -209,12 +209,12 @@ class ClientCreditStatusListView(ListView):
     template_name = 'sales/client_payment_monitoring.html'
 
 
-
+'''
 class RushOrderListView(generic.ListView):
     model = ClientPO
     all_rush_order = ClientPO.objects.get(ClientPO.lead_time<=14)
     template_name = 'sales/rush_order_list.html'
-
+'''
 
 
 #SALES INVOICE CRUD
