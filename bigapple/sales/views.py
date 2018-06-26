@@ -2,28 +2,96 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
 from .models import ClientItem, ClientPO, ClientCreditStatus, Client, Product
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .forms import ClientPOFormItems, ClientPOForm
 from django.urls import reverse_lazy
 from django.forms import formset_factory, inlineformset_factory
 
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.shortcuts import render, reverse, HttpResponseRedirect
+from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse
 from django.db.models import aggregates
 from production.models import JobOrder
-from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client
-from .forms import AddSupplier_Form
-from .forms import ClientPOForm
+from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice
+from .forms import ClientPOForm, SupplierForm
 
 
 # Create your views here.
-def sales_details(request):
-    context = {
-        'title': 'Sales Content'
-    }
+# CRUD SUPPLIER
+def supplier_add(request):
+    form = SupplierForm(request.POST)
+    if request.method == 'POST':
+        HttpResponse(print(form.errors))
+        if form.is_valid():
+            form.save()
+            return redirect('sales:supplier_list')
 
-    return render(request, 'sales/sales_details.html', context)
+    context = {
+        'form' : form,
+        'title' : "Add Supplier",
+        'actiontype' : "Add",
+    }
+    return render(request, 'sales/supplier_add.html', context)
+
+
+
+def supplier_list(request):
+    supplier = Supplier.objects.all()
+    context = {
+        'supplier' : supplier 
+    }
+    return render (request, 'sales/supplier_list.html', context)
+
+def supplier_edit(request, id):
+    supplier = Supplier.objects.get(id=id)
+    form = SupplierForm(request.POST or None, instance=supplier)
+
+    if form.is_valid():
+        form.save()
+        return redirect('sales:supplier_list')
+    
+    context = {
+        'form' : form,
+        'supplier' : supplier,
+        'title' : "Edit Supplier",
+        'actiontype' : "Edit",
+    }
+    return render(request, 'sales/supplier_add.html', context)
+
+def supplier_delete(request, id):
+    supplier = Supplier.objects.get(id=id)
+    supplier.delete()
+    return redirect('sales:supplier_list')
+    
+# CRUD PO
+'''
+def add_clientPO(request):
+        query = ClientPO.objects.all()
+        context = {
+            'title': "New Purchase Order",
+            'actiontype': "Add",
+            'query': query,
+        }
+
+        if request.method == 'POST':
+            date_issued = request.POST['date_issued']
+            date_required = request.POST['date_required']
+            terms = request.POST['terms']
+            other_info = request.POST['other_info']
+            client = request.POST[Client] #modify, get Client.name
+            client_items = request.POST.getlist('client_items') #modify, make loop for item list
+            total_amount = request.POST['total_amount'] #system should calculate; NOT AN INPUT
+            laminate = request.POST['laminate']
+            confirmed = request.POST['confirmed']
+
+            result = ClientPO(date_issued=date_issued, date_required=date_required, terms=terms, other_info=other_info, client=client, client_items=client_items
+                              total_amount=total_amount, laminate=laminate, confirmed=confirmed)
+            result.save()
+            return HttpResponseRedirect('../clientPO_list')
+
+        else:
+            return render(request, 'sales/clientPO_form.html', context)
+'''
 
 
 def edit_clientPO(request, id):
@@ -134,14 +202,35 @@ class JOListView(generic.ListView):
     for JobOrder in all_JO:
         client_items = ClientItem.objects.filter(client_po_id=JobOrder.client_po.id)
 
-class ClientCreditStatusListView(generic.ListView):
+
+class ClientCreditStatusListView(ListView):
     model = ClientCreditStatus
     all_credit_status = ClientCreditStatus.objects.all()
     template_name = 'sales/client_payment_monitoring.html'
 
-'''
+
+
 class RushOrderListView(generic.ListView):
     model = ClientPO
     all_rush_order = ClientPO.objects.get(ClientPO.lead_time<=14)
     template_name = 'sales/rush_order_list.html'
-'''
+
+
+
+#SALES INVOICE CRUD
+def sales_invoice_list(request):
+    sales_invoice = SalesInvoice.objects.all()
+    context = {
+        'sales_invoice' : sales_invoice 
+    }
+    return render (request, 'sales/sales_invoice_list.html', context)
+
+def sales_invoice_details(request, id):
+    sales_invoice = SalesInvoice.objects.get(id=id)
+  
+    context = {
+        'sales_invoice' : sales_invoice,
+        'title' : sales_invoice.id,
+    }
+    return render(request, 'sales/sales_invoice_details.html', context)
+

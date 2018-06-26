@@ -1,11 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% includes "global_base_ui.html" %}
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'sales_coordinator_page_ui.html' %}
 
-</body>
-</html>
+{% block content %}
+<div id="basic-form" class="section">
+  <div class="row">
+    <div class="col s6 offset-s3">
+      <div class="card-panel">
+        <h4 class="header1">PO{{ title }}</h4>
+        <div class="row">
+          
+          <form class="col s12" action = "#" method="POST" role="form">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col s12">
+                <label for="client">Client PO: </label>
+                <span>{{ sales_invoice.client_po }}</span>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <label for="client">Client: </label>
+                    <span>{{ sales_invoice.client }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <label for="client">Date Issued: </label>
+                    <span>{{ sales_invoice.date_issued }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <label for="client">Total Amount: </label>
+                    <span>{{ sales_invoice.total_amount }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <label for="client">Discount: </label>
+                    <span>{{ sales_invoice.discount }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <label for="client">Net Vat: </label>
+                    <span>{{ sales_invoice.net_vat }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <label for="client">Amount Due: </label>
+                    <span>{{ sales_invoice.amount_due }}</span>
+                </div>
+            </div>
+
+            
+        </form>
+        </div>
+      </div>                        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

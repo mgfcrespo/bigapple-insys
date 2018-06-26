@@ -1,11 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% includes "global_base_ui.html" %}
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'sales_coordinator_page_ui.html' %}
 
-</body>
-</html>
+  {% block content %}
+
+	<div class="wrapper container">
+		<table class="striped" style = "font-size:12px;">
+        	<thead>
+          	<tr>
+          	  	<th>PO#</th>
+				<th>Client</th>
+                <th>Date Issued</th>
+                <th>Total Amount</th>
+            	<th>Amount Due</th>
+          	</tr>
+    		</thead>
+    		<tbody>
+				{% for sales_invoice in sales_invoice  %}
+    			<tr>
+                    <td><a href="{% url 'sales:sales_invoice_details' sales_invoice.id %}"> {{ sales_invoice.id }} </a></td>
+                    <td> {{ sales_invoice.client }} </td>
+                    <td> {{ sales_invoice.date_issued }} </td>
+                    <td> {{ sales_invoice.total_amount }} </td>
+    				<td> {{ sales_invoice.amount_due }} </td>
+    			</tr>
+				{% endfor %}
+			</tbody>
+    	</table>
+	</div>
+{% endblock %}

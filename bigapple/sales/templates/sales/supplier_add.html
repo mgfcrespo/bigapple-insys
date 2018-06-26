@@ -1,66 +1,60 @@
-{% extends 'base_ui/global_base_ui.html' %}
+{% extends 'sales_coordinator_page_ui.html' %}
 
 {% block content %}
 <div id="basic-form" class="section">
   <div class="row">
-    <div class="col s4 offset-s4">
+    <div class="col s6 offset-s3">
       <div class="card-panel">
         <h4 class="header1">{{ title }}</h4>
         <div class="row">
           
-          <form class="col s12" action = "{% url 'sales:edit_supplier' pk=supplier.id %}" method="POST" role="form">
+          <form class="col s12" action = "#" method="POST" role="form">
             {% csrf_token %}
-            <p hidden name = "pk_id" id = "pk_id">{{ supplier.id }}</p>
             <div class="row">
               <div class="input-field col s12">
-                <input id="company_name"  name = "company_name" type="text" required="true" value= "{{ supplier.company_name }}">
+                {{ form.company_name }}
                 <label for="company_name">Company Name</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
-                <input id="contact_person" name = "contact_person" type="text" required="true" value= "{{ supplier.contact_person }}">
+                {{ form.contact_person }}
                 <label for="contact_person">Contact Person</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
-                <select id="department" name = "department" type="text" required="true">
-                  <option value = "{{ supplier.department }}"></option>
-                </select>
+                {{ form.department }}
                 <label for="department">Department</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
-                <input id="mobile_number" name = "mobile_number" type="text" required="true" value= "{{ supplier.mobile_number }}">
+                {{ form.mobile_number }}
                 <label for="mobile_number">Mobile Number</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
-                <input id="email_address" name = "email_address" type="email" required="true" value= "{{ supplier.email_address }}">
+                {{ form.email_address }}
                 <label for="email_address">Email Address</label>
               </div>
             </div>    
             <div class="row">
               <div class="input-field col s12">
-                <select id="supplier_type" name = "supplier_type" type="text" required="true">
-                  <option value = "{{ supplier.supplier_type }}">{{ supplier.get_supplier_type_display }}</option>
-                </select>
+                {{ form.supplier_type }}
                 <label for="supplier_type">Type of Supplier</label>
-                
               </div>
             </div>                                                             
             <div class="row">
               <div class="input-field col s12">
-                <input id="description" name = "description" type="text" value="{{ supplier.description }}">
+                {{ form.description }}
                 <label for="description">Description</label>
               </div>
               <div class="row">
                 <div class="center">
-                  <button class="btn btn-small green" type="sumbit">{{ actiontype }}</button>
-                  <button class="btn btn-small red" type="clear">Clear</button>
+                  <button class="btn btn-small green" type="submit">{{ actiontype }}</button>
+                  <button class="btn btn-small red" typle="clear">Clear</button>
                 </div>
               </div>
             </div>
