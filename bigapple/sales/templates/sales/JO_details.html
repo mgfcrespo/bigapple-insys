@@ -1,0 +1,265 @@
+{% extends 'sales_coordinator_page_ui.html' %}
+
+{% block content %}
+<div class = "container">
+    {% csrf_token %}
+    <ul class="collection with-header">
+        <ul class="collection-item">
+            <!-- start of PO details -->
+            <li class="collection-header"><h4>PO# {{jo.client_po}} </h4></li>
+            <div class = "row container">
+                <div class="col s6">
+                    <label for="">Status: </label>
+                    <span>{{ jo.status }}</span>
+                </div>
+                <div class="col s6">
+                    <label for="">Remark: </label>
+                    <span>{{ jo.remarks}}</span>
+                </div>
+            </div>
+        </ul>
+        
+        <!-- start of Extrusion details -->
+        <li class="collection-item">
+            <div class = "row">
+                <ul class="collection with-header">
+                    <li class="collection-header"><h5>Extruder Schedule</h5></li>
+                    <li class="collection-item">
+                        <div class="row">
+                            <div class="col s3">
+                                <label for="">Date: </label>
+                                <span>{{ jo.extruder_schedule.date }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Machine: </label>
+                                <span>{{ jo.extruder_schedule.machine }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Operator: </label>
+                                <span>{{ jo.extruder_schedule.operator }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Shift: </label>
+                                <span>{{ jo.extruder_schedule.shift }}</span>
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <div class="col s3">
+                                <label for="">Type of Stock: </label>
+                                <span>{{ jo.extruder_schedule.stock_kind }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Material: </label>
+                                <span>{{ jo.extruder_schedule.material }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Treating: </label>
+                                <span>{{ jo.extruder_schedule.treating }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Time-in: </label>
+                                <span>{{ jo.extruder_schedule.time_in }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s3">
+                                <label for="">Weight Rolls: </label>
+                                <span>{{ jo.extruder_schedule.weight_rolls }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Core Weight: </label>
+                                <span>{{ jo.extruder_schedule.core_weight }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Net-Weight: </label>
+                                <span>{{ jo.extruder_schedule.net_weight }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Time-out: </label>
+                                <span>{{ jo.extruder_schedule.time_out }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s3">
+                                <label for="">Output kilos: </label>
+                                <span>{{ jo.extruder_schedule.output_kilos }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Number of Rolls: </label>
+                                <span>{{ jo.extruder_schedule.number_rolls }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Starting Scrap: </label>
+                                <span>{{ jo.extruder_schedule.starting_scrap }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Extruder Scrap: </label>
+                                <span>{{ jo.extruder_schedule.extruder_scrap }}</span>
+                            </div>
+                        </div>
+                        <div class = "row">
+                            <div class="col s12">
+                                <label for="">Remarks: </label>
+                                <span>{{ jo.extruder_schedule.remarks }}</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- start of Printing details -->
+            <div class = "row">
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>Printing Schedule</h4></li>
+                    <li class="collection-item">
+                        <div class="row">
+                            <div class="col s3">
+                                <label for="">Date: </label>
+                                <span>{{ jo.printing_schedule.date }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Machine: </label>
+                                <span>{{ jo.printing_schedule.machine }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Operator: </label>
+                                <span>{{ jo.printing_schedule.operator }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Shift: </label>
+                                <span>{{ jo.printing_schedule.shift }}</span>
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <div class="col s3">
+                                <label for="">Repeat Order: </label>
+                                <span>{{ jo.printing_schedule.repeat_order }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Output kilos: </label>
+                                <span>{{ jo.printing_schedule.output_kilos }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Number of Rolls: </label>
+                                <span>{{ jo.printing_schedule.number_rolls }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Time-in: </label>
+                                <span>{{ jo.printing_schedule.time_in }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s3">
+                                <label for="">Starting Scrap: </label>
+                                <span>{{ jo.printing_schedule.starting_scrap }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Printing Scrap: </label>
+                                <span>{{ jo.printing_schedule.printing_scrap }}</span>
+                            </div>
+                            <div class="col s3"></div>
+                            <div class="col s3">
+                                <label for="">Time-out: </label>
+                                <span>{{ jo.printing_schedule.time_out }}</span>
+                            </div>
+                        </div>
+                        <div class = "row">
+                            <div class="col s12">
+                                <label for="">Remarks: </label>
+                                <span>{{ jo.printing_schedule.remarks }}</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- start of Cutting details -->
+            <div class = "row">
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>Cutting Schedule</h4></li>
+                    <li class="collection-item">
+                        <div class="row">
+                            <div class="col s3">
+                                <label for="">Date: </label>
+                                <span>{{ jo.cutting_schedule.date }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Machine: </label>
+                                <span>{{ jo.cutting_schedule.machine }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Operator: </label>
+                                <span>{{ jo.cutting_schedule.operator }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Shift: </label>
+                                <span>{{ jo.cutting_schedule.shift }}</span>
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <div class="col s3">
+                                <label for="">Print Name: </label>
+                                <span>{{ jo.cutting_schedule.print_name }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Sealing: </label>
+                                <span>{{ jo.cutting_schedule.sealing }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Handle: </label>
+                                <span>{{ jo.cutting_schedule.handle }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Time-in: </label>
+                                <span>{{ jo.cutting_schedule.time_in }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s3">
+                                <label for="">Line: </label>
+                                <span>{{ jo.cutting_schedule.line }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Quantity: </label>
+                                <span>{{ jo.cutting_schedule.quantity }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Output Kilost: </label>
+                                <span>{{ jo.cutting_schedule.output_kilos }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Time-out: </label>
+                                <span>{{ jo.cutting_schedule.time_out }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s3">
+                                <label for="">Number of Rolls: </label>
+                                <span>{{ jo.cutting_schedule.number_rolls }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Starting Scrap: </label>
+                                <span>{{ jo.cutting_schedule.starting_scrap }}</span>
+                            </div>
+                            <div class="col s3">
+                                <label for="">Cutting Scrap: </label>
+                                <span>{{ jo.cutting_schedule.cutting_scrap }}</span>
+                            </div>
+                            <div class="col s3">
+                            </div>
+                        </div>
+                        <div class = "row">
+                            <div class="col s12">
+                                <label for="">Remarks: </label>
+                                <span>{{ jo.cutting_schedule.remarks }}</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>
+
+
+{% endblock %}

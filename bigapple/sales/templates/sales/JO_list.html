@@ -1,93 +1,26 @@
+{% extends 'sales_coordinator_page_ui.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-	  {% includes "global_base_ui.html" %}
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="msapplication-tap-highlight" content="no">
-    <title>Big Apple Plastic Manufacturing Co.</title>
+  {% block content %}
 
-    <!-- Favicons-->
-    <link rel="icon" href="../../../accounts/images/BAicon.png" sizes="32x32">
-
-    <!-- CORE CSS-->
-    <link href="../../../accounts/static/css/materialize.css" type="text/css" rel="stylesheet">
- 	<link href="../../../accounts/static/css/style.css" type="text/css" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Custom CSS-->
-    <link href="../../../frontend/static/css/custom.css" type="text/css" rel="stylesheet">
-
-    <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
-    <link href="../../../accounts/static/vendors/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet">
-    <link href="../../../accounts/static/vendors/prism/prism.css" type="text/css" rel="stylesheet">
-
-  </head>
-
-{% block content %}
-
-<body>
-
-	<div class="wrapper">
-		<table>
+	<div class="wrapper container">
+		<table class="striped" style = "font-size:12px;">
         	<thead>
           	<tr>
-          	  <th>Job Order ID</th>
-              <th>Purchase Order ID</th>
-              <th>Client</th>
-              <th>Items</th>
-              <th>Date Issued</th>
-              <th>Date Required</th>
-              <th>Status</th>
-              <th>Remarks</th>
+          	  	<th>PO#</th>
+				<th>Status</th>
+				<th>Remarks</th>
           	</tr>
     		</thead>
     		<tbody>
-
-    		    {% if all_JO %}
-    				{% for JobOrder in all_JO %}
+				{% for jo in jo  %}
     			<tr>
-    				<td>
-    				<a href="{{ JobOrder.get_absolute_url }}">{{ __str__ }}</a>
-    				</td>
-    				<td>
-    				({{ JobOrder.client_po.__str__ }})
-    				</td>
-    				<td>
-    				({{ JobOrder.client_po.client }})
-    				</td>
-    				<td>
-		          	{% for ClientItem in client_items %} #modify!
-                        {{ ClientItem.products }}
-                        <br/>
-                        {% endfor %}
-    				</td>
-    				<td>
-    				({{ JobOrder.client_po.date_issued }})
-    				</td>
-    				<td>
-    				({{ JobOrder.client_po.date_required }})
-    				</td>
-    				<td>
-    				({{ JobOrder.status }})
-    				</td>
-    				<td>
-    				({{ JobOrder.remarks }})
-    				</td>
+    				<td><a href="{% url 'sales:JO_details' jo.id %}">{{ jo.client_po }}</a></td>
+    				<td>{{ jo.status }}</td>
+    				<td>{{ jo.remarks }}</td>
     			</tr>
-    		{% endfor %}
-
-    		{% else %}
-      		<p>There are no Job Orders in the database.</p>
-
-    		{% endif %}
+				{% endfor %}
 			</tbody>
     	</table>
 	</div>
 
-</body>
-
-
 {% endblock %}
-</html>

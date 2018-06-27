@@ -110,8 +110,6 @@ def delete_clientPO(request, id):
         client_po.delete()
         return HttpResponseRedirect('../clientPO_list')
 
-# CRUD JO
-
 # List views
 
 class POListView(ListView):
@@ -193,7 +191,7 @@ def create_client_po(request):
                               )
 
 
-
+'''
 class JOListView(generic.ListView):
     model = JobOrder
     all_JO = JobOrder.objects.all()
@@ -202,7 +200,8 @@ class JOListView(generic.ListView):
     for JobOrder in all_JO:
         client_items = ClientItem.objects.filter(client_po_id=JobOrder.client_po.id)
 
-
+'''
+		
 class ClientCreditStatusListView(ListView):
     model = ClientCreditStatus
     all_credit_status = ClientCreditStatus.objects.all()
@@ -216,7 +215,23 @@ class RushOrderListView(generic.ListView):
     template_name = 'sales/rush_order_list.html'
 '''
 
+#JO CRUD
+def JO_list(request):
+    jo = JobOrder.objects.all()
+    context = {
+        'jo' : jo 
+    }
+    return render (request, 'sales/JO_details.html', context)
 
+def JO_details(request, id):
+    jo = JobOrder.objects.get(id=id)
+  
+    context = {
+        'jo' : jo,
+        'title' : jo.id,
+    }
+    return render(request, 'sales/JO_details.html', context)
+	
 #SALES INVOICE CRUD
 def sales_invoice_list(request):
     sales_invoice = SalesInvoice.objects.all()
