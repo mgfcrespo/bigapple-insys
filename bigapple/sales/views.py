@@ -54,7 +54,7 @@ def supplier_edit(request, id):
         'form' : form,
         'supplier' : supplier,
         'title' : "Edit Supplier",
-        'actiontype' : "Edit",
+        'actiontype' : "Submit",
     }
     return render(request, 'sales/supplier_add.html', context)
 
@@ -99,7 +99,7 @@ def edit_clientPO(request, id):
 
         context = {
             'title': "Edit Purchase Order",
-            'actiontype': "Edit",
+            'actiontype': "Submit",
             'client_po': client_po,
         }
 
@@ -221,7 +221,7 @@ def JO_list(request):
     context = {
         'jo' : jo 
     }
-    return render (request, 'sales/JO_details.html', context)
+    return render (request, 'sales/JO_list.html', context)
 
 def JO_details(request, id):
     jo = JobOrder.objects.get(id=id)

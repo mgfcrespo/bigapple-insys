@@ -73,14 +73,11 @@ class SupplierForm(forms.ModelForm):
     supplier_type = forms.CharField(max_length=200, label = 'supplier_type', widget = forms.Select(choices=SUPPLIERTYPE,
         attrs={'id':'supplier_type', 'name':'supplier_type', 'type':'text', 'required':'true'}
     ))
-    department = forms.CharField(max_length=500, label = 'department', widget = forms.Select(choices=DEPARTMENT,
-        attrs={'id':'department', 'name':'department', 'type':'text', 'required':'true'}
-    ))
-
+    
     class Meta:
         model = Supplier
         fields = ('company_name', 'contact_person', 'mobile_number', 'email_address',
-        'description', 'supplier_type', 'department')
+        'description', 'supplier_type')
     
     #class ClientPOForm(forms.ModelForm):
         

@@ -112,17 +112,6 @@ class ClientCreditStatus(models.Model):
 
 class Supplier(models.Model):
 
-    DEPARTMENT = (
-        ('Accounting and Finance', 'Accounting and Finance'),
-        ('Human Resource', 'Human Resource'),
-        ('Information Technology', 'Information Technology'),
-        ('Marketing', 'Marketing'),
-        ('Purchasing', 'Purchasing'),
-        ('Research and Development', 'Research and Development'),
-        ('Sales', 'Sales'),
-        ('Others', 'Others'),
-    )
-
     SUPPLIERTYPE = (
         ('Raw Material', 'Raw Material'),
         ('Machinery/Parts', 'Machinery/Parts'),
@@ -136,7 +125,6 @@ class Supplier(models.Model):
     email_address = models.CharField('email_address', max_length=200)
     description = models.CharField('description', max_length=200, blank =True)
     supplier_type = models.CharField('suppier_type', max_length=200, default='not specified', choices=SUPPLIERTYPE)
-    department = models.CharField('department', max_length=200, default='not specified', choices=DEPARTMENT)
-
+    
     def __str__(self):
         return self.company_name
