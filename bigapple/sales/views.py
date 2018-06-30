@@ -125,7 +125,6 @@ class POListView(ListView):
         elif request.session['session_position'] == 'Client':
             return ClientPO.objects.filter(client__full_name=request.session['session_fullname'])
 
-
 class PODetailView(DetailView):
     model = ClientPO
     template_name = 'sales/clientPO_detail.html'
