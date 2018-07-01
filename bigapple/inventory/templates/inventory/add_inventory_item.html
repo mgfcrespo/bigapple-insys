@@ -12,6 +12,12 @@
             {% csrf_token %}
             <div class="row">
               <div class="input-field col s12">
+                {{ form.control_number }}
+                <label for="control_number">Control Number</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
                 {{ form.item_name }}
                 <label for="item_name">Item</label>
               </div>
@@ -26,6 +32,12 @@
               <div class="input-field col s12">
                 {{ form.kilos }}
                 <label for="kilos">Kilos</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                {{ form.description }}
+                <label for="description">Description</label>
               </div>
             </div>
               <div class="row">
