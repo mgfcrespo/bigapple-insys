@@ -1,4 +1,4 @@
-{% extends 'sales_coordinator_page_ui.html' %}
+<!--{% extends 'sales_coordinator_page_ui.html' %}-->
 
 {% block content %}
 <div id="basic-form" class="section">
@@ -12,46 +12,48 @@
             {% csrf_token %}
             <div class="row">
               <div class="input-field col s12">
-                {{ form.company_name }}
-                <label for="company_name">Company Name</label>
+                {{ form.control_number }}
+                <label for="control_number">Control Number</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
-                {{ form.contact_person }}
-                <label for="contact_person">Contact Person</label>
+                {{ form.item_name }}
+                <label for="item_name">Item</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
-                {{ form.mobile_number }}
-                <label for="mobile_number">Mobile Number</label>
+                {{ form.quantity }}
+                <label for="quantity">Quantity</label>
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
-                {{ form.email_address }}
-                <label for="email_address">Email Address</label>
+                {{ form.kilos }}
+                <label for="kilos">Kilos</label>
               </div>
-            </div>                                            
+            </div>
             <div class="row">
               <div class="input-field col s12">
                 {{ form.description }}
                 <label for="description">Description</label>
               </div>
+            </div>
               <div class="row">
                 <div class="center">
                   <button class="btn btn-small green" type="submit">{{ actiontype }}</button>
                   <button class="btn btn-small red" typle="clear">Clear</button>
                 </div>
               </div>
-            </div>
+              
         </form>
+            
         </div>
-      </div>                        
-      </div>
-    </div>
+    </div>            
   </div>
+ </div>
+</div>
 
 
 {% endblock %}

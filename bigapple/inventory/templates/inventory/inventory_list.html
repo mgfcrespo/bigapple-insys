@@ -1,0 +1,62 @@
+{% extends 'base_ui/global_base_ui.html' %}
+
+    {% block content %}
+    
+        {% block content %}
+    <body>
+        <div class="wrapper">
+            <h3>PO {{clientpo.id}}</h3>
+            <table class="striped">
+                <thead>
+                <tr>
+                  <th>Item Name</th>
+                  <th>Quantity</th>
+                  <th>Kilos</th>
+                  <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                       <!-- {% for clientitem in clientpo.clientitem_set.all %} -->
+                    <tr>
+                        <td>
+                        {{ clientitem.name }}
+                        </td>
+                        <td>
+                        {{ clientitem.quantity }}
+                        </td>
+                        <td>
+                        {{ clientitem.kilos}}
+                        </td>
+                        <td>
+                        {{ clientitem.description }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>Total: {{clientpo.total_amount}}</tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </body>
+
+    {% endblock %}      
+    
+<!-- ================================================Scripts================================================ -->
+
+    {% block script %}
+    <script>
+        $(document).ready(function(){
+            $('#editBTN').click(function(){
+            if($('#name').prop('disabled'))
+            {
+             $('#textfieldToClose').prop('disabled', false)
+            }
+            else{
+                 $('#textfieldToClose').prop('disabled', true)
+              }
+            });
+        })
+    </script>
+{% endblock %}

@@ -115,9 +115,15 @@ def delete_clientPO(request, id):
 class POListView(ListView):
     template_name = 'sales/clientPO_list.html'
 
-    def get_queryset(self):
-        return ClientPO.objects.all()
-
+    def get_queryset(self, request):
+        if request.session['session_position'] == 'GM':
+            return ClientPO.objects.all()
+        elif request.session['session_position'] == 'SC':
+            return ClientPO.objects.all()
+        elif request.session['session_position'] == 'SA':
+            return ClientPO.objects.filter(client__sales_agent=request.session['session_fullname']) #modify! untested
+        elif request.session['session_position'] == 'Client':
+            return ClientPO.objects.filter(client__full_name=request.session['session_fullname'])
 
 class PODetailView(DetailView):
     model = ClientPO
