@@ -5,8 +5,7 @@ from django.urls import reverse
 from accounts.models import Client
 from decimal import Decimal
 from datetime import date
-from django.db.models.aggregates import Sum
-from django.db.models import Prefetch
+
 # Create your models here.
 
 class Product(models.Model):
@@ -47,13 +46,8 @@ class ClientPO(models.Model):
 
     def __str__(self):
         lead_zero = str(self.id).zfill(5)
-<<<<<<< HEAD
-        po_number = 'PO_%s' % (lead_zero)
-        return po_number
-=======
         po_number = 'PO%s' % (lead_zero)
         return  po_number
->>>>>>> aff9194ef60a9affa4c7bf1b951caebdf8602607
 
 
     def calculate_leadtime(self):
@@ -111,48 +105,26 @@ class ClientItem(models.Model):
 
 # class CostingSheet(models.Model)
 
+
+
 class SalesInvoice(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
     date_issued = models.DateField('date_issued', auto_now_add=True, blank=True)
-    total_amount = models.DecimalField('total_amount', blank=True, decimal_places=3, max_digits=12)#before discount and net_vat
-    discount = models.DecimalField('discount', decimal_places=3, max_digits=12, default=0)
-    net_vat = models.DecimalField('net_vat', decimal_places=3, max_digits=12, default=0)
-    amount_due = models.DecimalField('amount_due', blank=True, decimal_places=3, max_digits=12)#(self.total_amount * self.discount * self.net_vat)
+    total_amount = models.DecimalField('total_amount', blank=True, decimal_places=3, max_digits=12)
+    discount = models.DecimalField('discount', blank=True, decimal_places=3, max_digits=12)
+    net_vat = models.DecimalField('net_vat', blank=True, decimal_places=3, max_digits=12)
+    amount_due = models.DecimalField('amount_due', blank=True, decimal_places=3, max_digits=12)
 
     def __str__(self):
         return 'PO_%s' % (self.id)
 
-    def calculate_amount_due(self):
-        total = (self.total_amount * self.discount * self.net_vat)
-        return total
-
-    def save(self, *args, **kwargs):
-        if self.discount == 0:
-            self.discount = 1
-        if self.net_vat == 0:
-            self.net_vat = 1
-
-        self.amount_due = self.calculate_amount_due()
-        super(SalesInvoice, self).save(*args, **kwargs)
-
 class ClientCreditStatus(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    status = models.BooleanField()
-    outstanding_balance = models.DecimalField('outstanding_balance', decimal_places=3, max_digits=12) #accumulation of ClientPayment.balance
+    outstanding_balance = models.DecimalField('outstanding_balance', decimal_places=3, max_digits=12)
 
     def __str__(self):
         return self.id
-
-
-    def calculate_outstanding_balance(self):
-        client_payment = ClientPayment.objects.all()#edit this to filter by client
-        total = client_payment.aggregate(Sum('balance'))
-        return total
-
-    def save(self, *args, **kwargs):
-        self.outstanding_balance = self.calculate_outstanding_balance()
-        super(ClientCreditStatus, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = "Client credit status"
@@ -160,20 +132,11 @@ class ClientCreditStatus(models.Model):
 class ClientPayment(models.Model):
     invoice_issued = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE)
     date_due = models.DateField('date_due', auto_now_add=True, blank=True)
-    total_paid = models.DecimalField('total_paid', decimal_places=3, max_digits=12) #how much the user paid per invoice
-    balance =  models.DecimalField('balance', decimal_places=3, max_digits=12) #total_paid - SalesInvoice.amount_due (can be negative)
+    total_paid = models.DecimalField('total_paid', decimal_places=3, max_digits=12)
     credit_status = models.ForeignKey(ClientCreditStatus, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.id
-
-    def calculate_balance(self):
-        total = (self.total_paid - self.invoice_issued.amount_due)
-        return total
-
-    def save(self, *args, **kwargs):
-        self.balance = self.calculate_balance()
-        super(ClientPayment, self).save(*args, **kwargs)
 
 class Supplier(models.Model):
 
