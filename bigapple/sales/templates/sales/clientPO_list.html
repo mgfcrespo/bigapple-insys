@@ -11,7 +11,6 @@
         	<thead>
           	<tr>
           	  <th>Purchase Order ID</th>
-              <th>Client</th>
               <th>Date Issued</th>
               <th>Date Required</th>
               <th>Date Confirmed</th>
@@ -25,10 +24,7 @@
     			<tr>
     				<td>
 
-    				<a href="{% url 'sales:po-detail-view' ClientPO.id %}">PO #{{ ClientPO.id}}</a>
-    				</td>
-    				<td>
-    				{{ ClientPO.client }}
+    				<a href="{% url 'sales:po-detail-view' ClientPO.id %}">{{ ClientPO}}</a>
     				</td>
     				<td>
 		          	{{ ClientPO.date_issued }}

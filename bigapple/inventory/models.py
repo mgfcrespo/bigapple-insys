@@ -22,7 +22,7 @@ class SupplierItems(models.Model):
     item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='not specified')
     price = models.IntegerField('price')
     description = models.CharField('description', max_length=200)
-    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    supplier = models.CharField('supplier', max_length=200)
 
     class Meta:
         verbose_name_plural = "Supplier items"

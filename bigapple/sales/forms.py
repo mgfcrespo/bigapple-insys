@@ -13,25 +13,25 @@ from .models import ClientItem, ClientPO, Product, Supplier
 
 class ClientPOFormItems(ModelForm):
     client_po = forms.CharField(label='')
-    laminate = forms.BooleanField(initial=True, widget=forms.CheckboxInput)
+    id = forms.BooleanField(label='')
+    laminate = forms.BooleanField(initial=True, required=False)
 
     class Meta:
         model = ClientItem
-        fields = ('products', 'width', 'length', 'color', 'gusset', 'quantity', 'laminate')
-        widgets = {
-            'laminate': widgets.CheckboxInput(attrs={'class': 'required checkbox form-control'})
-        }
+        fields = ('products', 'width', 'length', 'gusset', 'color', 'quantity', 'laminate')
 
     def __init__(self, *args, **kwargs):
         super(ClientPOFormItems, self).__init__(*args, **kwargs)
-        for laminate in self.fields:
-            self.fields[laminate].required = False
+        self.fields['id'].widget.attrs.update({'label': ''})
+        #self.fields['laminate'].widget.attrs.update({'id': 'check'})
+        #self.fields['products'].widget.attrs.update({'label': 'Type'})
+
 
 class ClientPOForm(ModelForm):
 
     class Meta:
         model = ClientPO
-        fields = ('terms', 'other_info')
+        fields = ('payment_terms', 'other_info')
 
         #widgets = {'date_required':DateTimePicker(options={"format": "YYYY-MM-DD", "pickSeconds": False}}
 

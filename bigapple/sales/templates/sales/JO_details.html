@@ -1,13 +1,13 @@
-{% extends 'sales_coordinator_page_ui.html' %}
-
-{% block content %}
-<div class = "container">
+{% extends 'sales_coordinator_page_ui.html' %} {% block content %}
+<div class="container">
     {% csrf_token %}
     <ul class="collection with-header">
         <ul class="collection-item">
             <!-- start of PO details -->
-            <li class="collection-header"><h4>PO# {{jo.client_po}} </h4></li>
-            <div class = "row container">
+            <li class="collection-header">
+                <h4>PO# {{jo.client_po}} </h4>
+            </li>
+            <div class="row container">
                 <div class="col s6">
                     <label for="">Status: </label>
                     <span>{{ jo.status }}</span>
@@ -18,12 +18,14 @@
                 </div>
             </div>
         </ul>
-        
+
         <!-- start of Extrusion details -->
         <li class="collection-item">
-            <div class = "row">
+            <div class="row">
                 <ul class="collection with-header">
-                    <li class="collection-header"><h5>Extruder Schedule</h5></li>
+                    <li class="collection-header">
+                        <h5>Extruder Schedule</h5>
+                    </li>
                     <li class="collection-item">
                         <div class="row">
                             <div class="col s3">
@@ -41,7 +43,7 @@
                             <div class="col s3">
                                 <label for="">Shift: </label>
                                 <span>{{ jo.extruder_schedule.shift }}</span>
-                            </div> 
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col s3">
@@ -97,7 +99,7 @@
                                 <span>{{ jo.extruder_schedule.extruder_scrap }}</span>
                             </div>
                         </div>
-                        <div class = "row">
+                        <div class="row">
                             <div class="col s12">
                                 <label for="">Remarks: </label>
                                 <span>{{ jo.extruder_schedule.remarks }}</span>
@@ -106,11 +108,13 @@
                     </li>
                 </ul>
             </div>
-            
+
             <!-- start of Printing details -->
-            <div class = "row">
+            <div class="row">
                 <ul class="collection with-header">
-                    <li class="collection-header"><h4>Printing Schedule</h4></li>
+                    <li class="collection-header">
+                        <h4>Printing Schedule</h4>
+                    </li>
                     <li class="collection-item">
                         <div class="row">
                             <div class="col s3">
@@ -128,7 +132,7 @@
                             <div class="col s3">
                                 <label for="">Shift: </label>
                                 <span>{{ jo.printing_schedule.shift }}</span>
-                            </div> 
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col s3">
@@ -163,7 +167,7 @@
                                 <span>{{ jo.printing_schedule.time_out }}</span>
                             </div>
                         </div>
-                        <div class = "row">
+                        <div class="row">
                             <div class="col s12">
                                 <label for="">Remarks: </label>
                                 <span>{{ jo.printing_schedule.remarks }}</span>
@@ -174,9 +178,11 @@
             </div>
 
             <!-- start of Cutting details -->
-            <div class = "row">
+            <div class="row">
                 <ul class="collection with-header">
-                    <li class="collection-header"><h4>Cutting Schedule</h4></li>
+                    <li class="collection-header">
+                        <h4>Cutting Schedule</h4>
+                    </li>
                     <li class="collection-item">
                         <div class="row">
                             <div class="col s3">
@@ -194,7 +200,7 @@
                             <div class="col s3">
                                 <label for="">Shift: </label>
                                 <span>{{ jo.cutting_schedule.shift }}</span>
-                            </div> 
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col s3">
@@ -248,7 +254,7 @@
                             <div class="col s3">
                             </div>
                         </div>
-                        <div class = "row">
+                        <div class="row">
                             <div class="col s12">
                                 <label for="">Remarks: </label>
                                 <span>{{ jo.cutting_schedule.remarks }}</span>
