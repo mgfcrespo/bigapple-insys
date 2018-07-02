@@ -47,13 +47,9 @@ class ClientPO(models.Model):
 
     def __str__(self):
         lead_zero = str(self.id).zfill(5)
-<<<<<<< HEAD
         po_number = 'PO_%s' % (lead_zero)
         return po_number
-=======
-        po_number = 'PO%s' % (lead_zero)
-        return  po_number
->>>>>>> aff9194ef60a9affa4c7bf1b951caebdf8602607
+
 
     '''
     def calculate_leadtime(self):
