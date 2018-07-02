@@ -24,4 +24,6 @@ urlpatterns = [
         # client credit urls
           path('client_credit_list/', views.client_credit_list, name='sales_client_credit_list'),
           path('client_credit_details/<int:id>/', views.client_credit_details, name='sales_client_credit_details'),
+        # rush order urls
+          path('rush_order_list/', views.rush_order_list, name='sales_rush_order_list'),
 ];

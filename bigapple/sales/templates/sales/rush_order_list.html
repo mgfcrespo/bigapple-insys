@@ -42,11 +42,10 @@
     		</thead>
     		<tbody>
 
-    		    {% if all_rush_order %}
-    				{% for ClientPO in all_rush_order %}
+    				{% for rush_order in rush_order %}
     			<tr>
     				<td>
-    				<a href="{{ ClientPO.get_absolute_url }}">{{ __str__ }}</a>
+    				<a href="{% url 'sales:rush_order_list' rush_order.id %}">{{ rush_order.id }}</a>
     				</td>
     				<td>
     				({{ ClientCreditStatus.client }})
@@ -69,10 +68,6 @@
     			</tr>
     		{% endfor %}
 
-    		{% else %}
-      		<p>There are no Client Payments in the database.</p>
-
-    		{% endif %}
 			</tbody>
     	</table>
 	</div>
