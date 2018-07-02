@@ -5,11 +5,11 @@ from django.contrib.auth.decorators import login_required
 from .models import Supplier
 from .models import SupplierItems, SupplierPO, SupplierPOTracking, MaterialRequisition
 from .models import PurchaseRequisition, Inventory, InventoryCountAsof
-from .forms import SupplierItemsForm, MaterialRequisitionForm
+from .forms import SupplierItemsForm, MaterialRequisitionForm, InventoryForm
 
 
 # Create your views here.
-def supplier_rm_add(request):
+def supplier_item_add(request):
     form = SupplierItemsForm(request.POST)
     supplier = Supplier.objects.all()
     if request.method == 'POST':
@@ -89,3 +89,28 @@ def materials_requisition_form(request):
     }
 
     return render(request, 'inventory/materials_requisition_form.html', context)
+
+# Inventory
+def inventory_list(request):
+    rm = Inventory.objects.all()
+    context = {
+        'rm' : rm 
+    }
+    return render(request, 'inventory/inventory_list.html', context)
+
+def inventory_edit(request, id):
+    inventory = Inventory.objects.get(id=id)
+    form = InventoryForm(request.POST or None, instance=inventory)
+
+    if form.is_valid():
+        form.save()
+        return HttpResponseRedirect('../../inventory_list')
+    
+    context = {
+        'form' : form,
+        'inventory' : inventory,
+        'title' : "Edit RM",
+        'actiontype' : "Submit",
+    }
+    return render(request, 'inventory/inventory_edit.html', context)
+

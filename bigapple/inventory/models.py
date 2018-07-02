@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import date, datetime
+from datetime import date
 from accounts.models import Employee
 from sales.models import Supplier
 
@@ -70,7 +70,7 @@ class PurchaseRequisition(models.Model):
     description = models.CharField('description', max_length=200)
     quantity = models.IntegerField('quantity')
     approval = models.BooleanField('approval', default=False)
-
+    
 
 class Inventory(models.Model):
     RM_TYPES = (
@@ -82,9 +82,11 @@ class Inventory(models.Model):
     )
     rm_name = models.CharField('rm_name', max_length=200, default='not specified')
     rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='not specified')
-    description = models.CharField('description', max_length=200)
     quantity = models.IntegerField('quantity')
 
+
+    def __str__(self):
+        return self.rm_name 
 
 class InventoryCountAsof(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)

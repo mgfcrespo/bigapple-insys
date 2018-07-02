@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm, ValidationError, Form, widgets
 from django.contrib.admin.widgets import AdminDateWidget
-from .models import Supplier, SupplierItems, MaterialRequisition
+from .models import Supplier, SupplierItems, MaterialRequisition, Inventory
 from datetime import date, datetime
 
 class SupplierItemsForm(forms.ModelForm):
@@ -49,8 +49,13 @@ class SupplierItemsForm(forms.ModelForm):
 
 class MaterialRequisitionForm(forms.ModelForm):
 
-    date_issued = forms.DateField(initial=date.today)
     class Meta:
         model = MaterialRequisition
         fields = ('date_issued', 'issued_to', 'brand', 'description', 'quantity', 'to_be_used_for',
         'shift', 'approval')
+
+class InventoryForm(forms.ModelForm):
+
+    class Meta:
+        model = Inventory
+        fields = ('rm_name', 'rm_type', 'quantity')
