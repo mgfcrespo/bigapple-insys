@@ -223,25 +223,29 @@ class JOListView(generic.ListView):
         client_items = ClientItem.objects.filter(client_po_id=JobOrder.client_po.id)
 
 '''
-		
-class ClientCreditStatusListView(ListView):
-    model = ClientCreditStatus
-    all_credit_status = ClientCreditStatus.objects.all()
-    template_name = 'sales/client_payment_monitoring.html'
 
+# RUSH ORDER CRUD
+def rush_order_list(request):
+    rush_order = ClientPO.objects.filter() #modify! lead time input
+    context = {
+        'rush_order' : rush_order
+    }
+    return render (request, 'sales/rush_order_list.html', context)
 
-'''
-class RushOrderListView(generic.ListView):
-    model = ClientPO
-    all_rush_order = ClientPO.objects.get(ClientPO.lead_time<=14)
-    template_name = 'sales/rush_order_list.html'
-'''
+def rush_order_assessment(request):
+    rush_order = ClientPO.objects.filter() #modify! lead time input
+    context = {
+        'rush_order': rush_order
+    }
+    return render(request, 'sales/rush_order_assessment.html', context)
 
-#JO CRUD
+# JO CRUD
 def JO_list(request):
     jo = JobOrder.objects.all()
+    items = ClientItem.objects.filter() #modify! items for each jo
     context = {
-        'jo' : jo 
+        'jo' : jo,
+        'items' : items
     }
     return render (request, 'sales/JO_list.html', context)
 

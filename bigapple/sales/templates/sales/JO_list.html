@@ -6,7 +6,9 @@
 		<table class="striped" style = "font-size:12px;">
         	<thead>
           	<tr>
-          	  	<th>PO#</th>
+          	  	<th>Purchase Order ID</th>
+				<th>Client</th>
+				<th>Items</th>
 				<th>Status</th>
 				<th>Remarks</th>
           	</tr>
@@ -15,6 +17,10 @@
 				{% for jo in jo  %}
     			<tr>
     				<td><a href="{% url 'sales:JO_details' jo.id %}">{{ jo.client_po }}</a></td>
+					<td>{{ jo.client_po.client.full_name }}</td>
+					{% for items in items  %}
+					<td>{{ items.products.products }}</td>
+					{% endfor %}
     				<td>{{ jo.status }}</td>
     				<td>{{ jo.remarks }}</td>
     			</tr>
