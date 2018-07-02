@@ -1,0 +1,71 @@
+{% extends 'accounts/production_manager_page.html' %}
+
+{% block content %}
+<div id="basic-form" class="section">
+  <div class="row">
+    <div class="col s6 offset-s3">
+      <div class="card-panel">
+        <h4 class="header1">{{ title }}</h4>
+        <div class="row">
+          
+          <form class="col s12" action = "#" method="POST" role="form">
+            {% csrf_token %}
+            <div class="row">
+              <div class="input-field col s12">
+                {{ form.issued_to }}
+                <label for="">Issued to:</label>
+              </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                  {{ form.shift }}
+                  <label for="">Shift:</label>
+                </div>
+              </div>
+            <div class="row">
+              <div class="input-field col s12">
+                  <select name="brand" id="brand" >
+                      {% for brand in brand %}
+                      <option value="{{brand.item_name}}">
+                          {{ brand.item_name }}
+                      </option>
+                      {% endfor %}
+                  </select> 
+                <label for="">Item Brand:</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                {{ form.quantity }}
+                <label for="">Quantity:</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                {{ form.description }}
+                <label for="">Description:</label>
+              </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                  {{ form.to_be_used_for }}
+                  <label for="">To be Used for:</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="center">
+                  <button class="btn btn-small green" type="submit">{{ actiontype }}</button>
+                  <button class="btn btn-small red" typle="clear">Clear</button>
+                </div>
+              </div>
+              
+        </form>
+            
+        </div>
+    </div>            
+  </div>
+ </div>
+</div>
+
+
+{% endblock %}
