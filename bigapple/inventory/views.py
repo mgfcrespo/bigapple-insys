@@ -16,12 +16,12 @@ def supplier_rm_add(request):
         HttpResponse(print(form.errors))
         if form.is_valid():
             form.save()
-            return redirect('sales:supplier_item_list')
+            return redirect('inventory:supplier_item_list')
 
     context = {
         'supplier' : supplier,
         'form' : form,
-        'title': 'Add Supplier Raw Material',
+        'title': 'Add Supplier Item',
         'actiontype': 'Submit'
     }
 
@@ -40,12 +40,12 @@ def supplier_item_edit(request, id):
 
     if form.is_valid():
         form.save()
-        return redirect('inventory/supplier_item_list.html')
+        return HttpResponseRedirect('../../supplier_item_list')
     
     context = {
         'form' : form,
         'items' : items,
-        'title' : "Edit Supplier",
+        'title' : "Edit Supplier Item",
         'actiontype' : "Submit",
     }
     return render(request, 'inventory/supplier_rm_add.html', context)
@@ -53,4 +53,4 @@ def supplier_item_edit(request, id):
 def supplier_item_delete(request, id):
     items = SupplierItems.objects.get(id=id)
     items.delete()
-    return HttpResponseRedirect('../supplier_item_list')
+    return HttpResponseRedirect('../../supplier_item_list')
