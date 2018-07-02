@@ -51,13 +51,13 @@ class ClientPO(models.Model):
         return po_number
 
 
-
+    '''
     def calculate_leadtime(self):
         date_format = "%m/%d/%y"
         date1 = datetime.strptime(self.date_issued, date_format)
         date2 = datetime.strptime(self.date_required, date_format)
         return date2 - date1
-
+    '''
 class ClientItem(models.Model):
 
     COLOR =(
