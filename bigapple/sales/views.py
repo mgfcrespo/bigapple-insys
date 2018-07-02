@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView, ListView
-from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
 from .models import ClientItem, ClientPO, ClientCreditStatus, Client, Product
 from django.shortcuts import render, redirect
 from .forms import ClientPOFormItems, ClientPOForm
@@ -12,8 +11,21 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse
 from django.db.models import aggregates
 from production.models import JobOrder
-from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice
+from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment
 from .forms import ClientPOForm, SupplierForm
+import sys
+
+
+
+# # #Forecasting imports
+# #import pandas as pd
+# #import pandas._libs.tslibs.timedeltas
+# import numpy as np
+# #import matplotlib.pyplot as plt
+# from sklearn.metrics import mean_squared_error
+# from math import sqrt
+# #from matplotlib.pylab import rcParams
+# #rcParams['figure.figsize'] = 15, 6
 
 
 # Create your views here.
@@ -111,11 +123,13 @@ def delete_clientPO(request, id):
         return HttpResponseRedirect('../clientPO_list')
 
 # List views
-
 class POListView(ListView):
     template_name = 'sales/clientPO_list.html'
+    print(sys.path)
 
-    def get_queryset(self, request):
+    def get_queryset(self):
+        return ClientPO.objects.all()
+        '''
         if request.session['session_position'] == 'GM':
             return ClientPO.objects.all()
         elif request.session['session_position'] == 'SC':
@@ -124,7 +138,7 @@ class POListView(ListView):
             return ClientPO.objects.filter(client__sales_agent=request.session['session_fullname']) #modify! untested
         elif request.session['session_position'] == 'Client':
             return ClientPO.objects.filter(client__full_name=request.session['session_fullname'])
-
+        '''
 class PODetailView(DetailView):
     model = ClientPO
     template_name = 'sales/clientPO_detail.html'
@@ -153,7 +167,8 @@ class POFormCreateView(CreateView):
 #SAMPLE DYNAMIC FORM
 def create_client_po(request):
     #note:instance should be an object
-    clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=2, can_delete=True)
+    clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=1, can_delete=True)
+
 
     if request.method == "POST":
         form = ClientPOForm(request.POST)
@@ -255,3 +270,59 @@ def sales_invoice_details(request, id):
     }
     return render(request, 'sales/sales_invoice_details.html', context)
 
+#CLIENT PAYMENT CRUD
+def client_credit_list(request):
+    client_credit = ClientCreditStatus.objects.all()
+    context = {
+        'client_credit' : client_credit
+    }
+    return render (request, 'sales/client_payment_monitoring_list.html', context)
+
+
+def client_credit_details(request, id):
+    client_credit = ClientPayment.objects.get(id=id)
+
+    context = {
+        'client_credit' : client_credit,
+        'title': client_credit.id
+    }
+    return render(request, 'sales/client_payment_monitoring_details.html', context)
+
+'''
+#Forecasting view
+def call_forecasting(request):
+    ...
+
+#DATASET QUERY
+def query_dataset():
+# Importing data
+    df = pd.read_sql(ClientPO.objects.all())
+    # Printing head
+    df.head()
+
+
+#TIME SERIES FORECASTING
+# x = 'what is being forecasted' queryset
+#y = time queryset
+class Forecasting_Algo:
+    def __init__(self, train_x, train_y, test_x, test_y):
+        self.train_x = train_x
+        self.train_y = train_y
+        self.test_x = test_x
+        self.test_y = test_y
+
+    def naive_method(self):
+        ...
+    def simple_average(self):
+        ...
+    def moving_average(self):
+        ...
+    def single_exponential_smoothing(self):
+        ...
+    def linear_trend_method(self):
+        ...
+    def seasonal_method(self):
+        ...
+    def ARIMA(self):
+        ...
+'''
