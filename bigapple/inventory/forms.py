@@ -1,7 +1,8 @@
 from django import forms
 from django.forms import ModelForm, ValidationError, Form, widgets
 from django.contrib.admin.widgets import AdminDateWidget
-from .models import Supplier, SupplierItems
+from .models import Supplier, SupplierItems, MaterialRequisition
+from datetime import date, datetime
 
 class SupplierItemsForm(forms.ModelForm):
     
@@ -17,12 +18,13 @@ class SupplierItemsForm(forms.ModelForm):
     #     super(SupplierItemsForm, self).__init__(*args, **kwargs)
     # self.fields['supplier'] 
 
-    # sup = Supplier.objects.all()
+    sup = Supplier.objects.all()
+
     # supplier = forms.ChoiceField(label = 'item_name', widget = forms.Select(choices=sup))
 
    
-    supplier = forms.CharField(label = 'supplier', widget = forms.Select(
-        attrs={'id':'supplier', 'name':'supplier', 'type':'text', 'required':'true'}
+    supplier = forms.CharField(label = 'supplier', widget = forms.TextInput(
+        attrs={'id':'supplier', 'name':'supplier', 'type':'text', 'required':'true', 'readonly': 'True' }
     ))
 
     item_name = forms.CharField(max_length=200, label = 'item_name', widget = forms.TextInput(
@@ -45,3 +47,10 @@ class SupplierItemsForm(forms.ModelForm):
         fields = ('supplier', 'item_name', 'item_type', 'description', 'price')
 
 
+class MaterialRequisitionForm(forms.ModelForm):
+
+    date_issued = forms.DateField(initial=date.today)
+    class Meta:
+        model = MaterialRequisition
+        fields = ('date_issued', 'issued_to', 'brand', 'description', 'quantity', 'to_be_used_for',
+        'shift', 'approval')

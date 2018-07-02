@@ -11,7 +11,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse
 from django.db.models import aggregates
 from production.models import JobOrder
-from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice
+from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment
 from .forms import ClientPOForm, SupplierForm
 import sys
 
@@ -269,6 +269,24 @@ def sales_invoice_details(request, id):
         'title' : sales_invoice.id,
     }
     return render(request, 'sales/sales_invoice_details.html', context)
+
+#CLIENT PAYMENT CRUD
+def client_credit_list(request):
+    client_credit = ClientCreditStatus.objects.all()
+    context = {
+        'client_credit' : client_credit
+    }
+    return render (request, 'sales/client_payment_monitoring_list.html', context)
+
+
+def client_credit_details(request, id):
+    client_credit = ClientPayment.objects.get(id=id)
+
+    context = {
+        'client_credit' : client_credit,
+        'title': client_credit.id
+    }
+    return render(request, 'sales/client_payment_monitoring_details.html', context)
 
 '''
 #Forecasting view

@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import date
+from datetime import date, datetime
 from accounts.models import Employee
 from sales.models import Supplier
 
@@ -47,7 +47,7 @@ class MaterialRequisition(models.Model):
         ('2', 'shift 2'),
         ('3', 'shift 3')
     )
-    date_issued = models.DateField('date_issued')
+    date_issued = models.DateField('date_issued', default=date.today())
     issued_to = models.CharField('issued_to', max_length=200)
     brand = models.CharField('brand', max_length=200)
     description = models.CharField('description', max_length=200)
@@ -55,6 +55,11 @@ class MaterialRequisition(models.Model):
     to_be_used_for = models.CharField('to_be_used_for', max_length=200)
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     approval = models.BooleanField('approval', default=False)
+
+    def __str__(self):
+        lead_zero = str(self.id).zfill(5)
+        control_number = '#%s' % (lead_zero)
+        return control_number
 
 
 class PurchaseRequisition(models.Model):
