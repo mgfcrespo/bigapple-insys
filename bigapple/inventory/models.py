@@ -15,13 +15,20 @@ class SupplierItems(models.Model):
     ITEM_TYPES = (
         ('RM', 'Raw Materials'),
         ('MP', 'Machine Parts'),
-        ('INK', 'Ink')
+        ('INK', 'Ink'),
+        ('OT', 'Others')
     )
     item_name = models.CharField('item_name', max_length=200)
     item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='not specified')
     price = models.IntegerField('price')
     description = models.CharField('description', max_length=200)
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = "Supplier items"
+
+    def __str__(self):
+        return self.item_name
 
 
 class SupplierPO(models.Model):
@@ -76,6 +83,7 @@ class Inventory(models.Model):
 
 class InventoryCountAsof(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
+    old_count = models.IntegerField('old_count', default=0)
     new_count = models.IntegerField('new_count', default=0)
     date_counted = models.DateField('date_counted', )
 

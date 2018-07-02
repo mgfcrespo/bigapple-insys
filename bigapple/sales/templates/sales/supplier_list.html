@@ -7,7 +7,6 @@
         	<thead>
           	<tr>
           	  	<th>Company</th>
-				<th>Type of Supplier</th>
 				<th>Contact Person</th>
             	<th>Department</th>
               	<th>Mobile Number</th>
@@ -18,7 +17,6 @@
 				{% for supplier in supplier  %}
     			<tr>
     				<td>{{ supplier.company_name }}</td>
-    				<td>{{ supplier.supplier_type }}</td>
     				<td>{{ supplier.contact_person }}</td>
     				<td>{{ supplier.department }}</td>
     				<td>{{ supplier.mobile_number }}</td>

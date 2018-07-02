@@ -17,5 +17,11 @@ urlpatterns = [
           path('supplier_delete/<int:id>/', views.supplier_delete, name='supplier_delete'),
           #sales_invoice urls
           path('sales_invoice_list/', views.sales_invoice_list, name='sales_invoice_list'),
-          path('sales_invoice_details/<slug:id>/', views.sales_invoice_details, name='sales_invoice_details'),
+
+          #path('sales_invoice_details/<slug:id>/', views.sales_invoice_details, name='sales_invoice_details'),
+          path('sales_invoice_details/<int:id>/', views.sales_invoice_details, name='sales_invoice_details'),
+		  #JO urls
+          path('JO_list/', views.JO_list, name='JO_list'),
+          path('JO_details/<int:id>/', views.JO_details, name='JO_details'),
+
 ];
