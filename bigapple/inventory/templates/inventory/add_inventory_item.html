@@ -2,57 +2,57 @@
 
 {% block content %}
 <div id="basic-form" class="section">
-  <div class="row">
-    <div class="col s6 offset-s3">
-      <div class="card-panel">
-        <h4 class="header1">{{ title }}</h4>
-        <div class="row">
-          
-          <form class="col s12" action = "#" method="POST" role="form">
-            {% csrf_token %}
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.control_number }}
-                <label for="control_number">Control Number</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.item_name }}
-                <label for="item_name">Item</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.quantity }}
-                <label for="quantity">Quantity</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.kilos }}
-                <label for="kilos">Kilos</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.description }}
-                <label for="description">Description</label>
-              </div>
-            </div>
-              <div class="row">
-                <div class="center">
-                  <button class="btn btn-small green" type="submit">{{ actiontype }}</button>
-                  <button class="btn btn-small red" typle="clear">Clear</button>
+    <div class="row">
+        <div class="col s6 offset-s3">
+            <div class="card-panel">
+                <h4 class="header1">{{ title }}</h4>
+                <div class="row">
+
+                    <form class="col s12" action="#" method="POST" role="form">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="input-field col s12">
+                                {{ form.control_number }}
+                                <label for="control_number">Control Number</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                {{ form.item_name }}
+                                <label for="item_name">Item</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                {{ form.quantity }}
+                                <label for="quantity">Quantity</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                {{ form.kilos }}
+                                <label for="kilos">Kilos</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                {{ form.description }}
+                                <label for="description">Description</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="center">
+                                <button class="btn btn-small green" type="submit">{{ actiontype }}</button>
+                                <button class="btn btn-small red" typle="clear">Clear</button>
+                            </div>
+                        </div>
+
+                    </form>
+
                 </div>
-              </div>
-              
-        </form>
-            
+            </div>
         </div>
-    </div>            
-  </div>
- </div>
+    </div>
 </div>
 
 
