@@ -1,59 +1,36 @@
-<!--{% extends 'sales_coordinator_page_ui.html' %}-->
+{% extends 'accounts/production_manager_page.html' %}
 
-{% block content %}
-<div id="basic-form" class="section">
-  <div class="row">
-    <div class="col s6 offset-s3">
-      <div class="card-panel">
-        <h4 class="header1">{{ title }}</h4>
-        <div class="row">
-          
-          <form class="col s12" action = "#" method="POST" role="form">
-            {% csrf_token %}
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.control_number }}
-                <label for="control_number">Control Number</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.item_name }}
-                <label for="item_name">Item</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.quantity }}
-                <label for="quantity">Quantity</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.kilos }}
-                <label for="kilos">Kilos</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.description }}
-                <label for="description">Description</label>
-              </div>
-            </div>
-              <div class="row">
-                <div class="center">
-                  <button class="btn btn-small green" type="submit">{{ actiontype }}</button>
-                  <button class="btn btn-small red" typle="clear">Clear</button>
-                </div>
-              </div>
-              
-        </form>
-            
-        </div>
-    </div>            
-  </div>
- </div>
-</div>
+  {% block content %}
 
+	<div class="wrapper container">
+		<table class="striped" style = "font-size:12px;">
+        	<thead>
+          	<tr class = "row">
+                <th>Control Number</th>
+                <th>Date Issued</th>
+				<th>Issued To</th>
+                <th>Brand</th>
+                <th>Quantity</th>
+                <th>Used For</th>
+                <th>Status</th>
+          	</tr>
+    		</thead>
+    		<tbody>
+				{% for mr in mr %}
+    			<tr class = "row">
+                    <td> 
+                        <a href="{% url 'inventory:materials_requisition_details' mr.id %}">{{ mr }}</a>
+                    </td>
+                    <td>{{ mr.date_issued }}</td>
+                    <td>{{ mr.issued_to }}</td>
+					<td>{{ mr.brand }}</td>
+                    <td>{{ mr.quantity }}</td>
+                    <td>{{ mr.to_be_used_for }}</td>
+                    <td>{{ mr.approval }}</td>
+    			</tr>
+				{% endfor %}
+			</tbody>
+    	</table>
+	</div>
 
 {% endblock %}

@@ -29,7 +29,9 @@ class ClientPO(models.Model):
     confirmed = models.BooleanField('confirmed', default=False)
 
     def __str__(self):
-        return 'PO_%s' % (self.id)
+        lead_zero = str(self.id).zfill(5)
+        po_number = 'PO_%s' % (lead_zero)
+        return po_number
 
     '''
     def calculate_leadtime(self):
