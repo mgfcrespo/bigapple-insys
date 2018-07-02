@@ -21,4 +21,7 @@ urlpatterns = [
 		  #JO urls
           path('JO_list/', views.JO_list, name='JO_list'),
           path('JO_details/<int:id>/', views.JO_details, name='JO_details'),
+        # client credit urls
+          path('client_credit_list/', views.client_credit_list, name='sales_client_credit_list'),
+          path('client_credit_details/<int:id>/', views.client_credit_details, name='sales_client_credit_details'),
 ];

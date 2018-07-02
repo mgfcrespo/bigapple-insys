@@ -1,30 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-	  {% includes "global_base_ui.html" %}
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="msapplication-tap-highlight" content="no">
-    <title>Big Apple Plastic Manufacturing Co.</title>
+{% extends 'sales_coordinator_page_ui.html' %}
 
-    <!-- Favicons-->
-    <link rel="icon" href="../../../accounts/images/BAicon.png" sizes="32x32">
-
-    <!-- CORE CSS-->
-    <link href="../../../accounts/static/css/materialize.css" type="text/css" rel="stylesheet">
- 	<link href="../../../accounts/static/css/style.css" type="text/css" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Custom CSS-->
-    <link href="../../../frontend/static/css/custom.css" type="text/css" rel="stylesheet">
-
-    <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
-    <link href="../../../accounts/static/vendors/perfect-scrollbar/perfect-scrollbar.css" type="text/css" rel="stylesheet">
-    <link href="../../../accounts/static/vendors/prism/prism.css" type="text/css" rel="stylesheet">
-
-  </head>
-
-{% block content %}
+  {% block content %}
 
 <body>
 
@@ -41,38 +17,32 @@
           	</tr>
     		</thead>
     		<tbody>
-
-    		    {% if all_credit_status %}
-    				{% for ClientCreditStatus in all_credit_status %}
+    				{% for client_payments in client_payments %}
     			<tr>
     				<td>
-    				<a href="{{ ClientCreditStatus.get_absolute_url }}">{{ __str__ }}</a>
+    				{{client_payments.client.full_name}}
     				</td>
     				<td>
-    				({{ ClientCreditStatus.client }})
+    				{% if client_payments.outstanding_balance > 0 %}
+						<p>Uncleared</p>
+						{% else %}
+						<p>Cleared</p>
+					{% endif %}
     				</td>
     				<td>
-    				({{ ClientCreditStatus.credit_status }})
+		          	{{client_payments.invoice_issued.id}}
     				</td>
     				<td>
-		          	({{ ClientCreditStatus.invoice_issued.id }})
+    				{{client_payments.total_paid}}
     				</td>
     				<td>
-    				({{ ClientCreditStatus.total_paid }})
+    				{{client_payments.outstanding_balance}}
     				</td>
     				<td>
-    				({{ ClientCreditStatus.outstanding_balance }})
-    				</td>
-    				<td>
-    				({{ ClientCreditStatus.date_due }})
+    				{{client_payments.date_due}}
     				</td>
     			</tr>
     		{% endfor %}
-
-    		{% else %}
-      		<p>There are no Client Payments in the database.</p>
-
-    		{% endif %}
 			</tbody>
     	</table>
 	</div>

@@ -12,7 +12,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse
 from django.db.models import aggregates
 from production.models import JobOrder
-from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice
+from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment
 from .forms import ClientPOForm, SupplierForm
 
 
@@ -197,24 +197,15 @@ def create_client_po(request):
                               )
 
 
-'''
-class JOListView(generic.ListView):
-    model = JobOrder
-    all_JO = JobOrder.objects.all()
-    template_name = 'sales/JO_list.html'
-
-    for JobOrder in all_JO:
-        client_items = ClientItem.objects.filter(client_po_id=JobOrder.client_po.id)
 
 '''
-		
 class ClientCreditStatusListView(ListView):
     model = ClientCreditStatus
     all_credit_status = ClientCreditStatus.objects.all()
     template_name = 'sales/client_payment_monitoring.html'
 
 
-'''
+
 class RushOrderListView(generic.ListView):
     model = ClientPO
     all_rush_order = ClientPO.objects.get(ClientPO.lead_time<=14)
@@ -255,3 +246,20 @@ def sales_invoice_details(request, id):
     }
     return render(request, 'sales/sales_invoice_details.html', context)
 
+#CLIENT PAYMENT CRUD
+def client_credit_list(request):
+    client_credit = ClientCreditStatus.objects.all()
+    context = {
+        'client_credit' : client_credit
+    }
+    return render (request, 'sales/client_payment_monitoring_list.html', context)
+
+
+def client_credit_details(request, id):
+    client_credit = ClientPayment.objects.get(id=id)
+
+    context = {
+        'client_credit' : client_credit,
+        'title': client_credit.id
+    }
+    return render(request, 'sales/client_payment_monitoring_details.html', context)

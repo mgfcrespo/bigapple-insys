@@ -101,14 +101,22 @@ class SalesInvoice(models.Model):
 
 class ClientCreditStatus(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    credit_status = models.BooleanField('credit_status', default=True)
     outstanding_balance = models.DecimalField('outstanding_balance', decimal_places=3, max_digits=12)
-    invoice_issued = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE)
-    total_paid = models.DecimalField('total_paid', decimal_places=3, max_digits=12)
-    date_due = models.DateField('date_due', auto_now_add=True, blank=True)
+
+    def __str__(self):
+        return self.id
 
     class Meta:
         verbose_name_plural = "Client credit status"
+
+class ClientPayment(models.Model):
+    invoice_issued = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE)
+    date_due = models.DateField('date_due', auto_now_add=True, blank=True)
+    total_paid = models.DecimalField('total_paid', decimal_places=3, max_digits=12)
+    credit_status = models.ForeignKey(ClientCreditStatus, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.id
 
 class Supplier(models.Model):
 
