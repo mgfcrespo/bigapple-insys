@@ -31,7 +31,7 @@
 
     <!-- For iPhone -->
     <meta name="msapplication-TileColor" content="#00bcd4">
-    <meta name="msapplication-TileImage" content="/Users/martincrespo/Documents/Thesis/bigapple/frontend/images/BAicon.png">
+    <meta name="msapplication-TileImage" content="images/BAicon.png">
 
     <!-- CORE CSS-->
     <link href="{% static 'css/materialize.css' %}" type="text/css" rel="stylesheet">
@@ -47,6 +47,23 @@
     <!-- GANTT CHART RESOURCES -->
     <link rel="stylesheet" href="../../static/gantt chart/dist/frappe-gantt.css" />
 	<script src="../../static/gantt chart/dist/frappe-gantt.js"></script>
+
+
+    <!-- jQuery Library -->
+    <script type="text/javascript" src="{% static '/js/jquery-3.2.1.min.js' %}"></script>
+    <!--materialize js-->
+    <script type="text/javascript" src="{% static 'js/materialize.min.js' %}"></script>
+    <!--scrollbar-->
+    <script type="text/javascript" src="{% static 'vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+    <!--plugins.js - Some Specific JS codes for Plugin Settings-->
+    <script type="text/javascript" src="{% static 'js/plugins.js' %}"></script>
+    <!--custom-script.js - Add your own theme custom JS-->
+    <script type="text/javascript" src="{% static 'js/custom-script.js' %}"></script>
+
+
+    <!--Formset files-->
+    <script src="{% static 'js/jquery.formset.js' %}" charset="utf-8"></script>
+
 
   </head>
 
@@ -507,18 +524,6 @@
     ================================================ -->
 
 
-    <!-- jQuery Library -->
-    <script type="text/javascript" src="{% static '/js/jquery-3.2.1.min.js' %}"></script>
-    <!--materialize js-->
-    <script type="text/javascript" src="{% static 'js/materialize.min.js' %}"></script>
-    <!--scrollbar-->
-    <script type="text/javascript" src="{% static 'vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
-    <!--plugins.js - Some Specific JS codes for Plugin Settings-->
-    <script type="text/javascript" src="{% static 'js/plugins.js' %}"></script>
-    <!--custom-script.js - Add your own theme custom JS-->
-    <script type="text/javascript" src="{% static 'js/custom-script.js' %}"></script>
-    <!--Formset files-->
-    <script src="{% static 'js/jquery.formset.js' %}" charset="utf-8"></script>
 
 
         {% block script %}

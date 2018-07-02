@@ -1,20 +1,27 @@
+{% load staticfiles %}
 
-{% extends 'client_page_ui.html' %}
+<script type="text/javascript" src="{% static '/js/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'js/jquery.formset.js' %}" charset="utf-8"></script>
 
 {% block content %}
 
 <h2>Create PO Form</h2>
 
-<form id="myForm" action="{% url 'sales:create-client-po-form' %}" method="post" enctype="multipart/form-data">
 
-            {% csrf_token %}
-            {% include 'sales/template_form.html' %}
-            {% include 'sales/template_formset.html' %}
+        <div class="container card-panel col s12 m5">
+        <form id="myForm" action="{% url 'sales:create-client-po-form' %}" method="post" enctype="multipart/form-data">
+
+                {% csrf_token %}
+                {% include 'sales/template_form.html' %}
+                {% include 'sales/template_formset.html' %}
 
             {{formset.management_form}}
             <button type="submit" class ="btn btn-success">Submit</button>
+        </form>
+    </div>
 
-</form>
+
+
 {% endblock %}
 
 {% block script %}
@@ -25,4 +32,6 @@
                   });
                   })
     </script>
+
+
 {%endblock %}

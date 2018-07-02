@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView, ListView
-from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
 from .models import ClientItem, ClientPO, ClientCreditStatus, Client, Product
 from django.shortcuts import render, redirect
 from .forms import ClientPOFormItems, ClientPOForm
@@ -14,7 +13,19 @@ from django.db.models import aggregates
 from production.models import JobOrder
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice
 from .forms import ClientPOForm, SupplierForm
+import sys
 
+
+'''
+# #Forecasting imports
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics import mean_squared_error
+from math import sqrt
+from matplotlib.pylab import rcParams
+rcParams['figure.figsize'] = 15, 6
+'''
 
 # Create your views here.
 # CRUD SUPPLIER
@@ -110,12 +121,11 @@ def delete_clientPO(request, id):
         client_po.delete()
         return HttpResponseRedirect('../clientPO_list')
 
-# CRUD JO
 
 # List views
-
 class POListView(ListView):
     template_name = 'sales/clientPO_list.html'
+    print(sys.path)
 
     def get_queryset(self):
         return ClientPO.objects.all()
@@ -149,7 +159,8 @@ class POFormCreateView(CreateView):
 #SAMPLE DYNAMIC FORM
 def create_client_po(request):
     #note:instance should be an object
-    clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=2, can_delete=True)
+    clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=1, can_delete=True)
+
 
     if request.method == "POST":
         form = ClientPOForm(request.POST)
@@ -234,3 +245,41 @@ def sales_invoice_details(request, id):
     }
     return render(request, 'sales/sales_invoice_details.html', context)
 
+'''
+#Forecasting view
+def call_forecasting(request):
+    ...
+
+#DATASET QUERY
+def query_dataset():
+# Importing data
+    df = pd.read_sql(ClientPO.objects.all())
+    # Printing head
+    df.head()
+
+
+#TIME SERIES FORECASTING
+# x = 'what is being forecasted' queryset
+#y = time queryset
+class Forecasting_Algo:
+    def __init__(self, train_x, train_y, test_x, test_y):
+        self.train_x = train_x
+        self.train_y = train_y
+        self.test_x = test_x
+        self.test_y = test_y
+
+    def naive_method(self):
+        ...
+    def simple_average(self):
+        ...
+    def moving_average(self):
+        ...
+    def single_exponential_smoothing(self):
+        ...
+    def linear_trend_method(self):
+        ...
+    def seasonal_method(self):
+        ...
+    def ARIMA(self):
+        ...
+'''
