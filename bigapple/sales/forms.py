@@ -23,6 +23,7 @@ class ClientPOFormItems(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ClientPOFormItems, self).__init__(*args, **kwargs)
         self.fields['id'].widget.attrs.update({'label': ''})
+        #self.fields['laminate'].widget.attrs.update({'id': 'check'})
         #self.fields['products'].widget.attrs.update({'label': 'Type'})
 
 

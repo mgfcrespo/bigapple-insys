@@ -12,15 +12,17 @@
                             {% csrf_token %}
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <!-- <select name="supplier" id="supplier" value="{{supplier.company_name}}">
+                                    {% if title == "Add Supplier Item" %}
+                                    <select name="supplier" id="supplier" value="{{form.supplier}}">
                                         {% for supplier in supplier %}
                                         <option value="{{supplier.company_name}}">
                                             {{ supplier.company_name }}
                                         </option>
                                         {% endfor %}
-                                    </select> -->
-                                    
-                                    {{form.supplier}}
+                                    </select> 
+                                    {% elif title == "Edit Supplier Item" %}
+                                        {{form.supplier}}
+                                    {% endif %}
                                     <label for="supplier">Supplier</label>
                                 </div>
                             </div>

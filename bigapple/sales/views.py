@@ -19,6 +19,7 @@ import sys
 '''
 # #Forecasting imports
 import pandas as pd
+import pandas._libs.tslibs.timedeltas
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
@@ -126,7 +127,9 @@ class POListView(ListView):
     template_name = 'sales/clientPO_list.html'
     print(sys.path)
 
-    def get_queryset(self, request):
+    def get_queryset(self):
+        return ClientPO.objects.all()
+        '''
         if request.session['session_position'] == 'GM':
             return ClientPO.objects.all()
         elif request.session['session_position'] == 'SC':
@@ -135,7 +138,7 @@ class POListView(ListView):
             return ClientPO.objects.filter(client__sales_agent=request.session['session_fullname']) #modify! untested
         elif request.session['session_position'] == 'Client':
             return ClientPO.objects.filter(client__full_name=request.session['session_fullname'])
-
+        '''
 class PODetailView(DetailView):
     model = ClientPO
     template_name = 'sales/clientPO_detail.html'
