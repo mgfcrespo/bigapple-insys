@@ -270,6 +270,24 @@ def sales_invoice_details(request, id):
     }
     return render(request, 'sales/sales_invoice_details.html', context)
 
+#CLIENT PAYMENT CRUD
+def client_credit_list(request):
+    client_credit = ClientCreditStatus.objects.all()
+    context = {
+        'client_credit' : client_credit
+    }
+    return render (request, 'sales/client_payment_monitoring_list.html', context)
+
+
+def client_credit_details(request, id):
+    client_credit = ClientPayment.objects.get(id=id)
+
+    context = {
+        'client_credit' : client_credit,
+        'title': client_credit.id
+    }
+    return render(request, 'sales/client_payment_monitoring_details.html', context)
+
 '''
 #Forecasting view
 def call_forecasting(request):
