@@ -10,14 +10,15 @@
     <meta name="msapplication-tap-highlight" content="no">
     <title>Big Apple Plastic Manufacturing Co.</title>
 
-    <!-- Icons-->
-   <!-- <link rel="icon" href="{% static 'images/BAicon.png' %}" sizes="32x32">-->
+    <!-- CSS -->
+    <!-- <link rel="icon" href="{% static 'images/BAicon.png' %}" sizes="32x32">-->
     <link rel="stylesheet" type="text/css" href="{% static 'semantic.min.css' %}">
 
-    <!-- GANTT CHART RESOURCES
+    GANTT CHART RESOURCES
     <link rel="stylesheet" href="../../static/gantt chart/dist/frappe-gantt.css" />
     <script src="../../static/gantt chart/dist/frappe-gantt.js"></script>
-    -->
+    
+    
 </head>
 
 <body>
@@ -27,29 +28,14 @@
 
         <div style="color: white; padding: 10px;">
             <h2>
-                Pareng Buchoy
+                {{request.session.session_fullname}}
             </h2>
             <p>
-                Sales Agent
+                {{request.session.session_position}}
             </p>
         </div>
 
-        <a class="item">
-            <i class="chart bar icon"></i>  
-            Dashboard
-        </a>
-        <a class="item">
-            <i class="block layout icon"></i>
-            Topics
-        </a>
-        <a class="item">
-            <i class="home icon"></i>
-            Home
-        </a>
-        <a class="item">
-            <i class="block layout icon"></i>
-            Topics
-        </a>
+        <!-- INSERT NAV BAR CONTENT HERE -->
 
         <div class="center" style="font-size: 12px; padding: 10px;">
             <center>
