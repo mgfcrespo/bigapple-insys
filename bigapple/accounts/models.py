@@ -21,7 +21,7 @@ class ContactNumber(models.Model):
 
 
 class Email(models.Model):
-    emails = models.CharField('emails', max_length=200)
+    emails = models.EmailField('emails', max_length=200)
 
     def __str__(self):
         return self.emails

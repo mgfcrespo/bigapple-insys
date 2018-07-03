@@ -6,10 +6,10 @@ from .models import ClientItem, ClientPO, Product, Client
 from decimal import Decimal
 from django.contrib.admin.widgets import AdminDateWidget
 
-
-
-
 from .models import ClientItem, ClientPO, Product, Supplier
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
 
 class ClientPOFormItems(ModelForm):
     client_po = forms.CharField(label='')
@@ -25,15 +25,18 @@ class ClientPOFormItems(ModelForm):
         self.fields['id'].widget.attrs.update({'label': ''})
         #self.fields['laminate'].widget.attrs.update({'id': 'check'})
         #self.fields['products'].widget.attrs.update({'label': 'Type'})
+        self.fields['id'].widget.attrs.update({'label': ''})
 
 
 class ClientPOForm(ModelForm):
 
     class Meta:
         model = ClientPO
-        fields = ('payment_terms', 'other_info')
+        fields = ('payment_terms', 'date_required', 'other_info')
+        widgets = {
+            'date_required': DateInput(),
+        }
 
-        #widgets = {'date_required':DateTimePicker(options={"format": "YYYY-MM-DD", "pickSeconds": False}}
 
 
 class SupplierForm(forms.ModelForm):
