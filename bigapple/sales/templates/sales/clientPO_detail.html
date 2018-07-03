@@ -1,75 +1,70 @@
+ {% extends "client_page_ui.html" %} {% block content %}
 
-    {% extends "client_page_ui.html" %}
-    {% block content %}
 <body>
-	<div class="wrapper">
-		<h3>{{clientpo}}</h3>
-		<table class="striped">
-        	<thead>
-          	<tr>
-          	  <th>Laminate</th>
-              <th>Width</th>
-              <th>Length</th>
-              <th>Color</th>
-              <th>Gusset</th>
-              <th>Quantity</th>
-              <th>Item Price Sub-Total</th>
-          	</tr>
-    		</thead>
-    		<tbody>
+    <div class="sixteen wide column">
 
-    				{% for clientitem in clientpo.clientitem_set.all %}
-    			<tr>
-    				<td>
-    				{{ clientitem.laminate }}
-    				</td>
-    				<td>
-		          	{{ clientitem.width }}
-    				</td>
-    				<td>
-    				{{ clientitem.length}}
-    				</td>
-    				<td>
-    				{{ clientitem.color }}
-    				</td>
-    				<td>
-    				{{ clientitem.gusset}}
-    				</td>
-    				<td>
-    				{{ clientitem.quantity }}
-    				</td>
+        <h4>{{clientpo}}</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Laminate</th>
+                    <th>Width</th>
+                    <th>Length</th>
+                    <th>Color</th>
+                    <th>Gusset</th>
+                    <th>Quantity</th>
+                    <th>Item Price Sub-Total</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for clientitem in clientpo.clientitem_set.all %}
+                <tr>
                     <td>
-    				{{ clientitem.item_price}}
-    				</td>
-    			</tr>
-    		{% endfor %}
-			<tr>Total: {{clientpo.total_amount}}</tr>
+                        {{ clientitem.laminate }}
+                    </td>
+                    <td>
+                        {{ clientitem.width }}
+                    </td>
+                    <td>
+                        {{ clientitem.length}}
+                    </td>
+                    <td>
+                        {{ clientitem.color }}
+                    </td>
+                    <td>
+                        {{ clientitem.gusset}}
+                    </td>
+                    <td>
+                        {{ clientitem.quantity }}
+                    </td>
+                    <td>
+                        {{ clientitem.item_price}}
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>Total: {{clientpo.total_amount}}</tr>
 
-			</tbody>
-    	</table>
-	</div>
+            </tbody>
+        </table>
+    </div>
 
 </body>
 
 
-    {% endblock %}      
+{% endblock %}
 
-    
-    <!-- ================================================Scripts================================================ -->
-
-
-    {% block script %}
-    <script>
-        $(document).ready(function(){
-            $('#editBTN').click(function(){
-            if($('#name').prop('disabled'))
-            {
-             $('#textfieldToClose').prop('disabled', false)
+{% block script %}
+<script>
+    $(document).ready(function() {
+        $('#editBTN').click(function() {
+            if ($('#name').prop('disabled')) {
+                $('#textfieldToClose').prop('disabled', false)
+            } else {
+                $('#textfieldToClose').prop('disabled', true)
             }
-            else{
-                 $('#textfieldToClose').prop('disabled', true)
-              }
-            });
-        })
-    </script>
-    {% endblock %}
+        });
+    })
+
+</script>
+{% endblock %}

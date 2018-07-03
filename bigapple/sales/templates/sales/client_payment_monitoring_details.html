@@ -1,74 +1,69 @@
-{% extends 'sales_coordinator_page_ui.html' %}
-
-{% block content %}
+{% extends 'sales_coordinator_page_ui.html' %} {% block content %}
 <div id="basic-form" class="section">
-  <div class="row">
-    <div class="col s8 offset-s2">
-      <div class="card-panel">
-        <h4 class="header1">Client Payment{{ title }}</h4>
-        <div class="row">
-          
-          <form class="col s12" action = "#" method="POST" role="form">
-            {% csrf_token %}
-            <div class="row">
-              <div class="col s12">
-                <label for="">Invoice Issued: </label>
-                <span>{{ client_credit.invoice_issued.id }}</span>
-              </div>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <label for="">Date Issued: </label>
-                    <span>{{ client_credit.invoice_issued.date_issued }}</span>
-                </div>
-                <div class="col s6">
-                    <label for="">Date Due: </label>
-                    <span>{{ client_credit.date_due }}</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <label for="">Total Paid: </label>
-                    <span>{{ client_credit.total_paid }}</span>
-                </div>
-                <div class="col s6">
-                    <label for="">Amount Due: </label>
-                    <span>{{ % client_credit.credit_status.outstanding_balance %}}</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <label for="">Client: </label>
-                    <span>{{ client_credit.invoice_issued.client }}</span>
-                </div>
-                <div class="col s6">
-                    <label for="">Company: </label>
-                    <span>{{ client_credit.invoice_issued.client.company }}</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <label for="">Contact Number: </label>
-                    <span>{{ client_credit.invoice_issued.client.contact_number }}</span>
-                </div>
-                <div class="col s6">
-                    <label for="">Email: </label>
-                    <span>{{ client_credit.invoice_issued.client.email }}</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <label for="">Sales Agent: </label>
-                    <span>{{ client_credit.invoice_issued.client.sales_agent }}</span>
-                </div>
-            </div>
-        </form>
-        </div>
-      </div>                        
-      </div>
-    </div>
-  </div>
-</div>
+    <div class="row">
+        <div class="sixteen wide column">
+            <h4 class="header1">Client Payment{{ title }}</h4>
 
+            <div class="row">
+                <form class="sixteen wide column" action="#" method="POST" role="form">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="sixteen wide column">
+                            <label for="">Invoice Issued: </label>
+                            <span>{{ client_credit.invoice_issued.id }}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="eight wide column">
+                            <label for="">Date Issued: </label>
+                            <span>{{ client_credit.invoice_issued.date_issued }}</span>
+                        </div>
+                        <div class="eight wide column">
+                            <label for="">Date Due: </label>
+                            <span>{{ client_credit.date_due }}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="eight wide column">
+                            <label for="">Total Paid: </label>
+                            <span>{{ client_credit.total_paid }}</span>
+                        </div>
+                        <div class="eight wide column">
+                            <label for="">Amount Due: </label>
+                            <span>{{ % client_credit.credit_status.outstanding_balance %}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="eight wide column">
+                            <label for="">Client: </label>
+                            <span>{{ client_credit.invoice_issued.client }}</span>
+                        </div>
+                        <div class="eight wide column">
+                            <label for="">Company: </label>
+                            <span>{{ client_credit.invoice_issued.client.company }}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="eight wide column">
+                            <label for="">Contact Number: </label>
+                            <span>{{ client_credit.invoice_issued.client.contact_number }}</span>
+                        </div>
+                        <div class="eight wide column">
+                            <label for="">Email: </label>
+                            <span>{{ client_credit.invoice_issued.client.email }}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="eight wide column">
+                            <label for="">Sales Agent: </label>
+                            <span>{{ client_credit.invoice_issued.client.sales_agent }}</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

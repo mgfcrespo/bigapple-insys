@@ -1,55 +1,45 @@
-
-{% extends "client_page_ui.html" %}
-
-{% block content %}
+ {% extends "client_page_ui.html" %} {% block content %}
 
 <h3>PO List</h3>
-<body>
-<div class="wrapper container">
-	<div class="wrapper">
-		<table class="striped">
-        	<thead>
-          	<tr>
-          	  <th>Purchase Order ID</th>
-              <th>Date Issued</th>
-              <th>Date Required</th>
-              <th>Date Confirmed</th>
-              <th>Total Amount</th>
-          	</tr>
-    		</thead>
-    		<tbody>
 
-			{% if object_list %}
-    				{% for ClientPO in object_list %}
-    			<tr>
-    				<td>
+<div class="sixteen wide column">
+    <table>
+        <thead>
+            <tr>
+                <th>Purchase Order ID</th>
+                <th>Date Issued</th>
+                <th>Date Required</th>
+                <th>Date Confirmed</th>
+                <th>Total Amount</th>
+            </tr>
+        </thead>
+        <tbody>
 
-    				<a href="{% url 'sales:po-detail-view' ClientPO.id %}">{{ ClientPO}}</a>
-    				</td>
-    				<td>
-		          	{{ ClientPO.date_issued }}
-    				</td>
-    				<td>
-    				{{ ClientPO.date_required }}
-    				</td>
-    				<td>
-    				{{ ClientPO.confirmed }}
-    				</td>
-    				<td>
-    				{{ ClientPO.total_amount }}
-    				</td>
-    			</tr>
-    		{% endfor %}
-			{% else %}
-			<p>There are no Purchase Orders to display</p>
-			{% endif %}
+            {% if object_list %} {% for ClientPO in object_list %}
+            <tr>
+                <td>
 
-			</tbody>
-    	</table>
-	</div>
+                    <a href="{% url 'sales:po-detail-view' ClientPO.id %}">{{ ClientPO}}</a>
+                </td>
+                <td>
+                    {{ ClientPO.date_issued }}
+                </td>
+                <td>
+                    {{ ClientPO.date_required }}
+                </td>
+                <td>
+                    {{ ClientPO.confirmed }}
+                </td>
+                <td>
+                    {{ ClientPO.total_amount }}
+                </td>
+            </tr>
+            {% endfor %} {% else %}
+            <p>There are no Purchase Orders to display</p>
+            {% endif %}
+
+        </tbody>
+    </table>
 </div>
-</body>
+
 {% endblock %}
-
-
-
