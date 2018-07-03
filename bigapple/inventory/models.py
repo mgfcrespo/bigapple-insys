@@ -82,7 +82,6 @@ class Inventory(models.Model):
     )
     rm_name = models.CharField('rm_name', max_length=200, default='not specified')
     rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='not specified')
-    description = models.CharField('description', max_length=200)
     quantity = models.IntegerField('quantity')
 
 
