@@ -13,7 +13,6 @@ class DateInput(forms.DateInput):
 
 class ClientPOFormItems(ModelForm):
     client_po = forms.CharField(label='')
-    id = forms.BooleanField(label='')
     laminate = forms.BooleanField(initial=True, required=False)
 
     class Meta:
@@ -22,10 +21,7 @@ class ClientPOFormItems(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ClientPOFormItems, self).__init__(*args, **kwargs)
-        self.fields['id'].widget.attrs.update({'label': ''})
-        #self.fields['laminate'].widget.attrs.update({'id': 'check'})
-        #self.fields['products'].widget.attrs.update({'label': 'Type'})
-        self.fields['id'].widget.attrs.update({'label': ''})
+        self.fields['products'].label = 'Product Type'
 
 
 class ClientPOForm(ModelForm):
@@ -36,8 +32,6 @@ class ClientPOForm(ModelForm):
         widgets = {
             'date_required': DateInput(),
         }
-
-
 
 class SupplierForm(forms.ModelForm):
 

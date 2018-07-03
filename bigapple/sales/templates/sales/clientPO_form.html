@@ -1,12 +1,13 @@
-{% extends "global_base_ui.html" %}
+{% extends "client_page_ui.html" %}
 
 {% block content %}
+
 
 <h2>Create PO Form</h2>
 
 
         <div class="container card-panel col s12 m5">
-        <form id="myForm" action="{% url 'sales:create-client-po-form' %}" method="post" enctype="multipart/form-data">
+        <form id="myForm" class = "ui form" action="{% url 'sales:create-client-po-form' %}" method="post" enctype="multipart/form-data">
 
                 {% csrf_token %}
                 {% include 'sales/template_form.html' %}

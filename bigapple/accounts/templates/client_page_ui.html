@@ -1,5 +1,5 @@
- {% extends "global_base_ui.html" %} {% block left_sidebar %}
-
+ {% extends "global_base_ui.html" %}
+ {% block left_sidebar %}
 <a href="{% url 'sales:create-client-po-form' %}" class="item">
     <i class="file alternate icon"></i>
     Create Purchase Order
@@ -9,4 +9,8 @@
     Review Purchase Orders
 </a>
 
-{% endblock %} {% block content %} {% endblock %}
+{% endblock %}
+
+ {% block content %}
+
+ {% endblock %}

@@ -1,11 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
+from django.conf import settings
 from django.contrib.sessions.models import Session
 
 from django.http import HttpResponse
 
-from django.contrib.auth import login, authenticate, forms
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
@@ -44,6 +44,7 @@ def user_page_view(request):
             position = employee.position
             request.session['session_position'] = employee.position
             request.session['session_fullname'] = employee.full_name
+            request.session['session_userid'] = employee_id
 
 
             if employee.position == 'GM':
@@ -65,8 +66,12 @@ def user_page_view(request):
             client = Client.objects.get(id=client_id)
             request.session['session_position'] = 'Client'
             request.session['session_fullname'] = client.full_name
+            request.session['session_userid'] = client_id
             return render(request, 'accounts/client_page.html')
 
+def logout_view(request):
+    logout(request)
+    return redirect('accounts:user-page-view')
 
 def account_details(request):
     context = {

@@ -7,17 +7,17 @@ from sales.models import ClientPO, SalesInvoice
 
 
 SHIFTS = (
-    ('1', 'shift 1'),
-    ('2', 'shift 2'),
-    ('3', 'shift 3')
+    ('Shift 1', 'shift 1'),
+    ('Shift 2', 'shift 2'),
+    ('Shift 3', 'shift 3')
 )
 
 
 class Machine(models.Model):
     MACHINE_TYPE = (
-        ('C', 'Cutting'),
-        ('P', 'Printing'),
-        ('E', 'Extruder')
+        ('Cutting', 'Cutting'),
+        ('Printing', 'Printing'),
+        ('Extruder', 'Extruder')
     )
 
     machine_type = models.CharField('machine_type', choices=MACHINE_TYPE, max_length=200, default='not specified')

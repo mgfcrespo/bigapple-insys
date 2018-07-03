@@ -3,17 +3,16 @@
 
 {% block content %}
 
-<h3>PO List</h3>
+<h3 class="ui header">PO List</h3>
 <body>
 <div class="wrapper container">
 	<div class="wrapper">
-		<table class="striped">
+		<table class="ui cell padded table">
         	<thead>
           	<tr>
           	  <th>Purchase Order ID</th>
               <th>Date Issued</th>
               <th>Date Required</th>
-              <th>Date Confirmed</th>
               <th>Total Amount</th>
           	</tr>
     		</thead>
@@ -32,9 +31,7 @@
     				<td>
     				{{ ClientPO.date_required }}
     				</td>
-    				<td>
-    				{{ ClientPO.confirmed }}
-    				</td>
+
     				<td>
     				{{ ClientPO.total_amount }}
     				</td>

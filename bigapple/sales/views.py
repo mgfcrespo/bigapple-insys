@@ -15,17 +15,15 @@ from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, 
 from .forms import ClientPOForm, SupplierForm
 import sys
 
-
-
-# # #Forecasting imports
-# #import pandas as pd
-# #import pandas._libs.tslibs.timedeltas
+#Forecasting imports
+# import pandas as pd
+# import pandas._libs.tslibs.timedeltas
 # import numpy as np
-# #import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 # from sklearn.metrics import mean_squared_error
 # from math import sqrt
-# #from matplotlib.pylab import rcParams
-# #rcParams['figure.figsize'] = 15, 6
+# from matplotlib.pylab import rcParams
+# rcParams['figure.figsize'] = 15, 6
 
 
 # Create your views here.
@@ -173,6 +171,7 @@ def create_client_po(request):
 
     if request.method == "POST":
         form = ClientPOForm(request.POST)
+        #form.fields['client'].initial = Client.objects.get(id = request.session['session_userid'])
         message = ""
         print(form)
         if form.is_valid():

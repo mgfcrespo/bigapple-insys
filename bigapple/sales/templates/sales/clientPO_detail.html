@@ -2,9 +2,10 @@
     {% extends "client_page_ui.html" %}
     {% block content %}
 <body>
+
 	<div class="wrapper">
-		<h3>{{clientpo}}</h3>
-		<table class="striped">
+		<h3 class="ui header">{{clientpo}}</h3>
+		<table class="ui cell padded table">
         	<thead>
           	<tr>
           	  <th>Laminate</th>
@@ -48,7 +49,9 @@
 			</tbody>
     	</table>
 	</div>
-
+<button class="ui button">
+	<a href="{% url 'sales:po-list-view' %}">Back</a>
+</button>
 </body>
 
 
