@@ -1,62 +1,30 @@
-{% extends 'base_ui/global_base_ui.html' %}
+{% extends 'accounts/production_manager_page.html' %}
 
-    {% block content %}
-    
-        {% block content %}
-    <body>
-        <div class="wrapper">
-            <h3>PO {{clientpo.id}}</h3>
-            <table class="striped">
-                <thead>
-                <tr>
-                  <th>Item Name</th>
-                  <th>Quantity</th>
-                  <th>Kilos</th>
-                  <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
+  {% block content %}
 
-                       <!-- {% for clientitem in clientpo.clientitem_set.all %} -->
-                    <tr>
-                        <td>
-                        {{ clientitem.name }}
-                        </td>
-                        <td>
-                        {{ clientitem.quantity }}
-                        </td>
-                        <td>
-                        {{ clientitem.kilos}}
-                        </td>
-                        <td>
-                        {{ clientitem.description }}
-                        </td>
-                    </tr>
-                {% endfor %}
-                <tr>Total: {{clientpo.total_amount}}</tr>
+	<div class="wrapper container">
+		<table class="striped" style = "font-size:12px;">
+        	<thead>
+          	<tr class = "row">
+                <th>RM Name</th>
+                <th>Type</th>
+				<th>Quantity</th>
+                <th></th>
+          	</tr>
+    		</thead>
+    		<tbody>
+				{% for rm in rm %}
+    			<tr class = "row">
+                    <td>{{ rm.rm_name }}</td>
+                    <td>{{ rm.rm_type }}</td>
+					<td>{{ rm.quantity }}</td>
+                    <td>
+                        <a class="amber btn" href="{% url 'inventory:inventory_edit' rm.id %}" style="font-size:12px;">View</a>
+                    </td>
+    			</tr>
+				{% endfor %}
+			</tbody>
+    	</table>
+	</div>
 
-                </tbody>
-            </table>
-        </div>
-
-    </body>
-
-    {% endblock %}      
-    
-<!-- ================================================Scripts================================================ -->
-
-    {% block script %}
-    <script>
-        $(document).ready(function(){
-            $('#editBTN').click(function(){
-            if($('#name').prop('disabled'))
-            {
-             $('#textfieldToClose').prop('disabled', false)
-            }
-            else{
-                 $('#textfieldToClose').prop('disabled', true)
-              }
-            });
-        })
-    </script>
 {% endblock %}

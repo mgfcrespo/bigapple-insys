@@ -12,6 +12,12 @@
             {% csrf_token %}
             <div class="row">
               <div class="input-field col s12">
+                {{ form.date_issued }}
+                <label for="">Date Issued:</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
                 {{ form.issued_to }}
                 <label for="">Issued to:</label>
               </div>

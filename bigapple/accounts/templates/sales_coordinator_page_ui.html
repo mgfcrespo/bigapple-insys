@@ -1,129 +1,48 @@
+ {% extends "global_base_ui.html" %} {% block left_sidebar %}
 
-    {% extends "global_base_ui.html" %}
+<a href="{% url 'accounts:user-page-view' %}" class="item">
+    <i class="chart bar icon"></i>  
+    Dashboard
+</a>
+<a href="{% url 'sales:create-client-po-form' %}" class="item">
+    <i class="file alternate icon"></i>
+    Create Purchase Order
+</a>
+<a href="clientPO_list.html" class="item">
+    <i class="file alternate icon"></i>
+    Client Purchase Orders
+</a>
+<a href="client_payment_monitoring_list.html" class="item">
+    <i class="material-icons">note</i>
+    <span class="nav-text">Client Payments</span>
+</a>
+<a href="scheduling_page.html" class="item">
+    <i class="money bill alternate outline icon"></i>
+    Client Payments
+</a>
+<a href="rush_order_list.html" class="item">
+    <i class="shipping fast icon"></i>
+    Rush Order
+</a>
+<a href="rush_order_assessment.html" class="item">
+    <i class="calculator icon"></i>
+    Order Assessment and Re-Planning
+</a>
+<a href="JO_list.html" class="item">
+    <i class="edit outline icon"></i>
+    Job Order
+</a>
+<a href="intentory_page.html" class="item">
+    <i class="box icon"></i>
+    Inventory
+</a>
+<a href="client_page_list.html" class="item">
+    <i class="user outline icon"></i>
+    Clients
+</a>
+<a href="supplier_list.html" class="items">
+    <i class="users icon"></i>
+    Suppliers
+</a>
 
-  {% block left_sidebar %}
-        <!-- START LEFT SIDEBAR NAV-->
-        <aside id="left-sidebar-nav">
-          <ul id="slide-out" class="side-nav fixed leftside-navigation">
-            <li class="user-details cyan darken-2">
-              <div class="row">
-                <div class="col col s4 m4 l4">
-                  <img src="static/images/avatar/avatar-7.png" alt="" class="circle responsive-img valign profile-image cyan">
-                </div>
-                <div class="col col s8 m8 l8">
-                  <ul id="profile-dropdown-nav" class="dropdown-content">
-                    <li>
-                      <a href="#" class="grey-text text-darken-1">
-                        <i class="material-icons">face</i> Profile</a>
-                    </li>
-                    <li>
-                      <a href="#" class="grey-text text-darken-1">
-                        <i class="material-icons">settings</i> Settings</a>
-                    </li>
-                    <li>
-                      <a href="#" class="grey-text text-darken-1">
-                        <i class="material-icons">live_help</i> Help</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                      <a href="#" class="grey-text text-darken-1">
-                        <i class="material-icons">lock_outline</i> Lock</a>
-                    </li>
-                    <li>
-                      <a href="#" class="grey-text text-darken-1">
-                        <i class="material-icons">keyboard_tab</i> Logout</a>
-                    </li>
-                  </ul>
-                  <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown-nav">{{request.session.session_fullname}}<i class="mdi-navigation-arrow-drop-down right"></i></a>
-                  <p class="user-roal">Sales Coordinator</p>
-                </div>
-              </div>
-            </li>
-            <li class="no-padding">
-              <ul class="collapsible" data-collapsible="accordion">
-                <li class="bold">
-                    <a href="{% url 'accounts:user-page-view' %}" class="waves-effect waves-cyan">
-                      <i class="material-icons">dashboard</i>
-                      <span class="nav-text">Dashboard</span>
-                    </a>
-                </li>
-                  <li class="bold">
-                  <a href="clientPO_form.html" class="waves-effect waves-cyan">
-                      <i class="material-icons">note</i>
-                      <span class="nav-text">Create Purchase Order</span>
-                    </a>
-                </li>
-                <li class="bold">
-                  <a href="orders_page.html" class="waves-effect waves-cyan">
-                      <i class="material-icons">note</i>
-                      <span class="nav-text">Client Purchase Orders</span>
-                    </a>
-                </li>
-                  <li class="bold">
-                  <a href="client_payment_monitoring_list.html" class="waves-effect waves-cyan">
-                      <i class="material-icons">note</i>
-                      <span class="nav-text">Client Payments</span>
-                    </a>
-                </li>
-                  <li class="bold">
-                  <a href="client_demand_forecast.html" class="waves-effect waves-cyan">
-                      <i class="material-icons">note</i>
-                      <span class="nav-text">Client Demand Forecast</span>
-                    </a>
-                </li>
-                  <li class="bold">
-                  <a href="rush_order_list.html" class="waves-effect waves-cyan">
-                      <i class="material-icons">note</i>
-                      <span class="nav-text">Rush Orders</span>
-                    </a>
-                </li>
-                  <li class="bold">
-                  <a href="rush_order_assessment.html" class="waves-effect waves-cyan">
-                      <i class="material-icons">note</i>
-                      <span class="nav-text">Order Assessment and Re-Planning</span>
-                    </a>
-                </li>
-                  <li class="bold">
-                  <a href="JO_list.html" class="waves-effect waves-cyan">
-                      <i class="material-icons">note</i>
-                      <span class="nav-text">Job Orders</span>
-                    </a>
-                </li>
-                </ul>
-
-            </li>
-                <li class="bold">
-                  <a href="intentory_page.html" class="waves-effect waves-cyan">
-                      <i class="material-icons">widgets</i>
-                      <span class="nav-text">Inventory</span>
-                    </a>
-                </li>
-                <li class="bold">
-                  <a href="clients_page.html" class="waves-effect waves-cyan">
-                      <i class="material-icons">people</i>
-                      <span class="nav-text">Clients</span>
-                    </a>
-                </li>
-              <li class="bold">
-                  <a href="supplier_list.html" class="waves-effect waves-cyan">
-                      <i class="material-icons">people</i>
-                      <span class="nav-text">Suppliers</span>
-                    </a>
-                </li>
-                <li class="bold">
-                  <a href="" class="waves-effect waves-cyan">
-                    <i class="material-icons">help</i>
-                    <span class="nav-text">Help</span>
-                  </a>
-                </li>
-              </ul>
-          <a href="#" data-activates="slide-out" class="sidebar-collapse btn-floating btn-medium waves-effect waves-light hide-on-large-only">
-            <i class="material-icons">menu</i>
-          </a>
-        </aside>
-        <!-- END LEFT SIDEBAR NAV-->
-        {% endblock %}
-
-
-    {% block content %}
-    {% endblock %}
+{% endblock %} {% block content %} {% endblock %}

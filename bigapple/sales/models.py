@@ -47,17 +47,21 @@ class ClientPO(models.Model):
 
     def __str__(self):
         lead_zero = str(self.id).zfill(5)
+<<<<<<< HEAD
         po_number = 'PO_%s' % (lead_zero)
         return po_number
+=======
+        po_number = 'PO%s' % (lead_zero)
+        return  po_number
+>>>>>>> aff9194ef60a9affa4c7bf1b951caebdf8602607
 
 
-    '''
     def calculate_leadtime(self):
         date_format = "%m/%d/%y"
         date1 = datetime.strptime(self.date_issued, date_format)
         date2 = datetime.strptime(self.date_required, date_format)
         return date2 - date1
-    '''
+
 class ClientItem(models.Model):
 
     COLOR =(
