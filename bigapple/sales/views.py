@@ -123,19 +123,30 @@ def delete_clientPO(request, id):
 # List views
 class POListView(ListView):
     template_name = 'sales/clientPO_list.html'
-    print(sys.path)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(POListView, self).get_context_data(*args, **kwargs)
+        if self.request.session['session_position'] == 'GM':
+            context['context'] = 'GM'
+        elif self.request.session['session_position'] == 'SC':
+            context['context'] = 'SC'
+        elif self.request.session['session_position'] == 'SA':
+            context['context'] = 'SA'
+        elif self.request.session['session_position'] == 'Client':
+            context['context'] = 'Client'
+        return context
 
     def get_queryset(self):
-        return ClientPO.objects.all()
+        ClientPO.objects.all()
         '''
-        if request.session['session_position'] == 'GM':
+        if self.request.session['session_position'] == 'GM':
             return ClientPO.objects.all()
-        elif request.session['session_position'] == 'SC':
+        elif self.request.session['session_position'] == 'SC':
             return ClientPO.objects.all()
-        elif request.session['session_position'] == 'SA':
-            return ClientPO.objects.filter(client__sales_agent=request.session['session_fullname']) #modify! untested
-        elif request.session['session_position'] == 'Client':
-            return ClientPO.objects.filter(client__full_name=request.session['session_fullname'])
+        elif self.request.session['session_position'] == 'SA':
+            return ClientPO.objects.filter(client__sales_agent=self.request.session['session_fullname'])
+        elif self.request.session['session_position'] == 'Client':
+            return ClientPO.objects.filter(client__full_name=self.request.session['session_fullname'])
         '''
         
 class PODetailView(DetailView):

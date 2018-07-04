@@ -4,15 +4,15 @@
     <ul>
         <ul>
             <!-- start of PO details -->
-            <li class="collection-header">
+            <li>
                 <h4>PO# {{jo.client_po}} </h4>
             </li>
-            <div class="row container">
-                <div class="col s6">
+            <div>
+                <div class="eight wide column">
                     <label for="">Status: </label>
                     <span>{{ jo.status }}</span>
                 </div>
-                <div class="col s6">
+                <div class="eight wide column">
                     <label for="">Remark: </label>
                     <span>{{ jo.remarks}}</span>
                 </div>
@@ -110,7 +110,7 @@
             </div>
 
             <!-- start of Printing details -->
-            
+
             <div class="row">
                 <ul>
                     <li>
@@ -169,7 +169,7 @@
                                 <span>{{ jo.printing_schedule.time_out }}</span>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="sixteen wide column">
                                 <label for="">Remarks: </label>
