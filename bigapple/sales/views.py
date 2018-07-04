@@ -233,7 +233,7 @@ def rush_order_list(request):
     return render (request, 'sales/rush_order_list.html', context)
 
 def rush_order_assessment(request):
-    rush_order = ClientPO.objects.filter() #modify! lead time input
+    rush_order = ClientPO.objects.filter(ClientPO.calculate_leadtime(ClientPO) <= 14) #modify! lead time input
     context = {
         'rush_order': rush_order
     }
