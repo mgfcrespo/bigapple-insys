@@ -47,7 +47,7 @@ class MaterialRequisition(models.Model):
         ('Shift 2', 'shift 2'),
         ('Shift 3', 'shift 3')
     )
-    date_issued = models.DateField('date_issued', auto_now_add=True, blank=True)
+    date_issued = models.DateField('date_issued', blank=True)
     issued_to = models.CharField('issued_to', max_length=200)
     brand = models.CharField('brand', max_length=200)
     description = models.CharField('description', max_length=200)

@@ -48,9 +48,24 @@ class MaterialSchedule(models.Model):
     quantity = models.IntegerField('quantity')
 '''
 
+class JobOrder(models.Model):
+    STATUS = (
+        ('On Queue', 'On Queue'),
+        ('Under Cutting', 'Cutting'),
+        ('Under Extrusion', 'Under Extrusion'),
+        ('Under Printing', 'Under Printing'),
+        ('Under Packaging', 'Under Packaging'),
+        ('Ready for delivery', 'Ready for delivery'),
+        ('Delivered', 'Delivered'),
+    )
+
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+    rush_order = models.BooleanField(default=False)
+    status = models.CharField('status', choices=STATUS, max_length=200, default="")
+    remarks = models.CharField('remarks', max_length=250, default="", blank=True)
 
 class PrintingSchedule(models.Model):
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.ForeignKey(WorkerSchedule, on_delete=models.CASCADE)
     date = models.DateField('date')
@@ -66,7 +81,7 @@ class PrintingSchedule(models.Model):
 
 
 class CuttingSchedule(models.Model):
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.ForeignKey(WorkerSchedule, on_delete=models.CASCADE)
     print_name = models.CharField('print_name', max_length=200)
@@ -86,7 +101,7 @@ class CuttingSchedule(models.Model):
 
 
 class ExtruderSchedule(models.Model):
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.ForeignKey(WorkerSchedule, on_delete=models.CASCADE)
     stock_kind = models.CharField('stock_kind', max_length=250)
@@ -106,10 +121,3 @@ class ExtruderSchedule(models.Model):
     remarks = models.CharField('remarks', max_length=1000)
 
 
-class JobOrder(models.Model):
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
-    status = models.CharField('status', max_length=100)
-    remarks = models.CharField('remarks', max_length=250)
-    extruder_schedule = models.ForeignKey(ExtruderSchedule, on_delete=models.CASCADE)
-    printing_schedule = models.ForeignKey(PrintingSchedule, on_delete=models.CASCADE)
-    cutting_schedule = models.ForeignKey(CuttingSchedule, on_delete=models.CASCADE)

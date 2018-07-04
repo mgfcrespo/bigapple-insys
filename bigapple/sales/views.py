@@ -12,7 +12,7 @@ from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse
 from django.db.models import aggregates
 from production.models import JobOrder
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment
-from .forms import ClientPOForm, SupplierForm
+from .forms import ClientPOForm, SupplierForm, Form
 import sys
 
 #Forecasting imports
@@ -120,7 +120,7 @@ def delete_clientPO(request, id):
         client_po.delete()
         return HttpResponseRedirect('../clientPO_list')
 
-# List views
+# PO List/Detail view
 class POListView(ListView):
     template_name = 'sales/clientPO_list.html'
 
@@ -148,16 +148,31 @@ class POListView(ListView):
         elif self.request.session['session_position'] == 'Client':
             return ClientPO.objects.filter(client__full_name=self.request.session['session_fullname'])
         '''
-        
+
 class PODetailView(DetailView):
     model = ClientPO
     template_name = 'sales/clientPO_detail.html'
 
-    '''
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-    '''
+
+# JO CRUD
+def JO_list(request):
+    jo = JobOrder.objects.all()
+    items = ClientItem.objects.filter()  # modify! items for each jo
+    context = {
+        'jo': jo,
+        'items': items
+    }
+    return render(request, 'sales/JO_list.html', context)
+
+
+def JO_details(request, id):
+    jo = JobOrder.objects.get(id=id)
+
+    context = {
+        'jo': jo,
+        'title': jo.id,
+    }
+    return render(request, 'sales/JO_details.html', context)
 
 '''
 #Example for simple modelforms(for testing)
@@ -223,6 +238,7 @@ def create_client_po(request):
                               )
 
 
+
 '''
 class JOListView(generic.ListView):
     model = JobOrder
@@ -249,24 +265,7 @@ def rush_order_assessment(request):
     }
     return render(request, 'sales/rush_order_assessment.html', context)
 
-# JO CRUD
-def JO_list(request):
-    jo = JobOrder.objects.all()
-    items = ClientItem.objects.filter() #modify! items for each jo
-    context = {
-        'jo' : jo,
-        'items' : items
-    }
-    return render (request, 'sales/JO_list.html', context)
 
-def JO_details(request, id):
-    jo = JobOrder.objects.get(id=id)
-  
-    context = {
-        'jo' : jo,
-        'title' : jo.id,
-    }
-    return render(request, 'sales/JO_details.html', context)
 	
 #SALES INVOICE CRUD
 def sales_invoice_list(request):
