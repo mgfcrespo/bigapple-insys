@@ -1,4 +1,3 @@
-
 {% extends "client_page_ui.html" %}
 
 {% block content %}
@@ -14,6 +13,7 @@
               <th>Date Issued</th>
               <th>Date Required</th>
               <th>Total Amount</th>
+			  <th>Status</th>
           	</tr>
     		</thead>
     		<tbody>
@@ -22,7 +22,6 @@
     				{% for ClientPO in object_list %}
     			<tr>
     				<td>
-
     				<a href="{% url 'sales:po-detail-view' ClientPO.id %}">{{ ClientPO}}</a>
     				</td>
     				<td>
@@ -31,9 +30,11 @@
     				<td>
     				{{ ClientPO.date_required }}
     				</td>
-
     				<td>
     				{{ ClientPO.total_amount }}
+    				</td>
+					<td>
+    				{{ ClientPO.status}}
     				</td>
     			</tr>
     		{% endfor %}
