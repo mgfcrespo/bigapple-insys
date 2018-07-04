@@ -2,7 +2,7 @@
 
   {% block content %}
 
-	<div class="wrapper container">
+	<div class="sixteen wide column">
 		<table class="striped" style = "font-size:12px;">
         	<thead>
           	<tr>
@@ -22,8 +22,8 @@
     				<td>{{ supplier.mobile_number }}</td>
 					<td>{{ supplier.email_address }}</td>
 					<td>
-						<a class="amber btn" href="{% url 'sales:supplier_edit' supplier.id %}" style="font-size:12px;">View</a>
-						<a class="red btn" href="{% url 'sales:supplier_delete' supplier.id %}" style="font-size:12px;">Delete</a>
+						<a class="ui yellow basic button" href="{% url 'sales:supplier_edit' supplier.id %}" style="font-size:12px;">View</a>
+						<a class="ui red basic button" href="{% url 'sales:supplier_delete' supplier.id %}" style="font-size:12px;">Delete</a>
 					</td>
     			</tr>
 				{% endfor %}

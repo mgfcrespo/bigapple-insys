@@ -1,3 +1,4 @@
+
 {% extends "client_page_ui.html" %}
 
 {% block content %}
@@ -42,12 +43,49 @@
 			<p>There are no Purchase Orders to display</p>
 			{% endif %}
 
-			</tbody>
-    	</table>
-	</div>
+ {% extends "client_page_ui.html" %} {% block content %}
+
+<h3>PO List</h3>
+
+
+<div class="sixteen wide column">
+    <table>
+        <thead>
+            <tr>
+                <th>Purchase Order ID</th>
+                <th>Date Issued</th>
+                <th>Date Required</th>
+                <th>Date Confirmed</th>
+                <th>Total Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% if object_list %} {% for ClientPO in object_list %}
+            <tr>
+                <td>
+
+                    <a href="{% url 'sales:po-detail-view' ClientPO.id %}">{{ ClientPO}}</a>
+                </td>
+                <td>
+                    {{ ClientPO.date_issued }}
+                </td>
+                <td>
+                    {{ ClientPO.date_required }}
+                </td>
+                <td>
+                    {{ ClientPO.confirmed }}
+                </td>
+                <td>
+                    {{ ClientPO.total_amount }}
+                </td>
+            </tr>
+            {% endfor %} {% else %}
+            <p>There are no Purchase Orders to display</p>
+            {% endif %}
+
+        </tbody>
+    </table>
 </div>
-</body>
+
 {% endblock %}
-
-
-

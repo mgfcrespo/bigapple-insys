@@ -1,7 +1,7 @@
+ {% extends "client_page_ui.html" %} {% block content %}
 
-    {% extends "client_page_ui.html" %}
-    {% block content %}
 <body>
+
 
 	<div class="wrapper">
 		<h3 class="ui header">{{clientpo}}</h3>
@@ -17,34 +17,53 @@
               <th>Item Price Sub-Total</th>
           	</tr>
     		</thead>
-    		<tbody>
 
-    				{% for clientitem in clientpo.clientitem_set.all %}
-    			<tr>
-    				<td>
-    				{{ clientitem.laminate }}
-    				</td>
-    				<td>
-		          	{{ clientitem.width }}
-    				</td>
-    				<td>
-    				{{ clientitem.length}}
-    				</td>
-    				<td>
-    				{{ clientitem.color }}
-    				</td>
-    				<td>
-    				{{ clientitem.gusset}}
-    				</td>
-    				<td>
-    				{{ clientitem.quantity }}
-    				</td>
+    <div class="sixteen wide column">
+
+   		<tbody>
+
+        <h4>{{clientpo}}</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Laminate</th>
+                    <th>Width</th>
+                    <th>Length</th>
+                    <th>Color</th>
+                    <th>Gusset</th>
+                    <th>Quantity</th>
+                    <th>Item Price Sub-Total</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for clientitem in clientpo.clientitem_set.all %}
+                <tr>
                     <td>
-    				{{ clientitem.item_price}}
-    				</td>
-    			</tr>
-    		{% endfor %}
-			<tr>Total: {{clientpo.total_amount}}</tr>
+                        {{ clientitem.laminate }}
+                    </td>
+                    <td>
+                        {{ clientitem.width }}
+                    </td>
+                    <td>
+                        {{ clientitem.length}}
+                    </td>
+                    <td>
+                        {{ clientitem.color }}
+                    </td>
+                    <td>
+                        {{ clientitem.gusset}}
+                    </td>
+                    <td>
+                        {{ clientitem.quantity }}
+                    </td>
+                    <td>
+                        {{ clientitem.item_price}}
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>Total: {{clientpo.total_amount}}</tr>
+
 
 			</tbody>
     	</table>
@@ -52,27 +71,28 @@
 <button class="ui button">
 	<a href="{% url 'sales:po-list-view' %}">Back</a>
 </button>
+
+            </tbody>
+        </table>
+    </div>
+
+>>>>>>> fde064f3699074e52c01e0376f40718709b85d8d
 </body>
 
 
-    {% endblock %}      
+{% endblock %}
 
-    
-    <!-- ================================================Scripts================================================ -->
-
-
-    {% block script %}
-    <script>
-        $(document).ready(function(){
-            $('#editBTN').click(function(){
-            if($('#name').prop('disabled'))
-            {
-             $('#textfieldToClose').prop('disabled', false)
+{% block script %}
+<script>
+    $(document).ready(function() {
+        $('#editBTN').click(function() {
+            if ($('#name').prop('disabled')) {
+                $('#textfieldToClose').prop('disabled', false)
+            } else {
+                $('#textfieldToClose').prop('disabled', true)
             }
-            else{
-                 $('#textfieldToClose').prop('disabled', true)
-              }
-            });
-        })
-    </script>
-    {% endblock %}
+        });
+    })
+
+</script>
+{% endblock %}
