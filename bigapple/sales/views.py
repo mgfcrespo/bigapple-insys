@@ -120,59 +120,29 @@ def delete_clientPO(request, id):
         client_po.delete()
         return HttpResponseRedirect('../clientPO_list')
 
+
 # PO List/Detail view
 class POListView(ListView):
     template_name = 'sales/clientPO_list.html'
+    model = ClientPO
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(POListView, self).get_context_data(*args, **kwargs)
-        if self.request.session['session_position'] == 'GM':
-            context['context'] = 'GM'
-        elif self.request.session['session_position'] == 'SC':
-            context['context'] = 'SC'
-        elif self.request.session['session_position'] == 'SA':
-            context['context'] = 'SA'
-        elif self.request.session['session_position'] == 'Client':
-            context['context'] = 'Client'
-        return context
-
-    def get_queryset(self):
-        ClientPO.objects.all()
-        '''
-        if self.request.session['session_position'] == 'GM':
-            return ClientPO.objects.all()
-        elif self.request.session['session_position'] == 'SC':
-            return ClientPO.objects.all()
-        elif self.request.session['session_position'] == 'SA':
-            return ClientPO.objects.filter(client__sales_agent=self.request.session['session_fullname'])
-        elif self.request.session['session_position'] == 'Client':
-            return ClientPO.objects.filter(client__full_name=self.request.session['session_fullname'])
-        '''
 
 class PODetailView(DetailView):
     model = ClientPO
     template_name = 'sales/clientPO_detail.html'
 
 
-# JO CRUD
-def JO_list(request):
-    jo = JobOrder.objects.all()
-    items = ClientItem.objects.filter()  # modify! items for each jo
-    context = {
-        'jo': jo,
-        'items': items
-    }
-    return render(request, 'sales/JO_list.html', context)
+# JO List/Detail view
+class JO_list(ListView):
+    template_name = 'sales/JO_list.html'
+    model = JobOrder
 
+    print(JobOrder.objects.all())
 
-def JO_details(request, id):
-    jo = JobOrder.objects.get(id=id)
+class JO_details(DetailView):
+    model = JobOrder
+    template_name = 'sales/JO_details.html'
 
-    context = {
-        'jo': jo,
-        'title': jo.id,
-    }
-    return render(request, 'sales/JO_details.html', context)
 
 '''
 #Example for simple modelforms(for testing)
@@ -195,17 +165,25 @@ def create_client_po(request):
     clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=1, can_delete=True)
 
 
+
     if request.method == "POST":
         form = ClientPOForm(request.POST)
+        #Set ClientPO.client from session user
         #form.fields['client'].initial = Client.objects.get(id = request.session['session_userid'])
         message = ""
         print(form)
         if form.is_valid():
+            #Save PO form then use newly saved ClientPO as instance for ClientPOItems
             new_form = form.save()
             new_form = new_form.pk
             form_instance = ClientPO.objects.get(id=new_form)
 
+            #Create JO object with ClientPO as a field
+            jo = JobOrder(client_po = form_instance)
+            jo.save()
 
+
+            #Use PO form instance for PO items
             formset = clientpo_item_formset(request.POST, instance=form_instance)
             print(formset)
             if formset.is_valid():
@@ -224,7 +202,7 @@ def create_client_po(request):
                 message += "Formset error"
 
         else:
-            message = ""
+            message = "Form is not valid"
 
 
         #todo change index.html. page should be redirected after successful submission

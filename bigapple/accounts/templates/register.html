@@ -1,0 +1,23 @@
+{% extends 'login_register_ui.html' %}
+
+{% block register %}
+<form method="post" action = "{% url 'accounts:register' %}">
+									{% csrf_token %}
+									   {% for field in form %}
+      							<p>
+        								{{ field.label_tag }}<br>
+        								{{ field }}
+        								{% if field.help_text %}
+          									<small style="color: grey">{{ field.help_text }}</small>
+        								{% endif %}
+        								{% for error in field.errors %}
+         								 <p style="color: red">{{ error }}</p>
+        								{% endfor %}
+     							 </p>
+   										 {% endfor %}
+
+         							<div class="center">
+         								<button class="ui button" type="submit" value="Register">Register</button>
+	       							</div>
+    	   						</form>
+{% endblock %}

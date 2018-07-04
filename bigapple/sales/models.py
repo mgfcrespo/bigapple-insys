@@ -31,7 +31,7 @@ class ClientPO(models.Model):
     STATUS =(
         ('waiting', 'waiting'),
         ('approved', 'approved'),
-        ('uunder production', 'under production'),
+        ('under production', 'under production'),
         ('ready for delivery', 'ready for delivery'),
         ('disapproved', 'disapproved')
 

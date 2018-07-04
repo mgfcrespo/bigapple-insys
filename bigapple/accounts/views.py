@@ -18,7 +18,7 @@ from .models import Client
 # Create your views here.
 
 def register(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and 'Register' in request.POST:
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
@@ -29,7 +29,8 @@ def register(request):
             return redirect('home')
     else:
         form = UserCreationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'register.html', {'form': form})
+
 
 @login_required(login_url='/profile/login/')
 def user_page_view(request):
@@ -41,25 +42,24 @@ def user_page_view(request):
         if hasattr(request.user, 'employee'):
             employee_id = user.employee.id
             employee = Employee.objects.get(id=employee_id)
-            position = employee.position
             request.session['session_position'] = employee.position
             request.session['session_fullname'] = employee.full_name
             request.session['session_userid'] = employee_id
 
 
-            if employee.position == 'GM':
+            if employee.position == 'General Manager':
                 return render(request, 'accounts/general_manager_page.html')
-            elif employee.position == 'SC':
+            elif employee.position == 'Sales Coordinator':
                 return render(request, 'accounts/sales_coordinator_page.html')
-            elif employee.position == 'SA':
+            elif employee.position == 'Sales Agent':
                 return render(request, 'accounts/sales_agent_page.html')
-            elif employee.position == 'CC':
+            elif employee.position == 'Credits and Collection Personnel':
                 return render(request, 'accounts/credit_and_collection_personnel_page.html')
-            elif employee.position == 'SV':
+            elif employee.position == 'Supervisor':
                 return render(request, 'accounts/supervisor_page.html')
-            elif employee.position == 'PM':
+            elif employee.position == 'Production Manager':
                 return render(request, 'accounts/production_manager_page.html')
-            elif employee.position == 'LL':
+            elif employee.position == 'Line Leader':
                 return render(request, 'accounts/line_leader_page.html')
         else:
             client_id = user.client.id

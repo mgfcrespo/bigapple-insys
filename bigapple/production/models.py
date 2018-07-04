@@ -50,6 +50,7 @@ class MaterialSchedule(models.Model):
 
 class JobOrder(models.Model):
     STATUS = (
+        ('Waiting', 'Waiting'),
         ('On Queue', 'On Queue'),
         ('Under Cutting', 'Cutting'),
         ('Under Extrusion', 'Under Extrusion'),
@@ -57,12 +58,18 @@ class JobOrder(models.Model):
         ('Under Packaging', 'Under Packaging'),
         ('Ready for delivery', 'Ready for delivery'),
         ('Delivered', 'Delivered'),
+        ('Cancelled', 'Cancelled')
     )
 
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
     rush_order = models.BooleanField(default=False)
-    status = models.CharField('status', choices=STATUS, max_length=200, default="")
+    status = models.CharField('status', choices=STATUS, max_length=200, default="Waiting")
     remarks = models.CharField('remarks', max_length=250, default="", blank=True)
+
+    def __str__(self):
+        lead_zero = str(self.id).zfill(5)
+        jo_number = 'JO_%s' % (lead_zero)
+        return jo_number
 
 class PrintingSchedule(models.Model):
     job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True)

@@ -1,6 +1,7 @@
 
 from django import forms
 from django.forms import ModelForm, ValidationError, Form, widgets
+from production.models import JobOrder
 
 from .models import ClientItem, ClientPO, Product, Client
 from decimal import Decimal
