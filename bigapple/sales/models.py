@@ -22,25 +22,25 @@ class Product(models.Model):
 #could be substitute for quotation request
 class ClientPO(models.Model):
     PAYMENT_TERMS = (
-        ('15', '15 Days'),
-        ('30', '30 Days'),
-        ('60', '60 Days'),
-        ('90', '90 Days')
+        ('15 Days', '15 Days'),
+        ('30 Days', '30 Days'),
+        ('60 Days', '60 Days'),
+        ('90 Days', '90 Days')
     )
 
     STATUS =(
-        ('w', 'waiting'),
-        ('a', 'approved'),
-        ('u', 'under production'),
-        ('r', 'ready for delivery'),
-        ('d', 'disapproved')
+        ('waiting', 'waiting'),
+        ('approved', 'approved'),
+        ('under production', 'under production'),
+        ('ready for delivery', 'ready for delivery'),
+        ('disapproved', 'disapproved')
 
     )
 
     date_issued = models.DateTimeField('date_issued', auto_now_add=True, blank=True)
-    date_required = models.DateTimeField('date_required', auto_now_add=True, blank=True)
-    payment_terms = models.CharField('payment terms',  choices=PAYMENT_TERMS, max_length=200, default="30 Days")
-    other_info = models.CharField('other_info', max_length=250)
+    date_required = models.DateField('date_required')
+    payment_terms = models.CharField('payment terms',  choices=PAYMENT_TERMS, max_length=200, default="30")
+    other_info = models.TextField('other_info', max_length=250)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
     status = models.CharField('status', choices=STATUS, default='waiting', max_length=200)
@@ -50,25 +50,26 @@ class ClientPO(models.Model):
         po_number = 'PO_%s' % (lead_zero)
         return po_number
 
-
+    '''
     def calculate_leadtime(self):
         date_format = "%m/%d/%y"
         date1 = datetime.strptime(self.date_issued, date_format)
         date2 = datetime.strptime(self.date_required, date_format)
         return date2 - date1
+    '''
 
 class ClientItem(models.Model):
 
     COLOR =(
-        ('R', 'Red'),
-        ('B', 'Blue'),
-        ('Y', 'Yellow'),
-        ('O', 'Orange'),
-        ('G', 'Green'),
-        ('V', 'Violet'),
-        ('Blk', 'Black'),
-        ('Wht', 'White'),
-        ('P', 'Plain')
+        ('Red', 'Red'),
+        ('Blue', 'Blue'),
+        ('Yellow', 'Yellow'),
+        ('Orange', 'Orange'),
+        ('Green', 'Green'),
+        ('Violet', 'Violet'),
+        ('Black', 'Black'),
+        ('White', 'White'),
+        ('Plain', 'Plain')
     )
 
     products = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
@@ -133,7 +134,7 @@ class SalesInvoice(models.Model):
 
 class ClientCreditStatus(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    status = models.BooleanField()
+    status = models.BooleanField('laminate', default=False)
     outstanding_balance = models.DecimalField('outstanding_balance', decimal_places=3, max_digits=12) #accumulation of ClientPayment.balance
 
     def __str__(self):

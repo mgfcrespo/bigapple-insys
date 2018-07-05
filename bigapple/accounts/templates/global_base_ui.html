@@ -46,7 +46,7 @@
                     <i class="cog icon"></i>
                     Settings
                 </a>&nbsp;&nbsp;&nbsp;
-                <a>
+                <a href="{% url 'accounts:logout' %}" >
                     <i class="power off icon"></i>
                     Log out
                 </a>&nbsp;&nbsp;&nbsp;
@@ -56,6 +56,9 @@
                 </a>
             </center>
         </div>
+
+         {% block left_sidebar %}
+         {% endblock %}
 
         <div style="font-size: 10px; color:white; padding: 10px;">
             <center>
@@ -74,7 +77,8 @@
 
     <div class="pusher sixteen wide column" style="padding: 10px;">
 
-        {% block content %} {% endblock %}
+        {% block content %}
+        {% endblock %}
 
     </div>
 

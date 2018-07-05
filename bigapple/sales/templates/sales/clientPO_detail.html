@@ -1,53 +1,51 @@
  {% extends "client_page_ui.html" %} {% block content %}
 
 <body>
-    <div class="sixteen wide column">
 
-        <h4>{{clientpo}}</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>Laminate</th>
-                    <th>Width</th>
-                    <th>Length</th>
-                    <th>Color</th>
-                    <th>Gusset</th>
-                    <th>Quantity</th>
-                    <th>Item Price Sub-Total</th>
-                </tr>
-            </thead>
+
+	<div class="wrapper">
+		<h3 class="ui header">{{clientpo}}</h3>
+		<table class="ui cell padded table">
+        	<thead>
+          	<tr>
+          	  <th>Laminate</th>
+              <th>Width</th>
+              <th>Length</th>
+              <th>Color</th>
+              <th>Gusset</th>
+              <th>Quantity</th>
+              <th>Item Price Sub-Total</th>
+          	</tr>
+    		</thead>
+
+
             <tbody>
 
                 {% for clientitem in clientpo.clientitem_set.all %}
                 <tr>
-                    <td>
-                        {{ clientitem.laminate }}
-                    </td>
-                    <td>
-                        {{ clientitem.width }}
-                    </td>
-                    <td>
-                        {{ clientitem.length}}
-                    </td>
-                    <td>
-                        {{ clientitem.color }}
-                    </td>
-                    <td>
-                        {{ clientitem.gusset}}
-                    </td>
-                    <td>
-                        {{ clientitem.quantity }}
-                    </td>
-                    <td>
-                        {{ clientitem.item_price}}
-                    </td>
+                    <td>{{ clientitem.laminate }}</td>
+                    <td>{{ clientitem.width }}</td>
+                    <td>{{ clientitem.length}}</td>
+                    <td>{{ clientitem.color }}</td>
+                    <td>{{ clientitem.gusset}}</td>
+                    <td>{{ clientitem.quantity }}</td>
+                    <td>{{ clientitem.item_price}}</td>
                 </tr>
                 {% endfor %}
                 <tr>Total: {{clientpo.total_amount}}</tr>
 
+
+			</tbody>
+    	</table>
+	</div>
+<button class="ui button">
+	<a href="{% url 'sales:po-list-view' %}">Back</a>
+</button>
+
             </tbody>
         </table>
     </div>
+
 
 </body>
 

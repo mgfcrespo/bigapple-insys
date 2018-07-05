@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+{% load staticfiles %}
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,24 +20,9 @@
 
 <body>
 
-    <div class="ui top attached tabular menu">
-        <a class="item active" data-tab="first"><i class="unlock icon"></i>Login</a>
-        <a class="item" data-tab="second"><i class="user outline icon"></i>Register</a>
-    </div>
-    <div class="ui bottom attached tab segment" data-tab="first">
-        <div class="card-content black-text">
-            <!--form-->
-            {% block login %} {%endblock %}
-        </div>
-    </div>
-    <div class="ui bottom attached tab segment active" data-tab="second">
-        <div class="card-content black-text">
-            <!--form-->
-            {% block register %} {% endblock %}
-        </div>
-    </div>
 
-    <!-- jQuery Library -->
+            {% block login %} {%endblock %}
+
     <script type="text/javascript" src="{% static 'jquery-3.2.1.min.js' %}"></script>
     <!--Formset files-->
     <script src="{% static 'jquery.formset.js' %}" charset="utf-8"></script>

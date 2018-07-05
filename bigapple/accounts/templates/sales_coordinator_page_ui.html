@@ -8,7 +8,7 @@
     <i class="file alternate icon"></i>
     Create Purchase Order
 </a>
-<a href="clientPO_list.html" class="item">
+<a href="{% url 'sales:po-list-view' %}" class="item">
     <i class="file alternate icon"></i>
     Client Purchase Orders
 </a>
@@ -28,7 +28,7 @@
     <i class="calculator icon"></i>
     Order Assessment and Re-Planning
 </a>
-<a href="JO_list.html" class="item">
+<a href="{% url 'sales:JO_list' %}" class="item">
     <i class="edit outline icon"></i>
     Job Order
 </a>
@@ -45,4 +45,7 @@
     Suppliers
 </a>
 
-{% endblock %} {% block content %} {% endblock %}
+{% endblock %}
+
+ {% block content %}
+ {% endblock %}

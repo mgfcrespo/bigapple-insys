@@ -1,19 +1,19 @@
 
 from django import forms
 from django.forms import ModelForm, ValidationError, Form, widgets
+from production.models import JobOrder
 
 from .models import ClientItem, ClientPO, Product, Client
 from decimal import Decimal
 from django.contrib.admin.widgets import AdminDateWidget
 
-
-
-
 from .models import ClientItem, ClientPO, Product, Supplier
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
 
 class ClientPOFormItems(ModelForm):
     client_po = forms.CharField(label='')
-    id = forms.BooleanField(label='')
     laminate = forms.BooleanField(initial=True, required=False)
 
     class Meta:
@@ -22,19 +22,17 @@ class ClientPOFormItems(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ClientPOFormItems, self).__init__(*args, **kwargs)
-        self.fields['id'].widget.attrs.update({'label': ''})
-        #self.fields['laminate'].widget.attrs.update({'id': 'check'})
-        #self.fields['products'].widget.attrs.update({'label': 'Type'})
+        self.fields['products'].label = 'Product Type'
 
 
 class ClientPOForm(ModelForm):
 
     class Meta:
         model = ClientPO
-        fields = ('payment_terms', 'other_info')
-
-        #widgets = {'date_required':DateTimePicker(options={"format": "YYYY-MM-DD", "pickSeconds": False}}
-
+        fields = ('payment_terms', 'date_required', 'other_info')
+        widgets = {
+            'date_required': DateInput(),
+        }
 
 class SupplierForm(forms.ModelForm):
 
