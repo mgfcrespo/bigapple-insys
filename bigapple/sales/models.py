@@ -58,6 +58,7 @@ class ClientPO(models.Model):
         return date2 - date1
     '''
 
+
 class ClientItem(models.Model):
 
     COLOR =(
