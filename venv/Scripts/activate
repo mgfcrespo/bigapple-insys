@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\decqua\PycharmProjects\bigapple-insys\venv"
+VIRTUAL_ENV="C:\Users\Ian Eugenio\Desktop\bigapple-insys\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
