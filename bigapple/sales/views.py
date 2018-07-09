@@ -17,7 +17,9 @@ import sys
 
 #Forecasting imports
 import numpy as np
-from math import sqrt
+import plotly.graph_objs as go
+import plotly.offline as ply
+#from math import sqrt
 #import pandas as pd
 # import pandas._libs.tslibs.timedeltas
 # import matplotlib.pyplot as plt
@@ -237,7 +239,8 @@ def rush_order_list(request):
     return render (request, 'sales/rush_order_list.html', context)
 
 def rush_order_assessment(request):
-    rush_order = ClientPO.objects.filter(ClientPO.calculate_leadtime(ClientPO) <= 14) #modify! lead time input
+    rush_order = ClientPO.objects.filter(ClientPO.calculate_leadtime(ClientPO) <= 14)
+
     context = {
         'rush_order': rush_order
     }
@@ -317,4 +320,18 @@ class Forecasting_Algo:
         ...
     def ARIMA(self):
         ...
+'''
+
+'''
+#SAMPLE DATA WITH PLOTLY
+ply.offline.plot({
+    "data": [go.Scatter(x=[1, 2, 3, 4], y=[4, 3, 2, 1])],
+    "layout": go.Layout(title="hello world")
+}, auto_open=True)
+
+# Create traces/data collection
+
+# Create info dictionary
+# Pack data
+# Plot
 '''
