@@ -1,3 +1,56 @@
+<<<<<<< HEAD
+{% extends 'global_base_ui_semantic.html' %}
+
+{% block content %}
+<div id="basic-form" class="section">
+  <div class="row">
+    <div class="col s6 offset-s3">
+      <div class="card-panel">
+        <h4 class="header1">{{ title }}</h4>
+        <div class="row">
+          
+          <form class="col s12" action = "#" method="POST" role="form">
+            {% csrf_token %}
+            <div class="row">
+              <div class="input-field col s12">
+                {{ form.company_name }}
+                <label for="company_name">Company Name</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                {{ form.first_name }}
+                <label for="first_name">First Name</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                {{ form.last_name }}
+                <label for="last_name">Last Name</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                {{ form.mobile_number }}
+                <label for="mobile_number">Mobile Number</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                {{ form.email_address }}
+                <label for="email_address">Email Address</label>
+              </div>
+            </div>                                            
+            <div class="row">
+              <div class="input-field col s12">
+                {{ form.description }}
+                <label for="description">Description</label>
+              </div>
+              <div class="row">
+                <div class="center">
+                  <button class="btn btn-small green" type="submit">{{ actiontype }}</button>
+                  <button class="btn btn-small red" typle="clear">Clear</button>
+=======
 {% extends 'sales_coordinator_page_ui.html' %} {% block content %}
 <div id="basic-form">
     <div>
@@ -23,6 +76,7 @@
                         {{ form.mobile_number }}
                         <label for="mobile_number">Mobile Number</label>
                     </div>
+>>>>>>> 06735fa3278f9ed6291776a0827be3f90090ec7b
                 </div>
                 <div class="row">
                     <div class="eight wide column">

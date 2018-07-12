@@ -1,0 +1,48 @@
+{% extends 'global_base_ui_semantic.html' %}
+
+{% block content %}
+
+<div class = "ui container">
+    <form class="ui form" action = "#" method="POST" role="form">
+        <h2 class="ui header">{{ title }}</h2>
+        {% csrf_token %}
+        <div class="field">
+            <label>Supplier</label>
+            {{ form.supplier }}
+        </div>
+        <div class="fields">
+            <div class="field">
+                <label>Item</label>
+                {{ form.item_name }}
+            </div>
+            <div class="field">
+                <label>Type</label>
+                {{ form.item_type }}
+            </div>
+            <div class="field">
+                <label>RM Type</label>
+                {{ form.rm_type }}
+            </div>
+            <div class="ui left pointing label">
+                For Raw Materials Only
+            </div>
+        </div>
+        <div class="field">
+            <label>Description</label>
+            {{ form.description }}
+        </div>
+        <div class="fields">
+            <div class="field">
+                <label>Price</label>
+                {{ form.price }}
+            </div>
+            <div class="field">
+                <label>Quantity</label>
+                {{ form.quantity }}
+            </div>
+        </div>
+        <button class="ui positive button" type="submit">Submit</button>
+    </form>
+</div>
+
+{% endblock %}
