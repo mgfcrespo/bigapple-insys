@@ -21,7 +21,7 @@ class ContactNumber(models.Model):
 
 
 class Email(models.Model):
-    emails = models.CharField('emails', max_length=200)
+    emails = models.EmailField('emails', max_length=200)
 
     def __str__(self):
         return self.emails
@@ -29,20 +29,20 @@ class Email(models.Model):
 
 class Employee(models.Model):
     POSITION = (
-        ('GM', 'General Manager'),
-        ('SC', 'Sales Coordinator'),
-        ('SA', 'Sales Agent'),
-        ('CC', 'Credits and Collection Personnel'),
-        ('SV', 'Supervisor'),
-        ('LL', 'Line Leader'),
-        ('PM', 'Production Manager'),
-        ('C', 'Cutting'),
-        ('P', 'Printing'),
-        ('E', 'Extruder'),
-        ('D', 'Delivery'),
-        ('W', 'Warehouse'),
-        ('U', 'Utility'),
-        ('M', 'Maintenance'),
+        ('General Manager', 'General Manager'),
+        ('Sales Coordinator', 'Sales Coordinator'),
+        ('Sales Agent', 'Sales Agent'),
+        ('Credits and Collection Personnel', 'Credits and Collection Personnel'),
+        ('Supervisor', 'Supervisor'),
+        ('Line Leader', 'Line Leader'),
+        ('Production Manager', 'Production Manager'),
+        ('Cutting', 'Cutting'),
+        ('Printing', 'Printing'),
+        ('Extruder', 'Extruder'),
+        ('Delivery', 'Delivery'),
+        ('Warehouse', 'Warehouse'),
+        ('Utility', 'Utility'),
+        ('Maintenance', 'Maintenance'),
 
     )
 
@@ -80,8 +80,8 @@ class Employee(models.Model):
 
 
 class Client(models.Model):
-    first_name = models.CharField('first_name', max_length=200, default='not_specified')
-    last_name = models.CharField('last_name', max_length=200, default='not_specified')
+    first_name = models.CharField('first_name', max_length=200, default='')
+    last_name = models.CharField('last_name', max_length=200, default='')
     company = models.CharField('company', max_length=200)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     email = models.ForeignKey(Email, on_delete=models.CASCADE)

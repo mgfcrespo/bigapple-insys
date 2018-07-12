@@ -12,20 +12,18 @@ from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse
 from django.db.models import aggregates
 from production.models import JobOrder
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment
-from .forms import ClientPOForm, SupplierForm
+from .forms import ClientPOForm, SupplierForm, Form
 import sys
 
-
-
-# # #Forecasting imports
-# #import pandas as pd
-# #import pandas._libs.tslibs.timedeltas
-# import numpy as np
-# #import matplotlib.pyplot as plt
+#Forecasting imports
+import numpy as np
+from math import sqrt
+#import pandas as pd
+# import pandas._libs.tslibs.timedeltas
+# import matplotlib.pyplot as plt
 # from sklearn.metrics import mean_squared_error
-# from math import sqrt
-# #from matplotlib.pylab import rcParams
-# #rcParams['figure.figsize'] = 15, 6
+# from matplotlib.pylab import rcParams
+# rcParams['figure.figsize'] = 15, 6
 
 
 # Create your views here.
@@ -122,33 +120,29 @@ def delete_clientPO(request, id):
         client_po.delete()
         return HttpResponseRedirect('../clientPO_list')
 
-# List views
+
+# PO List/Detail view
 class POListView(ListView):
     template_name = 'sales/clientPO_list.html'
-    print(sys.path)
+    model = ClientPO
 
-    def get_queryset(self):
-        return ClientPO.objects.all()
-        '''
-        if request.session['session_position'] == 'GM':
-            return ClientPO.objects.all()
-        elif request.session['session_position'] == 'SC':
-            return ClientPO.objects.all()
-        elif request.session['session_position'] == 'SA':
-            return ClientPO.objects.filter(client__sales_agent=request.session['session_fullname']) #modify! untested
-        elif request.session['session_position'] == 'Client':
-            return ClientPO.objects.filter(client__full_name=request.session['session_fullname'])
-        '''
-        
+
 class PODetailView(DetailView):
     model = ClientPO
     template_name = 'sales/clientPO_detail.html'
 
-    '''
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-    '''
+
+# JO List/Detail view
+class JO_list(ListView):
+    template_name = 'sales/JO_list.html'
+    model = JobOrder
+
+    print(JobOrder.objects.all())
+
+class JO_details(DetailView):
+    model = JobOrder
+    template_name = 'sales/JO_details.html'
+
 
 '''
 #Example for simple modelforms(for testing)
@@ -171,16 +165,25 @@ def create_client_po(request):
     clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=1, can_delete=True)
 
 
+
     if request.method == "POST":
         form = ClientPOForm(request.POST)
+        #Set ClientPO.client from session user
+        #form.fields['client'].initial = Client.objects.get(id = request.session['session_userid'])
         message = ""
         print(form)
         if form.is_valid():
+            #Save PO form then use newly saved ClientPO as instance for ClientPOItems
             new_form = form.save()
             new_form = new_form.pk
             form_instance = ClientPO.objects.get(id=new_form)
 
+            #Create JO object with ClientPO as a field
+            jo = JobOrder(client_po = form_instance)
+            jo.save()
 
+
+            #Use PO form instance for PO items
             formset = clientpo_item_formset(request.POST, instance=form_instance)
             print(formset)
             if formset.is_valid():
@@ -199,7 +202,7 @@ def create_client_po(request):
                 message += "Formset error"
 
         else:
-            message = ""
+            message = "Form is not valid"
 
 
         #todo change index.html. page should be redirected after successful submission
@@ -211,6 +214,7 @@ def create_client_po(request):
                               {'formset': clientpo_item_formset(),
                                'form': ClientPOForm}
                               )
+
 
 
 '''
@@ -239,24 +243,7 @@ def rush_order_assessment(request):
     }
     return render(request, 'sales/rush_order_assessment.html', context)
 
-# JO CRUD
-def JO_list(request):
-    jo = JobOrder.objects.all()
-    items = ClientItem.objects.filter() #modify! items for each jo
-    context = {
-        'jo' : jo,
-        'items' : items
-    }
-    return render (request, 'sales/JO_list.html', context)
 
-def JO_details(request, id):
-    jo = JobOrder.objects.get(id=id)
-  
-    context = {
-        'jo' : jo,
-        'title' : jo.id,
-    }
-    return render(request, 'sales/JO_details.html', context)
 	
 #SALES INVOICE CRUD
 def sales_invoice_list(request):

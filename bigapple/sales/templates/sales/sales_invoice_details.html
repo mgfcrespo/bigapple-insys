@@ -1,98 +1,100 @@
+<<<<<<< HEAD
 {% extends 'global_base_ui_semantic.html' %}
 
 {% block content %}
+=======
+{% extends 'sales_coordinator_page_ui.html' %} {% block content %}
+>>>>>>> 06735fa3278f9ed6291776a0827be3f90090ec7b
 <div id="basic-form" class="section">
-  <div class="row">
-    <div class="col s8 offset-s2">
-      <div class="card-panel">
-        <h4 class="header1">PO{{ title }}</h4>
-        <div class="row">
-          
-          <form class="col s12" action = "#" method="POST" role="form">
-            {% csrf_token %}
-            <div class="row">
-              <div class="col s12">
-                <label for="">Client PO: </label>
-                <span>{{ sales_invoice.client_po }}</span>
-              </div>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <label for="">Date Issued: </label>
-                    <span>{{ sales_invoice.client_po.date_issued }}</span>
-                </div>
-                <div class="col s6">
-                    <label for="">Date Required: </label>
-                    <span>{{ sales_invoice.client_po.date_required }}</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <label for="">Client: </label>
-                    <span>{{ sales_invoice.client }}</span>
-                </div>
-                <div class="col s6">
-                    <label for="">Company: </label>
-                    <span>{{ sales_invoice.client.company }}</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <label for="">Contact Number: </label>
-                    <span>{{ sales_invoice.client.contact_number }}</span>
-                </div>
-                <div class="col s6">
-                    <label for="">Email: </label>
-                    <span>{{ sales_invoice.client.email }}</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <label for="">Sales Agent: </label>
-                    <span>{{ sales_invoice.client.sales_agent }}</span>
-                </div>
-                <div class="col s6">
-                    <label for="">Terms: </label>
-                    <span>{{ sales_invoice.client_po.terms }}</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <label for="">Note: </label>
-                    <span>{{ sales_invoice.client_po.note }}</span>
-                </div>
-                <div class="col s6">
-                    <label for="">Other Information: </label>
-                    <span>{{ sales_invoice.client_po.other_info }}</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <label for="">Discount: </label>
-                    <span>{{ sales_invoice.discount }}</span>
-                </div>
-                <div class="col s6">
-                    <label for="">Net Value: </label>
-                    <span>{{ sales_invoice.net_value }}</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <label for="">Total Amount: </label>
-                    <span>{{ sales_invoice.total_amount }}</span>
-                </div>
-                <div class="col s6">
-                    <label for="">Amount Due: </label>
-                    <span>{{ sales_invoice.amount_due }}</span>
-                </div>
-            </div>
-        </form>
-        </div>
-      </div>                        
-      </div>
-    </div>
-  </div>
-</div>
+    <div class="row">
+        <div class="ten wide column">
+            <div>
+                <h4 class="header1">PO{{ title }}</h4>
+                <div class="row">
 
+                    <form class="sixteen wide column" action="#" method="POST" role="form">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="sixteen wide column">
+                                <label for="">Client PO: </label>
+                                <span>{{ sales_invoice.client_po }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="eight wide column">
+                                <label for="">Date Issued: </label>
+                                <span>{{ sales_invoice.client_po.date_issued }}</span>
+                            </div>
+                            <div class="eight wide column">
+                                <label for="">Date Required: </label>
+                                <span>{{ sales_invoice.client_po.date_required }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="eight wide column">
+                                <label for="">Client: </label>
+                                <span>{{ sales_invoice.client }}</span>
+                            </div>
+                            <div class="eight wide column">
+                                <label for="">Company: </label>
+                                <span>{{ sales_invoice.client.company }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="eight wide column">
+                                <label for="">Contact Number: </label>
+                                <span>{{ sales_invoice.client.contact_number }}</span>
+                            </div>
+                            <div class="eight wide column">
+                                <label for="">Email: </label>
+                                <span>{{ sales_invoice.client.email }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="eight wide column">
+                                <label for="">Sales Agent: </label>
+                                <span>{{ sales_invoice.client.sales_agent }}</span>
+                            </div>
+                            <div class="eight wide column">
+                                <label for="">Terms: </label>
+                                <span>{{ sales_invoice.client_po.terms }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="eight wide column">
+                                <label for="">Note: </label>
+                                <span>{{ sales_invoice.client_po.note }}</span>
+                            </div>
+                            <div class="eight wide column">
+                                <label for="">Other Information: </label>
+                                <span>{{ sales_invoice.client_po.other_info }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="eight wide column">
+                                <label for="">Discount: </label>
+                                <span>{{ sales_invoice.discount }}</span>
+                            </div>
+                            <div class="eight wide column">
+                                <label for="">Net Value: </label>
+                                <span>{{ sales_invoice.net_value }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="eight wide column">
+                                <label for="">Total Amount: </label>
+                                <span>{{ sales_invoice.total_amount }}</span>
+                            </div>
+                            <div class="eight wide column">
+                                <label for="">Amount Due: </label>
+                                <span>{{ sales_invoice.amount_due }}</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

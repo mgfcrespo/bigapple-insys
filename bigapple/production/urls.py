@@ -4,5 +4,6 @@ from . import views
 
 app_name='production'
 urlpatterns = [
-        url(r'^production_details/', views.production_details, name='production_details')
+        url(r'^production_details/', views.production_details, name='production_details'),
+        path('overall-production-schedule/', views.production_schedule, name='production_schedule')
 ];

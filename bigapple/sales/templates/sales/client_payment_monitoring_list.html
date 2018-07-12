@@ -1,54 +1,48 @@
-{% extends 'sales_coordinator_page_ui.html' %}
+{% extends 'sales_coordinator_page_ui.html' %} {% block content %}
 
-  {% block content %}
-
-<body>
-
-	<div class="wrapper">
-		<table>
-        	<thead>
-          	<tr>
-          	  <th>Client</th>
-          	  <th>Credit Status</th>
-          	  <th>Invoice Issued</th>
-          	  <th>Total Paid</th>
-          	  <th>Outstanding Balance</th>
-          	  <th>Date Due</th>
-          	</tr>
-    		</thead>
-    		<tbody>
-    				{% for client_payments in client_payments %}
-    			<tr>
-    				<td>
-    				{{client_payments.client.full_name}}
-    				</td>
-    				<td>
-    				{% if client_payments.outstanding_balance > 0 %}
-						<p>Uncleared</p>
-						{% else %}
-						<p>Cleared</p>
-					{% endif %}
-    				</td>
-    				<td>
-		          	{{client_payments.invoice_issued.id}}
-    				</td>
-    				<td>
-    				{{client_payments.total_paid}}
-    				</td>
-    				<td>
-    				{{client_payments.outstanding_balance}}
-    				</td>
-    				<td>
-    				{{client_payments.date_due}}
-    				</td>
-    			</tr>
-    		{% endfor %}
-			</tbody>
-    	</table>
-	</div>
-
-</body>
-
+<div class="row">
+    <div class="sixteen wide column">
+        <table>
+            <thead>
+                <tr>
+                    <th>Client</th>
+                    <th>Credit Status</th>
+                    <th>Invoice Issued</th>
+                    <th>Total Paid</th>
+                    <th>Outstanding Balance</th>
+                    <th>Date Due</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client_payments in client_payments %}
+                <tr>
+                    <td>
+                        {{client_payments.client.full_name}}
+                    </td>
+                    <td>
+                        {% if client_payments.outstanding_balance > 0 %}
+                        <p>Uncleared</p>
+                        {% else %}
+                        <p>Cleared</p>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{client_payments.invoice_issued.id}}
+                    </td>
+                    <td>
+                        {{client_payments.total_paid}}
+                    </td>
+                    <td>
+                        {{client_payments.outstanding_balance}}
+                    </td>
+                    <td>
+                        {{client_payments.date_due}}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock %}
-</html>

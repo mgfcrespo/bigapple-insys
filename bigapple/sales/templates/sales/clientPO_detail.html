@@ -1,10 +1,11 @@
+ {% extends "client_page_ui.html" %} {% block content %}
 
-    {% extends "client_page_ui.html" %}
-    {% block content %}
 <body>
+
+
 	<div class="wrapper">
-		<h3>{{clientpo}}</h3>
-		<table class="striped">
+		<h3 class="ui header">{{clientpo}}</h3>
+		<table class="ui cell padded table">
         	<thead>
           	<tr>
           	  <th>Laminate</th>
@@ -16,60 +17,52 @@
               <th>Item Price Sub-Total</th>
           	</tr>
     		</thead>
-    		<tbody>
 
-    				{% for clientitem in clientpo.clientitem_set.all %}
-    			<tr>
-    				<td>
-    				{{ clientitem.laminate }}
-    				</td>
-    				<td>
-		          	{{ clientitem.width }}
-    				</td>
-    				<td>
-    				{{ clientitem.length}}
-    				</td>
-    				<td>
-    				{{ clientitem.color }}
-    				</td>
-    				<td>
-    				{{ clientitem.gusset}}
-    				</td>
-    				<td>
-    				{{ clientitem.quantity }}
-    				</td>
-                    <td>
-    				{{ clientitem.item_price}}
-    				</td>
-    			</tr>
-    		{% endfor %}
-			<tr>Total: {{clientpo.total_amount}}</tr>
+
+            <tbody>
+
+                {% for clientitem in clientpo.clientitem_set.all %}
+                <tr>
+                    <td>{{ clientitem.laminate }}</td>
+                    <td>{{ clientitem.width }}</td>
+                    <td>{{ clientitem.length}}</td>
+                    <td>{{ clientitem.color }}</td>
+                    <td>{{ clientitem.gusset}}</td>
+                    <td>{{ clientitem.quantity }}</td>
+                    <td>{{ clientitem.item_price}}</td>
+                </tr>
+                {% endfor %}
+                <tr>Total: {{clientpo.total_amount}}</tr>
+
 
 			</tbody>
     	</table>
 	</div>
+<button class="ui button">
+	<a href="{% url 'sales:po-list-view' %}">Back</a>
+</button>
+
+            </tbody>
+        </table>
+    </div>
+
 
 </body>
 
 
-    {% endblock %}      
+{% endblock %}
 
-    
-    <!-- ================================================Scripts================================================ -->
-
-
-    {% block script %}
-    <script>
-        $(document).ready(function(){
-            $('#editBTN').click(function(){
-            if($('#name').prop('disabled'))
-            {
-             $('#textfieldToClose').prop('disabled', false)
+{% block script %}
+<script>
+    $(document).ready(function() {
+        $('#editBTN').click(function() {
+            if ($('#name').prop('disabled')) {
+                $('#textfieldToClose').prop('disabled', false)
+            } else {
+                $('#textfieldToClose').prop('disabled', true)
             }
-            else{
-                 $('#textfieldToClose').prop('disabled', true)
-              }
-            });
-        })
-    </script>
-    {% endblock %}
+        });
+    })
+
+</script>
+{% endblock %}

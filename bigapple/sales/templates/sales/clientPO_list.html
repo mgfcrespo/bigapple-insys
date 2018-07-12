@@ -1,55 +1,37 @@
+{% extends "client_page_ui.html" %}{% block content %}
 
-{% extends "client_page_ui.html" %}
+<h3 class="ui header">Purchase Order List</h3>
 
-{% block content %}
 
-<h3>PO List</h3>
-<body>
-<div class="wrapper container">
-	<div class="wrapper">
-		<table class="striped">
+		<table class="ui cell padded table">
         	<thead>
           	<tr>
           	  <th>Purchase Order ID</th>
               <th>Date Issued</th>
               <th>Date Required</th>
-              <th>Date Confirmed</th>
               <th>Total Amount</th>
+			  <th>Status</th>
           	</tr>
     		</thead>
     		<tbody>
 
 			{% if object_list %}
-    				{% for ClientPO in object_list %}
-    			<tr>
-    				<td>
-
-    				<a href="{% url 'sales:po-detail-view' ClientPO.id %}">{{ ClientPO}}</a>
-    				</td>
-    				<td>
-		          	{{ ClientPO.date_issued }}
-    				</td>
-    				<td>
-    				{{ ClientPO.date_required }}
-    				</td>
-    				<td>
-    				{{ ClientPO.confirmed }}
-    				</td>
-    				<td>
-    				{{ ClientPO.total_amount }}
-    				</td>
-    			</tr>
-    		{% endfor %}
+				{% for ClientPO in object_list %}
+    				<tr>
+    					<td><a href="{% url 'sales:po-detail-view' ClientPO.id %}">{{ ClientPO}}</a></td>
+    					<td>{{ ClientPO.date_issued }}</td>
+    					<td>{{ ClientPO.date_required }}</td>
+    					<td>{{ ClientPO.total_amount }}</td>
+						<td>{{ ClientPO.status}}</td>
+    				</tr>
+				{% endfor %}
 			{% else %}
 			<p>There are no Purchase Orders to display</p>
 			{% endif %}
 
-			</tbody>
-    	</table>
-	</div>
-</div>
-</body>
+
+        </tbody>
+    </table>
+
+
 {% endblock %}
-
-
-
