@@ -12,27 +12,43 @@ from .models import ClientItem, ClientPO, Product, Supplier
 class DateInput(forms.DateInput):
     input_type = 'date'
 
+
 class ClientPOFormItems(ModelForm):
     client_po = forms.CharField(label='')
     laminate = forms.BooleanField(initial=True, required=False)
 
     class Meta:
         model = ClientItem
-        fields = ('products', 'width', 'length', 'gusset', 'color', 'quantity', 'laminate')
+        fields = ('products', 'material_type', 'width', 'length', 'gusset', 'color', 'quantity', 'laminate')
 
     def __init__(self, *args, **kwargs):
         super(ClientPOFormItems, self).__init__(*args, **kwargs)
         self.fields['products'].label = 'Product Type'
+        self.fields['products'].required = True
+        self.fields['material_type'].label = 'Material'
+        self.fields['material_type'].required = True
+        self.fields['width'].required = True
+        self.fields['length'].required = True
+        self.fields['gusset'].required = True
+        self.fields['color'].required = True
+        self.fields['quantity'].required = True
 
 
 class ClientPOForm(ModelForm):
 
     class Meta:
         model = ClientPO
-        fields = ('payment_terms', 'date_required', 'other_info')
+        fields = ('date_required', 'other_info')
         widgets = {
-            'date_required': DateInput(),
+            'date_required': DateInput()
         }
+
+        def __init__(self, *args, **kwargs):
+            super(ClientPOForm, self).__init__(*args, **kwargs)
+            self.fields['date_required'].required = True
+            self.fields['other_info'].required = False
+
+
 
 class SupplierForm(forms.ModelForm):
 

@@ -15,11 +15,15 @@
                 {% include 'sales/template_formset.html' %}
 
             {{formset.management_form}}
-            <button type="submit" class ="ui green basic button">Submit</button>
+            <button id = "po_submit" type="submit" class ="ui green basic button">Submit</button>
+
         </form>
+
     </div>
-
-
+    <!--
+<button id = "view_receipt" class ="ui button">View Receipt</button>
+-->
+{% include "sales/confirm_po.html" %}
 
 {% endblock %}
 
@@ -32,5 +36,28 @@
             })
     </script>
 
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#view_receipt").click(function(){
+        $('.ui.modal').modal('show');
+    });
+});
+</script>
+
+    <script type="text/javascript">
+    $('.ui.form')
+  .form({
+    fields: {
+      products    : 'empty',
+      width       : 'empty',
+      length      : 'empty',
+      gusset      : 'empty',
+      color       : 'empty',
+      quantity    : 'empty'
+    }
+  })
+;
+</script>
 
 {%endblock %}

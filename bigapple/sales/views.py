@@ -13,11 +13,12 @@ from django.db.models import aggregates
 from production.models import JobOrder
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment
 from .forms import ClientPOForm, SupplierForm, Form
+from django import forms
 import sys
 
 #Forecasting imports
-import numpy as np
-from math import sqrt
+#import numpy as np
+#from math import sqrt
 #import pandas as pd
 # import pandas._libs.tslibs.timedeltas
 # import matplotlib.pyplot as plt
@@ -137,8 +138,6 @@ class JO_list(ListView):
     template_name = 'sales/JO_list.html'
     model = JobOrder
 
-    print(JobOrder.objects.all())
-
 class JO_details(DetailView):
     model = JobOrder
     template_name = 'sales/JO_details.html'
@@ -167,9 +166,9 @@ def create_client_po(request):
 
 
     if request.method == "POST":
+
         form = ClientPOForm(request.POST)
-        #Set ClientPO.client from session user
-        #form.fields['client'].initial = Client.objects.get(id = request.session['session_userid'])
+
         message = ""
         print(form)
         if form.is_valid():
@@ -178,14 +177,21 @@ def create_client_po(request):
             new_form = new_form.pk
             form_instance = ClientPO.objects.get(id=new_form)
 
+            # Set ClientPO.client from session user
+            client_id = request.session['session_userid']
+            current_client = Client.objects.get(id=client_id)
+            form_instance.client = current_client
+            form_instance.save()
+
+            #TODO invoice should no be saved if PO is disapproved
+
             #Create JO object with ClientPO as a field
             jo = JobOrder(client_po = form_instance)
             jo.save()
 
-
             #Use PO form instance for PO items
             formset = clientpo_item_formset(request.POST, instance=form_instance)
-            print(formset)
+            #print(formset)
             if formset.is_valid():
                 for form in formset:
                     form.save()
@@ -196,6 +202,19 @@ def create_client_po(request):
                 totalled_clientpo = ClientPO.objects.get(id=new_form)
                 totalled_clientpo.total_amount = formset_item_total
                 totalled_clientpo.save()
+
+                # Create Invoice
+                invoice = SalesInvoice(client=current_client, client_po=form_instance, total_amount=formset_item_total)
+                invoice.save()
+                invoice = invoice.pk
+
+                invoice = SalesInvoice.objects.get(id=invoice)
+                credit_status = ClientCreditStatus.objects.get(client_id = current_client)
+                outstanding_balance = credit_status.outstanding_balance
+                outstanding_balance += invoice.amount_due
+                credit_status.outstanding_balance = outstanding_balance
+                credit_status.save()
+
                 message = "PO successfully created"
 
             else:
