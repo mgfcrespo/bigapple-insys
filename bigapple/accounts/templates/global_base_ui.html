@@ -46,7 +46,7 @@
                     <i class="cog icon"></i>
                     Settings
                 </a>&nbsp;&nbsp;&nbsp;
-                <a href="{% url 'accounts:logout' %}" >
+                <a href="{% url 'accounts:logout' %}">
                     <i class="power off icon"></i>
                     Log out
                 </a>&nbsp;&nbsp;&nbsp;
@@ -57,8 +57,7 @@
             </center>
         </div>
 
-         {% block left_sidebar %}
-         {% endblock %}
+        {% block left_sidebar %} {% endblock %}
 
         <div style="font-size: 10px; color:white; padding: 10px;">
             <center>
@@ -75,13 +74,14 @@
         </div>
     </div>
 
-    <div class="pusher sixteen wide column" style="padding: 10px;">
+    <div class="segment">
+        <div class="container" style="margin:10px 10px 10px 300px">
 
-        {% block content %}
-        {% endblock %}
+            {% block content %} {% endblock %}
 
+
+        </div>
     </div>
-
     <!-- END MAIN -->
 
     <!-- jQuery Library -->
