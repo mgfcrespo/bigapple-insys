@@ -1,12 +1,13 @@
 from django.db import models
 from django.forms import ModelForm, BaseModelFormSet
-from datetime import date
+from datetime import date, datetime
 from django.urls import reverse
 from accounts.models import Client
 from decimal import Decimal
 from datetime import date
 from django.db.models.aggregates import Sum
 from django.db.models import Prefetch
+
 # Create your models here.
 
 class Product(models.Model):
@@ -47,13 +48,8 @@ class ClientPO(models.Model):
 
     def __str__(self):
         lead_zero = str(self.id).zfill(5)
-<<<<<<< HEAD
-        po_number = 'PO_%s' % (lead_zero)
-        return po_number
-=======
         po_number = 'PO%s' % (lead_zero)
         return  po_number
->>>>>>> aff9194ef60a9affa4c7bf1b951caebdf8602607
 
 
     def calculate_leadtime(self):
@@ -121,7 +117,9 @@ class SalesInvoice(models.Model):
     amount_due = models.DecimalField('amount_due', blank=True, decimal_places=3, max_digits=12)#(self.total_amount * self.discount * self.net_vat)
 
     def __str__(self):
-        return 'PO_%s' % (self.id)
+        lead_zero = str(self.id).zfill(5)
+        po_number = 'PO%s' % (lead_zero)
+        return  po_number
 
     def calculate_amount_due(self):
         total = (self.total_amount * self.discount * self.net_vat)
@@ -176,20 +174,15 @@ class ClientPayment(models.Model):
         super(ClientPayment, self).save(*args, **kwargs)
 
 class Supplier(models.Model):
-
-    SUPPLIERTYPE = (
-        ('Raw Material', 'Raw Material'),
-        ('Machinery/Parts', 'Machinery/Parts'),
-        ('Ink', 'Ink'),
-        ('Others', 'Others'),
-    )
-
     company_name = models.CharField('company_name', max_length=200)
-    contact_person = models.CharField('contact_person', max_length=200)
+    first_name = models.CharField('first_name', max_length=200)
+    last_name = models.CharField('last_name', max_length=200)
     mobile_number = models.CharField('mobile_number', max_length=11)
     email_address = models.CharField('email_address', max_length=200)
     description = models.CharField('description', max_length=200, blank =True)
-    supplier_type = models.CharField('suppier_type', max_length=200, default='not specified', choices=SUPPLIERTYPE)
     
+    def contact_person(self):
+        return self.last_name + ", " + str(self.first_name)
+
     def __str__(self):
         return self.company_name

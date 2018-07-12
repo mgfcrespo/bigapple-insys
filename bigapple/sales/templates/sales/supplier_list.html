@@ -1,4 +1,4 @@
-{% extends 'sales_coordinator_page_ui.html' %}
+{% extends 'global_base_ui_semantic.html' %}
 
   {% block content %}
 
@@ -8,7 +8,6 @@
           	<tr>
           	  	<th>Company</th>
 				<th>Contact Person</th>
-            	<th>Department</th>
               	<th>Mobile Number</th>
 				<th>Email</th>
           	</tr>
@@ -18,7 +17,6 @@
     			<tr>
     				<td>{{ supplier.company_name }}</td>
     				<td>{{ supplier.contact_person }}</td>
-    				<td>{{ supplier.department }}</td>
     				<td>{{ supplier.mobile_number }}</td>
 					<td>{{ supplier.email_address }}</td>
 					<td>
