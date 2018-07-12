@@ -1,104 +1,46 @@
-<<<<<<< HEAD
-{% extends 'global_base_ui_semantic.html' %}
+{% extends 'global_base_ui.html' %}
 
 {% block content %}
-<div id="basic-form" class="section">
-  <div class="row">
-    <div class="col s6 offset-s3">
-      <div class="card-panel">
-        <h4 class="header1">{{ title }}</h4>
-        <div class="row">
-          
-          <form class="col s12" action = "#" method="POST" role="form">
-            {% csrf_token %}
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.company_name }}
-                <label for="company_name">Company Name</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.first_name }}
-                <label for="first_name">First Name</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.last_name }}
-                <label for="last_name">Last Name</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.mobile_number }}
-                <label for="mobile_number">Mobile Number</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.email_address }}
-                <label for="email_address">Email Address</label>
-              </div>
-            </div>                                            
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.description }}
-                <label for="description">Description</label>
-              </div>
-              <div class="row">
-                <div class="center">
-                  <button class="btn btn-small green" type="submit">{{ actiontype }}</button>
-                  <button class="btn btn-small red" typle="clear">Clear</button>
-=======
-{% extends 'sales_coordinator_page_ui.html' %} {% block content %}
-<div id="basic-form">
-    <div>
-        <h4 class="header1">{{ title }}</h4>
-        <div class="row">
+<h3 class="ui dividing header">{{ title }}</h3>
 
-            <form class="sixteen wide column" action="#" method="POST" role="form">
-                {% csrf_token %}
-                <div class="row">
-                    <div class="sixteen wide column">
-                        {{ form.company_name }}
-                        <label for="company_name">Company Name</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="sixteen wide column">
-                        {{ form.contact_person }}
-                        <label for="contact_person">Contact Person</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="eight wide column">
-                        {{ form.mobile_number }}
-                        <label for="mobile_number">Mobile Number</label>
-                    </div>
->>>>>>> 06735fa3278f9ed6291776a0827be3f90090ec7b
-                </div>
-                <div class="row">
-                    <div class="eight wide column">
-                        {{ form.email_address }}
-                        <label for="email_address">Email Address</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="sixteen wide column">
-                        {{ form.description }}
-                        <label for="description">Description</label>
-                    </div>
-                    <div class="row">
-                        <div class="center">
-                            <button class="ui green basic button" type="submit">{{ actiontype }}</button>
-                            <button class="ui red basic button" typle="clear">Clear</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
+<div class="ui centered grid">
+    <div class="six wide tablet eight wide computer column">
+        <form class="ui form" method="POST">
+            {% csrf_token %}
+            <div class="field">
+              <label>Company Name</label>
+              {{ form.company_name }}
+            </div>
+            <div class="field">
+              <label>First Name</label>
+              {{ form.first_name }}
+            </div>
+            <div class="field">
+              <label>Last Name</label>
+              {{ form.last_name }}
+            </div>
+            <div class="field">
+              <label>Mobile No.</label>
+              {{ form.mobile_number }}
+            </div>
+            <div class="field">
+              <label>Email Address</label>
+              {{ form.email_address }}
+            </div>
+            <div class="field">
+              <label>Description</label>
+              {{ form.description }}
+            </div>
+          
+            <div class="center">
+                <button class="ui green basic button" type="submit">{{ actiontype }}</button>
+                <button class="ui red basic button" typle="clear">Back</button>
+            </div>
+          </form>
+
     </div>
 </div>
+
+
 
 {% endblock %}

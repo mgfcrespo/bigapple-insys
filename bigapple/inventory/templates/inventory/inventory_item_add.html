@@ -1,10 +1,10 @@
-{% extends 'global_base_ui_semantic.html' %}
+{% extends 'production_manager_page_ui.html' %}
 
 {% block content %}
 
 <div class = "ui container">
     <form class="ui form" action = "#" method="POST" role="form">
-        <h2 class="ui header">{{ title }}</h2>
+        <h2 class="ui dividing header">{{ title }}</h2>
         {% csrf_token %}
         <div class="field">
             <label>Supplier</label>
@@ -41,7 +41,7 @@
                 {{ form.quantity }}
             </div>
         </div>
-        <button class="ui positive button" type="submit">Submit</button>
+        <button class="ui basic green button" type="submit">Submit</button>
     </form>
 </div>
 

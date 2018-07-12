@@ -1,4 +1,4 @@
-{% extends 'global_base_ui_semantic.html' %}
+{% extends 'production_manager_page_ui.html' %}
 
 {% block content %}
 
@@ -6,10 +6,9 @@
           
     
   <div class="ui container">
-      <form id="myForm"  data-url="{% url 'inventory:supplierPO_form' %}" method="post" enctype="multipart/form-data">
+      <form id="myForm"  data-url="{% url 'inventory:materials_requisition_form' %}" method="post" enctype="multipart/form-data">
 
               {% csrf_token %}
-              {% include 'inventory/template_form.html' %}
               {% include 'inventory/template_formset.html' %}
 
           {{formset.management_form}}

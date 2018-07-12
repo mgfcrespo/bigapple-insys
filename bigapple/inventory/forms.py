@@ -3,6 +3,7 @@ from django.forms import ModelForm, ValidationError, Form, widgets
 from django.contrib.admin.widgets import AdminDateWidget
 from .models import Supplier, SupplierPO, SupplierPOItems, MaterialRequisition, Inventory
 from datetime import date, datetime
+from django.forms.formsets import BaseFormSet
 
 # from django_select2.forms import ModelSelect2Widget
 # from linked_select2.forms import LinkedModelSelect2Widget
@@ -10,10 +11,10 @@ from datetime import date, datetime
 class InventoryForm(forms.ModelForm):
     
     ITEM_TYPES = (
-        ('RM', 'Raw Materials'),
-        ('MP', 'Machine Parts'),
-        ('INK', 'Ink'),
-        ('OT', 'Others')
+        ('Raw Materials', 'Raw Materials'),
+        ('Machine Parts', 'Machine Parts'),
+        ('Ink', 'Ink'),
+        ('Others', 'Others')
     )
 
     RM_TYPES = (
@@ -46,8 +47,6 @@ class SupplierPOForm(ModelForm):
         supplier = forms.CharField(max_length=200, label = 'supplier', widget = forms.Select(attrs={'id':'supplier'}))
         
 class SupplierPOItemsForm(ModelForm):
-    id = forms.BooleanField(label='')
-
     price = forms.CharField(label = 'price', widget = forms.TextInput(
         attrs={'id':'price', 'name':'price'}
     ))
@@ -58,7 +57,6 @@ class SupplierPOItemsForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SupplierPOItemsForm, self).__init__(*args, **kwargs)
-        self.fields['id'].widget.attrs.update({'label': ''})
         self.fields['item_name'].queryset = Inventory.objects.none()
 
         # if 'supplier' in SupplierPOForm.data:
@@ -74,5 +72,25 @@ class MaterialRequisitionForm(forms.ModelForm):
 
     class Meta:
         model = MaterialRequisition
-        fields = ('issued_to', 'brand', 'description', 'quantity', 'to_be_used_for',
-        'shift', 'approval')
+        fields = ('brand', 'quantity', 'to_be_used_for')
+
+class BaseMRFormSet(BaseFormSet):
+    def clean(self):
+        """
+        Adds validation to check that no two 
+        """
+        if any(self.errors):
+            return
+
+            brand = []
+            quantity = []
+            to_be_used_for = []
+            duplicates = False
+            
+            for form in self.forms:
+                if form.cleaned_data:
+                    brand = form.cleaned_data['brand']
+                    quantity = form.cleaned_data['quantity']
+                    to_be_used_for = form.cleaned_data['to_be_used_for']
+
+        
