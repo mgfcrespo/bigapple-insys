@@ -1,148 +1,125 @@
-{% extends 'credit_and_collection_personnel_page_ui.html' %}
-
-        {% block content %}
-        <!-- //////////////////////////////////////////////////////////////////////////// -->
-        <!-- START CONTENT -->
-        <section id="content">
-          <!--start container-->
-          <div class="container">
-            <!--card stats start-->
-            <div id="card-stats">
-              <div class="row mt-1">
-                <div class="col s4">
-                  <div class="card gradient-45deg-light-blue-cyan gradient-shadow min-height-100 white-text">
-                    <div class="padding-4">
-                      <div class="col s7 m7">
-                        <i class="material-icons background-round mt-5">payment</i>
-                        <p>Sales Invoices Generated</p>
-                      </div>
-                      <div class="col s5 m5 right-align">
-                        <h5 class="mb-0">20</h5>
-                        <p class="no-margin">Finished jobs</p>
-                      </div>
+{% extends 'credit_and_collection_personnel_page_ui.html' %} {% block content %}
+<div class="ui relaxed grid">
+    <div class="eight wide column">
+        <div class="row">
+            <div class="ui container">
+                <div class="segments" style="margin:10px;">
+                    <div class="ui green segment" style="text-align: center">
+                        <h3>Payments to Collect</h3>
                     </div>
-                  </div>
-                </div>
-                <div class="col s4">
-                  <div class="card gradient-45deg-red-pink gradient-shadow min-height-100 white-text">
-                    <div class="padding-4">
-                      <div class="col s7 m7">
-                        <i class="material-icons background-round mt-5">payment</i>
-                        <p>Payments</p>
-                      </div>
-                      <div class="col s5 m5 right-align">
-                        <h5 class="mb-0">1885</h5>
-                        <p class="no-margin">New</p>
-                        <p>1,12,900</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col s4">
-                  <div class="card gradient-45deg-amber-amber gradient-shadow min-height-100 white-text">
-                    <div class="padding-4">
-                      <div class="col s7 m7">
-                        <i class="material-icons background-round mt-5">timeline</i>
-                        <p>Sales</p>
-                      </div>
-                      <div class="col s5 m5 right-align">
-                        <h5 class="mb-0">Zalora</h5>
-                        <p class="no-margin">Current Task</p>
-                        <p>3,42,230</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div id="card-widgets">
-            	<div class="row">
-            <!--card widgets end-->
-
-            <!--work collections start-->
-            <div id="work-collections">
-              <div class="row">
-                <div class="col s12 m12 l6">
-                  <ul id="projects-collection" class="collection z-depth-1">
-                    <li class="collection-item avatar">
-                      <i class="material-icons cyan circle">payment</i>
-                      <h6 class="collection-header m-1"><a href=#>Payments to Collect</a></h6>
-                    </li>
-                    <li class="collection-item">
-                		<div class="row">
-                			<div class="col s4">
-	                        	<p class="collections-title">Job Order #</p>
-                			</div>
-	                		<div class="col s4">
-	                			<p class="collections-title">Company</p>
-	                		</div>
-		                	<div class="col s4">
-		                		<p class="collections-title">Status</p>
-		                	</div>
-		                </div>
-                   </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s4">
-                          <p class="collections-content">1282085024</p>
-                        </div>
-                        <div class="col s4">
-                          <p class="collections-content">Company A</p>
-                        </div>
-                        <div class="col s4">
-                          <p class="collections-content"><span class="task-cat red accent-4">overdue</span></p>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s4">
-                          <p class="collections-content">3803718273</p>
-                        </div>
-                        <div class="col s4">
-                          <p class="collections-content">Company B</p>
-                        </div>
-                        <div class="col s4">
-                          <p class="collections-content"><span class="task-cat green accent-4">Fully paid</span></p>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s4">
-                          <p class="collections-content">5049281732</p>
-                        </div>
-                        <div class="col s4">
-                          <p class="collections-content">Company C</p>
-                        </div>
-                        <div class="col s4">
-                          <p class="collections-content"><span class="task-cat yellow accent-4">To collect</span></p>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s4">
-                          <p class="collections-content">5832854928</p>
-                        </div>
-                        <div class="col s4">
-                          <p class="collections-content">Company D</p>
-                        </div>
-                        <div class="col s4">
-                          <p class="collections-content"><span class="task-cat yellow accent-4">to collect</span></p>
-                        </div>
-                      </div>
-                	</li>
-                  </ul>
-                </div>
-
-            <!-- //////////////////////////////////////////////////////////////////////////// -->
-          </div>
-            </div>
+                    <table class="ui celled table center aligned">
+                        <thead>
+                            <tr>
+                                <th>Select</th>
+                                <th>JO Number</th>
+                                <th>Client Name</th>
+                                <th>Items</th>
+                                <th>Balance</th>
+                                <th>Due Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="ui checkbox">
+                                        <input type="checkbox" tabindex="0" class="hidden">
+                                        <label></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    12345
+                                </td>
+                                <td>
+                                    Company A
+                                </td>
+                                <td>
+                                    - 100,000 Pcs. PET Bottle<br> - 100,000 Pcs. Sando bags SML
+                                </td>
+                                <td>
+                                    Php 45,000.00
+                                </td>
+                                <td>
+                                    04/01/2018
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="ui checkbox">
+                                        <input type="checkbox" tabindex="0" class="hidden">
+                                        <label></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    67890
+                                </td>
+                                <td>
+                                    Company B
+                                </td>
+                                <td>
+                                    - 200,000 Pcs. PET Bottle<br> - 75,000 Pcs. Sando bags SML
+                                </td>
+                                <td>
+                                    Php 65,000.00
+                                </td>
+                                <td>
+                                    04/05/2018
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot class="full-width">
+                            <tr>
+                                <th colspan="1">
+                                    <button class="ui green basic button">Paid</button>
+                                </th>
+                                <th colspan="5">
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
-          </div>
-          <!--end container-->
-        </section>
-        <!-- END CONTENT -->
-        {% endblock %}
+        </div>
+
+    </div>
+    <div class="eight wide column">
+        <div class="row">
+            <div class="ui container">
+                <div class="segments" style="margin:10px;">
+                    <div class="ui green segment" style="text-align: center">
+                        <h3>Upcoming Accomplished JOs</h3>
+                    </div>
+                    <div class="ui segment" style="text-align: center">
+                        <div class="ui grid">
+                            <div class="sixteen wide column">
+                                <div class="ui progress">
+                                    <div class="bar">
+                                        <div class="progress"></div>
+                                    </div>
+                                    <div class="label">Company D</div>
+                                </div>
+                            </div>
+                            <div class="sixteen wide column">
+                                <div class="ui progress">
+                                    <div class="bar">
+                                        <div class="progress"></div>
+                                    </div>
+                                    <div class="label">Company E</div>
+                                </div>
+                            </div>
+                            <div class="sixteen wide column">
+                                <div class="ui progress">
+                                    <div class="bar">
+                                        <div class="progress"></div>
+                                    </div>
+                                    <div class="label">Company F</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
