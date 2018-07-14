@@ -95,15 +95,10 @@ class MaterialRequisition(models.Model):
         ('Shift 2', 'shift 2'),
         ('Shift 3', 'shift 3')
     )
-<<<<<<< HEAD
-    date_issued = models.DateField('date_issued', auto_now_add=True)
-    issued_to = models.CharField('issued_to', max_length=200, null=True)
-    brand = models.ForeignKey(Inventory, on_delete=models.CASCADE)
-=======
+
     date_issued = models.DateField('date_issued', blank=True)
     issued_to = models.CharField('issued_to', max_length=200)
     brand = models.CharField('brand', max_length=200)
->>>>>>> 06735fa3278f9ed6291776a0827be3f90090ec7b
     description = models.CharField('description', max_length=200)
     quantity = models.IntegerField('quantity')
     to_be_used_for = models.CharField('to_be_used_for', max_length=200)
