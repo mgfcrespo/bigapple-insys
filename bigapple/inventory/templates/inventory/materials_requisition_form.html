@@ -1,77 +1,46 @@
-{% extends 'accounts/production_manager_page.html' %}
+{% extends 'production_manager_page_ui.html' %}
 
 {% block content %}
-<div id="basic-form" class="section">
-  <div class="row">
-    <div class="col s6 offset-s3">
-      <div class="card-panel">
-        <h4 class="header1">{{ title }}</h4>
-        <div class="row">
+
+  <h4 class="ui header">{{ title }}</h4>
           
-          <form class="col s12" action = "#" method="POST" role="form">
-            {% csrf_token %}
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.date_issued }}
-                <label for="">Date Issued:</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.issued_to }}
-                <label for="">Issued to:</label>
-              </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                  {{ form.shift }}
-                  <label for="">Shift:</label>
-                </div>
-              </div>
-            <div class="row">
-              <div class="input-field col s12">
-                  <select name="brand" id="brand" >
-                      {% for brand in brand %}
-                      <option value="{{brand.item_name}}">
-                          {{ brand.item_name }}
-                      </option>
-                      {% endfor %}
-                  </select> 
-                <label for="">Item Brand:</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.quantity }}
-                <label for="">Quantity:</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                {{ form.description }}
-                <label for="">Description:</label>
-              </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                  {{ form.to_be_used_for }}
-                  <label for="">To be Used for:</label>
-                </div>
-              </div>
-              <div class="row">
-                <div class="center">
-                  <button class="btn btn-small green" type="submit">{{ actiontype }}</button>
-                  <button class="btn btn-small red" typle="clear">Clear</button>
-                </div>
-              </div>
-              
-        </form>
-            
-        </div>
-    </div>            
+    
+  <div class="ui container">
+      <form id="myForm"  data-url="{% url 'inventory:materials_requisition_form' %}" method="post" enctype="multipart/form-data">
+
+              {% csrf_token %}
+              {% include 'inventory/template_formset.html' %}
+
+          {{formset.management_form}}
+          <button type="submit" class ="btn btn-success">Submit</button>
+      </form>
   </div>
- </div>
-</div>
+
+  <button id='btn'>click</button>
 
 
 {% endblock %}
+
+{% block script %}
+
+    <script>
+        $( document ).ready(function() {
+            $(function() {
+                $('#myForm .formset_class').formset({
+                    prefix: '{{ formset.prefix }}'
+                });            
+            })
+           
+            $("#btn").click(function() {
+            alert('clicked');
+            });      
+            
+            $("#supplier").change(function() {
+                $(this).getJSON("/method", {"selectValue":$(this).val()}, function() {
+                   alert("value received!");
+                });
+            });
+        });
+    </script>
+
+{%endblock %}

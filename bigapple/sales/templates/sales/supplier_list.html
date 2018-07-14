@@ -1,16 +1,14 @@
 {% extends 'sales_coordinator_page_ui.html' %}
-
   {% block content %}
 
-	<div class="sixteen wide column">
-		<table class="striped" style = "font-size:12px;">
+		<table class="ui stripped table">
         	<thead>
           	<tr>
           	  	<th>Company</th>
 				<th>Contact Person</th>
-            	<th>Department</th>
               	<th>Mobile Number</th>
 				<th>Email</th>
+				<th style="width: 100px;"></th>
           	</tr>
     		</thead>
     		<tbody>
@@ -18,16 +16,19 @@
     			<tr>
     				<td>{{ supplier.company_name }}</td>
     				<td>{{ supplier.contact_person }}</td>
-    				<td>{{ supplier.department }}</td>
     				<td>{{ supplier.mobile_number }}</td>
 					<td>{{ supplier.email_address }}</td>
 					<td>
-						<a class="ui yellow basic button" href="{% url 'sales:supplier_edit' supplier.id %}" style="font-size:12px;">View</a>
-						<a class="ui red basic button" href="{% url 'sales:supplier_delete' supplier.id %}" style="font-size:12px;">Delete</a>
+						<a style = "padding: 5px;"  href="{% url 'sales:supplier_edit' supplier.id %}">
+							<i class="yellow edit icon"></i>
+						</a>
+						<a style = "padding: 5px;" href="{% url 'sales:supplier_delete' supplier.id %}" >
+							<i class="red trash icon"></i>
+						</a>
 					</td>
     			</tr>
 				{% endfor %}
 			</tbody>
     	</table>
-	</div>
+	
 {% endblock %}

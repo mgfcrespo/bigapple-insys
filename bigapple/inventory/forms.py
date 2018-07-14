@@ -1,61 +1,96 @@
 from django import forms
 from django.forms import ModelForm, ValidationError, Form, widgets
 from django.contrib.admin.widgets import AdminDateWidget
-from .models import Supplier, SupplierItems, MaterialRequisition, Inventory
+from .models import Supplier, SupplierPO, SupplierPOItems, MaterialRequisition, Inventory
 from datetime import date, datetime
+from django.forms.formsets import BaseFormSet
 
-class SupplierItemsForm(forms.ModelForm):
+# from django_select2.forms import ModelSelect2Widget
+# from linked_select2.forms import LinkedModelSelect2Widget
+
+class InventoryForm(forms.ModelForm):
     
     ITEM_TYPES = (
-        ('RM', 'Raw Materials'),
-        ('MP', 'Machine Parts'),
-        ('INK', 'Ink'),
-        ('OT', 'Others')
+        ('Raw Materials', 'Raw Materials'),
+        ('Machine Parts', 'Machine Parts'),
+        ('Ink', 'Ink'),
+        ('Others', 'Others')
     )
 
-    #supplier_choices = forms.ChoiceField(choices=[])
-    # def __init__(self, user, *args, **kwargs):
-    #     super(SupplierItemsForm, self).__init__(*args, **kwargs)
-    # self.fields['supplier'] 
+    RM_TYPES = (
+        ('--', '----------------'),
+        ('LDPE', 'Low-density polyethylene'),
+        ('LLDPE', 'Linear low-density polyethylene'),
+        ('HDPE', 'High-density polyethylene'),
+        ('PP', 'Polypropylene'),
+        ('PET', 'Polyethylene terephthalate')
+    )
 
-    sup = Supplier.objects.all()
+    supplier = forms.ModelChoiceField(queryset=Supplier.objects.all())
 
-    # supplier = forms.ChoiceField(label = 'item_name', widget = forms.Select(choices=sup))
+    item_type = forms.CharField(max_length=200, label = 'item_name', widget = forms.Select(choices=ITEM_TYPES))
+    rm_type = forms.CharField(max_length=200, label = 'rm_type', widget = forms.Select(choices=RM_TYPES))
 
-   
-    supplier = forms.CharField(label = 'supplier', widget = forms.TextInput(
-        attrs={'id':'supplier', 'name':'supplier', 'type':'text', 'required':'true', 'readonly': 'True' }
-    ))
-
-    item_name = forms.CharField(max_length=200, label = 'item_name', widget = forms.TextInput(
-        attrs={'id':'item_name', 'name':'item_name', 'type':'text', 'required':'true'}
-    ))
-    item_type = forms.CharField(max_length=200, label = 'item_name', widget = forms.Select(choices=ITEM_TYPES,
-        attrs={'id':'item_type', 'name':'item_type', 'type':'text', 'required':'true'}
-    ))
-    description = forms.CharField(max_length=200, label = 'description', widget = forms.TextInput(
-        attrs={'id':'description', 'name':'description', 'type':'text', 'required':'true'}
-    ))
-    price = forms.CharField(max_length=200, label = 'price', widget = forms.TextInput(
-        attrs={'id':'price', 'name':'price', 'type':'number', 'required':'true'}
-    ))
-
-    
+    description = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))
 
     class Meta:
-        model = SupplierItems
-        fields = ('supplier', 'item_name', 'item_type', 'description', 'price')
+        model = Inventory
+        fields = ('supplier', 'item_name', 'item_type', 'rm_type', 'description', 'price', 'quantity')
 
+
+class SupplierPOForm(ModelForm):
+
+    class Meta:
+        model = SupplierPO
+        fields = ('supplier', 'total_amount', 'delivery_date')
+
+        supplier = forms.CharField(max_length=200, label = 'supplier', widget = forms.Select(attrs={'id':'supplier'}))
+        
+class SupplierPOItemsForm(ModelForm):
+    price = forms.CharField(label = 'price', widget = forms.TextInput(
+        attrs={'id':'price', 'name':'price'}
+    ))
+
+    class Meta:
+        model = SupplierPOItems
+        fields = ('item_name', 'price', 'quantity', 'total_price')
+
+    def __init__(self, *args, **kwargs):
+        super(SupplierPOItemsForm, self).__init__(*args, **kwargs)
+        self.fields['item_name'].queryset = Inventory.objects.none()
+
+        # if 'supplier' in SupplierPOForm.data:
+        #     try:
+        #         supplier_id = int(SupplierPOForm.data.get('supplier'))
+        #         self.fields['item_name'].queryset = Inventory.objects.filter(supplier_id=supplier_id).order_by('item_name')
+        #     except (ValueError, TypeError):
+        #         pass  # invalid input from the client; ignore and fallback to empty City queryset
+        # elif self.instance.pk:
+        #     self.fields['item_name'].queryset = self.instance.supplier.item_name_set.order_by('item_name')
 
 class MaterialRequisitionForm(forms.ModelForm):
 
     class Meta:
         model = MaterialRequisition
-        fields = ('date_issued', 'issued_to', 'brand', 'description', 'quantity', 'to_be_used_for',
-        'shift', 'approval')
+        fields = ('brand', 'quantity', 'to_be_used_for')
 
-class InventoryForm(forms.ModelForm):
+class BaseMRFormSet(BaseFormSet):
+    def clean(self):
+        """
+        Adds validation to check that no two 
+        """
+        if any(self.errors):
+            return
 
-    class Meta:
-        model = Inventory
-        fields = ('rm_name', 'rm_type', 'quantity')
+            brand = []
+            quantity = []
+            to_be_used_for = []
+            duplicates = False
+            
+            for form in self.forms:
+                if form.cleaned_data:
+                    brand = form.cleaned_data['brand']
+                    quantity = form.cleaned_data['quantity']
+                    to_be_used_for = form.cleaned_data['to_be_used_for']
+
+        

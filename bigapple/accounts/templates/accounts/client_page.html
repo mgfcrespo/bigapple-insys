@@ -1,47 +1,216 @@
-{% extends "client_page_ui.html" %}
+{% extends "client_page_ui.html" %} {% block content %}
+<div class="ui relaxed grid">
+    <div class="eight wide column">
+        <div class="row">
+            <div class="ui container">
+                <div class="segments" style="margin:10px;">
+                    <div class="ui green segment" style="text-align: center">
+                        <h3>Create Purchase Order (For 1 item only)</h3>
+                    </div>
+                    <div class="ui segment">
 
-        {% block content %}
-        <!-- //////////////////////////////////////////////////////////////////////////// -->
-        <!-- START CONTENT -->
-        <section id="content">
+                        <div class="form ui">
 
-            <!--work collections start-->
-            <div id="work-collections">
-              <div class="row">
-                <div class="col s12 m12 l6">
-                  <ul id="projects-collection" class="collection z-depth-1">
-                    <li class="collection-item avatar">
-                      <i class="material-icons cyan circle">note</i>
-                      <h6 class="collection-header m-1"><a href=#>Purchase Order Status</a></h6>
-                    </li>
-                    <li class="collection-item">
-                		<div class="row">
-                			<div class="col s4">
-	                        	<p class="collections-title">Purchase Order #</p>
-                			</div>
-		                	<div class="col s4">
-		                		<p class="collections-title">Status</p>
-		                	</div>
-		                </div>
-                   </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s4">
-                          <p class="collections-content">1282085024</p>
+                            <div class="ui form">
+
+                                <div class="fields">
+                                    <div class="field six wide column">
+                                        <select class="ui dropdown">
+                                                  <option value="">Item</option>
+                                                  <option value="1">Item 1</option>
+                                                  <option value="2">Item 2</option>
+                                                  <option value="3">Item 3</option>
+                                                  <option value="4">Item 4</option>
+                                                  <option value="5">Item 5</option>
+                                                </select>
+                                    </div>
+                                    <div class="field five wide column">
+                                        <select class="ui dropdown">
+                                                  <option value="">Material</option>
+                                                  <option value="1">Material 1</option>
+                                                  <option value="2">Material 2</option>
+                                                  <option value="3">Material 3</option>
+                                                  <option value="4">Material 4</option>
+                                                  <option value="5">Material 5</option>
+                                                </select>
+
+                                    </div>
+                                    <div class="field five wide column">
+                                        <select class="ui dropdown">
+                                                  <option value="">Color</option>
+                                                  <option value="1">Color 1</option>
+                                                  <option value="2">Color 2</option>
+                                                  <option value="3">Color 3</option>
+                                                  <option value="4">Color 4</option>
+                                                  <option value="5">Color 5</option>
+                                                </select>
+                                    </div>
+                                </div>
+
+                                <div class="fields">
+                                    <div class="field">
+                                        <label>Length</label>
+                                        <input type="text" placeholder="Length">
+                                    </div>
+                                    <div class="field">
+                                        <label>Width</label>
+                                        <input type="text" placeholder="Width">
+                                    </div>
+                                    <div class="field">
+                                        <label>Quantity</label>
+                                        <input type="text" placeholder="Quantity">
+                                    </div>
+                                </div>
+                                <div class="fields">
+                                    <div class="field eight wide column">
+                                        <label>Date Needed</label>
+                                        <input type="date">
+                                    </div>
+                                    <div class="field one wide column">
+                                        <div class="ui checkbox">
+                                            <input type="checkbox" name="laminate">
+                                            <label>Laminate</label>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="fields">
+                                    <button class="ui positive basic button" type="submit">Submit</button>
+                                    <button class="ui secondary basic button" type="reset">Clear</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col s4">
-                          <p class="collections-content"><span class="task-cat red accent-4">Delayed</span></p>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
+                    </div>
                 </div>
-            <!--work collections end-->
-
-            <!-- //////////////////////////////////////////////////////////////////////////// -->
-          </div>
             </div>
-          <!--end container-->
-        </section>
-        <!-- END CONTENT -->
-         {% endblock %}
+        </div>
+        <div class="row">
+            <div class="ui container">
+                <div class="segments" style="margin:10px;">
+                    <div class="ui green segment" style="text-align: center">
+                        <h3>Purchase Order Status</h3>
+                    </div>
+                    <div class="ui segment" style="text-align: center">
+                        <div class="ui grid">
+                            <div class="sixteen wide column">
+                                <div class="ui progress">
+                                    <div class="bar">
+                                        <div class="progress"></div>
+                                    </div>
+                                    <div class="label">Purchase Order 1</div>
+                                </div>
+                            </div>
+                            <div class="sixteen wide column">
+                                <div class="ui progress">
+                                    <div class="bar">
+                                        <div class="progress"></div>
+                                    </div>
+                                    <div class="label">Purchase Order 2</div>
+                                </div>
+                            </div>
+                            <div class="sixteen wide column">
+                                <div class="ui progress">
+                                    <div class="bar">
+                                        <div class="progress"></div>
+                                    </div>
+                                    <div class="label">Purchase Order 3</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="eight wide column">
+        <div class="row">
+            <div class="ui container">
+                <div class="segments" style="margin:10px;">
+                    <div class="ui green segment" style="text-align: center">
+                        <h3>Create Purchase Order (For 1 item only)</h3>
+                    </div>
+                    <div class="ui segment" style="text-align: center">
+                        <div class="ui grid">
+                            <div class="sixteen wide column">
+                                <div class="ui progress">
+                                    <div class="bar">
+                                        <div class="progress"></div>
+                                    </div>
+                                    <div class="label">Company D</div>
+                                </div>
+                            </div>
+                            <div class="sixteen wide column">
+                                <div class="ui progress">
+                                    <div class="bar">
+                                        <div class="progress"></div>
+                                    </div>
+                                    <div class="label">Company E</div>
+                                </div>
+                            </div>
+                            <div class="sixteen wide column">
+                                <div class="ui progress">
+                                    <div class="bar">
+                                        <div class="progress"></div>
+                                    </div>
+                                    <div class="label">Company F</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="ui container">
+                <div class="segments" style="margin:10px;">
+                    <div class="ui green segment" style="text-align: center">
+                        <h3>Purchase Order Status</h3>
+                    </div>
+                    <table class="ui celled table center aligned">
+                        <thead>
+                            <tr>
+                                <th>Purchase Order Number</th>
+                                <th>Items</th>
+                                <th>Price</th>
+                                <th>Due Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    12345
+                                </td>
+                                <td>
+                                    - 100,000 Pcs. PET Bottle<br> - 100,000 Pcs. Sando bags SML
+                                </td>
+                                <td>
+                                    Php 450,000.00
+                                </td>
+                                <td>
+                                    DD/MM/YYYY
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    67890
+                                </td>
+                                <td>
+                                    - 200,000 Pcs. PET Bottle<br> - 100,000 Pcs. Sando bags SML
+                                </td>
+                                <td>
+                                    Php 850,000.00
+                                </td>
+                                <td>
+                                    DD/MM/YYYY
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

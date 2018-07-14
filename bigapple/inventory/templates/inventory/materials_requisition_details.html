@@ -1,64 +1,55 @@
-{% extends 'accounts/production_manager_page.html' %}
+{% extends 'production_manager_page_ui.html' %}
 
 {% block content %}
-<div id="basic-form" class="section">
-  <div class="row">
-    <div class="col s6 offset-s3">
-      <div class="card-panel">
-          {% csrf_token %}
-        <h4 class="header1">{{ title }}</h4>
-        <div class="row">
-          <ul class="collection with-header">
-            <ul class="collection-item">
-                <li class="collection-item">
-                  <div class="row">
-                      <div class = "col s6">
-                        <label for="">Date Issued</label>
-                        <span>{{ mr.date_issued }}</span>
-                      </div>
-                      <div class = "col s6">
-                          <label for="">Status:</label>
-                          <span>{{ mr.approval }}</span>
-                      </div>
-                  </div>
-                  <div class="row">
-                      <div class = "col s6">
-                          <label for="">Issued to:</label>
-                          <span>{{ mr.issued_to }}</span>
-                      </div>
-                      <div class = "col s6">
-                          <label for="">Shift:</label>
-                          <span>{{ mr.shift }}</span>
-                      </div>
-                  </div>
-                  <div class="row">
-                      <div class = "col s6">
-                          <label for="">Brand:</label>
-                          <span>{{ mr.brand }}</span>
-                      </div>
-                      <div class = "col s6">
-                          <label for="">Description:</label>
-                          <span>{{ mr.description }}</span>
-                      </div>
-                  </div>
-                  <div class="row">
-                      <div class = "col s6">
-                          <label for="">Quantity:</label>
-                          <span>{{ mr.quantity }}</span>
-                      </div>
-                      <div class = "col s6">
-                          <label for="">To be Used for:</label>
-                          <span>{{ mr.to_be_used_for }}</span>
-                      </div>
-                  </div>
-                </li>
-            </ul>
-            
-        </div>
-    </div>            
-  </div>
- </div>
-</div>
 
+<div class = "ui centered grid">
+    <div class="six wide tablet eight wide computer column">
+        <form class="ui form segment" action = "#" method="POST" role="form">
+            <h2 class="ui header">{{ title }}</h2>
+            {% csrf_token %}
+            <div class="two fields">
+                <div class = "field">
+                    <label for="">Date Issued</label>
+                    <span>{{ mr.date_issued }}</span>
+                </div>
+                <div class = "field">
+                    <label for="">Status:</label>
+                    <span>{{ mr.approval }}</span>
+                </div>
+            </div>
+            <div class="two fields">
+                <div class = "field">
+                    <label for="">Issued to:</label>
+                    <span>{{ mr.issued_to }}</span>
+                </div>
+                <div class = "field">
+                    <label for="">Shift:</label>
+                    <span>{{ mr.shift }}</span>
+                </div>
+            </div>
+            <div class="two fields">
+                <div class = "field">
+                    <label for="">Brand:</label>
+                    <span>{{ mr.brand }}</span>
+                </div>
+                <div class = "field">
+                    <label for="">Description:</label>
+                    <span>{{ mr.description }}</span>
+                </div>
+            </div>
+            <div class="two fields">
+                <div class = "field">
+                    <label for="">Quantity:</label>
+                    <span>{{ mr.quantity }}</span>
+                </div>
+                <div class = "field">
+                    <label for="">To be Used for:</label>
+                    <span>{{ mr.to_be_used_for }}</span>
+                </div>
+            </div>
+        </form>
+        <a href="{% url 'inventory:materials_requisition_list'%}">Back</a>
+    </div>
+</div>
 
 {% endblock %}

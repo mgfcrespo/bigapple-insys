@@ -1,12 +1,20 @@
 from django.db import models
 from django.forms import ModelForm, BaseModelFormSet
+
+from datetime import date, datetime
+
 from django.urls import reverse
 from accounts.models import Client
 from decimal import Decimal
 from django.db.models.aggregates import Sum
 from django.db.models import aggregates
 from django.db.models import Prefetch
+
 from datetime import datetime as dt
+
+
+# Create your models here.
+
 
 class Product(models.Model):
     products = models.CharField('products', max_length=200)
@@ -51,8 +59,10 @@ class ClientPO(models.Model):
 
     def __str__(self):
         lead_zero = str(self.id).zfill(5)
-        po_number = 'PO_%s' % (lead_zero)
-        return po_number
+        po_number = 'PO%s' % (lead_zero)
+        return  po_number
+
+
 
     '''
     def calculate_leadtime(self):
@@ -149,7 +159,11 @@ class SalesInvoice(models.Model):
     total_paid = models.DecimalField('total_paid', blank=True, decimal_places=3, max_digits=12, default = 0)
 
     def __str__(self):
+
         return str(self.client_po)
+        lead_zero = str(self.id).zfill(5)
+        po_number = 'PO%s' % (lead_zero)
+        return  po_number
 
     def calculate_amount_due(self):
         if self.discount == 0:
@@ -222,20 +236,15 @@ class PO_Status_History(models.Model):
 
 
 class Supplier(models.Model):
-
-    SUPPLIERTYPE = (
-        ('Raw Material', 'Raw Material'),
-        ('Machinery/Parts', 'Machinery/Parts'),
-        ('Ink', 'Ink'),
-        ('Others', 'Others'),
-    )
-
     company_name = models.CharField('company_name', max_length=200)
-    contact_person = models.CharField('contact_person', max_length=200)
+    first_name = models.CharField('first_name', max_length=200)
+    last_name = models.CharField('last_name', max_length=200)
     mobile_number = models.CharField('mobile_number', max_length=11)
     email_address = models.CharField('email_address', max_length=200)
     description = models.CharField('description', max_length=200, blank =True)
-    supplier_type = models.CharField('suppier_type', max_length=200, default='not specified', choices=SUPPLIERTYPE)
     
+    def contact_person(self):
+        return self.last_name + ", " + str(self.first_name)
+
     def __str__(self):
         return self.company_name
