@@ -1,10 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'production_manager_page_ui.html' %}
 
-</body>
-</html>
+{% block content %}
+
+    <h2>Create SupplierPO Form</h2>
+
+    <div class="ui container">
+        <form id="myForm"  data-url="{% url 'inventory:supplierPO_form' %}" method="post" enctype="multipart/form-data">
+
+                {% csrf_token %}
+                {% include 'inventory/template_form.html' %}
+                {% include 'inventory/template_formset.html' %}
+
+            {{formset.management_form}}
+            <button type="submit" class ="btn btn-success">Submit</button>
+        </form>
+    </div>
+
+    <button id='btn'>click</button>
+
+{% endblock %}
+
+{% block script %}
+
+    <script>
+        $( document ).ready(function() {
+            $(function() {
+                $('#myForm .formset_class').formset({
+                    prefix: '{{ formset.prefix }}'
+                });            
+            })
+        });
+    </script>
+
+{%endblock %}

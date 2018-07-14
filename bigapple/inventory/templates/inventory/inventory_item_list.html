@@ -1,0 +1,57 @@
+{% extends 'production_manager_page_ui.html' %}
+
+  {% block content %}
+
+	<div class = "ui container">
+		<table class="ui stripped table">
+        	<thead>
+          	<tr class = "row">
+                <th>Item</th>
+				<th>Type</th>
+                <th>Price</th>
+				<th>Supplier</th>
+				<th style="width: 100px;"></th>
+          	</tr>
+    		</thead>
+    		<tbody>
+				{% for items in items %}
+    			<tr class = "row">
+					<td>{{ items.item_name }}</td>
+					{% if items.item_type == 'RM' %}
+                    	<td>{{ items.itemtype }}</td>
+					{% else %}
+						<td>{{ items.item_type }}</td>
+					{% endif %}
+					<td>{{ items.price }}</td>
+					<td>{{ items.supplier }}</td>
+                    <td>
+						<a style = "padding: 5px;" href="{% url 'inventory:inventory_item_edit' items.id %}">
+							<i class="yellow edit icon"></i>
+						</a>
+						<a style = "padding: 5px;" href="{% url 'inventory:inventory_item_delete' items.id %}">
+							<i class="red trash icon"></i>
+						</a>
+                    </td>
+    			</tr>
+				{% endfor %}
+			</tbody>
+    	</table>
+	</div>
+ <!-- Modal Confirm Delete -->
+	 <!-- <div class="ui modal">
+		<div class="header">Header</div>
+		<div class="content">
+			<p></p>
+		</div>
+		<div class="actions">
+			<div class="ui approve button">Approve</div>
+			<div class="ui button">Neutral</div>
+			<div class="ui cancel button">Cancel</div>
+		</div>
+	</div> -->
+
+	
+	{% block script %}
+	{% endblock %}
+	
+{% endblock %}

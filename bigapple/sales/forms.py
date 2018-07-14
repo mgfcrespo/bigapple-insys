@@ -39,8 +39,11 @@ class SupplierForm(forms.ModelForm):
     company_name = forms.CharField(max_length=200, label = 'company_name', widget = forms.TextInput(
         attrs={'id':'company_name', 'name':'company_name', 'type':'text', 'required':'true'}
     ))
-    contact_person = forms.CharField(max_length=200, label = 'contact_person', widget = forms.TextInput(
-        attrs={'id':'contact_person', 'name':'contact_person', 'type':'text', 'required':'true'}
+    first_name = forms.CharField(max_length=200, label = 'first_name', widget = forms.TextInput(
+        attrs={'id':'first_name', 'name':'first_name', 'type':'text', 'required':'true'}
+    ))
+    last_name = forms.CharField(max_length=200, label = 'last_name', widget = forms.TextInput(
+        attrs={'id':'last_name', 'name':'last_name', 'type':'text', 'required':'true'}
     ))
     mobile_number = forms.CharField(max_length=11, label = 'mobile_number', widget = forms.TextInput(
         attrs={'id':'mobile_number', 'name':'mobile_number', 'type':'number', 'required':'true'}
@@ -54,7 +57,7 @@ class SupplierForm(forms.ModelForm):
     
     class Meta:
         model = Supplier
-        fields = ('company_name', 'contact_person', 'mobile_number', 'email_address',
+        fields = ('company_name', 'first_name', 'last_name', 'mobile_number', 'email_address',
         'description')
     
     #class ClientPOForm(forms.ModelForm):

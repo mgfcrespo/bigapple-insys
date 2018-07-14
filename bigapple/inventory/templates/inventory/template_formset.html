@@ -1,0 +1,19 @@
+<table>
+    <tbody>
+    {% for form in formset %}
+    <tr id="{{ form.prefix }}-row" class="formset_class">
+        {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+        {% for field in form %}
+        {% if form.instance.pk %} {{ form.DELETE }}{% endif %}
+                <span class ="text-danger small">{{field.errors}}</span>
+                <th>{{field.label_tag}}</th>
+                <td>{{field}}</td>
+
+                {% for item in item %}
+                    <option value="{{ item.id }}">{{ item.item_name }}</option>
+                {% endfor %}
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

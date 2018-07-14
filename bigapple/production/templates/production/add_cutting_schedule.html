@@ -1,10 +1,132 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "client_page_ui.html" %} {% block content %}
 
-</body>
-</html>
+
+<h2>Cutting Instruction</h2>
+
+
+<div class="sixteen wide column">
+
+    <div class="ui form">
+        <form>
+
+            <div class="three fields">
+                <div class="field">
+                    <label>
+                        Client Name:
+                    </label>
+                    <input type="text" placeholder="Client Name">
+                </div>
+                <div class="field">
+                    <label>
+                        Size and Thickness:
+                    </label>
+                    <input type="text" placeholder="Size and Thickness">
+                </div>
+                <div class="field">
+                    <label>
+                        Quantity:
+                    </label>
+                    <input type="text" placeholder="Quantity">
+                </div>
+            </div>
+            <div class="three fields">
+                <div class="field">
+                    <div class="ui selection dropdown">
+                        <input type="hidden" name="kind of stock">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">Kind of Stock</div>
+                        <div class="menu">
+                            <div class="item" data-value="1">Item 1</div>
+                            <div class="item" data-value="0">Item 2</div>
+                            <div class="item" data-value="1">Item 3</div>
+                            <div class="item" data-value="0">Item 4</div>
+                            <div class="item" data-value="1">Item 5</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>
+                        Material:
+                    </label>
+                    <input type="text" placeholder="Material">
+                </div>
+                <div class="inline fields">
+                    <label>Correction?</label>
+                    <div class="field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="correction">
+                            <label>Yes</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="frequency">
+                            <label>No</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="two fields">
+                <div class="inline fields">
+                    <div class="field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="order">
+                            <label>New</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="order">
+                            <label>Repeat Order</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="inline fields">
+                    <div class="field">
+                        <label>Other Logo:</label>
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="logo">
+                            <label>Yes</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="logo">
+                            <label>No</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    <label>
+                        Sealing:
+                    </label>
+                    <input type="text" placeholder="Sealing">
+                </div>
+                <div class="field">
+                    <label>
+                        Pocket:
+                    </label>
+                    <input type="text" placeholder="Pocket">
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+
+
+{% endblock %} {% block script %}
+<script type="text/javascript">
+    $(function() {
+        $('#myForm .formset_class').formset({
+            prefix: '{{ formset.prefix }}'
+        });
+    })
+
+</script>
+
+
+{%endblock %}
