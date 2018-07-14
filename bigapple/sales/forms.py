@@ -2,16 +2,13 @@
 from django import forms
 from django.forms import ModelForm, ValidationError, Form, widgets
 from production.models import JobOrder
-
-from .models import ClientItem, ClientPO, Product, Client
 from decimal import Decimal
 from django.contrib.admin.widgets import AdminDateWidget
 
-from .models import ClientItem, ClientPO, Product, Supplier
+from .models import ClientItem, ClientPO, Product, Supplier, ClientPayment
 
 class DateInput(forms.DateInput):
     input_type = 'date'
-
 
 class ClientPOFormItems(ModelForm):
     client_po = forms.CharField(label='')
@@ -48,7 +45,14 @@ class ClientPOForm(ModelForm):
             self.fields['date_required'].required = True
             self.fields['other_info'].required = False
 
+class ClientPaymentForm(ModelForm):
 
+    class Meta:
+        model = ClientPayment
+        fields = ('payment', 'payment_date')
+        widgets = {
+            'payment_date': DateInput()
+        }
 
 class SupplierForm(forms.ModelForm):
 

@@ -1,9 +1,8 @@
-{% extends 'sales_coordinator_page_ui.html' %}
+{% extends 'credit_and_collection_personnel_page_ui.html' %} {% block content %}
 
-  {% block content %}
+<h3 class="ui header">Invoice List</h3>
 
-	<div class="wrapper container">
-		<table class="striped" style = "font-size:12px;">
+		<table class= "ui cell padded table" >
         	<thead>
           	<tr>
           	  	<th>PO#</th>
@@ -14,16 +13,21 @@
           	</tr>
     		</thead>
     		<tbody>
-				{% for sales_invoice in sales_invoice  %}
+			{% if object_list %}
+				{% for SalesInvoice in object_list  %}
     			<tr>
-                    <td><a href="{% url 'sales:sales_invoice_details' sales_invoice.id %}"> {{ sales_invoice.id }} </a></td>
-                    <td> {{ sales_invoice.client }} </td>
-                    <td> {{ sales_invoice.date_issued }} </td>
-                    <td> {{ sales_invoice.total_amount }} </td>
-    				<td> {{ sales_invoice.amount_due }} </td>
+                    <td><a href="{% url 'sales:sales_invoice_details' SalesInvoice.id %}"> {{ SalesInvoice }} </a></td>
+                    <td> {{ SalesInvoice.client }} </td>
+                    <td> {{ SalesInvoice.date_issued }} </td>
+                    <td> {{ SalesInvoice.total_amount }} </td>
+    				<td> {{ SalesInvoice.amount_due }} </td>
     			</tr>
 				{% endfor %}
+			{% else %}
+			<p>There are no Invoices to display</p>
+			{% endif %}
+
 			</tbody>
     	</table>
-	</div>
+
 {% endblock %}

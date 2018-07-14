@@ -1,94 +1,78 @@
-{% extends 'sales_coordinator_page_ui.html' %} {% block content %}
-<div id="basic-form" class="section">
-    <div class="row">
-        <div class="ten wide column">
-            <div>
-                <h4 class="header1">PO{{ title }}</h4>
-                <div class="row">
+{% extends 'credit_and_collection_personnel_page_ui.html' %} {% block content %}
 
-                    <form class="sixteen wide column" action="#" method="POST" role="form">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="sixteen wide column">
-                                <label for="">Client PO: </label>
-                                <span>{{ sales_invoice.client_po }}</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="eight wide column">
-                                <label for="">Date Issued: </label>
-                                <span>{{ sales_invoice.client_po.date_issued }}</span>
-                            </div>
-                            <div class="eight wide column">
-                                <label for="">Date Required: </label>
-                                <span>{{ sales_invoice.client_po.date_required }}</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="eight wide column">
-                                <label for="">Client: </label>
-                                <span>{{ sales_invoice.client }}</span>
-                            </div>
-                            <div class="eight wide column">
-                                <label for="">Company: </label>
-                                <span>{{ sales_invoice.client.company }}</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="eight wide column">
-                                <label for="">Contact Number: </label>
-                                <span>{{ sales_invoice.client.contact_number }}</span>
-                            </div>
-                            <div class="eight wide column">
-                                <label for="">Email: </label>
-                                <span>{{ sales_invoice.client.email }}</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="eight wide column">
-                                <label for="">Sales Agent: </label>
-                                <span>{{ sales_invoice.client.sales_agent }}</span>
-                            </div>
-                            <div class="eight wide column">
-                                <label for="">Terms: </label>
-                                <span>{{ sales_invoice.client_po.terms }}</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="eight wide column">
-                                <label for="">Note: </label>
-                                <span>{{ sales_invoice.client_po.note }}</span>
-                            </div>
-                            <div class="eight wide column">
-                                <label for="">Other Information: </label>
-                                <span>{{ sales_invoice.client_po.other_info }}</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="eight wide column">
-                                <label for="">Discount: </label>
-                                <span>{{ sales_invoice.discount }}</span>
-                            </div>
-                            <div class="eight wide column">
-                                <label for="">Net Value: </label>
-                                <span>{{ sales_invoice.net_value }}</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="eight wide column">
-                                <label for="">Total Amount: </label>
-                                <span>{{ sales_invoice.total_amount }}</span>
-                            </div>
-                            <div class="eight wide column">
-                                <label for="">Amount Due: </label>
-                                <span>{{ sales_invoice.amount_due }}</span>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<h1 class="ui header">Invoice for {{salesinvoice}}</h1>
+
+
+
+<table class="ui cell padded table">
+        	<thead>
+          	<tr>
+          	  <th>Client</th>
+                <td>{{salesinvoice.client}}</td>
+                </tr>
+                <tr>
+                    <th>Date Issued</th>
+                    <td> {{salesinvoice.date_issued}}</td>
+                </tr>
+            <tr>
+              <th>Total Amount</th>
+                 <td> {{salesinvoice.total_amount}}</td>
+                </tr>
+            <tr>
+              <th>Discount</th>
+                 <td> {{salesinvoice.discount}}</td>
+                </tr>
+            <tr>
+              <th>Net Vat</th>
+                 <td> {{salesinvoice.net_vat}}</td>
+            </tr>
+            <tr>
+              <th>Amount Due</th>
+                 <td> {{salesinvoice.amount_due}}</td>
+            </tr>
+
+            <tr>
+                <th>Payment Terms</th>
+                 <td> {{salesinvoice.payment_terms}}</td>
+          	</tr>
+            <tr>
+                <th>Days Passed</th>
+                 <td> {{salesinvoice.days_passed}}</td>
+          	</tr>
+            <tr>
+                <th>Total Paid</th>
+                 <td> {{salesinvoice.total_paid}}</td>
+          	</tr>
+               <tr>
+              <th>Status</th>
+                   {% if salesinvoice.status ==  "Open" %}
+                   <td><i class="icon checkmark"></i>Open</td>
+                   {% elif  salesinvoice.status ==  "Closed" %}
+                   <td ><i class="icon close"></i>Closed</td>
+                   {% elif  salesinvoice.status ==  "Late" %}
+                   <td ><i class="icon close"></i>Closed</td>
+                   <i class="exclamation icon">Late</i>
+                   {% else %}
+                   <td ><i class="ban icon"></i>Cancelled</td>
+                    {% endif %}
+            </tr>
+    		</thead>
+
+
+    	</table>
+
+<button class="ui button">
+	<a href="{% url 'sales:sales_invoice_list' %}">Back</a>
+</button>
+
+  <div class="ui horizontal divider">
+      Payments
+  </div>
+
+<form method="post" action="{% url 'sales:add_payment_form' salesinvoice.id %}">
+{% csrf_token %}
+{{ form }}
+<button type="submit" class="ui green basic button">Submit</button>
+</form>
 
 {% endblock %}

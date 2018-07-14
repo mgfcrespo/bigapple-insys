@@ -71,7 +71,7 @@ class Employee(models.Model):
         return today.year - self.birth_date.year - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
 
     def __str__(self):
-        return self.full_name
+        return str(self.full_name)
 '''
     @property
     def is_production_worker(self):
@@ -96,6 +96,6 @@ class Client(models.Model):
         return '%s %s' % (self.first_name, self.last_name)
 
     def __str__(self):
-        return self.full_name
+        return str(self.full_name)
 
 
