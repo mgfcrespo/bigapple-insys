@@ -148,25 +148,34 @@ class InvoiceListView(ListView):
     template_name = 'sales/sales_invoice_list.html'
     model = SalesInvoice
 
-'''
-class InvoiceDetailView(DetailView):
-    model = SalesInvoice
-    template_name = 'sales/sales_invoice_details.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(InvoiceDetailView, self).get_context_data(**kwargs)
-        context['form'] = ClientPaymentForm
-        return context
-'''
 def invoice_detail_view(request, pk, *args, **kwargs):
+
+    salesinvoice = SalesInvoice.objects.get(pk=pk)
+    form = ClientPaymentForm()
+    payments = ClientPayment.objects.filter(invoice_issued=salesinvoice)
+
     try:
         salesinvoice = SalesInvoice.objects.get(pk=pk)
+
+        client = Client.objects.get(id=salesinvoice.client_id)
+        credit_status = ClientCreditStatus.objects.get(client=client)
+        credit_status.save()
         salesinvoice.save()
 
         form = add_payment(request, pk)
 
+        salesinvoice = SalesInvoice.objects.get(pk=pk)
+
+        if salesinvoice.amount_due <= 0:
+            salesinvoice.status = "Closed"
+
+
+        payments = ClientPayment.objects.filter(invoice_issued=salesinvoice)
+
         context = {'salesinvoice': salesinvoice,
-                   'form' : form}
+                   'form' : form,
+                   'payments' : payments}
 
     except SalesInvoice.DoesNotExist:
         raise Http404("Sales Invoice does not exist")
@@ -177,36 +186,32 @@ def invoice_detail_view(request, pk, *args, **kwargs):
 def add_payment(request, pk, *args, **kwargs):
     form = ClientPaymentForm()
 
+    #TODO Payment is recorded but changes (amount_due) are not reflected in invoice
+    #TODO Payment list is not rendering
     if request.method == "POST":
             form = ClientPaymentForm(request.POST)
             form = form.save()
 
-            invoice = SalesInvoice.objects.get(id= pk)
-            client = Client.objects.get(id = invoice.client_id)
+            salesinvoice = SalesInvoice.objects.get(pk=pk)
+            client = Client.objects.get(id = salesinvoice.client_id)
             credit_status = ClientCreditStatus.objects.get(client=client)
 
             payment = ClientPayment.objects.get(id=form.pk)
             payment.client = client
-            payment.invoice_issued = invoice
+            payment.invoice_issued = salesinvoice
             payment.credit_status = credit_status
+
+            payment.old_balance = salesinvoice.amount_due
+            salesinvoice.amount_due -= payment.payment
+            salesinvoice.total_paid += payment.payment
+            payment.new_balance = payment.old_balance - payment.payment
+            salesinvoice.amount_due = payment.new_balance
+
+            salesinvoice.save()
             payment.save()
 
+            form = ClientPaymentForm()
     return form
-
-'''
-def detail(request, poll_id):
-    try:
-        p = Poll.objects.get(pk=poll_id)
-    except Poll.DoesNotExist:
-        raise Http404("Poll does not exist")
-    return render(request, 'polls/detail.html', {'poll': p})
-'''
-
-class AddPayment(FormView):
-    form_class = ClientPaymentForm
-    success_url = 'sales/index.html'
-
-#TODO Add Payments in Invoice Detail View
 
 #SAMPLE DYNAMIC FORM
 def create_client_po(request):
@@ -261,16 +266,19 @@ def create_client_po(request):
                 totalled_clientpo.save()
 
                 # Create Invoice
-                invoice = SalesInvoice(client=current_client, client_po=form_instance, total_amount=formset_item_total)
+                invoice = SalesInvoice(client=current_client, client_po=form_instance, total_amount=formset_item_total, amount_due=0)
                 invoice.save()
                 invoice = invoice.pk
                 #TODO Invoice should not be issued unless JO is complete
 
                 invoice = SalesInvoice.objects.get(id=invoice)
+                invoice.amount_due = invoice.total_amount_computed
                 credit_status = ClientCreditStatus.objects.get(client_id = current_client)
                 outstanding_balance = credit_status.outstanding_balance
                 outstanding_balance += invoice.amount_due
                 credit_status.outstanding_balance = outstanding_balance
+
+                invoice.save()
                 credit_status.save()
 
 

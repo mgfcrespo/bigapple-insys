@@ -11,6 +11,7 @@ from django.db.models import aggregates
 from django.db.models import Prefetch
 
 from datetime import datetime as dt
+from datetime import date as d
 
 
 # Create your models here.
@@ -22,7 +23,7 @@ class Product(models.Model):
     description = models.CharField('description', max_length=200)
 
     def __str__(self):
-        return self.products
+        return str(self.products)
 
 class PreProduct(models.Model):
     GUSSET = (
@@ -52,7 +53,7 @@ class ClientPO(models.Model):
 
     date_issued = models.DateTimeField('date_issued', auto_now_add=True)
     date_required = models.DateField('date_required', blank=False)
-    other_info = models.TextField('other_info', max_length=250, blank=False)
+    other_info = models.TextField('other_info', max_length=250, blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=3, max_digits=12)
     status = models.CharField('status', choices=STATUS, default='waiting', max_length=200)
@@ -60,7 +61,7 @@ class ClientPO(models.Model):
     def __str__(self):
         lead_zero = str(self.id).zfill(5)
         po_number = 'PO%s' % (lead_zero)
-        return  po_number
+        return  str(po_number)
 
 
 
@@ -114,7 +115,7 @@ class ClientItem(models.Model):
 
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
     def calculate_item_total(self):
         total = Decimal('0.0')
@@ -149,7 +150,8 @@ class SalesInvoice(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
     date_issued = models.DateTimeField('date_issued', auto_now_add=True, blank=True)
-    total_amount = models.DecimalField('total_amount', blank=True, decimal_places=3, max_digits=12)#before discount and net_vat
+    total_amount = models.DecimalField('total_amount', blank=True, decimal_places=2, max_digits=12)#before discount and net_vat
+    total_amount_computed = models.DecimalField('total_amount_computed', blank=True, decimal_places=2, max_digits=12)#after discount and net_vat
     discount = models.DecimalField('discount', decimal_places=2, max_digits=12, default=0)
     net_vat = models.DecimalField('net_vat', decimal_places=2, max_digits=12, default=0)
     amount_due = models.DecimalField('amount_due', blank=True, decimal_places=2, max_digits=12)#(self.total_amount * self.discount * self.net_vat)
@@ -159,13 +161,11 @@ class SalesInvoice(models.Model):
     total_paid = models.DecimalField('total_paid', blank=True, decimal_places=3, max_digits=12, default = 0)
 
     def __str__(self):
-
-        return str(self.client_po)
         lead_zero = str(self.id).zfill(5)
         po_number = 'PO%s' % (lead_zero)
         return  po_number
 
-    def calculate_amount_due(self):
+    def calculate_total_amount_computed(self):
         if self.discount == 0:
             discount = 1
         else:
@@ -185,7 +185,7 @@ class SalesInvoice(models.Model):
 
 
     def save(self, *args, **kwargs):
-        self.amount_due = self.calculate_amount_due()
+        self.total_amount_computed = self.calculate_total_amount_computed()
         #self.days_passed= self.calculate_days_passed()
         super(SalesInvoice, self).save(*args, **kwargs)
 
@@ -206,15 +206,17 @@ class ClientCreditStatus(models.Model):
             total = client_payment.aggregate(sum=aggregates.Sum('balance'))['sum'] or 0
         return total
 
+    
     def calculate_invoice_sum(self):
         client_invoice = SalesInvoice.objects.filter(cancelled = 0, client_id = self.client)
         total = client_invoice.aggregate(sum=aggregates.Sum('total_amount'))['sum'] or 0
         return total
+       
 
     def save(self, *args, **kwargs):
         self.outstanding_balance = self.calculate_invoice_sum() - self.calculate_payments_sum()
         super(ClientCreditStatus, self).save(*args, **kwargs)
-    '''
+ '''
 
     class Meta:
         verbose_name_plural = "Client credit status"
@@ -225,9 +227,11 @@ class ClientPayment(models.Model):
     payment = models.DecimalField('payment', decimal_places=2, max_digits=12, default=Decimal(0)) #how much the user paid per invoice
     payment_date = models.DateField('payment_date', blank=True)
     credit_status = models.ForeignKey(ClientCreditStatus, on_delete=models.CASCADE, null=True)
+    old_balance = models.DecimalField('old_balance', decimal_places=2, max_digits=12, default=Decimal(0))
+    new_balance = models.DecimalField('new_balance', decimal_places=2, max_digits=12, default=Decimal(0))
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 
 class PO_Status_History(models.Model):

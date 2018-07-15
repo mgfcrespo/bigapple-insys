@@ -11,6 +11,7 @@
                 <th>Date Issued</th>
                 <th>Total Amount</th>
             	<th>Amount Due</th>
+				<th>Status</th>
           	</tr>
     		</thead>
     		<tbody>
@@ -22,6 +23,17 @@
                     <td> {{ SalesInvoice.date_issued }} </td>
                     <td> {{ SalesInvoice.total_amount }} </td>
     				<td> {{ SalesInvoice.amount_due }} </td>
+
+                   {% if SalesInvoice.status ==  "Open" %}
+                   <td><i class="icon checkmark"></i>Open</td>
+                   {% elif  SalesInvoice.status ==  "Closed" %}
+                   <td ><i class="icon close"></i>Closed</td>
+                   {% elif  SalesInvoice.status ==  "Late" %}
+                   <td ><i class="icon close"></i>Closed</td>
+                   <i class="exclamation icon">Late</i>
+                   {% else %}
+                   <td ><i class="ban icon"></i>Cancelled</td>
+                    {% endif %}
     			</tr>
 				{% endfor %}
 			{% else %}
