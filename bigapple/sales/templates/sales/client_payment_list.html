@@ -1,0 +1,26 @@
+{% extends 'client_page_ui.html' %} {% block content %}
+
+<div class="ui card">
+  <div class="content">
+    <div class="header">Credit Status</div>
+    <div class="meta">
+
+        <table class="ui cell padded table">
+        	<thead>
+          	<tr>
+          	  <th>Account Balance</th>
+                <td>{{credit_status.outstanding_balance}}</td>
+                </tr>
+
+            <tr>
+          	  <th>Balance Overdue</th>
+                <td>{{credit_status.overdue_balance}}</td>
+                </tr>
+            </thead>
+        </table>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

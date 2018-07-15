@@ -213,6 +213,19 @@ def add_payment(request, pk, *args, **kwargs):
             form = ClientPaymentForm()
     return form
 
+def payment_list_view(request):
+    client = Client.objects.get(id=request.session['session_userid'])
+    credits_status = ClientCreditStatus.objects.get(client = client)
+
+    context = {
+        'credit_status' : credits_status
+    }
+
+    return render(request, 'sales/client_payment_list.html', context)
+
+def payment_detail_view():
+    ...
+
 #SAMPLE DYNAMIC FORM
 def create_client_po(request):
     #note:instance should be an object
@@ -320,24 +333,6 @@ def rush_order_assessment(request):
     return render(request, 'sales/rush_order_assessment.html', context)
 
 
-
-#CLIENT PAYMENT CRUD
-def client_credit_list(request):
-    client_credit = ClientCreditStatus.objects.all()
-    context = {
-        'client_credit' : client_credit
-    }
-    return render (request, 'sales/client_payment_monitoring_list.html', context)
-
-
-def client_credit_details(request, id):
-    client_credit = ClientPayment.objects.get(id=id)
-
-    context = {
-        'client_credit' : client_credit,
-        'title': client_credit.id
-    }
-    return render(request, 'sales/client_payment_monitoring_details.html', context)
 
 '''
 #Forecasting view

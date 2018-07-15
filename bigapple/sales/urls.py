@@ -20,8 +20,8 @@ urlpatterns = [
           path('sales-invoice-details/<int:pk>', views.invoice_detail_view, name='add_payment_form'),
 
           #client credit urls
-          path('client-credit-list/', views.client_credit_list, name='sales_client_credit_list'),
-          path('client-credit-details/<int:pk>/', views.client_credit_details, name='sales_client_credit_details'),
+          path('client-payment-list/', views.payment_list_view, name='client_payment_list'),
+          #path('client-payment-details/<int:pk>/', views.client_credit_details, name='client_payment_details'),
 
           #rush order urls
           path('rush-order-list/', views.rush_order_list, name='sales_rush_order_list'),

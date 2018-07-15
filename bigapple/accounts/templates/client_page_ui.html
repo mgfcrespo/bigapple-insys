@@ -5,15 +5,16 @@
     <i class="file alternate icon"></i>
     Create Purchase Order
 </a>
-<a href="{% url 'sales:create-client-po-form' %}" class="item">
-    <i class="file alternate icon"></i>
-    Payments and Credit Status
-</a>
+
 <a href="{% url 'sales:po-list-view' %}" class="item">
     <i class="search icon"></i>
     Review Purchase Orders
 </a>
 
+ <a href="{% url 'sales:client_payment_list' %}" class="item">
+    <i class="file alternate icon"></i>
+    Payments and Credit Status
+</a>
 {% endblock %}
 
  {% block content %}
