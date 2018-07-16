@@ -1,10 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<h2>Q/A</h2>
 
-</body>
-</html>
+<div class="sixteen wide column">
+    <div class="ui form">
+
+        <form class="ui inverted segment">
+            <div class="four fields">
+                <div class="field">
+                    <label>Date:</label>
+                    <input type="date">
+                </div>
+                <div class="field">
+                    <label>PO Number:</label>
+                    <input type="text" placeholder="Product Name">
+                </div>
+
+                <div class="field">
+                    <label>Product Name:</label>
+                    <input type="text" placeholder="PO Number">
+                </div>
+                <div class="field">
+                    <label>Customer:</label>
+                    <input type="text" placeholder="Customer">
+                </div>
+                <div class="field">
+                    <label>Printing Operator:</label>
+                    <select class="ui dropdown">
+                        <option value="">Printing Operator</option>
+                        <option value="1">Printing Operator 1</option>
+                        <option value="0">Printing Operator 2</option>
+                        <option value="0">Printing Operator 3</option>
+                        <option value="0">Printing Operator 4</option>
+                        <option value="0">Printing Operator 5</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Extruder:</label>
+                    <select class="ui dropdown">
+                        <option value="">Extruder</option>
+                        <option value="1">Extruder 1</option>
+                        <option value="0">Extruder 2</option>
+                        <option value="0">Extruder 3</option>
+                        <option value="0">Extruder 4</option>
+                        <option value="0">Extruder 5</option>
+                    </select>
+                </div>
+            </div>
+            <div class="seven fields">
+                <div class="field">
+                    <label>Packaging Size PCS:</label>
+                    <input type="text">
+                </div>
+                <div class="field">
+                    <label>Packaging Size KGs:</label>
+                    <input type="text">
+                </div>
+
+                <div class="field">
+                    <label>Length:</label>
+                    <input type="text">
+                </div>
+                <div class="field">
+                    <label>Width:</label>
+                    <input type="text">
+                </div>
+                <div class="field">
+                    <label>Thickness:</label>
+                    <input type="text">
+                </div>
+                <div class="field">
+                    <label>Operator:</label>
+                    <select class="ui dropdown">
+                        <option value="">Operator</option>
+                        <option value="1">Operator 1</option>
+                        <option value="0">Operator 2</option>
+                        <option value="0">Operator 3</option>
+                        <option value="0">Operator 4</option>
+                        <option value="0">Operator 5</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Supervisor:</label>
+                    <select class="ui dropdown">
+                        <option value="">Supervisor</option>
+                        <option value="1">Supervisor 1</option>
+                        <option value="0">Supervisor 2</option>
+                        <option value="0">Supervisor 3</option>
+                    </select>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+{% endblock %} {% block script %}
+<script type="text/javascript">
+    $(function() {
+        $('#myForm .formset_class').formset({
+            prefix: '{{ formset.prefix }}'
+        });
+    })
+</script>
