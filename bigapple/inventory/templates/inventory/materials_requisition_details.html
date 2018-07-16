@@ -27,26 +27,22 @@
                     <span>{{ mr.shift }}</span>
                 </div>
             </div>
-            <div class="two fields">
-                <div class = "field">
-                    <label for="">Brand:</label>
-                    <span>{{ mr.brand }}</span>
-                </div>
-                <div class = "field">
-                    <label for="">Description:</label>
-                    <span>{{ mr.description }}</span>
-                </div>
-            </div>
-            <div class="two fields">
-                <div class = "field">
-                    <label for="">Quantity:</label>
-                    <span>{{ mr.quantity }}</span>
-                </div>
-                <div class = "field">
-                    <label for="">To be Used for:</label>
-                    <span>{{ mr.to_be_used_for }}</span>
-                </div>
-            </div>
+            <table class="ui table">
+                <thead>
+                    <th class="five wide">Brand</th>
+                    <th class="four wide">Quantity</th>
+                    <th class="seven wide">For</th>
+                </thead>
+                <tbody>
+                    {% for mri in mri %}
+                    <tr>
+                        <td>{{ mri.brand }}</td>
+                        <td>{{ mri.quantity }}</td>
+                        <td>{{ mri.to_be_used_for }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </form>
         <a href="{% url 'inventory:materials_requisition_list'%}">Back</a>
     </div>

@@ -95,13 +95,8 @@ class MaterialRequisition(models.Model):
         ('Shift 2', 'shift 2'),
         ('Shift 3', 'shift 3')
     )
-
-    date_issued = models.DateField('date_issued', blank=True)
-    issued_to = models.CharField('issued_to', max_length=200)
-    brand = models.CharField('brand', max_length=200)
-    description = models.CharField('description', max_length=200)
-    quantity = models.IntegerField('quantity')
-    to_be_used_for = models.CharField('to_be_used_for', max_length=200)
+    date_issued = models.DateField('date_issued', auto_now_add=True)
+    issued_to = models.CharField('issued_to', max_length=200, null=True)
     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     approval = models.BooleanField('approval', default=False)
 
@@ -110,6 +105,12 @@ class MaterialRequisition(models.Model):
         control_number = '#%s' % (lead_zero)
         return control_number
 
+
+class MaterialRequisitionItems(models.Model):
+    matreq = models.ForeignKey(MaterialRequisition, on_delete=models.CASCADE)
+    brand = models.ForeignKey(Inventory, on_delete=models.CASCADE)
+    quantity = models.IntegerField('quantity')
+    to_be_used_for = models.CharField('to_be_used_for', max_length=200)
 
 class PurchaseRequisition(models.Model):
     placed_by = models.ForeignKey(Employee, on_delete = models.CASCADE, null=True)

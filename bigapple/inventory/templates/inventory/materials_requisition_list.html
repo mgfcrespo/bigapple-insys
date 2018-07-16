@@ -9,9 +9,7 @@
                 <th>Control Number</th>
                 <th>Date Issued</th>
 				<th>Issued To</th>
-                <th>Brand</th>
-                <th>Quantity</th>
-                <th>Used For</th>
+				<th>Shift</th>
                 <th>Status</th>
           	</tr>
     		</thead>
@@ -22,10 +20,8 @@
                         <a href="{% url 'inventory:materials_requisition_details' mr.id %}">{{ mr }}</a>
                     </td>
                     <td>{{ mr.date_issued }}</td>
-                    <td>{{ mr.issued_to }}</td>
-					<td>{{ mr.brand }}</td>
-                    <td>{{ mr.quantity }}</td>
-                    <td>{{ mr.to_be_used_for }}</td>
+					<td>{{ mr.issued_to }}</td>
+					<td>{{ mr.shift }}</td>
                     <td>{{ mr.approval }}</td>
     			</tr>
 				{% endfor %}
