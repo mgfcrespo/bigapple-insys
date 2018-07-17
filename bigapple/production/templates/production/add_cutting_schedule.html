@@ -1,15 +1,14 @@
-{% extends "client_page_ui.html" %} {% block content %}
-
-
 <h2>Cutting Instruction</h2>
 
-
 <div class="sixteen wide column">
-
     <div class="ui form">
-        <form>
 
+        <form>
             <div class="three fields">
+                <div class="field">
+                    <label>JO Number:</label>
+                    <input type="text" placeholder="JO Number">
+                </div>
                 <div class="field">
                     <label>
                         Client Name:
@@ -18,105 +17,219 @@
                 </div>
                 <div class="field">
                     <label>
-                        Size and Thickness:
+                        Print Name:
                     </label>
-                    <input type="text" placeholder="Size and Thickness">
-                </div>
-                <div class="field">
-                    <label>
-                        Quantity:
-                    </label>
-                    <input type="text" placeholder="Quantity">
+                    <input type="text" placeholder="Print Name">
                 </div>
             </div>
             <div class="three fields">
                 <div class="field">
-                    <div class="ui selection dropdown">
-                        <input type="hidden" name="kind of stock">
-                        <i class="dropdown icon"></i>
-                        <div class="default text">Kind of Stock</div>
-                        <div class="menu">
-                            <div class="item" data-value="1">Item 1</div>
-                            <div class="item" data-value="0">Item 2</div>
-                            <div class="item" data-value="1">Item 3</div>
-                            <div class="item" data-value="0">Item 4</div>
-                            <div class="item" data-value="1">Item 5</div>
-                        </div>
-                    </div>
+                    <label>PO Number:</label>
+                    <input type="text" placeholder="PO Number">
                 </div>
                 <div class="field">
                     <label>
-                        Material:
+                        Reference Number:
                     </label>
-                    <input type="text" placeholder="Material">
+                    <input type="text" placeholder="Reference Number">
                 </div>
-                <div class="inline fields">
-                    <label>Correction?</label>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="correction">
-                            <label>Yes</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>No</label>
-                        </div>
-                    </div>
+                <div class="field">
+                    <label>Agent:</label>
+                    <select class="ui dropdown">
+                        <option value="">Agent</option>
+                        <option value="1">Agent 1</option>
+                        <option value="0">Agent 2</option>
+                        <option value="0">Agent 3</option>
+                        <option value="0">Agent 4</option>
+                        <option value="0">Agent 5</option>
+                    </select>
                 </div>
             </div>
-            <div class="two fields">
-                <div class="inline fields">
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="order">
-                            <label>New</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="order">
-                            <label>Repeat Order</label>
-                        </div>
-                    </div>
+
+            <div class="five fields">
+                <div class="field">
+                    <label>Length:</label>
+                    <input type="text" placeholder="Length">
                 </div>
-                <div class="inline fields">
-                    <div class="field">
-                        <label>Other Logo:</label>
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="logo">
-                            <label>Yes</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="logo">
-                            <label>No</label>
-                        </div>
-                    </div>
+                <div class="field">
+                    <label>Width:</label>
+                    <input type="text" placeholder="Width">
+                </div>
+                <div class="field">
+                    <label>Thickness:</label>
+                    <input type="text" placeholder="Thickness">
+                </div>
+                <div class="field">
+                    <label>Quantity:</label>
+                    <input type="text" placeholder="Quantity">
+                </div>
+                <div class="field">
+                    <label>Number of Rolls:</label>
+                    <input type="text" placeholder="Number of Rolls">
                 </div>
             </div>
             <div class="two fields">
                 <div class="field">
-                    <label>
-                        Sealing:
-                    </label>
-                    <input type="text" placeholder="Sealing">
+                    <label>Handle:</label>
+                    <input type="text" placeholder="Client Name">
                 </div>
                 <div class="field">
                     <label>
-                        Pocket:
+                        Quantity to Produce:
                     </label>
-                    <input type="text" placeholder="Pocket">
+                    <input type="text" placeholder="Quantity">
+                </div>
+
+            </div>
+            <div class="four fields">
+                <div class="field">
+                    <label>Sealing:</label>
+                    <select class="ui dropdown">
+                        <option value="">Sealing</option>
+                        <option value="1">Sealing 1</option>
+                        <option value="0">Sealing 2</option>
+                        <option value="0">Sealing 3</option>
+                        <option value="0">Sealing 4</option>
+                        <option value="0">Sealing 5</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Item:</label>
+                    <select class="ui dropdown">
+                        <option value="">Item</option>
+                        <option value="1">Item 1</option>
+                        <option value="0">Item 2</option>
+                        <option value="0">Item 3</option>
+                        <option value="0">Item 4</option>
+                        <option value="0">Item 5</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Material:</label>
+                    <select class="ui dropdown">
+                        <option value="">Material</option>
+                        <option value="1">Material 1</option>
+                        <option value="0">Material 2</option>
+                        <option value="0">Material 3</option>
+                        <option value="0">Material 4</option>
+                        <option value="0">Material 5</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Pocket:</label>
+                    <select class="ui dropdown">
+                        <option value="">Pocket</option>
+                        <option value="1">Pocket 1</option>
+                        <option value="0">Pocket 2</option>
+                        <option value="0">Pocket 3</option>
+                        <option value="0">Pocket 4</option>
+                        <option value="0">Pocket 5</option>
+                    </select>
                 </div>
             </div>
+            <div class="three fields">
+                <div class="field">
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="order">
+                        <label>New</label>
+                    </div>
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="order">
+                        <label>Repeat Order</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Correction:</label>
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="correction">
+                        <label>Yes</label>
+                    </div>
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="correction">
+                        <label>No</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Other Logo:</label>
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="logo">
+                        <label>Yes</label>
+                    </div>
+                    <div class="ui radio checkbox">
+                        <input type="radio" name="logo">
+                        <label>No</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <form class="ui inverted segment">
+            <div class="four fields">
+                <div class="field">
+                    <label>Operator:</label>
+                    <select class="ui dropdown">
+                        <option value="">Operator</option>
+                        <option value="1">Operator 1</option>
+                        <option value="0">Operator 2</option>
+                        <option value="0">Operator 3</option>
+                        <option value="0">Operator 4</option>
+                        <option value="0">Operator 5</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Date:</label>
+                    <input type="date">
+                </div>
+                <div class="field">
+                    <label>Time In:</label>
+                    <input type="time">
+                </div>
+                <div class="field">
+                    <label>Time Out:</label>
+                    <input type="time">
+                </div>
+            </div>
+            <div class="fields">
+                <div class="field">
+                    <label>Line:</label>
+                    <input type="text">
+                </div>
+                <div class="field">
+                    <label>QTY:</label>
+                    <input type="text">
+                </div>
+                <div class="field">
+                    <label>Kilos:</label>
+                    <input type="text">
+                </div>
+                <div class="field">
+                    <label>Rolls:</label>
+                    <input type="text">
+                </div>
+                <div class="field">
+                    <label>Starting Scrap:</label>
+                    <input type="text">
+                </div>
+                <div class="field">
+                    <label>Exit Scrap:</label>
+                    <input type="text">
+                </div>
+                <div class="field">
+                    <label>Print Scrap:</label>
+                    <input type="text">
+                </div>
+                <div class="field">
+                    <label>Cutting Scrap:</label>
+                    <input type="text">
+                </div>
+            </div>
+
         </form>
     </div>
 
 </div>
-
-
 
 {% endblock %} {% block script %}
 <script type="text/javascript">
@@ -125,8 +238,4 @@
             prefix: '{{ formset.prefix }}'
         });
     })
-
 </script>
-
-
-{%endblock %}

@@ -1,266 +1,346 @@
-{% extends "sales_coordinator_page_ui.html" %}
+{% extends "sales_coordinator_page_ui.html" %} {% block content %}
+<div class="segment">
+    <div class="ui grid container" style="padding: 10px;">
 
-        {% block content %}
-        <!-- //////////////////////////////////////////////////////////////////////////// -->
-        <!-- START CONTENT -->
-        <section id="content">
-          <!--start container-->
-          <div class="container">
-            <!--card stats start-->
-            <div id="card-widgets">
-            	<div class="row">
-                	<div class="col s12">
-                  		<ul id="task-card" class="collection with-header">
-                    		<li class="collection-header teal accent-4">
-		                      	<a href=#>
-        	              	<h4 class="task-card-title"><i class="material-icons">event_note</i> Production Schedule</h4>
-            	          	</a>
-                	      	<p class="task-card-date">For the month of
-                      
-                    	  	<script type="text/javascript">
-                      		var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-                      		document.write(months[new Date().getMonth()]);
-	                      	</script>
-    	                  
-        	              	to
-            	          
-                	      	<script type="text/javascript">
-	            	          	var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    	    	              	document.write(months[new Date().getMonth()+1]);
-        	              	</script>
-                      
-                      		</p>
-                    	</li>
-                    	<li>
-                    		<table class="highlight centered">
-        						<thead>
-          							<tr>
-                                        <th>Job Order Number</th>
-                                        <th>Status</th>
+        <div class="ui relaxed grid">
+
+            <div class="four wide column">
+                <div class="ui container">
+                    <div class="segments" style="margin:10px;">
+                        <div class="ui green segment" style="text-align: center">
+                            <h3>Extrusion</h3>
+                        </div>
+                        <div class="ui segment" style="text-align: center">
+                            <div class="ui grid">
+                                <div class="sixteen wide column">
+                                    <div class="ui progress">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="label">Company A</div>
+                                    </div>
+                                </div>
+                                <div class="sixteen wide column">
+                                    <div class="ui progress">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="label">Company B</div>
+                                    </div>
+                                </div>
+                                <div class="sixteen wide column">
+                                    <div class="ui progress">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="label">Company C</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="four wide column">
+                <div class="ui container">
+                    <div class="segments" style="margin:10px;">
+                        <div class="ui green segment" style="text-align: center">
+                            <h3>Cutting</h3>
+                        </div>
+                        <div class="ui segment" style="text-align: center">
+                            <div class="ui grid">
+                                <div class="sixteen wide column">
+                                    <div class="ui progress">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="label">Company D</div>
+                                    </div>
+                                </div>
+                                <div class="sixteen wide column">
+                                    <div class="ui progress">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="label">Company E</div>
+                                    </div>
+                                </div>
+                                <div class="sixteen wide column">
+                                    <div class="ui progress">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="label">Company F</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="four wide column">
+                <div class="ui container">
+                    <div class="segments" style="margin:10px;">
+                        <div class="ui green segment" style="text-align: center">
+                            <h3>Printing and Laminating</h3>
+                        </div>
+                        <div class="ui segment" style="text-align: center">
+                            <div class="ui grid">
+                                <div class="sixteen wide column">
+                                    <div class="ui progress">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="label">Company A</div>
+                                    </div>
+                                </div>
+                                <div class="sixteen wide column">
+                                    <div class="ui progress">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="label">Company B</div>
+                                    </div>
+                                </div>
+                                <div class="sixteen wide column">
+                                    <div class="ui progress">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="label">Company C</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="four wide column">
+                <div class="ui container">
+                    <div class="segments" style="margin:10px;">
+                        <div class="ui green segment" style="text-align: center">
+                            <h3>Packing and Q/A</h3>
+                        </div>
+                        <div class="ui segment" style="text-align: center">
+                            <div class="ui grid">
+                                <div class="sixteen wide column">
+                                    <div class="ui progress">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="label">Company A</div>
+                                    </div>
+                                </div>
+                                <div class="sixteen wide column">
+                                    <div class="ui progress">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="label">Company B</div>
+                                    </div>
+                                </div>
+                                <div class="sixteen wide column">
+                                    <div class="ui progress">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="label">Company C</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="eight wide column">
+                <div class=" row ui container">
+                    <div class="segments" style="margin:10px;">
+                        <div class="ui green segment" style="text-align: center">
+                            <h3>
+                                Rush Orders:
+                            </h3>
+                            <table class="ui celled table center aligned">
+                                <thead>
+                                    <tr>
+                                        <th>Company</th>
+                                        <th>JO Number</th>
+                                        <th>Items</th>
+                                        <th>Due Date</th>
                                     </tr>
-        						</thead>
-                                
-								<tbody>
-          							<tr>
-                                        <td>1282085024</td>
+                                </thead>
+                                <tbody>
+                                    <tr>
                                         <td>
+                                            Company A
                                         </td>
-          							</tr>
-        						</tbody>
-      						</table>
-                    	</li>
-                  	</ul>
+                                        <td>
+                                            12345667890
+                                        </td>
+                                        <td>
+                                            - 100,000 Pcs. PET Bottle<br> - 100,000 Pcs. Sando bags SML
+                                        </td>
+                                        <td>
+                                            DD/MM/YYYY
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Company B
+                                        </td>
+                                        <td>
+                                            0987654321
+                                        </td>
+                                        <td>
+                                            - 200,000 Pcs. PET Bottle<br> - 100,000 Pcs. Sando bags SML
+                                        </td>
+                                        <td>
+                                            DD/MM/YYYY
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class=" row ui container">
+                    <div class="segments" style="margin:10px;">
+                        <div class="ui green segment" style="text-align: center">
+                            <h3>Forecasted Demand:</h3>
+
+                        </div>
+                    </div>
+                </div>
+                <div class=" row ui container">
+                    <div class="segments" style="margin:10px;">
+                        <div class="ui green segment" style="text-align: center">
+                            <h3>Inventory Status:</h3>
+                            <div class="row">
+                                <div class="sixteen wide column">
+                                    <div class="ui progress">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="label">Item A</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="sixteen wide column">
+                                    <div class="ui progress">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="label">Item B</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="sixteen wide column">
+                                    <div class="ui progress">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="label">Item C</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <!--card widgets end-->
-            
-            <!--work collections start-->
-            <div id="work-collections">
-              <div class="row">
-                <div class="col s12 m12 l6">
-                  <ul id="projects-collection" class="collection z-depth-1">
-                    <li class="collection-item avatar">
-                      <i class="material-icons cyan circle">edit</i>
-                      <h6 class="collection-header m-1"><a href=#>Purchase Order Status</a></h6>
-                    </li>
-                    <li class="collection-item">
-                		<div class="row">
-                			<div class="col s3">
-	                        	<p class="collections-title">Company</p>                				
-                			</div>
-	                		<div class="col s3">
-	                			<p class="collections-title">Item</p>
-	                		</div>
-		                	<div class="col s3">
-		                		<p class="collections-title">Amount</p>
-		                	</div>
-		                	<div class="col s3">
-		                		<p class="collections-title">Current Process</p>
-		                	</div>                            
-		                </div>
-                   </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s3">
-                          <p class="collections-content">McDonald's</p>
+            <div class="eight wide column">
+                <div class="row ui container">
+                    <div class="segments" style="margin:10px;">
+                        <div class="ui green segment" style="text-align: center">
+                            <h3>Gantt Chart:</h3>
+
+                            <div class="container">
+                                <div class="gantt-target"></div>
+                            </div>
+                            <script>
+                                var tasks = [{
+                                        start: '2018-10-01',
+                                        end: '2018-10-08',
+                                        name: 'Redesign website',
+                                        id: "Task 0",
+                                        progress: 20
+                                    },
+                                    {
+                                        start: '2018-10-03',
+                                        end: '2018-10-06',
+                                        name: 'Write new content',
+                                        id: "Task 1",
+                                        progress: 5,
+                                        dependencies: 'Task 0'
+                                    },
+                                    {
+                                        start: '2018-10-04',
+                                        end: '2018-10-08',
+                                        name: 'Apply new styles',
+                                        id: "Task 2",
+                                        progress: 10,
+                                        dependencies: 'Task 1'
+                                    },
+                                    {
+                                        start: '2018-10-08',
+                                        end: '2018-10-09',
+                                        name: 'Review',
+                                        id: "Task 3",
+                                        progress: 5,
+                                        dependencies: 'Task 2'
+                                    },
+                                    {
+                                        start: '2018-10-08',
+                                        end: '2018-10-10',
+                                        name: 'Deploy',
+                                        id: "Task 4",
+                                        progress: 0,
+                                        dependencies: 'Task 2'
+                                    },
+                                    {
+                                        start: '2018-10-11',
+                                        end: '2018-10-11',
+                                        name: 'Go Live!',
+                                        id: "Task 5",
+                                        progress: 0,
+                                        dependencies: 'Task 4',
+                                        custom_class: 'bar-milestone'
+                                    },
+                                ]
+                                var gantt_chart = new Gantt(".gantt-target", tasks, {
+                                    on_click: function(task) {
+                                        console.log(task);
+                                    },
+                                    on_date_change: function(task, start, end) {
+                                        console.log(task, start, end);
+                                    },
+                                    on_progress_change: function(task, progress) {
+                                        console.log(task, progress);
+                                    },
+                                    on_view_change: function(mode) {
+                                        console.log(mode);
+                                    }
+                                });
+                                console.log(gantt_chart);
+
+                            </script>
+
                         </div>
-                        <div class="col s3">
-                          <p class="collections-content">Item A</p>
-                        </div>
-                        <div class="col s3">
-                          <p class="collections-content">10 KG</p>
-                        </div>
-                        <div class="col s3">
-                          <p class="collections-content"><span class="task-cat red accent-4">Extrusion</span></p>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s3">
-                          <p class="collections-content">Zalora</p>
-                        </div>
-                        <div class="col s3">
-                          <p class="collections-content">Item B B</p>
-                        </div>
-                        <div class="col s3">
-                          <p class="collections-content">15 KG</p>
-                        </div>
-                        <div class="col s3">
-                          <p class="collections-content"><span class="task-cat red accent-4">Cutting</span></p>
-                        </div>
-                      </div>                    
-                    </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s3">
-                          <p class="collections-content">Lazada</p>
-                        </div>
-                        <div class="col s3">
-                          <p class="collections-content">Item C</p>
-                        </div>
-                        <div class="col s3">
-                          <p class="collections-content">14 KG</p>
-                        </div>
-                        <div class="col s3">
-                          <p class="collections-content"><span class="task-cat yellow accent-4">Printing</span></p>
-                        </div>
-                      </div>                                        
-                    </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s3">
-                          <p class="collections-content">Medical City</p>
-                        </div>
-                        <div class="col s3">
-                          <p class="collections-content">Item D</p>
-                        </div>
-                        <div class="col s3">
-                          <p class="collections-content">10 KG</p>
-                        </div>
-                        <div class="col s3">
-                          <p class="collections-content"><span class="task-cat green accent-4">Packaging and QA</span></p>
-                        </div>
-                      </div>                                        
-                	</li>
-                  </ul>
+                    </div>
                 </div>
-                <div class="col s12 m12 l6">
-                  <ul id="issues-collection" class="collection z-depth-1">
-                    <li class="collection-item avatar">
-                      <i class="material-icons red accent-2 circle">widgets</i>
-                        <h6 class="collection-header m-1"><a href=#>Client Notification</a></h6>
-                    </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s4">
-                          <p class="collections-title">McDonald's</p>
+                <div class="row ui container">
+                    <div class="segments" style="margin:10px;">
+                        <div class="ui green segment" style="text-align: center">
+                            <h3>Sales Forecast</h3>
+
                         </div>
-                        <div class="col s8 right-align">
-                            <a class="waves-effect waves-light btn #e65100 orange darken-4">Notify</a>
-                            <a class="waves-effect waves-light btn #1b5e20 green darken-4">Generate PO</a>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s4">
-                          <p class="collections-title">Medical City</p>
-                        </div>
-                        <div class="col s8 right-align">
-                            <a class="waves-effect waves-light btn #e65100 orange darken-4">Notify</a>
-                            <a class="waves-effect waves-light btn #1b5e20 green darken-4">Generate PO</a>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s4">
-                          <p class="collections-title">Lazada</p>
-                        </div>
-                        <div class="col s8 right-align">
-                            <a class="waves-effect waves-light btn #e65100 orange darken-4">Notify</a>
-                            <a class="waves-effect waves-light btn #1b5e20 green darken-4">Generate PO</a>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s4">
-                          <p class="collections-title">Zalora</p>
-                        </div>
-                        <div class="col s8 right-align">
-                            <a class="waves-effect waves-light btn #e65100 orange darken-4">Notify</a>
-                            <a class="waves-effect waves-light btn #1b5e20 green darken-4">Generate PO</a>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
+                    </div>
                 </div>
-                <div class="col s12">
-                  <ul id="issues-collection" class="collection z-depth-1">
-                    <li class="collection-item avatar">
-                      <i class="material-icons red accent-2 circle">widgets</i>
-                      <h6 class="collection-header m-1">Inventory Status</h6>
-                    </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s3">
-                          <p class="collections-title">ITEM A</p>
-                        </div>
-                        <div class="col s9">
-                          <div class="progress">
-                            <div class="determinate" style="width: 70%"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s3">
-                          <p class="collections-title">ITEM B</p>
-                        </div>
-                        <div class="col s9">
-                          <div class="progress">
-                            <div class="determinate" style="width: 40%"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s3">
-                          <p class="collections-title">ITEM C</p>
-                        </div>
-                        <div class="col s9">
-                          <div class="progress">
-                            <div class="determinate" style="width: 95%"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                    <li class="collection-item">
-                      <div class="row">
-                        <div class="col s3">
-                          <p class="collections-title">ITEM D</p>
-                        </div>
-                        <div class="col s9">
-                          <div class="progress">
-                            <div class="determinate" style="width: 10%"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
             </div>
-            <!--work collections end-->
-            
-            <!-- //////////////////////////////////////////////////////////////////////////// -->
-          </div>
-          <!--end container-->
         </div>
-    </section>
-        <!-- END CONTENT -->
-    {% endblock %}
+    </div>
+</div>
+
+{% endblock %}

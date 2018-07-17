@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, FormView
 from .models import ClientItem, ClientPO, ClientCreditStatus, Client, Product
 from django.shortcuts import render, redirect
 from .forms import ClientPOFormItems, ClientPOForm
@@ -8,17 +8,16 @@ from django.forms import formset_factory, inlineformset_factory
 
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse
+from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse, Http404
 from django.db.models import aggregates
 from production.models import JobOrder
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment
-from .forms import ClientPOForm, SupplierForm, Form
+from .forms import ClientPOForm, SupplierForm, ClientPaymentForm
+from django import forms
 import sys
 
 #Forecasting imports
-import numpy as np
-import plotly.graph_objs as go
-import plotly.offline as ply
+#import numpy as np
 #from math import sqrt
 #import pandas as pd
 # import pandas._libs.tslibs.timedeltas
@@ -135,43 +134,118 @@ class PODetailView(DetailView):
 
 
 # JO List/Detail view
-class JO_list(ListView):
+class JOListView(ListView):
     template_name = 'sales/JO_list.html'
     model = JobOrder
 
-    print(JobOrder.objects.all())
-
-class JO_details(DetailView):
+class JODetailView(DetailView):
     model = JobOrder
     template_name = 'sales/JO_details.html'
 
 
-'''
-#Example for simple modelforms(for testing)
-class POFormCreateView(FormView):
-    form_class = ClientPOForm
+# Invoice List/Detail View
+class InvoiceListView(ListView):
+    template_name = 'sales/sales_invoice_list.html'
+    model = SalesInvoice
 
-class POFormCreateView(CreateView):
-    model = ClientItem
-    template_name = 'sales/clientPO_form.html'
-    success_url = reverse_lazy('accounts:user-page-view')
 
-    def form_valid(self, form):
-        form.save()
-        return super(POFormCreateView, self).form_valid(form)
-'''
+def invoice_detail_view(request, pk, *args, **kwargs):
+
+    salesinvoice = SalesInvoice.objects.get(pk=pk)
+    form = ClientPaymentForm()
+    payments = ClientPayment.objects.filter(invoice_issued=salesinvoice)
+
+    try:
+        salesinvoice = SalesInvoice.objects.get(pk=pk)
+
+        client = Client.objects.get(id=salesinvoice.client_id)
+        credit_status = ClientCreditStatus.objects.get(client=client)
+        credit_status.save()
+        salesinvoice.save()
+
+        form = add_payment(request, pk)
+
+        salesinvoice = SalesInvoice.objects.get(pk=pk)
+
+        if salesinvoice.amount_due <= 0:
+            salesinvoice.status = "Closed"
+
+
+        payments = ClientPayment.objects.filter(invoice_issued=salesinvoice)
+
+        context = {'salesinvoice': salesinvoice,
+                   'form' : form,
+                   'payments' : payments}
+
+    except SalesInvoice.DoesNotExist:
+        raise Http404("Sales Invoice does not exist")
+
+    return render(request, 'sales/sales_invoice_details.html', context)
+
+
+def add_payment(request, pk, *args, **kwargs):
+    form = ClientPaymentForm()
+
+    #TODO Payment is recorded but changes (amount_due) are not reflected in invoice
+    #TODO Payment list is not rendering
+    if request.method == "POST":
+            form = ClientPaymentForm(request.POST)
+            form = form.save()
+
+            salesinvoice = SalesInvoice.objects.get(pk=pk)
+            client = Client.objects.get(id = salesinvoice.client_id)
+            credit_status = ClientCreditStatus.objects.get(client=client)
+
+            payment = ClientPayment.objects.get(id=form.pk)
+            payment.client = client
+            payment.invoice_issued = salesinvoice
+            payment.credit_status = credit_status
+
+            payment.old_balance = salesinvoice.amount_due
+            salesinvoice.amount_due -= payment.payment
+            salesinvoice.total_paid += payment.payment
+            payment.new_balance = payment.old_balance - payment.payment
+            salesinvoice.amount_due = payment.new_balance
+
+            salesinvoice.save()
+            payment.save()
+
+            form = ClientPaymentForm()
+    return form
+
+def payment_list_view(request):
+    client = Client.objects.get(id=request.session['session_userid'])
+    credits_status = ClientCreditStatus.objects.get(client = client)
+
+    context = {
+        'credit_status' : credits_status
+    }
+
+    return render(request, 'sales/client_payment_list.html', context)
+
+def payment_detail_view():
+    ...
 
 #SAMPLE DYNAMIC FORM
 def create_client_po(request):
     #note:instance should be an object
     clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=1, can_delete=True)
 
-
-
     if request.method == "POST":
+
         form = ClientPOForm(request.POST)
-        #Set ClientPO.client from session user
-        #form.fields['client'].initial = Client.objects.get(id = request.session['session_userid'])
+
+        #Get session user id
+        client_id = request.session['session_userid']
+        current_client = Client.objects.get(id=client_id)
+
+        '''
+        #check if client has  overdue balance
+        credit_status = ClientCreditStatus.objects.get(client_id = current_client)
+        if (credit_status.outstanding_balance < 0):
+            credit_status = 1
+        '''
+
         message = ""
         print(form)
         if form.is_valid():
@@ -180,14 +254,19 @@ def create_client_po(request):
             new_form = new_form.pk
             form_instance = ClientPO.objects.get(id=new_form)
 
+            # Set ClientPO.client from session user
+            form_instance.client = current_client
+            form_instance.save()
+
+            #TODO invoice should no be saved if PO is disapproved
+
             #Create JO object with ClientPO as a field
             jo = JobOrder(client_po = form_instance)
             jo.save()
 
-
             #Use PO form instance for PO items
             formset = clientpo_item_formset(request.POST, instance=form_instance)
-            print(formset)
+            #print(formset)
             if formset.is_valid():
                 for form in formset:
                     form.save()
@@ -198,6 +277,25 @@ def create_client_po(request):
                 totalled_clientpo = ClientPO.objects.get(id=new_form)
                 totalled_clientpo.total_amount = formset_item_total
                 totalled_clientpo.save()
+
+                # Create Invoice
+                invoice = SalesInvoice(client=current_client, client_po=form_instance, total_amount=formset_item_total, amount_due=0)
+                invoice.save()
+                invoice = invoice.pk
+                #TODO Invoice should not be issued unless JO is complete
+
+                invoice = SalesInvoice.objects.get(id=invoice)
+                invoice.amount_due = invoice.total_amount_computed
+                credit_status = ClientCreditStatus.objects.get(client_id = current_client)
+                outstanding_balance = credit_status.outstanding_balance
+                outstanding_balance += invoice.amount_due
+                credit_status.outstanding_balance = outstanding_balance
+
+                invoice.save()
+                credit_status.save()
+
+
+
                 message = "PO successfully created"
 
             else:
@@ -219,17 +317,6 @@ def create_client_po(request):
 
 
 
-'''
-class JOListView(generic.ListView):
-    model = JobOrder
-    all_JO = JobOrder.objects.all()
-    template_name = 'sales/JO_list.html'
-
-    for JobOrder in all_JO:
-        client_items = ClientItem.objects.filter(client_po_id=JobOrder.client_po.id)
-
-'''
-
 # RUSH ORDER CRUD
 def rush_order_list(request):
     rush_order = ClientPO.objects.filter() #modify! lead time input
@@ -239,49 +326,13 @@ def rush_order_list(request):
     return render (request, 'sales/rush_order_list.html', context)
 
 def rush_order_assessment(request):
-    rush_order = ClientPO.objects.filter(ClientPO.calculate_leadtime(ClientPO) <= 14)
-
+    rush_order = ClientPO.objects.filter() #modify! lead time input
     context = {
         'rush_order': rush_order
     }
     return render(request, 'sales/rush_order_assessment.html', context)
 
 
-	
-#SALES INVOICE CRUD
-def sales_invoice_list(request):
-    sales_invoice = SalesInvoice.objects.all()
-    context = {
-        'sales_invoice' : sales_invoice 
-    }
-    return render (request, 'sales/sales_invoice_list.html', context)
-
-def sales_invoice_details(request, id):
-    sales_invoice = SalesInvoice.objects.get(id=id)
-  
-    context = {
-        'sales_invoice' : sales_invoice,
-        'title' : sales_invoice.id,
-    }
-    return render(request, 'sales/sales_invoice_details.html', context)
-
-#CLIENT PAYMENT CRUD
-def client_credit_list(request):
-    client_credit = ClientCreditStatus.objects.all()
-    context = {
-        'client_credit' : client_credit
-    }
-    return render (request, 'sales/client_payment_monitoring_list.html', context)
-
-
-def client_credit_details(request, id):
-    client_credit = ClientPayment.objects.get(id=id)
-
-    context = {
-        'client_credit' : client_credit,
-        'title': client_credit.id
-    }
-    return render(request, 'sales/client_payment_monitoring_details.html', context)
 
 '''
 #Forecasting view
@@ -320,18 +371,4 @@ class Forecasting_Algo:
         ...
     def ARIMA(self):
         ...
-'''
-
-'''
-#SAMPLE DATA WITH PLOTLY
-ply.offline.plot({
-    "data": [go.Scatter(x=[1, 2, 3, 4], y=[4, 3, 2, 1])],
-    "layout": go.Layout(title="hello world")
-}, auto_open=True)
-
-# Create traces/data collection
-
-# Create info dictionary
-# Pack data
-# Plot
 '''

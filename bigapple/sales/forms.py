@@ -2,12 +2,10 @@
 from django import forms
 from django.forms import ModelForm, ValidationError, Form, widgets
 from production.models import JobOrder
-
-from .models import ClientItem, ClientPO, Product, Client
 from decimal import Decimal
 from django.contrib.admin.widgets import AdminDateWidget
 
-from .models import ClientItem, ClientPO, Product, Supplier
+from .models import ClientItem, ClientPO, Product, Supplier, ClientPayment
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -18,20 +16,42 @@ class ClientPOFormItems(ModelForm):
 
     class Meta:
         model = ClientItem
-        fields = ('products', 'width', 'length', 'gusset', 'color', 'quantity', 'laminate')
+        fields = ('products', 'material_type', 'width', 'length', 'gusset', 'color', 'quantity', 'laminate')
 
     def __init__(self, *args, **kwargs):
         super(ClientPOFormItems, self).__init__(*args, **kwargs)
         self.fields['products'].label = 'Product Type'
+        self.fields['products'].required = True
+        self.fields['material_type'].label = 'Material'
+        self.fields['material_type'].required = True
+        self.fields['width'].required = True
+        self.fields['length'].required = True
+        self.fields['gusset'].required = True
+        self.fields['color'].required = True
+        self.fields['quantity'].required = True
 
 
 class ClientPOForm(ModelForm):
 
     class Meta:
         model = ClientPO
-        fields = ('payment_terms', 'date_required', 'other_info')
+        fields = ('date_required', 'other_info')
         widgets = {
-            'date_required': DateInput(),
+            'date_required': DateInput()
+        }
+
+        def __init__(self, *args, **kwargs):
+            super(ClientPOForm, self).__init__(*args, **kwargs)
+            self.fields['date_required'].required = True
+            self.fields['other_info'].required = False
+
+class ClientPaymentForm(ModelForm):
+
+    class Meta:
+        model = ClientPayment
+        fields = ('payment', 'payment_date')
+        widgets = {
+            'payment_date': DateInput()
         }
 
 class SupplierForm(forms.ModelForm):

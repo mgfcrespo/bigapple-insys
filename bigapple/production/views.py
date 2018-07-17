@@ -12,13 +12,13 @@ from .models import SalesInvoice
 from ortools.constraint_solver import pywrapcp
 from datetime import timedelta
 
-'''
+
 import plotly
-plotly.offline.init_notebook_mode(connected=True)
 import plotly.offline as py
 import plotly.plotly as py
 import plotly.figure_factory as ff
-'''
+import plotly.graph_objs as go
+
 
 # Create your views here.
 def production_details(request):
@@ -206,6 +206,7 @@ def main():
     sol_line = ""
     sol_line_tasks = ""
     print("Optimal Schedule", "\n")
+    print("Job_i_j represents the jth task for job i", "\n")
 
     for i in all_machines:
       seq = all_sequences[i]
@@ -222,6 +223,8 @@ def main():
 
         '''
         ^ this code calls the solver and prints out the optimal schedule length and task order
+        
+        The optimal schedule is displayed for each machine, where Job_i_j represents the jth task for job i.
         '''
 
       for j in range(0, seq_size):
@@ -236,10 +239,13 @@ def main():
 
     print(sol_line_tasks)
     print("Time Intervals for Tasks\n")
+    print("Machine n: [start time,end time]\n")
     print(sol_line)
 
     '''
     ^ this code prints the scheduled time intervals for each task
+    
+    Machine n: [start time,end time]
     '''
 
 if __name__ == '__main__':
@@ -247,6 +253,14 @@ if __name__ == '__main__':
 
 
 def production_schedule(request):
+    '''
+    df = [dict(Task="Job A", Start='2009-01-01', Finish='2009-02-28'),
+        dict(Task="Job B", Start='2009-03-05', Finish='2009-04-15'),
+        dict(Task="Job C", Start='2009-02-20', Finish='2009-05-30')]
+
+    fig = ff.create_gantt(df)
+    py.iplot(fig, filename='gantt-simple-gantt-chart', world_readable=True)
+    '''
     main()
     context = {'': ''}
     render(request, 'production/production_schedule.html', context)

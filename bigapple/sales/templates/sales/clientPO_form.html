@@ -12,7 +12,10 @@
     </form>
 </div>
 
-
+<!--
+<button id = "view_receipt" class ="ui button">View Receipt</button>
+-->
+{% include "sales/confirm_po.html" %}
 
 {% endblock %} {% block script %}
 <script type="text/javascript">
@@ -24,5 +27,14 @@
 
 </script>
 
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#view_receipt").click(function(){
+        $('.ui.modal').modal('show');
+    });
+});
+</script>
+
 
 {%endblock %}
+
