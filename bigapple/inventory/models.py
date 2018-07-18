@@ -27,12 +27,11 @@ class Inventory(models.Model):
         ('PP', 'Polypropylene'),
         ('PET', 'Polyethylene terephthalate')
     )
-    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+
     item_name = models.CharField('item_name', max_length=200, default='not specified')
     item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='not specified')
     rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='not specified', null=True, blank=True)
     description = models.CharField('description', max_length=200)
-    price = models.DecimalField('price', decimal_places=2, max_digits=50)
     quantity = models.IntegerField('quantity')
 
     def itemtype(self): 
@@ -40,6 +39,27 @@ class Inventory(models.Model):
 
     def __str__(self):
         return self.item_name 
+
+class SupplierRawMaterials(models.Model):
+    RM_TYPES = (
+        ('--', '----------------'),
+        ('LDPE', 'Low-density polyethylene'),
+        ('LLDPE', 'Linear low-density polyethylene'),
+        ('HDPE', 'High-density polyethylene'),
+        ('PP', 'Polypropylene'),
+        ('PET', 'Polyethylene terephthalate')
+    )
+
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    price = models.DecimalField('price', decimal_places=2, max_digits=50)
+    rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='not specified', null=True,
+                               blank=True)
+
+class InventoryCountAsof(models.Model):
+    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
+    old_count = models.IntegerField('old_count', default=0)
+    new_count = models.IntegerField('new_count', default=0)
+    date_counted = models.DateField('date_counted', )
 
 
 class SupplierPO(models.Model):
@@ -122,11 +142,6 @@ class PurchaseRequisition(models.Model):
     approval = models.BooleanField('approval', default=False)
     
 
-class InventoryCountAsof(models.Model):
-    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
-    old_count = models.IntegerField('old_count', default=0)
-    new_count = models.IntegerField('new_count', default=0)
-    date_counted = models.DateField('date_counted', )
 
 
 # class CurrentRMinProduction(models.Model):

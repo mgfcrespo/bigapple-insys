@@ -35,7 +35,7 @@ class InventoryForm(forms.ModelForm):
 
     class Meta:
         model = Inventory
-        fields = ('supplier', 'item_name', 'item_type', 'rm_type', 'description', 'price', 'quantity')
+        fields = ('item_name', 'item_type', 'rm_type', 'description', 'quantity')
 
 
 class SupplierPOForm(ModelForm):
