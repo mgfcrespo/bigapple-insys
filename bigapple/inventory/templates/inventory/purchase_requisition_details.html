@@ -1,0 +1,50 @@
+{% extends 'production_manager_page_ui.html' %}
+
+{% block content %}
+
+<div class = "ui centered grid">
+    <div class="six wide tablet ten wide computer column">
+        <form class="ui form segment" action = "#" method="POST" role="form">
+            <h2 class="ui header">{{ title }}</h2>
+            {% csrf_token %}
+            <div class="two fields">
+                <div class = "field">
+                    <label for="">Date Issued</label>
+                    <span>{{ pr.date_issued }}</span>
+                </div>
+                <div class = "field">
+                    <label for="">Date Required:</label>
+                    <span>{{ pr.date_required }}</span>
+                </div>
+            </div>
+            <div class="two fields">
+                <div class = "field">
+                    <label for="">Place By:</label>
+                    <span>{{ pr.placed_by }}</span>
+                </div>
+                <div class = "field">
+                    <label for="">Status:</label>
+                    <span>{{ pr.approval }}</span>
+                </div>
+            </div>
+            <table class="ui table">
+                <thead>
+                    <th class="eight wide">Item</th>
+                    <th class="eight wide">Quantity</th>
+                </thead>
+                <tbody>
+                    {% for pri in pri %}
+                    <tr>
+                        <td>{{ pri.item }}</td>
+                        <td>{{ pri.quantity }}</td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+        <a href="{% url 'inventory:purchase_requisition_list'%}">Back</a>
+    </div>
+</div>
+
+{% endblock %}

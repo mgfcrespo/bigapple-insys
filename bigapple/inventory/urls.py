@@ -14,6 +14,10 @@ urlpatterns = [
     path('materials_requisition_form/', views.materials_requisition_form, name='materials_requisition_form'),
     path('materials_requisition_list/', views.materials_requisition_list, name='materials_requisition_list'),
     path('materials_requisition_details/<int:id>/', views.materials_requisition_details, name='materials_requisition_details'),
+	#material requisition
+    path('purchase_requisition_form/', views.purchase_requisition_form, name='purchase_requisition_form'),
+    path('purchase_requisition_list/', views.purchase_requisition_list, name='purchase_requisition_list'),
+    path('purchase_requisition_details/<int:id>/', views.purchase_requisition_details, name='purchase_requisition_details'),
     #SupplierPO
     path('supplierPO_form/', views.supplierPO_form, name='supplierPO_form'),
 ];

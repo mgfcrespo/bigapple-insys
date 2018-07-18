@@ -1,7 +1,8 @@
 from django import forms
 from django.forms import ModelForm, ValidationError, Form, widgets
 from django.contrib.admin.widgets import AdminDateWidget
-from .models import Supplier, SupplierPO, SupplierPOItems, MaterialRequisition, Inventory, MaterialRequisitionItems
+from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, MaterialRequisitionItems
+from .models import PurchaseRequisition, PurchaseRequisitionItems, MaterialRequisition, MaterialRequisitionItems
 from datetime import date, datetime
 from django.forms.formsets import BaseFormSet
 
@@ -82,6 +83,21 @@ class MaterialRequisitionItemsForm(forms.ModelForm):
         fields = ('brand', 'quantity', 'to_be_used_for')
 
         brand = forms.ModelChoiceField(queryset=Inventory.objects.all())
+		
+class PurchaseRequisitionForm(forms.ModelForm):
+
+    class Meta:
+        model = PurchaseRequisition
+        fields = ('placed_by', 'date_required')
+
+
+class PurchaseRequisitionItemsForm(forms.ModelForm):
+
+    class Meta:
+        model = PurchaseRequisitionItems
+        fields = ('item', 'quantity')
+
+        item = forms.ModelChoiceField(queryset=Inventory.objects.all())
 
 class BaseMRFormSet(BaseFormSet):
     def clean(self):

@@ -116,11 +116,17 @@ class PurchaseRequisition(models.Model):
     placed_by = models.ForeignKey(Employee, on_delete = models.CASCADE, null=True)
     date_issued = models.DateField('date_issued', auto_now_add=True)
     date_required = models.DateField('date_required')
-    # supplier may not be specified on request-- supplier = models.ForeignKey(Supplier, on_delete = models.CASCADE)
-    description = models.CharField('description', max_length=200)
-    quantity = models.IntegerField('quantity')
     approval = models.BooleanField('approval', default=False)
+
+    def __str__(self):
+        lead_zero = str(self.id).zfill(5)
+        control_number = '#%s' % (lead_zero)
+        return control_number
     
+class PurchaseRequisitionItems(models.Model):
+    purchreq = models.ForeignKey(PurchaseRequisition, on_delete=models.CASCADE)
+    item = models.ForeignKey(Inventory, on_delete=models.CASCADE)
+    quantity = models.IntegerField('quantity')
 
 class InventoryCountAsof(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)

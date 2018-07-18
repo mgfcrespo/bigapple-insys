@@ -1,0 +1,47 @@
+{% extends 'production_manager_page_ui.html' %}
+
+{% block content %}
+
+  <h4 class="ui header">{{ title }}</h4>
+          
+    
+  <div class="ui container">
+      <form id="myForm"  data-url="{% url 'inventory:purchase_requisition_form' %}" method="post" enctype="multipart/form-data">
+
+              {% csrf_token %}
+              {% csrf_token %} {% include 'inventory/template_form.html' %}
+              {% include 'inventory/template_formset.html' %}
+
+          {{formset.management_form}}
+          <button type="submit" class ="btn btn-success">Submit</button>
+      </form>
+  </div>
+
+  <button id='btn'>click</button>
+
+
+{% endblock %}
+
+{% block script %}
+
+    <script>
+        $( document ).ready(function() {
+            $(function() {
+                $('#myForm .formset_class').formset({
+                    prefix: '{{ formset.prefix }}'
+                });            
+            })
+           
+            $("#btn").click(function() {
+            alert('clicked');
+            });      
+            
+            $("#supplier").change(function() {
+                $(this).getJSON("/method", {"selectValue":$(this).val()}, function() {
+                   alert("value received!");
+                });
+            });
+        });
+    </script>
+
+{%endblock %}

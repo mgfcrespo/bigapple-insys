@@ -1,0 +1,32 @@
+{% extends 'production_manager_page_ui.html' %}
+
+  {% block content %}
+
+	<div class="ui container">
+		<table class="ui striped table">
+        	<thead>
+          	<tr class = "row">
+                <th>Control Number</th>
+                <th>Date Issued</th>
+				<th>Date Required</th>
+				<th>Placed By</th>
+                <th>Status</th>
+          	</tr>
+    		</thead>
+    		<tbody>
+				{% for pr in pr %}
+    			<tr class = "row">
+                    <td> 
+                        <a href="{% url 'inventory:purchase_requisition_details' pr.id %}">{{ pr }}</a>
+                    </td>
+                    <td>{{ pr.date_issued }}</td>
+					<td>{{ pr.date_required }}</td>
+					<td>{{ pr.placed_by }}</td>
+                    <td>{{ pr.approval }}</td>
+    			</tr>
+				{% endfor %}
+			</tbody>
+    	</table>
+	</div>
+
+{% endblock %}
