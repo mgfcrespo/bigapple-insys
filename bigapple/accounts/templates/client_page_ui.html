@@ -1,6 +1,4 @@
- {% extends "global_base_ui.html" %}
-
- {% block left_sidebar %}
+ {% extends "global_base_ui.html" %} {% block left_sidebar %}
 <a href="{% url 'sales:create-client-po-form' %}" class="item">
     <i class="file alternate icon"></i>
     Create Purchase Order
@@ -11,11 +9,7 @@
     Review Purchase Orders
 </a>
 
- <a href="{% url 'sales:client_payment_list' %}" class="item">
+<a href="{% url 'sales:client_payment_list' %}" class="item">
     <i class="file alternate icon"></i>
-    Payments and Credit Status
-</a>
-{% endblock %}
-
- {% block content %}
- {% endblock %}
+    Statement of Accounts
+</a> {% endblock %} {% block content %} {% endblock %}
