@@ -76,7 +76,23 @@ def materials_requisition_details(request, id):
     }
     return render(request, 'inventory/materials_requisition_details.html', context)
 
-# Mat req
+def materials_requisition_approval(request, id):
+    mr = MaterialRequisition.objects.get(id=id)
+    
+    #def clean(self):
+    if request.POST:
+        if 'approve' in request.POST:
+            mr.approval = True
+            mr.status = "approved"
+            mr.save()
+            return redirect('inventory:materials_requisition_list')
+        
+        elif 'decline' in request.POST:
+            mr.approval = False
+            mr.status = "declined"
+            mr.save()
+            return redirect('inventory:materials_requisition_list')
+			
 def materials_requisition_form(request):
        #note:instance should be an object
     matreq_item_formset = inlineformset_factory(MaterialRequisition, MaterialRequisitionItems, form=MaterialRequisitionItemsForm, extra=1, can_delete=True)
@@ -143,6 +159,23 @@ def purchase_requisition_details(request, id):
     }
     return render(request, 'inventory/purchase_requisition_details.html', context)
 
+def purchase_requisition_approval(request, id):
+    pr = PurchaseRequisition.objects.get(id=id)
+    
+    #def clean(self):
+    if request.POST:
+        if 'approve' in request.POST:
+            pr.approval = True
+            pr.status = "approved"
+            pr.save()
+            return redirect('inventory:purchase_requisition_list')
+        
+        elif 'decline' in request.POST:
+            pr.approval = False
+            pr.status = "declined"
+            pr.save()
+            return redirect('inventory:purchase_requisition_list')
+	
 def purchase_requisition_form(request):
     #note:instance should be an object
     purchreq_item_formset = inlineformset_factory(PurchaseRequisition, PurchaseRequisitionItems, form=PurchaseRequisitionItemsForm, extra=1, can_delete=True)

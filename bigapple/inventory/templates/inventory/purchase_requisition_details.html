@@ -4,7 +4,7 @@
 
 <div class = "ui centered grid">
     <div class="six wide tablet ten wide computer column">
-        <form class="ui form segment" action = "#" method="POST" role="form">
+        <form class="ui form segment" action = "{% url 'inventory:materials_requisition_approval' pr.id%}" method="POST" role="form">
             <h2 class="ui header">{{ title }}</h2>
             {% csrf_token %}
             <div class="two fields">
@@ -24,7 +24,7 @@
                 </div>
                 <div class = "field">
                     <label for="">Status:</label>
-                    <span>{{ pr.approval }}</span>
+                    <span>{{ pr.status }}</span>
                 </div>
             </div>
             <table class="ui table">
@@ -42,6 +42,10 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <div class = "ui centered grid" style = "padding:10px;">
+                    <input class ="ui positive basic button" style = "margin:5px;" type ="submit" value="Approve" name = "approve">
+                    <input class ="ui negative basic button" style = "margin:5px;" type ="submit" value = "Decline" name = "decline">
+            </div>
         </form>
         <a href="{% url 'inventory:purchase_requisition_list'%}">Back</a>
     </div>

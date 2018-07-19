@@ -43,8 +43,9 @@ class SupplierPOForm(ModelForm):
 
     class Meta:
         model = SupplierPO
-        fields = ('supplier', 'total_amount', 'delivery_date')
-
+        fields = ('supplier', 'delivery_date')
+		
+		delivery_date = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'YYYY-MM-DD'}))
         supplier = forms.CharField(max_length=200, label = 'supplier', widget = forms.Select(attrs={'id':'supplier'}))
         
 class SupplierPOItemsForm(ModelForm):

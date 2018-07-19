@@ -3,10 +3,10 @@
 {% block content %}
 
 <div class = "ui centered grid">
-    <div class="six wide tablet eight wide computer column">
-        <form class="ui form segment" action = "#" method="POST" role="form">
-            <h2 class="ui header">{{ title }}</h2>
+    <div class="six wide tablet ten wide computer column">
+        <form class="ui form segment" action = "{% url 'inventory:materials_requisition_approval' mr.id%}" method="POST" role="form">
             {% csrf_token %}
+            <h2 class="ui header">{{ title }}</h2>
             <div class="two fields">
                 <div class = "field">
                     <label for="">Date Issued</label>
@@ -14,7 +14,7 @@
                 </div>
                 <div class = "field">
                     <label for="">Status:</label>
-                    <span>{{ mr.approval }}</span>
+                    <span>{{ mr.status }}</span>
                 </div>
             </div>
             <div class="two fields">
@@ -43,6 +43,10 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <div class = "ui centered grid" style = "padding:10px;">
+                    <input class ="ui positive basic button" style = "margin:5px;" type ="submit" value="Approve" name = "approve">
+                    <input class ="ui negative basic button" style = "margin:5px;" type ="submit" value = "Decline" name = "decline">
+            </div>
         </form>
         <a href="{% url 'inventory:materials_requisition_list'%}">Back</a>
     </div>
