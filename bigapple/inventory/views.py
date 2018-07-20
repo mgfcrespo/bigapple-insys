@@ -1,14 +1,13 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory, inlineformset_factory
 from django.db.models import aggregates
 
-from .models import Supplier, SupplierPO, SupplierPOItems, Inventory
+from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, SupplierRawMaterials, InventoryCountAsof
 from .models import MaterialRequisition, MaterialRequisitionItems, PurchaseRequisition, PurchaseRequisitionItems
-from .forms import SupplierPOItemsForm, InventoryForm, SupplierPOForm
+from .forms import SupplierPOItemsForm, InventoryForm, SupplierPOForm, SupplierRawMaterialsForm, InventoryCountAsofForm
 from .forms import MaterialRequisitionForm, MaterialRequisitionItemsForm, PurchaseRequisitionForm, PurchaseRequisitionItemsForm
-
 
 # Create your views here.
 # Inventory
@@ -16,7 +15,6 @@ def inventory_item_add(request):
     form = InventoryForm(request.POST)
     supplier = Supplier.objects.all()
     if request.method == 'POST':
-        HttpResponse(print(form.errors))
         if form.is_valid():
             form.save()
             return redirect('inventory:inventory_item_list')
@@ -24,7 +22,7 @@ def inventory_item_add(request):
     context = {
         'supplier' : supplier,
         'form' : form,
-        'title': 'Add Supplier Item',
+        'title': 'Add Inventroy Item',
         'actiontype': 'Submit'
     }
 
@@ -48,7 +46,7 @@ def inventory_item_edit(request, id):
     context = {
         'form' : form,
         'items' : items,
-        'title' : "Edit Supplier Item",
+        'title' : "Edit Inventory Item",
         'actiontype' : "Submit",
     }
     return render(request, 'inventory/inventory_item_add.html', context)
@@ -58,10 +56,87 @@ def inventory_item_delete(request, id):
     items.delete()
     return HttpResponseRedirect('../../inventory_item_list')
 
+# Inventory Count
+def inventory_count_form(request):
+    form = InventoryCountAsofForm(request.POST)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            inventory = request.POST.get("inventory")
+            print(inventory)
+            if InventoryCountAsof.objects.filter(id=inventory).exists():
+                form.old_count = request.POST.get("new_count")
+            
+            form.save()
+            return redirect('inventory:inventory_count_list')
+
+    context = {
+        'form' : form,
+        'title': 'Inventory Count',
+        'actiontype': 'Submit'
+    }
+
+    return render(request, 'inventory/inventory_count_form.html', context)
+
+def inventory_count_list(request):
+    items = InventoryCountAsof.objects.all()
+    context = {
+        'title': 'Inventory Physical Count',
+        'items' : items 
+    }
+    return render (request, 'inventory/inventory_count_list.html', context)
+
+# Supplier Raw Material
+
+def supplier_rawmat_list(request):
+    items = SupplierRawMaterials.objects.all()
+    context = {
+        'title': 'List of Supplier Raw Material',
+        'items' : items 
+    }
+    return render (request, 'inventory/supplier_rawmat_list.html', context)
+
+def supplier_rawmat_add(request):
+    form = SupplierRawMaterialsForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('../supplier_rawmat_list')
+
+    context = {
+        'form' : form,
+        'title': 'Add Supplier Raw Material',
+        'actiontype': 'Submit'
+    }
+
+    return render(request, 'inventory/supplier_rawmat_add.html', context)
+
+def supplier_rawmat_edit(request, id):
+    items = SupplierRawMaterials.objects.get(id=id)
+    form = SupplierRawMaterialsForm(request.POST or None, instance=items)
+
+    if form.is_valid():
+        form.save()
+        return HttpResponseRedirect('../../supplier_rawmat_list')
+    
+    context = {
+        'form' : form,
+        'items' : items,
+        'title' : "Edit Raw Material Item",
+        'actiontype' : "Submit",
+    }
+    return render(request, 'inventory/supplier_rawmat_add.html', context)
+
+def supplier_rawmat_delete(request, id):
+    items = SupplierRawMaterials.objects.get(id=id)
+    items.delete()
+    return HttpResponseRedirect('../../supplier_rawmat_list')
+
 # Material Requisition
 def materials_requisition_list(request):
     mr = MaterialRequisition.objects.all()
     context = {
+        'title' :'Purchase Requisition List',
         'mr' : mr 
     }
     return render (request, 'inventory/materials_requisition_list.html', context)
@@ -77,24 +152,34 @@ def materials_requisition_details(request, id):
     return render(request, 'inventory/materials_requisition_details.html', context)
 
 def materials_requisition_approval(request, id):
-    mr = MaterialRequisition.objects.get(id=id)
-    
+    mr = MaterialRequisition.objects.get(id=id) #get id of matreq
+    mri = MaterialRequisitionItems.objects.filter(matreq=mr) #get all items in matreq
+
     #def clean(self):
     if request.POST:
         if 'approve' in request.POST:
-            mr.approval = True
-            mr.status = "approved"
-            mr.save()
-            return redirect('inventory:materials_requisition_list')
+            for mri in mri:
+                items = Inventory.objects.get(id=mri.brand.id) #get items in inventory that is in matreq
+                if Inventory.objects.filter(id=mri.brand.id).exists():
+                    if Inventory.objects.filter(quantity__gte=mri.quantity):
+                        items.quantity = (items.quantity-mri.quantity)
+                        mr.approval = True
+                        mr.status = "approved"
+                        mr.save()
+                        items.save()
+                        return redirect('inventory:materials_requisition_list')
+                    else:
+                        # TODO
+                        # should render error message
+                        messages = "Insufficient Inventory Quantity!"
+                        return redirect('inventory:materials_requisition_details', id = mr.id)
+                else:
+                    message = 'Insufficient Inventory Quantity'
+                    return redirect('inventory:materials_requisition_details', id = mr.id)
         
-        elif 'decline' in request.POST:
-            mr.approval = False
-            mr.status = "declined"
-            mr.save()
-            return redirect('inventory:materials_requisition_list')
-			
+
 def materials_requisition_form(request):
-       #note:instance should be an object
+    #note:instance should be an object
     matreq_item_formset = inlineformset_factory(MaterialRequisition, MaterialRequisitionItems, form=MaterialRequisitionItemsForm, extra=1, can_delete=True)
 
     if request.method == "POST":
@@ -131,20 +216,20 @@ def materials_requisition_form(request):
             message = "Form is not valid"
 
 
-        #todo change index.html. page should be redirected after successful submission
-        return render(request, 'index.html',
-                              {'message': message}
-                              )
+        return redirect('inventory:materials_requisition_list')
+    
     else:
         return render(request, 'inventory/materials_requisition_form.html',
                               {'formset':matreq_item_formset(),
                                'form': MaterialRequisitionForm}
                               )
+    return redirect('inventory:materials_requisition_list')
 
-							  #Purchase Requisition
+#Purchase Requisition
 def purchase_requisition_list(request):
     pr = PurchaseRequisition.objects.all()
     context = {
+        'title' :'Purchase Requisition List',
         'pr' : pr 
     }
     return render (request, 'inventory/purchase_requisition_list.html', context)
@@ -175,7 +260,7 @@ def purchase_requisition_approval(request, id):
             pr.status = "declined"
             pr.save()
             return redirect('inventory:purchase_requisition_list')
-	
+
 def purchase_requisition_form(request):
     #note:instance should be an object
     purchreq_item_formset = inlineformset_factory(PurchaseRequisition, PurchaseRequisitionItems, form=PurchaseRequisitionItemsForm, extra=1, can_delete=True)
@@ -215,15 +300,15 @@ def purchase_requisition_form(request):
 
 
         #todo change index.html. page should be redirected after successful submission
-        return render(request, 'index.html',
-                              {'message': message}
-                              )
+        return redirect('inventory:purchase_requisition_list')
+
     else:
         return render(request, 'inventory/purchase_requisition_form.html',
                               {'formset':purchreq_item_formset(),
                                'form': PurchaseRequisitionForm}
                               )
-							  
+
+
 # Supplier PO
 
 def supplierPO_form(request):
@@ -273,3 +358,26 @@ def supplierPO_form(request):
                               {'formset':supplierpo_item_formset(),
                                'form': SupplierPOForm}
                               )
+
+def supplierPO_list(request):
+    mr = SupplierPO.objects.all()
+    context = {
+        'title' :'Supplier PO List',
+        'mr' : mr,
+    }
+    return render (request, 'inventory/supplierPO_list.html', context)
+
+def supplierPO_details(request, id):
+    mr = SupplierPO.objects.get(id=id)
+    mri = SupplierPOItems.objects.filter(supplier_po=mr)
+    context = {
+        'mr' : mr,
+        'title' : mr,
+        'mri' : mri,
+    }
+    return render(request, 'inventory/supplierPO_details.html', context)
+
+def load_items(request):
+    supplier_po = request.GET.get('supplier_po')
+    items = Inventory.objects.filter(supplier_id=id).order_by('item_name')
+    return render(request, 'inventory/dropdown_supplier_item.html', {'items': items})

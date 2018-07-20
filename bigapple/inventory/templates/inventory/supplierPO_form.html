@@ -5,7 +5,7 @@
     <h2>Create SupplierPO Form</h2>
 
     <div class="ui container">
-        <form id="myForm"  data-url="{% url 'inventory:supplierPO_form' %}" method="post" enctype="multipart/form-data">
+        <form id="myForm"  data-items-url="{% url 'ajax_load_items' %}" method="post" enctype="multipart/form-data" novalidate>
 
                 {% csrf_token %}
                 {% include 'inventory/template_form.html' %}
@@ -29,6 +29,28 @@
                     prefix: '{{ formset.prefix }}'
                 });            
             })
+
+           $( "#btn" ).click(function() {
+                alert( "Handler for .click() called." );
+            });
+
+            $('select').on('change', function() {
+                alert( this.value );
+
+                var url = $("#myForm").attr("data-items-url");
+                var itemsId = $(this).val();
+
+                $.ajax({
+                    url: url,
+                    data: {
+                    'items': itemsId
+                    },
+                    success: function (data) {
+                    $("#id_items").html(data);
+                    }
+                });
+            });
+        
         });
     </script>
 

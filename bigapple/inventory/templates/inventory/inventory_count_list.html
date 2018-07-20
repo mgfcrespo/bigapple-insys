@@ -1,0 +1,29 @@
+{% extends 'production_manager_page_ui.html' %}
+
+  {% block content %}
+
+	<div class="ui container">
+		<h4 class="ui header">{{ title }}</h4>
+		<table class="ui striped table">
+        	<thead>
+          	<tr class = "row">
+                <th>Date Counted</th>
+                <th>Inventory</th>
+                <th>Old Count </th>
+				<th>New Count</th>
+          	</tr>
+    		</thead>
+    		<tbody>
+				{% for items in items %}
+    			<tr class = "row">
+                    <td>{{ items.date_counted }}</td>
+					<td>{{ items.inventory }}</td>
+					<td>{{ items.old_count }}</td>
+                    <td>{{ items.new_count }}</td>
+    			</tr>
+				{% endfor %}
+			</tbody>
+    	</table>
+	</div>
+
+{% endblock %}

@@ -7,14 +7,10 @@
         <h2 class="ui dividing header">{{ title }}</h2>
         {% csrf_token %}
         <div class="field">
-            <label>Supplier</label>
-            {{ form.supplier }}
+            <label>Item</label>
+            {{ form.item_name }}
         </div>
         <div class="fields">
-            <div class="field">
-                <label>Item</label>
-                {{ form.item_name }}
-            </div>
             <div class="field">
                 <label>Type</label>
                 {{ form.item_type }}
@@ -26,20 +22,14 @@
             <div class="ui left pointing label">
                 For Raw Materials Only
             </div>
-        </div>
-        <div class="field">
-            <label>Description</label>
-            {{ form.description }}
-        </div>
-        <div class="fields">
-            <div class="field">
-                <label>Price</label>
-                {{ form.price }}
-            </div>
             <div class="field">
                 <label>Quantity</label>
                 {{ form.quantity }}
             </div>
+        </div>
+        <div class="field">
+            <label>Description</label>
+            {{ form.description }}
         </div>
         <button class="ui basic green button" type="submit">Submit</button>
     </form>
