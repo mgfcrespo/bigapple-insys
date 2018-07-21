@@ -1,23 +1,23 @@
 from __future__ import print_function
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
-from .models import Machine
-from .models import WorkerSchedule
-from .models import SalesInvoice
 
+from .models import Machine, WorkerSchedule, SalesInvoice, Employee
+from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule
+from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm
 
 #scheduling import
 # Import Python wrapper for or-tools constraint solver.
-from ortools.constraint_solver import pywrapcp
+#from ortools.constraint_solver import pywrapcp
 from datetime import timedelta
 
 
-import plotly
-import plotly.offline as py
-import plotly.plotly as py
-import plotly.figure_factory as ff
-import plotly.graph_objs as go
+# import plotly
+# import plotly.offline as py
+# import plotly.plotly as py
+# import plotly.figure_factory as ff
+# import plotly.graph_objs as go
 
 
 # Create your views here.
@@ -264,3 +264,95 @@ def production_schedule(request):
     main()
     context = {'': ''}
     render(request, 'production/production_schedule.html', context)
+
+def job_order_list(request):
+    data = JobOrder.objects.all()
+    context = {
+        'title': 'Job Order List',
+        'data' : data,
+    }
+    return render (request, 'production/job_order_list.html', context)
+
+def job_order_details(request, id):
+    data = JobOrder.objects.get(id=id)
+    extrusion = ExtruderSchedule.objects.filter(job_order=data.id).order_by('date', 'time_out')
+    printing = PrintingSchedule.objects.filter(job_order=data.id).order_by('date', 'time_out')
+    cutting = CuttingSchedule.objects.filter(job_order=data.id).order_by('date', 'time_out')
+    
+    context = {
+      'title' : data.job_order,
+      'data': data,
+      'extrusion': extrusion,
+      'printing': printing,
+      'cutting': cutting,
+    }
+    return render(request, 'production/job_order_details.html', context)
+
+# EXTRUDER 
+def add_extruder_schedule(request, id):
+    data = JobOrder.objects.get(id=id)
+    form = ExtruderScheduleForm(request.POST or None)
+    print(form.errors)
+    if request.method == 'POST':
+      if form.is_valid():
+        form.save()
+        return redirect('production:job_order_details', id = data.id)
+
+    form.fields["machine"].queryset = Machine.objects.filter(machine_type='Extruder')
+    form.fields["operator"].queryset = Employee.objects.filter(position='Extruder')
+    form.fields["job_order"].queryset = JobOrder.objects.filter(id=data.id)
+    form.fields["job_order"].initial = data.id
+    
+    context = {
+      'data': data,
+      'title' : data.job_order,
+      'form': form,
+    }
+    
+    return render (request, 'production/add_extruder_schedule.html', context)
+
+# PRINTING
+def add_printing_schedule(request, id):
+    data = JobOrder.objects.get(id=id)
+    form = PrintingScheduleForm(request.POST or None)
+    print(form.errors)
+    if request.method == 'POST':
+      if form.is_valid():
+        form.save()
+        return redirect('production:job_order_details', id = data.id)
+
+    form.fields["machine"].queryset = Machine.objects.filter(machine_type='Printing')
+    form.fields["operator"].queryset = Employee.objects.filter(position='Printing')
+    form.fields["job_order"].queryset = JobOrder.objects.filter(id=data.id)
+    form.fields["job_order"].initial = data.id
+    
+    context = {
+      'data': data,
+      'title' : data.job_order,
+      'form': form,
+    }
+    
+    return render (request, 'production/add_printing_schedule.html', context)
+
+    # PRINTING
+def add_cutting_schedule(request, id):
+    data = JobOrder.objects.get(id=id)
+    form = CuttingScheduleForm(request.POST or None)
+    print(form.errors)
+    if request.method == 'POST':
+      if form.is_valid():
+        form.save()
+        return redirect('production:job_order_details', id = data.id)
+
+    form.fields["machine"].queryset = Machine.objects.filter(machine_type='Cutting')
+    form.fields["operator"].queryset = Employee.objects.filter(position='Cutting')
+    form.fields["job_order"].queryset = JobOrder.objects.filter(id=data.id)
+    form.fields["job_order"].initial = data.id
+    
+    context = {
+      'data': data,
+      'title' : data.job_order,
+      'form': form,
+    }
+    
+    return render (request, 'production/add_cutting_schedule.html', context)

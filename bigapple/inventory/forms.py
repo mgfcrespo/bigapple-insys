@@ -57,15 +57,9 @@ class SupplierRawMaterialsForm(ModelForm):
 class InventoryCountAsofForm(ModelForm):
     class Meta:
         model = InventoryCountAsof
-        fields = ( 'inventory', 'new_count', 'date_counted')
+        fields = ( 'inventory', 'new_count')
 
         inventory = forms.ModelChoiceField(queryset=Inventory.objects.all())
-        old_count = forms.IntegerField(widget = forms.TextInput(attrs={'readonly':True}))
-        date_counted = forms.DateField(initial=date.today())
-
-    def __init__(self, *args, **kwargs):
-        super(InventoryCountAsofForm, self).__init__(*args, **kwargs)
-        self.fields['date_counted'].queryset = date.today()
 
 class SupplierPOForm(ModelForm):
 

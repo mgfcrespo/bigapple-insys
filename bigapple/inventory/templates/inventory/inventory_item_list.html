@@ -3,6 +3,7 @@
   {% block content %}
 
 	<div class = "ui container">
+		<h2 class="ui header">{{ title }}</h2>
 		<table class="ui stripped table">
         	<thead>
           	<tr class = "row">
@@ -15,7 +16,9 @@
     		<tbody>
 				{% for items in items %}
     			<tr class = "row">
-					<td>{{ items.item_name }}</td>
+					<td> 
+						<a href="{% url 'inventory:inventory_count_list' items.id %}">{{ items.item_name }}</a>
+					</td>
 					{% if items.item_type == 'Raw Materials' %}
                     	<td>{{ items.itemtype }}</td>
 					{% else %}

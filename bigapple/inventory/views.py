@@ -31,6 +31,7 @@ def inventory_item_add(request):
 def inventory_item_list(request):
     items = Inventory.objects.all()
     context = {
+        'title': 'Inventory List',
         'items' : items 
     }
     return render (request, 'inventory/inventory_item_list.html', context)
@@ -56,18 +57,34 @@ def inventory_item_delete(request, id):
     items.delete()
     return HttpResponseRedirect('../../inventory_item_list')
 
-# Inventory Count
+# Inventory Count TODO
 def inventory_count_form(request):
     form = InventoryCountAsofForm(request.POST)
 
     if request.method == 'POST':
+        print(form.errors)
         if form.is_valid():
-            inventory = request.POST.get("inventory")
-            print(inventory)
-            if InventoryCountAsof.objects.filter(id=inventory).exists():
-                form.old_count = request.POST.get("new_count")
-            
-            form.save()
+            i = request.POST.get('inventory')
+            item = InventoryCountAsof.objects.filter(inventory=i) #item previously counted
+            if item.exists():
+                counted = InventoryCountAsof.objects.filter(inventory=i).latest('date_counted')#get latest
+
+                new_form = form.save()
+                new_form = new_form.pk
+                form_instance = InventoryCountAsof.objects.get(id=new_form) #get current form
+
+                form_instance.old_count = counted.new_count
+                form_instance.save()
+
+                # print(form_instance.id)
+                # print(form_instance.old_count)
+                # print(form_instance.new_count)
+                
+                # print(counted.id)
+                # print(counted.new_count)
+
+            else:   
+                form.save()
             return redirect('inventory:inventory_count_list')
 
     context = {
@@ -78,10 +95,12 @@ def inventory_count_form(request):
 
     return render(request, 'inventory/inventory_count_form.html', context)
 
-def inventory_count_list(request):
-    items = InventoryCountAsof.objects.all()
+def inventory_count_list(request, id):
+    i = Inventory.objects.get(id=id)
+
+    items = InventoryCountAsof.objects.filter(inventory=id).order_by('date_counted')
     context = {
-        'title': 'Inventory Physical Count',
+        'title': i.item_name,
         'items' : items 
     }
     return render (request, 'inventory/inventory_count_list.html', context)
@@ -136,7 +155,7 @@ def supplier_rawmat_delete(request, id):
 def materials_requisition_list(request):
     mr = MaterialRequisition.objects.all()
     context = {
-        'title' :'Purchase Requisition List',
+        'title' :'Material Requisition List',
         'mr' : mr 
     }
     return render (request, 'inventory/materials_requisition_list.html', context)
