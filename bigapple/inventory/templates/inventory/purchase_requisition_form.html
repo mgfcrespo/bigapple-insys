@@ -6,7 +6,7 @@
           
     
   <div class="ui container">
-      <form id="myForm"  data-url="{% url 'inventory:materials_requisition_form' %}" method="post" enctype="multipart/form-data">
+      <form id="myForm"  data-url="{% url 'inventory:purchase_requisition_form' %}" method="post" enctype="multipart/form-data">
 
               {% csrf_token %}
               {% csrf_token %} {% include 'inventory/template_form.html' %}
@@ -16,7 +16,6 @@
           <button type="submit" class ="ui positive basic button">Submit</button>
       </form>
   </div>
-
 
 {% endblock %}
 

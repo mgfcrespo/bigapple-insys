@@ -1,235 +1,82 @@
-<h2>Printing Instruction</h2>
+{% extends 'general_manager_page_ui.html' %}
 
+{% block content %}
+
+<h2 class="ui header">Printing Schedule</h2>
+ 
 <div class="sixteen wide column">
-    <div class="ui form">
-
-        <form>
-            <div class="three fields">
-                <div class="field">
-                    <label>JO Number:</label>
-                    <input type="text" placeholder="JO Number">
-                </div>
-                <div class="field">
-                    <label>
-                                    Client Name:
-                                </label>
-                    <input type="text" placeholder="Client Name">
-                </div>
-                <div class="field">
-                    <label>
-                                    Print Name:
-                                </label>
-                    <input type="text" placeholder="Print Name">
-                </div>
-            </div>
-            <div class="three fields">
-                <div class="field">
-                    <label>PO Number:</label>
-                    <input type="text" placeholder="PO Number">
-                </div>
-                <div class="field">
-                    <label>
-                                    Reference Number:
-                                </label>
-                    <input type="text" placeholder="Reference Number">
-                </div>
-                <div class="field">
-                    <label>Agent:</label>
-                    <select class="ui dropdown">
-                                    <option value="">Agent</option>
-                                    <option value="1">Agent 1</option>
-                                    <option value="0">Agent 2</option>
-                                    <option value="0">Agent 3</option>
-                                    <option value="0">Agent 4</option>
-                                    <option value="0">Agent 5</option>
-                                </select>
-                </div>
-            </div>
-
-            <div class="five fields">
-                <div class="field">
-                    <label>Length:</label>
-                    <input type="text" placeholder="Length">
-                </div>
-                <div class="field">
-                    <label>Width:</label>
-                    <input type="text" placeholder="Width">
-                </div>
-                <div class="field">
-                    <label>Thickness:</label>
-                    <input type="text" placeholder="Thickness">
-                </div>
-                <div class="field">
-                    <label>Quantity:</label>
-                    <input type="text" placeholder="Quantity">
-                </div>
-                <div class="field">
-                    <label>Number of Rolls:</label>
-                    <input type="text" placeholder="Number of Rolls">
-                </div>
-            </div>
+    <div class="ui inverted segment">
+        <form class="ui inverted form" action = "#" method="POST" role="form">
+            {% csrf_token %}
             <div class="two fields">
                 <div class="field">
-                    <label>Handle:</label>
-                    <input type="text" placeholder="Client Name">
-                </div>
-                <div class="field">
-                    <label>
-                                    Quantity to Produce:
-                                </label>
-                    <input type="text" placeholder="Quantity">
-                </div>
-
-            </div>
-            <div class="four fields">
-                <div class="field">
-                    <label>Sealing:</label>
-                    <select class="ui dropdown">
-                                    <option value="">Sealing</option>
-                                    <option value="1">Sealing 1</option>
-                                    <option value="0">Sealing 2</option>
-                                    <option value="0">Sealing 3</option>
-                                    <option value="0">Sealing 4</option>
-                                    <option value="0">Sealing 5</option>
-                                </select>
-                </div>
-
-                <div class="field">
-                    <label>Item:</label>
-                    <select class="ui dropdown">
-                                    <option value="">Item</option>
-                                    <option value="1">Item 1</option>
-                                    <option value="0">Item 2</option>
-                                    <option value="0">Item 3</option>
-                                    <option value="0">Item 4</option>
-                                    <option value="0">Item 5</option>
-                                </select>
-                </div>
-
-                <div class="field">
-                    <label>Material:</label>
-                    <select class="ui dropdown">
-                                    <option value="">Material</option>
-                                    <option value="1">Material 1</option>
-                                    <option value="0">Material 2</option>
-                                    <option value="0">Material 3</option>
-                                    <option value="0">Material 4</option>
-                                    <option value="0">Material 5</option>
-                                </select>
-                </div>
-                <div class="field">
-                    <label>Pocket:</label>
-                    <select class="ui dropdown">
-                                    <option value="">Pocket</option>
-                                    <option value="1">Pocket 1</option>
-                                    <option value="0">Pocket 2</option>
-                                    <option value="0">Pocket 3</option>
-                                    <option value="0">Pocket 4</option>
-                                    <option value="0">Pocket 5</option>
-                                </select>
+                    <span>JO #:</span>
+                    {{ form.job_order }}
                 </div>
             </div>
-            <div class="three fields">
+              <div class="four fields">
                 <div class="field">
-                    <div class="ui radio checkbox">
-                        <input type="radio" name="order">
-                        <label>New</label>
-                    </div>
-                    <div class="ui radio checkbox">
-                        <input type="radio" name="order">
-                        <label>Repeat Order</label>
-                    </div>
+                    <span>Time In:</span>
+                    {{ form.time_in }}
                 </div>
                 <div class="field">
-                    <label>Correction:</label>
-                    <div class="ui radio checkbox">
-                        <input type="radio" name="correction">
-                        <label>Yes</label>
-                    </div>
-                    <div class="ui radio checkbox">
-                        <input type="radio" name="correction">
-                        <label>No</label>
-                    </div>
+                    <span>Day</span>
+                    {{ form.day }}
                 </div>
-                <div class="field">
-                    <label>Other Logo:</label>
-                    <div class="ui radio checkbox">
-                        <input type="radio" name="logo">
-                        <label>Yes</label>
-                    </div>
-                    <div class="ui radio checkbox">
-                        <input type="radio" name="logo">
-                        <label>No</label>
-                    </div>
-                </div>
-            </div>
-        </form>
-
-        <form class="ui inverted segment">
-            <div class="three fields">
                 <div class="field">
                     <label>Machine Number:</label>
-                    <select class="ui dropdown">
-                                    <option value="">Machine Number</option>
-                                    <option value="1">Machine Number 1</option>
-                                    <option value="0">Machine Number 2</option>
-                                    <option value="0">Machine Number 3</option>
-                                    <option value="0">Machine Number 4</option>
-                                    <option value="0">Machine Number 5</option>
-                                </select>
+                    {{ form.machine }}
                 </div>
                 <div class="field">
                     <label>Operator:</label>
-                    <select class="ui dropdown">
-                                    <option value="">Operator</option>
-                                    <option value="1">Operator 1</option>
-                                    <option value="0">Operator 2</option>
-                                    <option value="0">Operator 3</option>
-                                    <option value="0">Operator 4</option>
-                                    <option value="0">Operator 5</option>
-                                </select>
+                    {{ form.operator }}
                 </div>
                 <div class="field">
-                    <label>Date:</label>
-                    <input type="date">
+                    <label>Shift:</label>
+                    {{ form.shift }}
                 </div>
             </div>
+
             <div class="fields">
                 <div class="field">
                     <label>No. of Rolls:</label>
-                    <input type="text">
-                </div>
-                <div class="field">
-                    <label>Weight:</label>
-                    <input type="text">
-                </div>
-                <div class="field">
-                    <label>Core Weight:</label>
-                    <input type="text">
-                </div>
-                <div class="field">
-                    <label>Net Weight:</label>
-                    <input type="text">
+                    {{ form.number_rolls }}
                 </div>
                 <div class="field">
                     <label>Exit Scrap:</label>
-                    <input type="text">
+                    {{ form.exit_scrap }}
                 </div>
                 <div class="field">
-                    <label>Print Scrap:</label>
-                    <input type="text">
+                    <label>Printing Scrap:</label>
+                    {{ form.printing_scrap }}
+                </div>
+            </div>
+            <div class="field">
+                <div class="field">
+                    <label>Remarks:</label>
+                    {{ form.remarks }}
+                </div>
+            </div>
+            <div class = "ui centered grid">
+                <div class = "row">
+                    <button class="ui green button" type="submit">Submit</button>
                 </div>
             </div>
         </form>
+        
     </div>
 </div>
 
-{% endblock %} {% block script %}
-<script type="text/javascript">
-    $(function() {
-        $('#myForm .formset_class').formset({
-            prefix: '{{ formset.prefix }}'
-        });
-    })
+{% block script %}
+    <script type="text/javascript">
+        $(function() {
+            $('#myForm .formset_class').formset({
+                prefix: '{{ formset.prefix }}'
+            });
+        })
 
-</script>
+    </script>
+
+{% endblock %}
+
+{% endblock %}

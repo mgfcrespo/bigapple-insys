@@ -9,21 +9,21 @@
           	<tr class = "row">
                 <th>Control Number</th>
                 <th>Date Issued</th>
-				<th>Issued To</th>
-				<th>Shift</th>
+				<th>Date Required</th>
+				<th>Placed By</th>
                 <th>Status</th>
           	</tr>
     		</thead>
     		<tbody>
-				{% for mr in mr %}
+				{% for pr in pr %}
     			<tr class = "row">
                     <td> 
-                        <a href="{% url 'inventory:materials_requisition_details' mr.id %}">{{ mr }}</a>
+                        <a href="{% url 'inventory:purchase_requisition_details' pr.id %}">{{ pr }}</a>
                     </td>
-                    <td>{{ mr.date_issued }}</td>
-					<td>{{ mr.issued_to }}</td>
-					<td>{{ mr.shift }}</td>
-                    <td>{{ mr.status }}</td>
+                    <td>{{ pr.date_issued }}</td>
+					<td>{{ pr.date_required }}</td>
+					<td>{{ pr.placed_by }}</td>
+                    <td>{{ pr.status }}</td>
     			</tr>
 				{% endfor %}
 			</tbody>

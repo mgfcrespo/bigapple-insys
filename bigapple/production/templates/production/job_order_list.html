@@ -1,0 +1,42 @@
+{% extends 'general_manager_page_ui.html' %}
+
+  {% block content %}
+
+	<div class = "ui container">
+        <h2 class="ui header">{{ title }}</h2>
+		<table class="ui stripped table">
+        	<thead>
+          	<tr class = "row">
+                <th class="three wide">JO#</th>
+				<th class="three wide">Client PO#</th>
+				<th class="two wide">Rush Order</th>
+                <th class="three wide">Status</th>
+                <th class="five wide center aligned">Production Update</th>
+          	</tr>
+    		</thead>
+    		<tbody>
+                {% for data in data %}
+                <tr class = "row">
+                    <td> 
+                        <a href="{% url 'production:job_order_details' data.id %}">{{ data }}</a>
+                    </td>
+                    <td>{{ data.client_po.client_po }}</td>
+                    <td>{{ data.rush_order }}</td>
+                    <td>{{ data.status }}</td>
+                    <td class="center aligned">                        
+                        <a  class="ui teal button" href="{% url 'production:add_extruder_schedule' data.id %}">Extrusion</a>
+                        <a  class="ui violet button" href="{% url 'production:add_printing_schedule' data.id %}">Printing</a>
+                        <a  class="ui blue button" href="{% url 'production:add_cutting_schedule' data.id %}">Cutting</a>
+                    </td>
+                </tr>
+                {% endfor %}
+				
+			</tbody>
+    	</table>
+	</div>
+
+	
+	{% block script %}
+	{% endblock %}
+	
+{% endblock %}

@@ -1,20 +1,33 @@
 {% extends "global_base_ui.html" %} {% block left_sidebar %}
 
-<a href="{% url 'accounts:user-page-view' %}" class="item">
-    <i class="chart bar icon"></i>  
-    Dashboard
-</a>
-<a href="orders_page.html" class="item">
-    <i class="edit outline icon"></i>
-    Job Order
-</a>
-<a href="scheduling_page.html" class="item">
-    <i class="calendar alternate outline icon"></i>
-    Production Schedule
-</a>
-<a href="intentory_page.html" class="item">
-    <i class="box icon"></i>
-    Inventory
-</a>
+    <a href="{% url 'accounts:user-page-view' %}" class="item">
+        <i class="chart bar icon"></i>  
+        Dashboard
+    </a>
+
+    <a href="scheduling_page.html" class="item">
+        <i class="calendar alternate outline icon"></i>
+        Production Schedule
+    </a>
+
+    <a href="orders_page.html" class="item">
+        <i class="edit outline icon"></i>
+        Job Order
+    </a>
+
+    <a href="intentory_page.html" class="item">
+        <i class="warehouse icon"></i>
+        Raw Materials Inventory
+    </a>
+
+    <a href="" class="item">
+        <i class="plus circle icon"></i>
+        Create Materials Requisition
+    </a>
+
+    <a href="" class="item">
+        <i class="copy outline icon"></i>
+        Materials Requisition
+    </a>
 
 {% endblock %} {% block content %} {% endblock %}

@@ -4,38 +4,48 @@
     <i class="chart bar icon"></i>  
     Dashboard
 </a>
-<li class="bold">
-    <a href="sales_page.html" class="waves-effect waves-cyan">
-                      <i class="material-icons">note</i>
-                      <span class="nav-text">Sales</span>
-                    </a>
-</li>
-<a href="intentory_page.html" class="item">
-    <i class="box icon"></i>
-    Inventory
+<a href="{% url 'accounts:user-page-view' %}" class="item">
+    <i class="shipping fast icon"></i>  
+    Rush Order
 </a>
-<li class="bold">
-    <a href="scheduling_page.html" class="waves-effect waves-cyan">
-                      <i class="material-icons">event_note</i>
-                      <span class="nav-text">Production</span>
-                    </a>
-</li>
-<li class="bold">
-    <a href="reports_page.html" class="waves-effect waves-cyan">
-                      <i class="material-icons">show_chart</i>
-                      <span class="nav-text">Reports</span>
-                    </a>
-    <li class="bold">
-        <a href="clients_page.html" class="waves-effect waves-cyan">
-                      <i class="material-icons">account_box</i>
-                      <span class="nav-text">Accounts</span>
-                    </a>
-    </li>
-    <li class="bold">
-        <a href="clients_page.html" class="waves-effect waves-cyan">
-                      <i class="material-icons">people</i>
-                      <span class="nav-text">Clients</span>
-                    </a>
-    </li>
-
+<a href="{% url 'sales:po-list-view' %}" class="item"> 
+    <i class="chart area icon"></i>
+    Client Demand Forecast
+</a>
+<a href="client_page_list.html" class="item">
+    <i class="user outline icon"></i>
+    Clients
+</a>
+<a href="scheduling_page.html" class="item">
+    <i class="money bill alternate outline icon"></i>
+    Sales Invoices
+</a>
+<a href="scheduling_page.html" class="item">
+    <i class="calendar alternate outline icon"></i>
+    Production Schedule
+</a>
+<a href="orders_page.html" class="item">
+    <i class="edit outline icon"></i>
+    Job Orders
+</a>
+<a href="intentory_page.html" class="item">
+    <i class="warehouse icon"></i>
+    Raw Materials Inventory
+</a>
+<a href="" class="item">
+    <i class="chart line icon"></i>
+    Inventory Forecast
+</a>
+<a href="{% url 'sales:create-client-po-form' %}" class="item">
+    <i class="edit outline icon"></i>
+    Create Supplier Purchase Order
+</a>
+<a href="{% url 'sales:create-client-po-form' %}" class="item">
+    <i class="file outline icon"></i>
+    Supplier Purchase Order
+</a>
+<a href="supplier_list.html" class="item">
+    <i class="dolly icon"></i>
+    Suppliers
+</a>
 {% endblock %} {% block content %} {% endblock %}

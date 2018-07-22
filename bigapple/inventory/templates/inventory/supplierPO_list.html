@@ -1,10 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'production_manager_page_ui.html' %}
 
-</body>
-</html>
+  {% block content %}
+
+	<div class="ui container">
+		<h4 class="ui header">{{ title }}</h4>
+		<table class="ui striped table">
+        	<thead>
+          	<tr class = "row">
+                <th>Supplier PO</th>
+                <th>Date Issued</th>
+                <th>Supplier</th>
+                <th>Delivery Date</th>
+                <th>Total Amount</th>
+          	</tr>
+    		</thead>
+    		<tbody>
+				{% for mr in mr %}
+    			<tr class = "row">
+                    <td> 
+                        <a href="{% url 'inventory:supplierPO_details' mr.id %}">{{ mr }}</a>
+                    </td>
+					<td>{{ mr.date_issued }}</td>
+                    <td>{{ mr.supplier }}</td>
+                    <td>{{ mr.delivery_date }}</td>
+                    <td>{{ mr.total_amount }}</td>
+    			</tr>
+				{% endfor %}
+			</tbody>
+    	</table>
+	</div>
+
+{% endblock %}

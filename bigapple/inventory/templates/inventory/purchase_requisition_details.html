@@ -1,0 +1,77 @@
+{% extends 'production_manager_page_ui.html' %}
+
+{% block content %}
+
+<div class = "ui centered grid">
+    <div class="six wide tablet ten wide computer column">
+        <form class="ui form segment" action = "{% url 'inventory:purchase_requisition_approval' pr.id%}" method="POST" role="form">
+            <h2 class="ui header">{{ title }}</h2>
+            {% csrf_token %}
+            <div class="two fields">
+                <div class = "field">
+                    <label for="">Date Issued</label>
+                    <span>{{ pr.date_issued }}</span>
+                </div>
+                <div class = "field">
+                    <label for="">Date Required:</label>
+                    <span>{{ pr.date_required }}</span>
+                </div>
+            </div>
+            <div class="two fields">
+                <div class = "field">
+                    <label for="">Place By:</label>
+                    <span>{{ pr.placed_by }}</span>
+                </div>
+                <div class = "field">
+                    <label for="">Status:</label>
+                    <span id = "status">{{ pr.status }}</span>
+                </div>
+            </div>
+            <table class="ui table">
+                <thead>
+                    <th class="eight wide">Item</th>
+                    <th class="eight wide">Quantity</th>
+                </thead>
+                <tbody>
+                    {% for pri in pri %}
+                    <tr>
+                        <td>{{ pri.item }}</td>
+                        <td>{{ pri.quantity }}</td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class = "ui centered grid" style = "padding:10px;">
+                    <input id = "approve_btn" class ="ui positive basic button" style = "margin:5px;" type ="submit" value="Approve" name = "approve">
+                    <input id = "decline_btn" class ="ui negative basic button" style = "margin:5px;" type ="submit" value = "Decline" name = "decline">
+            </div>
+        </form>
+        <a href="{% url 'inventory:purchase_requisition_list'%}">Back</a>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+    <script>
+        $( document ).ready(function() {
+            $(function() {
+                if($('#status').text()=='waiting'){
+                    $('#approve_btn').prop('disabled', false);
+                    $("#decline_btn").prop('disabled', false);
+                }
+                else if($('#status').text()=='approved'){
+                    $('#approve_btn').prop('disabled', true);
+                    $("#decline_btn").prop('disabled', false);
+                }else {
+                    $("#decline_btn").prop('disabled', true);
+                    $('#approve_btn').prop('disabled', false);
+                }
+
+            });
+        });
+    </script>
+
+{%endblock %}
