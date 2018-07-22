@@ -168,15 +168,6 @@ class PurchaseRequisitionItems(models.Model):
         return str(self.purchreq) + ' : ' + str(self.item)
 
 
-class InventoryCountAsof(models.Model):
-    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
-    old_count = models.IntegerField('old_count', default=0)
-    new_count = models.IntegerField('new_count', default=0)
-    date_counted = models.DateField('date_counted', auto_now_add=True)
-
-    def __str__(self):
-        return str(self.id) +' : '+str(self.inventory) +' : ' + str(self.date_counted)
-
 #TODO
 class SupplierSalesInvoice(models.Model):
     supplier_po = models.ForeignKey(SupplierPO, on_delete=models.CASCADE)

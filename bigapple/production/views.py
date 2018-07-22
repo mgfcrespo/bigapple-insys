@@ -356,7 +356,7 @@ def production_schedule(request):
   context = {'graph': div, 'graph_next' : div_next}
 
 
-  render(request, 'production/production_schedule.html', context)
+  return render(request, 'production/production_schedule.html', context)
 
 
 

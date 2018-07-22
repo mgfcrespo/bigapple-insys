@@ -1,9 +1,6 @@
 from django.contrib import admin
 
 # Register your models here.
-<<<<<<< HEAD
-from .models import Inventory, InventoryCountAsof, SupplierPOItems, \
-    MaterialRequisition, SupplierPO, SupplierRawMaterials
 
 from .models import Inventory, InventoryCountAsof, SupplierPOItems, SupplierPO, SupplierRawMaterials
 from .models import MaterialRequisition, MaterialRequisitionItems, PurchaseRequisition, PurchaseRequisitionItems

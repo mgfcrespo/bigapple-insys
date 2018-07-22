@@ -12,10 +12,3 @@ admin.site.register(ClientCreditStatus)
 admin.site.register(SalesInvoice)
 admin.site.register(ClientConstant)
 admin.site.register(ProductionCost)
-
-#production
-admin.site.register(Machine)
-admin.site.register(JobOrder)
-admin.site.register(CuttingSchedule)
-admin.site.register(PrintingSchedule)
-admin.site.register(ExtruderSchedule)
