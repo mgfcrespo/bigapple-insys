@@ -213,6 +213,7 @@ def add_payment(request, pk, *args, **kwargs):
             form = ClientPaymentForm()
     return form
 
+#TODO Add the actual list of payments made by client
 def payment_list_view(request):
     client = Client.objects.get(id=request.session['session_userid'])
     credits_status = ClientCreditStatus.objects.get(client = client)
@@ -227,6 +228,7 @@ def payment_detail_view():
     ...
 
 #SAMPLE DYNAMIC FORM
+#TODO revampPO creation
 def create_client_po(request):
     #note:instance should be an object
     clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=1, can_delete=True)
@@ -270,6 +272,8 @@ def create_client_po(request):
             if formset.is_valid():
                 for form in formset:
                     form.save()
+
+
 
                 formset_items = ClientItem.objects.filter(client_po_id = new_form)
                 formset_item_total = formset_items.aggregate(sum=aggregates.Sum('item_price'))['sum'] or 0

@@ -35,7 +35,8 @@ class InventoryForm(forms.ModelForm):
 
     class Meta:
         model = Inventory
-        fields = ( 'item_name', 'item_type', 'rm_type', 'description', 'quantity')
+        fields = ('item_name', 'item_type', 'rm_type', 'description', 'quantity')
+
 
 class SupplierRawMaterialsForm(ModelForm):
     RM_TYPES = (
@@ -58,7 +59,6 @@ class InventoryCountAsofForm(ModelForm):
     class Meta:
         model = InventoryCountAsof
         fields = ( 'inventory', 'new_count')
-
         inventory = forms.ModelChoiceField(queryset=Inventory.objects.all())
 
 class SupplierPOForm(ModelForm):

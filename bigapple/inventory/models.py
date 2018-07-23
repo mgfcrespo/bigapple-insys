@@ -40,6 +40,7 @@ class Inventory(models.Model):
     def __str__(self):
         return self.item_name 
 
+
 # POLISH- not sure if everything is here
 class SupplierRawMaterials(models.Model):
     RM_TYPES = (
@@ -53,10 +54,28 @@ class SupplierRawMaterials(models.Model):
 
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     price = models.DecimalField('price', decimal_places=2, max_digits=50)
+    rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='not specified', null=True,
+                               blank=True)
+
+class InventoryCountAsof(models.Model):
+    RM_TYPES = (
+        ('--', '----------------'),
+        ('LDPE', 'Low-density polyethylene'),
+        ('LLDPE', 'Linear low-density polyethylene'),
+        ('HDPE', 'High-density polyethylene'),
+        ('PP', 'Polypropylene'),
+        ('PET', 'Polyethylene terephthalate')
+    )
+
+    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
+    old_count = models.IntegerField('old_count', default=0)
+    new_count = models.IntegerField('new_count', default=0)
+    date_counted = models.DateField('date_counted', )
     rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='not specified', null=True, blank=True)
 
     def __str__(self):
         return str(self.supplier) +' : ' + str(self.rm_type)
+
 
 
 class SupplierPO(models.Model):
@@ -148,14 +167,6 @@ class PurchaseRequisitionItems(models.Model):
     def __str__(self):
         return str(self.purchreq) + ' : ' + str(self.item)
 
-class InventoryCountAsof(models.Model):
-    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
-    old_count = models.IntegerField('old_count', default=0)
-    new_count = models.IntegerField('new_count', default=0)
-    date_counted = models.DateField('date_counted', auto_now_add=True)
-
-    def __str__(self):
-        return str(self.id) +' : '+str(self.inventory) +' : ' + str(self.date_counted)
 
 #TODO
 class SupplierSalesInvoice(models.Model):
@@ -164,6 +175,7 @@ class SupplierSalesInvoice(models.Model):
     date = models.DateField('date', auto_now_add=True)
     vat = models.DecimalField('vat', decimal_places=2, max_digits=50)
     total_amount = models.IntegerField('total_amount')
+
 
     def __str__(self):
         lead_zero = str(self.id).zfill(5)
