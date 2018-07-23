@@ -87,3 +87,23 @@ class CuttingScheduleForm(forms.ModelForm):
     remarks = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))
     machine = forms.ModelChoiceField(queryset=Machine.objects.all())
     operator = forms.ModelChoiceField(queryset=Employee.objects.all())
+	
+class JODetailsForm(forms.ModelForm):
+    STATUS = (
+        ('Waiting', 'Waiting'),
+        ('On Queue', 'On Queue'),
+        ('Under Cutting', 'Cutting'),
+        ('Under Extrusion', 'Under Extrusion'),
+        ('Under Printing', 'Under Printing'),
+        ('Under Packaging', 'Under Packaging'),
+        ('Ready for delivery', 'Ready for delivery'),
+        ('Delivered', 'Delivered'),
+        ('Cancelled', 'Cancelled')
+    )
+    
+    class Meta:
+        model = JobOrder
+        fields = ('status', 'remarks')
+
+    status = forms.CharField(widget = forms.Select(choices=STATUS))
+    remarks = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))

@@ -43,12 +43,12 @@ class PreProduct(models.Model):
 #could be substitute for quotation request
 class ClientPO(models.Model):
     STATUS =(
-        ('waiting', 'waiting'),
-        ('approved', 'approved'),
-        ('under production', 'under production'),
-        ('ready for delivery', 'ready for delivery'),
-        ('disapproved', 'disapproved')
-
+        ('Waiting', 'Waiting'),
+        ('Approved', 'Approved'),
+        ('Under production', 'Under production'),
+        ('Ready for delivery', 'Ready for delivery'),
+        ('Cancelled', 'Cancelled'),
+        ('Disapproved', 'Disapproved')
     )
 
     date_issued = models.DateTimeField('date_issued', auto_now_add=True)

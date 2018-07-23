@@ -275,11 +275,43 @@ def job_order_list(request):
 
 def job_order_details(request, id):
     data = JobOrder.objects.get(id=id)
+    client_po_data = ClientPO.objects.get(id = data.client_po.id)
+    form = JODetailsForm(request.POST or None)
     extrusion = ExtruderSchedule.objects.filter(job_order=data.id).order_by('date', 'time_out')
     printing = PrintingSchedule.objects.filter(job_order=data.id).order_by('date', 'time_out')
     cutting = CuttingSchedule.objects.filter(job_order=data.id).order_by('date', 'time_out')
     
+    if request.method == 'POST':
+      data.status = request.POST.get("status")
+      data.remarks = request.POST.get("remarks")
+      
+      if data.status == 'Waiting':
+        client_po_data.status = 'Waiting'
+      elif data.status == 'On Queue':
+        client_po_data.status = 'Approved' 
+      elif data.status == 'Under Extrusion':
+        client_po_data.status = 'Under production'
+      elif data.status == 'Under Printing':
+        client_po_data.status = 'Under production'
+      elif data.status == 'Under Cutting':
+        client_po_data.status = 'Under production'
+      elif data.status == 'Under Packaging':
+        client_po_data.status = 'Under production'
+      elif data.status == 'Ready for delivery':
+        client_po_data.status = 'Ready for delivery' 
+      elif data.status == 'Cancelled':
+        client_po_data.status = 'Cancelled' 
+
+
+      client_po_data.save()
+      data.save()
+      return redirect('production:job_order_details', id = data.id)
+        
+    form.fields["status"].initial = data.status
+    form.fields["remarks"].initial = data.remarks
+
     context = {
+      'form': form,
       'title' : data.job_order,
       'data': data,
       'extrusion': extrusion,
