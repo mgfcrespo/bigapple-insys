@@ -325,6 +325,7 @@ def arrange_schedule():
     title = str("Production Schedule as of " + str(dt.now().strftime('%b %d, %Y at %I:%M %p')))
     fig = ff.create_gantt(df, title=title, group_tasks=True, show_colorbar=True, showgrid_x=True, showgrid_y=True, index_col='Resource')
     div_next = opy.plot(fig, auto_open=False, output_type='div')
+<<<<<<< HEAD
 
 
     return div_next
@@ -333,6 +334,16 @@ def arrange_schedule():
     arrange_schedule()
 
 
+=======
+
+
+    return div_next
+
+  if __name__ == '__arrange_schedule__':
+    arrange_schedule()
+
+
+>>>>>>> 79da26047d5c8fb7ebc88a9e90a468afe07585b0
 
 #TODO Add scheduling values lists.
 #TODO convert to now() + deltatime (scheduling time values)
