@@ -64,7 +64,7 @@ class JobOrder(models.Model):
     STATUS = (
         ('Waiting', 'Waiting'),
         ('On Queue', 'On Queue'),
-        ('Under Cutting', 'Cutting'),
+        ('Under Cutting', 'Under Cutting'),
         ('Under Extrusion', 'Under Extrusion'),
         ('Under Printing', 'Under Printing'),
         ('Under Packaging', 'Under Packaging'),

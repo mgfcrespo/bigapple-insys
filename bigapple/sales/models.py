@@ -73,6 +73,18 @@ class PreProduct(models.Model):
 
 # could be substitute for quotation request
 class ClientPO(models.Model):
+<<<<<<< HEAD
+<<<<<<< HEAD
+    STATUS =(
+        ('Waiting', 'Waiting'),
+        ('Approved', 'Approved'),
+        ('Under production', 'Under production'),
+        ('Ready for delivery', 'Ready for delivery'),
+        ('Cancelled', 'Cancelled'),
+        ('Disapproved', 'Disapproved')
+=======
+=======
+>>>>>>> 79da26047d5c8fb7ebc88a9e90a468afe07585b0
     STATUS = (
         ('waiting', 'waiting'),
         ('approved', 'approved'),
@@ -80,6 +92,7 @@ class ClientPO(models.Model):
         ('ready for delivery', 'ready for delivery'),
         ('disapproved', 'disapproved')
 
+>>>>>>> 79da26047d5c8fb7ebc88a9e90a468afe07585b0
     )
 
     date_issued = models.DateTimeField('date_issued', auto_now_add=True)
