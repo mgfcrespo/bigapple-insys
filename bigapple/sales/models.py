@@ -11,7 +11,7 @@ from django.db.models import aggregates
 from django.db.models import Prefetch
 
 from datetime import datetime as dt
-from datetime import datetime, timedelta
+from datetime import timedelta as td
 from datetime import date as d
 
 # TODO Generate object at Client creation
@@ -91,7 +91,7 @@ class ClientPO(models.Model):
 
     def __str__(self):
         lead_zero = str(self.id).zfill(5)
-        po_number = 'PO%s' % (lead_zero)
+        po_number = 'PO #%s' % (lead_zero)
         return str(po_number)
 
     '''
@@ -151,6 +151,7 @@ class ClientItem(models.Model):
         cylinder = ProductionCost.objects.get(cost_type='Cylinder')
         art_labor = ProductionCost.objects.get(cost_type='Art Labor')
         art_work = ProductionCost.objects.get(cost_type='Artwork')
+        lamination = ProductionCost.objects.get(cost_type='Lamination')
 
         #Set Constants based on Product picked by client
         material_weight = 0
@@ -173,15 +174,19 @@ class ClientItem(models.Model):
         order_qty = Decimal(order_qty)
         #Set printing cost (if viable)
         printing_cost = 0
+        lamination_cost = 0
         if self.printed == True:
             printing_cost += (art_work.cost * self.color_quantity) + \
                          (art_labor.cost/order_qty) + (cylinder.cost/order_qty) + (ink.cost/order_qty)
+
+        if self.laminate == True:
+            lamination_cost += lamination.cost/order_qty
 
         price_per_piece = Decimal('0.0')
         #Calculate total per item
         price_per_piece += (self.length * self.width * self.thickness * material_weight * \
                  (material_cost.cost + (material_cost.cost * mark_up.cost) + (material_cost.cost * electricity.cost)) \
-                     + order_qty + printing_cost)/1000
+                     + order_qty + printing_cost + lamination_cost)/1000
 
         return price_per_piece
 
@@ -230,21 +235,16 @@ class SalesInvoice(models.Model):
     total_paid = models.DecimalField('total_paid', blank=True, decimal_places=3, max_digits=12, default=0)
 
     def __str__(self):
-        lead_zero = str(self.id).zfill(5)
-        po_number = 'PO%s' % (lead_zero)
-        return po_number
+        # lead_zero = str(self.client_po).zfill(5)
+        # po_number = 'PO# %s' % (lead_zero)
+        po_number = self.client_po
+        return str(po_number)
+
 
     def calculate_total_amount_computed(self):
-        if self.discount == 0:
-            discount = 1
-        else:
-            discount = self.discount
-        if self.net_vat == 0:
-            net_vat = 1
-        else:
-            net_vat = self.net_vat
-
-        total = (self.total_amount * discount * net_vat)
+        total_discount = self.total_amount * self.discount
+        total_net_vat =  self.total_amount * self.net_vat
+        total = self.total_amount + total_net_vat - total_discount
         return total
 
     # TODO this function does not compute  delta.days (yet)
@@ -264,8 +264,7 @@ class SalesInvoice(models.Model):
         else:
             add_days = 30
 
-        date_due = self.date_issued(default=datetime.now() + timedelta(days=add_days))
-
+        date_due = self.date_issued + td(days=add_days)
         return date_due
 
     def save(self, *args, **kwargs):
@@ -275,7 +274,9 @@ class SalesInvoice(models.Model):
         self.net_vat = client_constants.net_vat
         self.total_amount_computed = self.calculate_total_amount_computed()
         # self.days_passed= self.calculate_days_passed()
-        #self.date_due = self.calculate_date_due()
+        self.date_due = self.calculate_date_due()
+
+
         super(SalesInvoice, self).save(*args, **kwargs)
 
 

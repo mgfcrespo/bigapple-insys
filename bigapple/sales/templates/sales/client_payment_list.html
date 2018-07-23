@@ -5,7 +5,8 @@
     <div class="header">Credit Status</div>
     <div class="meta">
 
-        <table class="ui cell padded table">
+
+        <table class="ui cell padded table" id="Balance">
         	<thead>
           	<tr>
           	  <th>Account Balance</th>
@@ -19,8 +20,54 @@
             </thead>
         </table>
 
-    </div>
+            </div>
   </div>
 </div>
+
+          <div class="ui horizontal divider">
+      Invoices
+  </div>
+
+		<table class= "ui celled padded table" id="Invoice">
+        	<thead>
+          	<tr>
+          	  	<th>PO#</th>
+                <th>Date Issued</th>
+                <th>Date Due</th>
+                <th>Total Amount</th>
+            	<th>Amount Due</th>
+				<th>Status</th>
+          	</tr>
+    		</thead>
+    		<tbody>
+			{% if sales_invoice %}
+				{% for SalesInvoice in sales_invoice  %}
+    			<tr>
+                    <td><a href="{% url 'sales:client_payment_details' SalesInvoice.id %}"> {{ SalesInvoice }} </a></td>
+                    <td> {{ SalesInvoice.date_issued }} </td>
+                    <td> {{ SalesInvoice.date_due }} </td>
+                    <td> {{ SalesInvoice.total_amount_computed }} </td>
+    				<td> {{ SalesInvoice.amount_due }} </td>
+
+                   {% if SalesInvoice.status ==  "Open" %}
+                   <td><i class="icon checkmark"></i>Open</td>
+                   {% elif  SalesInvoice.status ==  "Closed" %}
+                   <td ><i class="icon close"></i>Closed</td>
+                   {% elif  SalesInvoice.status ==  "Late" %}
+                   <td ><i class="icon close"></i>Closed</td>
+                   <i class="exclamation icon">Late</i>
+                   {% else %}
+                   <td ><i class="ban icon"></i>Cancelled</td>
+                    {% endif %}
+    			</tr>
+				{% endfor %}
+			{% else %}
+			<p>There are no Invoices to display</p>
+			{% endif %}
+
+			</tbody>
+    	</table>
+
+
 
 {% endblock %}

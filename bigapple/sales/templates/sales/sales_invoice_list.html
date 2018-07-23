@@ -9,6 +9,7 @@
           	  	<th>PO#</th>
 				<th>Client</th>
                 <th>Date Issued</th>
+				<th>Date Due</th>
                 <th>Total Amount</th>
             	<th>Amount Due</th>
 				<th>Status</th>
@@ -21,7 +22,8 @@
                     <td><a href="{% url 'sales:sales_invoice_details' SalesInvoice.id %}"> {{ SalesInvoice }} </a></td>
                     <td> {{ SalesInvoice.client }} </td>
                     <td> {{ SalesInvoice.date_issued }} </td>
-                    <td> {{ SalesInvoice.total_amount }} </td>
+					<td> {{ SalesInvoice.date_due }} </td>
+                    <td> {{ SalesInvoice.total_amount_computed }} </td>
     				<td> {{ SalesInvoice.amount_due }} </td>
 
                    {% if SalesInvoice.status ==  "Open" %}

@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import Machine, WorkerSchedule, SalesInvoice, Employee
+from .models import Machine, SalesInvoice, Employee
 from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule
 from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm
 
@@ -59,6 +59,7 @@ Input can accept deadlines.
   -Jobs must start after given release dates and be completed before given deadlines
 '''
 
+#TODO fix arrange_schedule() to take in 2 parameters (2 2D Lists) based from actual data. Also take note of machine and job count
 def arrange_schedule():
   # Create the solver.
   solver = pywrapcp.Solver('jobshop')
@@ -301,11 +302,21 @@ def arrange_schedule():
         print("Job : " + str(jobs[i][j]))
         print("Tasks : " + str(tasks[i][j]))
         print("START: " + str(machine_schedule_start_times[i][j]) + "| END : "  + str(machine_schedule_end_times[i][j]))
-        
+
+
+        task = ""
+        if str(tasks[i][j]) == "0":
+          task = "Extrusion"
+        elif str(tasks[i][j]) == "1":
+          task = "Printing"
+        else:
+          task = "Cutting"
+
+
         data_list = {"Task" : str("Machine " + str(i)),
                      "Start" : str(machine_schedule_start_times[i][j]),
                      "Finish" :  str(machine_schedule_end_times[i][j]),
-                     "Resource" : str("Job Order : " + str(jobs[i][j]) + "| Task : " +  str(tasks[i][j]))}
+                     "Resource" : str("Job Order : " + str(jobs[i][j]) + "| Task : " +  task)}
         gantt_chart_dict.append(data_list)
         loop_count += 1
 
@@ -351,6 +362,7 @@ def production_schedule(request):
   figure = go.Figure(data=data, layout=layout)
   div = opy.plot(figure, auto_open=False, output_type='div')
   '''
+
   div = ""
 
   context = {'graph': div, 'graph_next' : div_next}

@@ -15,6 +15,7 @@ from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, 
 from .forms import ClientPOForm, SupplierForm, ClientPaymentForm
 from django import forms
 import sys
+from decimal import Decimal
 
 #Forecasting imports
 #import numpy as np
@@ -167,11 +168,16 @@ def invoice_detail_view(request, pk, *args, **kwargs):
 
         salesinvoice = SalesInvoice.objects.get(pk=pk)
 
-        if salesinvoice.amount_due <= 0:
+        if salesinvoice.amount_due <= 0 and salesinvoice.status != "Cancelled":
             salesinvoice.status = "Closed"
+        else:
+            salesinvoice.status = "Open"
 
+        salesinvoice.save()
 
         payments = ClientPayment.objects.filter(invoice_issued=salesinvoice)
+
+
 
         context = {'salesinvoice': salesinvoice,
                    'form' : form,
@@ -218,17 +224,39 @@ def payment_list_view(request):
     client = Client.objects.get(id=request.session['session_userid'])
     credits_status = ClientCreditStatus.objects.get(client = client)
 
+    sales_invoice = SalesInvoice.objects.filter(client = client)
     context = {
-        'credit_status' : credits_status
+        'credit_status' : credits_status,
+        'sales_invoice' : sales_invoice
     }
 
     return render(request, 'sales/client_payment_list.html', context)
 
-def payment_detail_view():
-    ...
+def payment_detail_view(request, pk):
+    sales_invoice = SalesInvoice.objects.get(pk=pk)
+    sales_invoice_po = sales_invoice.client_po
+
+    if sales_invoice.amount_due <= 0 and sales_invoice.status != "Cancelled":
+        sales_invoice.status = "Closed"
+    else:
+        sales_invoice.status = "Open"
+
+
+    sales_invoice.save()
+
+    po = ClientPO.objects.get(id = sales_invoice_po.id)
+    po_items = ClientItem.objects.filter(client_po = po)
+
+    payments = ClientPayment.objects.filter(invoice_issued=sales_invoice)
+
+    context = {'salesinvoice' : sales_invoice,
+               'po' : po,
+               'po_items' : po_items,
+               'payments' : payments}
+
+    return render(request, 'sales/client_payment_detail.html', context)
 
 #SAMPLE DYNAMIC FORM
-#TODO revampPO creation
 def create_client_po(request):
     #note:instance should be an object
     clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=1, can_delete=True)
@@ -310,7 +338,7 @@ def create_client_po(request):
 
 
         #todo change index.html. page should be redirected after successful submission
-        return render(request, 'index.html',
+        return render(request, 'accounts/client_page.html',
                               {'message': message}
                               )
     else:
