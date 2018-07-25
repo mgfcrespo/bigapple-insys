@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from .forms import ClientPOFormItems, ClientPOForm
 from django.urls import reverse_lazy
 from django.forms import formset_factory, inlineformset_factory
+from datetime import datetime, date
 
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -255,6 +256,16 @@ def payment_detail_view(request, pk):
                'payments' : payments}
 
     return render(request, 'sales/client_payment_detail.html', context)
+
+def statement_of_accounts_list_view(request):
+    credits_status = ClientCreditStatus.objects.all()
+
+    context = {
+        'credits_status' : credits_status,
+        'date' : date.now()
+    }
+
+    return render(request, 'sales/statement_of_accounts.html', context)
 
 #SAMPLE DYNAMIC FORM
 def create_client_po(request):

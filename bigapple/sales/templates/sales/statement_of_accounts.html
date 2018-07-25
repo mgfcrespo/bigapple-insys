@@ -1,0 +1,47 @@
+
+
+{% block content %}
+<div class="sixteen wide column">
+    <table>
+        <thead>
+            <tr>
+                <th>Client</th>
+                <th>Receivables as of <p>{{date}}</p></th>
+                <th>Overdue Balance</th>
+                <th>Days Overdue</th>
+                <th>Payment Terms</th>
+                <th>Account Supervisor</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for ClientCreditStatus in credits_status %}
+            <tr>
+                <td>
+                    ({{ ClientCreditStatus.client }})
+                </td>
+                <td>
+                    {% calculate_balance_sum ClientCreditStatus %}
+                </td>
+                <td>
+                    ({{ ClientCreditStatus. }}) #refer method for total days
+                </td>
+                <td>
+                    ({{ ClientCreditStatus.client. }}) #refer payment_terms (under ClientConstant model)
+                </td>
+                <td>
+                    ({{ ClientCreditStatus.client.sales_agent }})
+                </td>
+                <td>
+                    ({{ ClientCreditStatus.remarks }})
+                </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

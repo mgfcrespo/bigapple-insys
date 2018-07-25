@@ -73,8 +73,6 @@ class PreProduct(models.Model):
 
 # could be substitute for quotation request
 class ClientPO(models.Model):
-<<<<<<< HEAD
-<<<<<<< HEAD
     STATUS =(
         ('Waiting', 'Waiting'),
         ('Approved', 'Approved'),
@@ -82,17 +80,7 @@ class ClientPO(models.Model):
         ('Ready for delivery', 'Ready for delivery'),
         ('Cancelled', 'Cancelled'),
         ('Disapproved', 'Disapproved')
-=======
-=======
->>>>>>> 79da26047d5c8fb7ebc88a9e90a468afe07585b0
-    STATUS = (
-        ('waiting', 'waiting'),
-        ('approved', 'approved'),
-        ('under production', 'under production'),
-        ('ready for delivery', 'ready for delivery'),
-        ('disapproved', 'disapproved')
 
->>>>>>> 79da26047d5c8fb7ebc88a9e90a468afe07585b0
     )
 
     date_issued = models.DateTimeField('date_issued', auto_now_add=True)
@@ -300,9 +288,13 @@ class ClientCreditStatus(models.Model):
                                               default=Decimal(0))  # accumulation of ClientPayment.balance
     overdue_balance = models.DecimalField('overdue_balance', decimal_places=2, max_digits=12,
                                           default=Decimal(0))  # sum of payments not made within payment terms
+    remarks = models.CharField('remarks', max=500)
 
     def __str__(self):
         return str('Credit Status: %s' % (self.client))
+
+    def calculate_balance_sum(self):
+        return self.outstanding_balance + self.overdue_balance
 
     '''
     def calculate_payments_sum(self):
@@ -323,6 +315,8 @@ class ClientCreditStatus(models.Model):
     def save(self, *args, **kwargs):
         self.outstanding_balance = self.calculate_invoice_sum() - self.calculate_payments_sum()
         super(ClientCreditStatus, self).save(*args, **kwargs)
+    
+    def calculate_days_overdue(self):
  '''
 
     class Meta:
