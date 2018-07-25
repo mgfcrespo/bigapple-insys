@@ -1,0 +1,29 @@
+{% extends 'production_manager_page_ui.html' %}
+
+  {% block content %}
+
+	<div class="ui container">
+		<h2 class="ui header">Physical Count History </h2>
+		<h3 class="ui header">{{ title }}</h3>
+		<table class="ui striped table">
+        	<thead>
+          	<tr class = "row">
+                <th>Date Counted</th>
+                <th>Old Count</th>
+                <th>New Count </th>
+          	</tr>
+    		</thead>
+    		<tbody>
+				{% for items in items %}
+    			<tr class = "row">
+                    <td>{{ items.date_counted }}</td>
+					<td>{{ items.old_count }}</td>
+                    <td>{{ items.new_count }}</td>
+    			</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<a href="{% url 'inventory:inventory_item_list'%}">Back</a>
+	</div>
+
+{% endblock %}

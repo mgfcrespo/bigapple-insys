@@ -18,7 +18,7 @@
 			{% if object_list %}
 				{% for ClientPO in object_list %}
     				<tr>
-    					<td><a href="{% url 'sales:po-detail-view' ClientPO.id %}">{{ ClientPO}}</a></td>
+    					<td><a href="{% url 'sales:po-detail-view' ClientPO.id %}">{{ClientPO}}</a></td>
     					<td>{{ ClientPO.date_issued }}</td>
     					<td>{{ ClientPO.date_required }}</td>
     					<td>{{ ClientPO.total_amount }}</td>

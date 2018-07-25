@@ -3,6 +3,7 @@
   {% block content %}
 
 	<div class="ui container">
+		<h2 class="ui header">{{ title }}</h2>
 		<table class="ui striped table">
         	<thead>
           	<tr class = "row">
@@ -22,7 +23,7 @@
                     <td>{{ mr.date_issued }}</td>
 					<td>{{ mr.issued_to }}</td>
 					<td>{{ mr.shift }}</td>
-                    <td>{{ mr.approval }}</td>
+                    <td>{{ mr.status }}</td>
     			</tr>
 				{% endfor %}
 			</tbody>

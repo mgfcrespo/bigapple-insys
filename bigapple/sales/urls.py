@@ -21,7 +21,7 @@ urlpatterns = [
 
           #client credit urls
           path('client-payment-list/', views.payment_list_view, name='client_payment_list'),
-          #path('client-payment-details/<int:pk>/', views.client_credit_details, name='client_payment_details'),
+          path('client-payment-details/<int:pk>/', views.payment_detail_view, name='client_payment_details'),
 
           #rush order urls
           path('rush-order-list/', views.rush_order_list, name='sales_rush_order_list'),

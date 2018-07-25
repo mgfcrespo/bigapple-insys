@@ -1,51 +1,80 @@
  {% extends "global_base_ui.html" %} {% block left_sidebar %}
 
-<a href="{% url 'accounts:user-page-view' %}" class="item">
-    <i class="chart bar icon"></i>  
-    Dashboard
-</a>
-<a href="{% url 'sales:create-client-po-form' %}" class="item">
-    <i class="file alternate icon"></i>
-    Create Purchase Order
-</a>
-<a href="{% url 'sales:po-list-view' %}" class="item">
-    <i class="file alternate icon"></i>
-    Client Purchase Orders
-</a>
-<a href="client_payment_monitoring_list.html" class="item">
-    <i class="material-icons">note</i>
-    <span class="nav-text">Client Payments</span>
-</a>
-<a href="scheduling_page.html" class="item">
-    <i class="money bill alternate outline icon"></i>
-    Client Payments
-</a>
-<a href="rush_order_list.html" class="item">
-    <i class="shipping fast icon"></i>
-    Rush Order
-</a>
-<a href="rush_order_assessment.html" class="item">
-    <i class="calculator icon"></i>
-    Order Assessment and Re-Planning
-</a>
-<a href="{% url 'sales:JO_list' %}" class="item">
-    <i class="edit outline icon"></i>
-    Job Order
-</a>
-<a href="intentory_page.html" class="item">
-    <i class="box icon"></i>
-    Inventory
-</a>
-<a href="client_page_list.html" class="item">
-    <i class="user outline icon"></i>
-    Clients
-</a>
-<a href="supplier_list.html" class="item">
-    <i class="users icon"></i>
-    Suppliers
-</a>
+<div class="ui vertical following fluid accordion text menu" style="font-size: 15px; padding: 10px;">
+    <div class="item">
+        <a class="title">
+            <i class="dropdown icon"></i>
+            <b>Sales</b>
+        </a>
+        <div class="content menu">
+            <a href="{% url 'sales:create-client-po-form' %}" class="item">
+                <i class="plus icon"></i>
+                Create Purchase Order
+            </a>
+            <a href="{% url 'sales:create-client-po-form' %}" class="item">
+                <i class="file alternate icon"></i>
+                Purchase Orders
+            </a>
+            <a href="{% url 'sales:po-list-view' %}" class="item"> 
+                <i class="chart area icon"></i>
+                Client Demand Forecast
+            </a>
+            <a href="scheduling_page.html" class="item">
+                <i class="money bill alternate outline icon"></i>
+                Sales Invoices
+            </a>
+            <a href="client_page_list.html" class="item">
+                <i class="user outline icon"></i>
+                Clients
+            </a>
+        </div>
+    </div>
+    <div class="item">
+        <a class="title">
+            <i class="dropdown icon"></i>
+            <b>Production</b>
+        </a>
+        <div class="content menu">
+            <a href="{% url 'sales:JO_list' %}" class="item">
+                <i class="edit outline icon"></i>
+                Job Orders
+            </a>
+        </div>
+    </div>
+    <div class="item">
+        <a class="title">
+            <i class="dropdown icon"></i>
+            <b>Inventory</b>
+        </a>
+        <div class="content menu">
+            <a href="intentory_page.html" class="item">
+                <i class="warehouse icon"></i>
+                Raw Materials Inventory
+            </a>
+            <a href="" class="item">
+                <i class="chart line icon"></i>
+                Inventory Forecast
+            </a>
+            <a href="{% url 'sales:create-client-po-form' %}" class="item">
+                <i class="edit outline icon"></i>
+                Create Supplier Purchase Order
+            </a>
+            <a href="{% url 'sales:create-client-po-form' %}" class="item">
+                <i class="file outline icon"></i>
+                Supplier Purchase Order
+            </a>
+            <a href="supplier_list.html" class="item">
+                <i class="dolly icon"></i>
+                Suppliers
+            </a>
+        </div>
+    </div>
+</div>
 
-{% endblock %}
+<script>
+    $('.ui.accordion')
+        .accordion();
 
- {% block content %}
- {% endblock %}
+</script>
+
+{% endblock %} {% block content %} {% endblock %}

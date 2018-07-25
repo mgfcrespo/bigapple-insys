@@ -1,0 +1,28 @@
+{% extends 'production_manager_page_ui.html' %}
+
+{% block content %}
+
+<div class = "ui centered grid">
+        <div class="six wide tablet ten wide computer column">
+            <form class="ui form segment" action = "#" method="POST" role="form">
+                <h2 class="ui dividing header">{{ title }}</h2>
+                {% csrf_token %}
+                <div class="field">
+                    <label>Supplier</label>
+                    {{ form.supplier }}
+                </div>
+                <div class="field">
+                    <label>Price</label>
+                    {{ form.price }}
+                </div>
+                <div class="field">
+                    <label>RM Type</label>
+                    {{ form.rm_type }}
+                </div>
+                    
+                <button class="ui basic green button" type="submit">Submit</button>
+            </form>
+        </div>
+</div>
+
+{% endblock %}

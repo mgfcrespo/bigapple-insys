@@ -13,23 +13,31 @@ class DateInput(forms.DateInput):
 class ClientPOFormItems(ModelForm):
     client_po = forms.CharField(label='')
     laminate = forms.BooleanField(initial=True, required=False)
+    printed = forms.BooleanField(initial=True, required=False)
 
     class Meta:
         model = ClientItem
-        fields = ('products', 'material_type', 'width', 'length', 'gusset', 'color', 'quantity', 'laminate')
+        fields = ('products', 'width', 'length', 'thickness', 'gusset', 'color', 'quantity', 'laminate', 'printed', 'color_quantity')
+        help_texts = {'color_quantity': "Only fill this if printed is checked"}
 
     def __init__(self, *args, **kwargs):
         super(ClientPOFormItems, self).__init__(*args, **kwargs)
-        self.fields['products'].label = 'Product Type'
+        self.fields['products'].label = 'Material Type'
         self.fields['products'].required = True
-        self.fields['material_type'].label = 'Material'
-        self.fields['material_type'].required = True
         self.fields['width'].required = True
+        self.fields['width'].label = 'Width(inches)'
         self.fields['length'].required = True
-        self.fields['gusset'].required = True
+        self.fields['length'].label = 'Length(inches)'
+        self.fields['thickness'].required = True
+        self.fields['thickness'].label = 'Thickness(inches)'
+        self.fields['gusset'].required = False
         self.fields['color'].required = True
         self.fields['quantity'].required = True
+        self.fields['color_quantity'].required = False
+        self.fields['color_quantity'].label = 'No. of Printing Colors'
 
+    class Media:
+        js = ('/static/create_po.js',)
 
 class ClientPOForm(ModelForm):
 
@@ -43,7 +51,10 @@ class ClientPOForm(ModelForm):
         def __init__(self, *args, **kwargs):
             super(ClientPOForm, self).__init__(*args, **kwargs)
             self.fields['date_required'].required = True
+            self.fields['date_required'].label = "Date Required"
             self.fields['other_info'].required = False
+            self.fields['other_info'].label = "Other Info"
+
 
 class ClientPaymentForm(ModelForm):
 

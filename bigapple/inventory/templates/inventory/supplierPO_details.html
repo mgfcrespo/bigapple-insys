@@ -1,10 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'production_manager_page_ui.html' %}
 
-</body>
-</html>
+{% block content %}
+
+<div class = "ui centered grid">
+    <div class="six wide tablet ten wide computer column">
+        <div>{{message}}</div>
+        <form id = "myForm" class="ui form segment" action = "{% url 'inventory:materials_requisition_approval' mr.id%}" method="POST" role="form">
+            {% csrf_token %}
+            <h2 class="ui header">{{ title }}</h2>
+            <div class = "field">
+                <label for="">Supplier</label>
+                <span>{{ mr.supplier }}</span>
+            </div>
+            <div class="two fields">
+                <div class = "field">
+                    <label for="">Date Issued</label>
+                    <span>{{ mr.date_issued }}</span>
+                </div>
+                <div class = "field">
+                    <label for="">Date Delivery</label>
+                    <span>{{ mr.delivery_date }}</span>
+                </div>
+            </div>
+            <table class="ui table">
+                <thead>
+                    <th class="five wide">Item</th>
+                    <th class="three wide">Quantity</th>
+                    <th class="four wide">Price</th>
+                    <th class="four wide">Total</th>
+                </thead>
+                <tbody>
+                    {% for mri in mri %}
+                    <tr>
+                        <td>{{ mri.item_name }}</td>
+                        <td>{{ mri.quantity }}</td>
+                        <td>{{ mri.price }}</td>
+                        <td>{{ mri.total_price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div style="text-align: right;">
+                <label for="">Total Amount:</label>
+                <span style="font-weight: bold; font-size: 18px;">{{ mr.total_amount }}</span>
+            </div>
+        </form>
+        <a href="{% url 'inventory:supplierPO_list'%}">Back</a>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+    <script>
+        $( document ).ready(function() {
+           
+        });
+    </script>
+
+{%endblock %}

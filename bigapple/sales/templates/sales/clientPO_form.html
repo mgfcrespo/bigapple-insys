@@ -3,19 +3,65 @@
 
 <h2>Create PO Form</h2>
 
+<div class="ui segment">
+  <p>Note: Minimum Order Quantity per item is 10'000 pcs. Order quantities below MOQ will be priced based on MOQ</p>
+    <p>Note: "No. of print colors" is only viable for printed orders</p>
+</div>
 
 <div class="sixteen wide column">
     <form id="myForm" class="ui form" action="{% url 'sales:create-client-po-form' %}" method="post" enctype="multipart/form-data">
 
-        {% csrf_token %} {% include 'sales/template_form.html' %} {% include 'sales/template_formset.html' %} {{formset.management_form}}
-        <button type="submit" class="ui green basic button">Submit</button>
+        {% csrf_token %}
+        {% include 'sales/template_form.html' %}
+
+
+        <table style="width:100%" class = "ui celled padded table">
+            <thead>
+            <tr>
+                <th>Material Type</th>
+                <th>Width (inches)</th>
+                <th>Length (inches)</th>
+                <th>Thickness (inches)</th>
+                <th>Gusset</th>
+                <th>Color</th>
+                <th>Quantity</th>
+                <th>Laminate</th>
+                <th>Printed</th>
+                <th>No. of Print Colors</th>
+            </tr>
+            </thead>
+         <tbody>
+            {% for form in formset %}
+            <tr id="{{ form.prefix }}-row" class="formset_class">
+                {% if form.instance.pk %} {{ form.DELETE }}{% endif %}
+              <td> {{form.products}}</td>
+                <td>{{form.width}}</td>
+               <td> {{form.length}}</td>
+               <td> {{form.thickness}}</td>
+                <td>{{form.gusset}}</td>
+                <td>{{form.color}}</td>
+                <td>{{form.quantity}}</td>
+                <td>{{form.laminate}}</td>
+                <td>{{form.printed}}</td>
+                <td>{{form.color_quantity}}</td>
+            </tr>
+            {% endfor %}
+         </tbody>
+        </table>
+
+
+        {{formset.management_form}}
+        <button type="submit" class="ui green basic button" onclick="return confirm('Are you sure?')">Submit</button>
     </form>
 </div>
 
 <!--
+<p>Total: </p><input id ="Total" type="number">
+-->
+
+<!--
 <button id = "view_receipt" class ="ui button">View Receipt</button>
 -->
-{% include "sales/confirm_po.html" %}
 
 {% endblock %} {% block script %}
 <script type="text/javascript">
@@ -27,6 +73,7 @@
 
 </script>
 
+<!--
 <script type="text/javascript">
 $(document).ready(function(){
     $("#view_receipt").click(function(){
@@ -35,6 +82,29 @@ $(document).ready(function(){
 });
 </script>
 
+<script type="text/javascript">
+$(function() {
+        $("input[name*='printed']").click(function() {
+            var disable = $(this).is(':checked');
+            $("input[name*='color_quantity']").attr('disabled', disable);
+        });
+    });
+    </script>
 
+<script type="text/javascript">
+$("input[name*='-quantity']").each(function(){
+total_price += parseInt($(this).val());
+ $("#Total").val(total_price);
+});
 {%endblock %}
+</script>
 
+<script type="text/javascript">
+var total = 0;
+$("input[name*='-quantity']").each( function(){
+          total += $(this).val() * 1;
+
+});
+$("#Total").val(total);
+    </script>
+ -->
