@@ -296,7 +296,7 @@ class ClientCreditStatus(models.Model):
                                               default=Decimal(0))  # accumulation of ClientPayment.balance
     overdue_balance = models.DecimalField('overdue_balance', decimal_places=2, max_digits=12,
                                           default=Decimal(0))  # sum of payments not made within payment terms
-    remarks = models.CharField('remarks', max=500)
+    remarks = models.CharField('remarks', max_length=500)
 
     def __str__(self):
         return str('Credit Status: %s' % (self.client))
