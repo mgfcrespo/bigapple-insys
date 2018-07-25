@@ -124,7 +124,7 @@ def delete_clientPO(request, id):
         return HttpResponseRedirect('../clientPO_list')
 
 
-# PO List/Detail view
+# PO List/Detail view + PO Confirm
 class POListView(ListView):
     template_name = 'sales/clientPO_list.html'
     model = ClientPO
@@ -133,6 +133,10 @@ class POListView(ListView):
 class PODetailView(DetailView):
     model = ClientPO
     template_name = 'sales/clientPO_detail.html'
+
+class POConfirmView(DetailView):
+    model = ClientPO
+    template_name = 'sales/clientPO_confirm.html'
 
 
 # JO List/Detail view

@@ -101,6 +101,10 @@ class ClientPO(models.Model):
         date1 = datetime.strptime(self.date_issued, date_format)
         date2 = datetime.strptime(self.date_required, date_format)
         return date2 - date1
+        
+    def evaluate_materials_requirement(self):
+    
+    def evaluate_credit_status(self):
     '''
 
 
@@ -200,6 +204,10 @@ class ClientItem(models.Model):
             self.item_price = Decimal(0.0)
             self.price_per_piece = Decimal(0.0)
         super(ClientItem, self).save(*args, **kwargs)
+
+        '''
+        def calculate_materials_requirement(self):
+        '''
 
 
 
