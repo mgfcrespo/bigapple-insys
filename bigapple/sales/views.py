@@ -372,12 +372,14 @@ def rush_order_list(request):
     }
     return render (request, 'sales/rush_order_list.html', context)
 
-def rush_order_assessment(request):
-    rush_order = ClientPO.objects.filter() #modify! lead time input
+def rush_order_assessment(request, pk):
+    rush_order = ClientPO.objects.get(pk=pk)
+
     context = {
-        'rush_order': rush_order
+        'rush_order' : rush_order
     }
-    return render(request, 'sales/rush_order_assessment.html', context)
+
+    return render('sales/rush_order_assessment.html', context)
 
 
 

@@ -17,25 +17,23 @@
             {% for rush_order in rush_order %}
             <tr>
                 <td>
-                    <a href="{% url 'sales:rush_order_list' rush_order.id %}">{{ rush_order.id }}</a>
+                    ({{ rush_order.client }})
                 </td>
                 <td>
-                    ({{ ClientCreditStatus.client }})
+                    ({{ rush_order }})
                 </td>
                 <td>
-                    ({{ ClientCreditStatus.credit_status }})
+                    ({{ rush_order.date_issued }})
                 </td>
                 <td>
-                    ({{ ClientCreditStatus.invoice_issued.id }})
+                    ({{ rush_order.date_required }})
                 </td>
                 <td>
-                    ({{ ClientCreditStatus.total_paid }})
+                    ({{ rush_order. }}) #TODO: refer lead time method
                 </td>
+                #TODO: for loop for rush order items
                 <td>
-                    ({{ ClientCreditStatus.outstanding_balance }})
-                </td>
-                <td>
-                    ({{ ClientCreditStatus.date_due }})
+                    ({{ rush_order.date_issued }})
                 </td>
             </tr>
             {% endfor %}
