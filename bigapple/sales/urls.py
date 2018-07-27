@@ -13,6 +13,7 @@ urlpatterns = [
           #JO urls
           path('JO-list/', views.JOListView.as_view(), name='JO_list'),
           path('JO-details/JO<int:pk>/', views.JODetailView.as_view(), name='JO_details'),
+          path('JO-finished/', views.FinishedJOListView.as_view(), name='finished_JO_list'),
 
           #sales_invoice urls
           path('sales-invoice-list/', views.InvoiceListView.as_view(), name='sales_invoice_list'),
