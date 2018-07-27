@@ -1,0 +1,36 @@
+{% extends 'global_base_ui.html' %}
+
+  {% block content %}
+  	<h2 class="ui header">{{ title }}</h2>
+		<table class="ui stripped table">
+        	<thead>
+          	<tr>
+          	  	<th>Person</th>
+                <th>Company</th>
+                <th>Email</th>
+                <th>Contact</th>
+                <th>Sales Agent</th>
+				<th></th>
+          	</tr>
+    		</thead>
+    		<tbody>
+				{% for data in data  %}
+    			<tr>
+    				<td>
+						<a href="{% url 'sales:sales_invoice_list' data.id %}">{{ data.full_name }}</a>
+					</td>
+    				<td>{{ data.company }}</td>
+                    <td>{{ data.email }}</td>
+                    <td>{{ data.contact_number }}</td>
+                    <td>{{ data.sales_agent }}</td>
+					<td>
+						<a href="{% url 'sales:client_edit' data.id %}">
+							<i class="yellow edit icon"></i>
+						</a>
+					</td>
+    			</tr>
+				{% endfor %}
+			</tbody>
+    	</table>
+	
+{% endblock %}

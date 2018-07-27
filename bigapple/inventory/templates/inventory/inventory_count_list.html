@@ -8,16 +8,18 @@
 		<table class="ui striped table">
         	<thead>
           	<tr class = "row">
-                <th>Date Counted</th>
-                <th>Old Count</th>
-                <th>New Count </th>
+                <th class = "four wide">Date Counted</th>
+				<th class = "three wide">Time</th>
+				<th class = "six wide">Person</th>
+                <th class = "three wide">Count </th>
           	</tr>
     		</thead>
     		<tbody>
 				{% for items in items %}
     			<tr class = "row">
-                    <td>{{ items.date_counted }}</td>
-					<td>{{ items.old_count }}</td>
+					<td>{{ items.date_counted }}</td>
+					<td>{{ items.time }}</td>
+					<td>{{ items.person }}</td>
                     <td>{{ items.new_count }}</td>
     			</tr>
 				{% endfor %}

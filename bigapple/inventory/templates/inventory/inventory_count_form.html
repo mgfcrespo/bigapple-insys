@@ -7,15 +7,30 @@
         <form class="ui form segment" action = "#" method="POST" role="form">
             <h2 class="ui dividing header">{{ title }}</h2>
             {% csrf_token %}
-            <div class="field">
-                <label>Item</label>
-                {{ form.inventory }}
-            </div>
-            <div class="field">
-                <label>Count</label>
-                {{ form.new_count }}
-            </div>
-            <button class="ui basic green button" type="submit">Submit</button>
+            <table class = "ui table" style = "border:0px;">
+                <tbody >
+                    <tr>
+                        <td class="ten wide"> 
+                            <label>Item</label>
+                            {{ form.inventory }}
+                        </td>
+                        <td class="six wide">
+                            <label style = "font-size: 18px;">Quantity: </label>
+                            <span style = "font-size: 18px;font-weight: bold;"> {{ data.quantity }} </span>
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style = "border:0px;">
+                            <label>Count</label>
+                            {{ form.new_count }}
+                        </td>
+                    </tr>
+                </tbody>    
+            </table>
+            
+            <button class="ui basic green button" type="submit" data-tooltip="Update Inventory Quantity" data-position="top left" data-inverted="">{{actiontype}}</button>
+            <a class="ui basic red button" href="{% url 'inventory:inventory_item_list'%}">Back</a>
         </form>
     </div>
 </div>

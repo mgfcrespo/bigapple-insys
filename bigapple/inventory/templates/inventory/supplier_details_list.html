@@ -1,0 +1,81 @@
+{% extends 'production_manager_page_ui.html' %}
+
+  {% block content %}
+
+	<div class = "ui container">
+		<div class="ui grid">
+			<div class="eight wide column">
+					<h2 class="ui header">{{ title1 }}</h2>
+					<table class="ui stripped table">
+						<thead>
+						  <tr class = "row">
+							<th>Type</th>
+							<th>Price</th>
+							<th></th>
+						  </tr>
+						</thead>
+						<tbody>
+							{% for items in items %}
+							<tr class = "row">
+								{% if items.item_type == "Raw Materials" %}
+									<td>{{ items.rm_type }}</td>		
+								{% else %}
+									<td>{{ items.item_name }}</td>
+								{% endif %}
+								<td>{{ items.price }}</td>
+								<td>
+									<a style = "padding: 5px;" href="{% url 'inventory:supplier_rawmat_edit' items.id %}">
+										<i class="yellow edit icon"></i>
+									</a>
+									<a style = "padding: 5px;" href="{% url 'inventory:supplier_rawmat_delete' items.id %}">
+										<i class="red trash icon"></i>
+									</a>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+			</div>
+			<div class="eight wide column">
+				<h2 class="ui header">{{ title2 }}</h2>
+				<table class="ui stripped table">
+					<thead>
+						<tr class = "row">
+						<th>SI#</th>
+						<th>PO#</th>
+						<th>Date</th>
+						<th>Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for data in data %}
+						<tr class = "row">
+							<td>{{ data }}</td>
+							<td>{{ data.supplier_po }}</td>
+							<td>{{ data.date }}</td>
+							<td>{{ data.total_amount }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>	
+	</div>
+ <!-- Modal Confirm Delete -->
+	 <!-- <div class="ui modal">
+		<div class="header">Header</div>
+		<div class="content">
+			<p></p>
+		</div>
+		<div class="actions">
+			<div class="ui approve button">Approve</div>
+			<div class="ui button">Neutral</div>
+			<div class="ui cancel button">Cancel</div>
+		</div>
+	</div> -->
+
+	
+	{% block script %}
+	{% endblock %}
+	
+{% endblock %}

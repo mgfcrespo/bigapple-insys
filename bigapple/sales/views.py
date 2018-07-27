@@ -42,7 +42,7 @@ def supplier_add(request):
     context = {
         'form' : form,
         'title' : "Add Supplier",
-        'actiontype' : "Add",
+        'actiontype' : "Submit",
     }
     return render(request, 'sales/supplier_add.html', context)
 
@@ -51,6 +51,7 @@ def supplier_add(request):
 def supplier_list(request):
     supplier = Supplier.objects.all()
     context = {
+        'title': 'Supplier List',
         'supplier' : supplier 
     }
     return render (request, 'sales/supplier_list.html', context)
@@ -382,7 +383,88 @@ def rush_order_assessment(request, pk):
     return render('sales/rush_order_assessment.html', context)
 
 
+#CLIENT CRUD
+def client_add(request):
+    form = ClientForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return redirect('sales:client_list')
 
+    context = {
+        'form' : form,
+        'title' : "Add Client",
+        'actiontype' : "Submit",
+    }
+    return render(request, 'sales/client_add.html', context)
+
+def client_list(request):
+    data = Client.objects.all()
+    context = {
+        'title': 'Client List',
+        'data' : data 
+    }
+    return render (request, 'sales/client_list.html', context)
+
+def client_edit(request, id):
+    data = Client.objects.get(id=id)
+    form = ClientForm(request.POST or None, instance=data)
+
+    if form.is_valid():
+        form.save()
+        return redirect('sales:client_list')
+    
+    context = {
+        'form' : form,
+        'data' : data,
+        'title' : "Edit Client",
+        'actiontype' : "Submit",
+    }
+    return render(request, 'sales/client_add.html', context)
+
+#EMPLOYEE CRUD
+def employee_add(request):
+    form = EmployeeForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return redirect('sales:employee_list')
+
+    context = {
+        'form' : form,
+        'title' : "Add Employee",
+        'actiontype' : "Submit",
+    }
+    return render(request, 'sales/employee_add.html', context)
+
+def employee_list(request):
+    data = Employee.objects.all()
+    context = {
+        'title': 'Employee List',
+        'data' : data 
+    }
+    return render (request, 'sales/employee_list.html', context)
+
+def employee_edit(request, id):
+    data = Employee.objects.get(id=id)
+    form = EmployeeForm(request.POST or None, instance=data)
+    if form.is_valid():
+        form.save()
+        return redirect('sales:employee_list')
+    
+    context = {
+        'form' : form,
+        'data' : data,
+        'title' : "Edit Employee",
+        'actiontype' : "Submit",
+    }
+    return render(request, 'sales/employee_add.html', context)
+
+def employee_delete(request, id):
+    data = Employee.objects.get(id=id)
+    data.delete()
+    return redirect('sales:employee_list')
+	
 '''
 #Forecasting view
 def call_forecasting(request):

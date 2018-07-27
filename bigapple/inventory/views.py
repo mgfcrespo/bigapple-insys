@@ -4,30 +4,14 @@ from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory, inlineformset_factory
 from django.db.models import aggregates
 
-from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, SupplierRawMaterials, InventoryCountAsof
+from .models import SupplierSalesInvoice
+from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, SupplierRawMaterials, InventoryCountAsof, Employee
 from .models import MaterialRequisition, MaterialRequisitionItems, PurchaseRequisition, PurchaseRequisitionItems
 from .forms import SupplierPOItemsForm, InventoryForm, SupplierPOForm, SupplierRawMaterialsForm, InventoryCountAsofForm
 from .forms import MaterialRequisitionForm, MaterialRequisitionItemsForm, PurchaseRequisitionForm, PurchaseRequisitionItemsForm
 
 # Create your views here.
 # Inventory
-def inventory_item_add(request):
-    form = InventoryForm(request.POST)
-    supplier = Supplier.objects.all()
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            return redirect('inventory:inventory_item_list')
-
-    context = {
-        'supplier' : supplier,
-        'form' : form,
-        'title': 'Add Inventroy Item',
-        'actiontype': 'Submit'
-    }
-
-    return render(request, 'inventory/inventory_item_add.html', context)
-
 def inventory_item_list(request):
     items = Inventory.objects.all()
     context = {
@@ -42,7 +26,7 @@ def inventory_item_edit(request, id):
 
     if form.is_valid():
         form.save()
-        return HttpResponseRedirect('../../inventory_item_list')
+        return HttpResponseRedirect('../../inventory-item-list')
     
     context = {
         'form' : form,
@@ -55,19 +39,32 @@ def inventory_item_edit(request, id):
 def inventory_item_delete(request, id):
     items = Inventory.objects.get(id=id)
     items.delete()
-    return HttpResponseRedirect('../../inventory_item_list')
+    return HttpResponseRedirect('../../inventory-item-list')
 
-# Inventory Count TODO
-def inventory_count_form(request):
+# Inventory Count 
+def inventory_count_form(request, id):
+    data = Inventory.objects.get(id=id)
     form = InventoryCountAsofForm(request.POST)
-
+    
+    form.fields["inventory"].queryset = Inventory.objects.filter(id=data.id)
+    form.fields["inventory"].initial = data.id
+    
     if request.method == 'POST':
-        print(form.errors)
+        
+        #Get session user id
+        # employee_id = request.session['session_userid']
+        # current_employee = Employee.objects.get(id=employee_id)
+
         if form.is_valid():
+            data.quantity = request.POST.get('new_count')
+            #data.person = current_employee
+            data.save()
+
             i = request.POST.get('inventory')
             item = InventoryCountAsof.objects.filter(inventory=i) #item previously counted
+            print(item)
             if item.exists():
-                counted = InventoryCountAsof.objects.filter(inventory=i).latest('date_counted')#get latest
+                counted = InventoryCountAsof.objects.filter(inventory=i).latest('time')#get latest
 
                 new_form = form.save()
                 new_form = new_form.pk
@@ -75,22 +72,19 @@ def inventory_count_form(request):
 
                 form_instance.old_count = counted.new_count
                 form_instance.save()
-
-                # print(form_instance.id)
-                # print(form_instance.old_count)
-                # print(form_instance.new_count)
-                
-                # print(counted.id)
-                # print(counted.new_count)
-
             else:   
                 form.save()
-            return redirect('inventory:inventory_count_list')
+        
+        return redirect('inventory:inventory_count_list', id = data.id)
+    
+    form.fields["inventory"].queryset = Inventory.objects.filter(id=data.id)
+    form.fields["inventory"].initial = data.id
 
     context = {
         'form' : form,
+        'data': data,
         'title': 'Inventory Count',
-        'actiontype': 'Submit'
+        'actiontype': 'Update'
     }
 
     return render(request, 'inventory/inventory_count_form.html', context)
@@ -98,33 +92,68 @@ def inventory_count_form(request):
 def inventory_count_list(request, id):
     i = Inventory.objects.get(id=id)
 
-    items = InventoryCountAsof.objects.filter(inventory=id).order_by('date_counted')
+    items = InventoryCountAsof.objects.filter(inventory=id).order_by('-time')
     context = {
-        'title': i.item_name,
+        'title': i.item,
         'items' : items 
     }
     return render (request, 'inventory/inventory_count_list.html', context)
 
 # Supplier Raw Material
 
-def supplier_rawmat_list(request):
-    items = SupplierRawMaterials.objects.all()
+def supplier_details_list(request, id):
+    items = SupplierRawMaterials.objects.filter(supplier = id)
+    data = SupplierSalesInvoice.objects.filter(id = id)
+    title1 = 'Supplier Raw Material'
+    title2 = 'Supplier Sales Invoice'
     context = {
-        'title': 'List of Supplier Raw Material',
-        'items' : items 
+       'title1': title1,
+       'title2': title2,
+        'items' : items,
+        'data': data
     }
-    return render (request, 'inventory/supplier_rawmat_list.html', context)
+    return render (request, 'inventory/supplier_details_list.html', context)
 
 def supplier_rawmat_add(request):
     form = SupplierRawMaterialsForm(request.POST)
-    if request.method == 'POST':
-        if form.is_valid():
+    title =  'Add Supplier Raw Material'
+
+    if title == 'Add Supplier Raw Material':
+        if request.method == 'POST':
+            if form.is_valid():
+                if request.POST.get("item_type") == "Raw Materials":
+                    rm = Inventory.objects.filter(item = request.POST.get("rm_type"))
+                    print(rm)
+                    if rm.exists():
+                        print("Item Exists")
+                    else:
+                        iform = InventoryForm({
+                            'item': request.POST.get("rm_type"),
+                            'item_type': request.POST.get("item_type")
+                        })
+                        print("Item saved")
+                        iform.save()
+
+                elif request.POST.get("item_type") != "Raw Materials":
+                    i = Inventory.objects.filter(item = request.POST.get("item_name"), item_type =  request.POST.get("item_type"))
+                    if i.exists():
+                        print("Item Exists")
+                    else:
+                        iform = InventoryForm({
+                            'item': request.POST.get("item_name"),
+                            'item_type': request.POST.get("item_type"),
+                        })
+                        print("Item saved")
+                        iform.save()
+                else:
+                    print("Others: Do nothing")
+
             form.save()
-            return HttpResponseRedirect('../supplier_rawmat_list')
+            return redirect('../inventory-item-list/')
 
     context = {
         'form' : form,
-        'title': 'Add Supplier Raw Material',
+        'title': title,
         'actiontype': 'Submit'
     }
 
@@ -133,23 +162,24 @@ def supplier_rawmat_add(request):
 def supplier_rawmat_edit(request, id):
     items = SupplierRawMaterials.objects.get(id=id)
     form = SupplierRawMaterialsForm(request.POST or None, instance=items)
-
+    data = Supplier.objects.get(id = items.supplier.id)
     if form.is_valid():
         form.save()
-        return HttpResponseRedirect('../../supplier_rawmat_list')
+        return redirect('inventory:supplier_details_list', id = data.id)
     
     context = {
         'form' : form,
         'items' : items,
-        'title' : "Edit Raw Material Item",
+        'title' : "Edit Supplier Raw Material",
         'actiontype' : "Submit",
     }
     return render(request, 'inventory/supplier_rawmat_add.html', context)
 
 def supplier_rawmat_delete(request, id):
     items = SupplierRawMaterials.objects.get(id=id)
+    data = Supplier.objects.get(id = items.supplier.id)
     items.delete()
-    return HttpResponseRedirect('../../supplier_rawmat_list')
+    return redirect('inventory:supplier_details_list', id = data.id)
 
 # Material Requisition
 def materials_requisition_list(request):
@@ -200,7 +230,6 @@ def materials_requisition_approval(request, id):
 def materials_requisition_form(request):
     #note:instance should be an object
     matreq_item_formset = inlineformset_factory(MaterialRequisition, MaterialRequisitionItems, form=MaterialRequisitionItemsForm, extra=1, can_delete=True)
-
     if request.method == "POST":
         form = MaterialRequisitionForm(request.POST)
         #Set ClientPO.client from session user
@@ -212,6 +241,8 @@ def materials_requisition_form(request):
             new_form = form.save()
             new_form = new_form.pk
             form_instance = MaterialRequisition.objects.get(id=new_form)
+
+
 
             #Use PO form instance for PO items
             formset = matreq_item_formset(request.POST, instance=form_instance)
@@ -234,6 +265,10 @@ def materials_requisition_form(request):
         else:
             message = "Form is not valid"
 
+
+        form.fields["issued_to"].queryset = Employee.objects.filter(position__in=['General Manager', 'Sales Coordinator', 'Supervisor',
+        'Line Leader', 'Production Manager', 'Cutting', 'Printing', 'Extruder', 'Delivery', 'Warehouse', 'Utility', 
+        'Maintenance'])
 
         return redirect('inventory:materials_requisition_list')
     
@@ -353,8 +388,11 @@ def supplierPO_form(request):
                 for form in formset:
                     form.save()
 
-                formset_items = Inventory.objects.filter(supplier_po_id = new_form)
-                formset_item_total = formset_items.aggregate(sum=aggregates.Sum('item_price'))['sum'] or 0
+                formset_items = SupplierPOItems.objects.filter(id = new_form)
+                formset_items_rm = SupplierRawMaterials.objects.filter(id = id)
+                formset_items.price = formset_items_rm.price 
+
+                formset_item_total = formset_items.aggregate(sum=aggregates.Sum('total_price'))['sum'] or 0
 
                 totalled_supplierpo = SupplierPO.objects.get(id=new_form)
                 totalled_supplierpo.total_amount = formset_item_total
@@ -374,6 +412,27 @@ def supplierPO_form(request):
                               )
     else:
         return render(request, 'inventory/supplierPO_form.html',
+                              {'formset':supplierpo_item_formset(),
+                               'form': SupplierPOForm}
+                              )
+
+def supplierPO_form_test(request):
+    supplierpo_item_formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm, extra=1, can_delete=True)
+    # data = JobOrder.objects.get(id=id)
+    # form = PrintingScheduleForm(request.POST or None)
+    # print(form.errors)
+    # if request.method == 'POST':
+    #   if form.is_valid():
+    #     form.save()
+    #     return redirect('production:job_order_details', id = data.id)
+    
+    # context = {
+    #   'data': data,
+    #   'title' : data.job_order,
+    #   'form': form,
+    # }
+    
+    return render (request, 'inventory/supplierPO_form.html',
                               {'formset':supplierpo_item_formset(),
                                'form': SupplierPOForm}
                               )

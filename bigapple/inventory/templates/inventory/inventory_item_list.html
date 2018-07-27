@@ -9,23 +9,22 @@
           	<tr class = "row">
                 <th class="four wide">Item</th>
 				<th class="four wide">Type</th>
-				<th class="six wide">Quantity</th>
-				<th style="width: 100px;"></th>
+				<th class="four wide">Quantity</th>
+				<th class="four wide"></th>
           	</tr>
     		</thead>
     		<tbody>
 				{% for items in items %}
     			<tr class = "row">
 					<td> 
-						<a href="{% url 'inventory:inventory_count_list' items.id %}">{{ items.item_name }}</a>
+						<a href="{% url 'inventory:inventory_count_list' items.id %}">{{ items.item }}</a>
 					</td>
-					{% if items.item_type == 'Raw Materials' %}
-                    	<td>{{ items.itemtype }}</td>
-					{% else %}
-						<td>{{ items.item_type }}</td>
-					{% endif %}
+					<td>{{ items.item_type }}</td>
 					<td>{{ items.quantity }}</td>
-                    <td>
+                    <td class="right aligned">
+						<a style = "padding: 5px;" href="{% url 'inventory:inventory_count_form' items.id %}">
+							<i class="primary boxes icon"></i>
+						</a>
 						<a style = "padding: 5px;" href="{% url 'inventory:inventory_item_edit' items.id %}">
 							<i class="yellow edit icon"></i>
 						</a>

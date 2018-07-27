@@ -64,32 +64,68 @@ class ClientPaymentForm(ModelForm):
         widgets = {
             'payment_date': DateInput()
         }
-
 class SupplierForm(forms.ModelForm):
 
-    company_name = forms.CharField(max_length=200, label = 'company_name', widget = forms.TextInput(
-        attrs={'id':'company_name', 'name':'company_name', 'type':'text', 'required':'true'}
-    ))
-    first_name = forms.CharField(max_length=200, label = 'first_name', widget = forms.TextInput(
-        attrs={'id':'first_name', 'name':'first_name', 'type':'text', 'required':'true'}
-    ))
-    last_name = forms.CharField(max_length=200, label = 'last_name', widget = forms.TextInput(
-        attrs={'id':'last_name', 'name':'last_name', 'type':'text', 'required':'true'}
-    ))
-    mobile_number = forms.CharField(max_length=11, label = 'mobile_number', widget = forms.TextInput(
-        attrs={'id':'mobile_number', 'name':'mobile_number', 'type':'number', 'required':'true'}
-    ))
-    email_address = forms.CharField(max_length=200, label = 'email_address', widget = forms.TextInput(
-        attrs={'id':'email_address', 'name':'email_address', 'type':'email', 'required':'true'}
-    ))
-    description = forms.CharField(max_length=200, label = 'description', widget = forms.TextInput(
-        attrs={'id':'description', 'name':'description', 'type':'text', 'required':'false'}
-    ))
-    
     class Meta:
         model = Supplier
         fields = ('company_name', 'first_name', 'last_name', 'mobile_number', 'email_address',
         'description')
+    
+    mobile_number = forms.CharField(max_length=11)
+    description = forms.CharField(required = False, widget = forms.Textarea(attrs={'rows':'3'}))
+
+class ClientForm(forms.ModelForm):
+    
+    class Meta:
+        model = Client
+        fields = ('first_name', 'last_name', 'company', 'address', 'email', 'contact_number', 'tin',
+         'sales_agent')
+
+        
+    contact_number = forms.CharField(max_length=11)
+    sales_agent = forms.ModelChoiceField(queryset=Employee.objects.all())
+        
+    def __init__(self, *args, **kwargs):
+        super(ClientForm, self).__init__(*args, **kwargs)
+        self.fields['tin'].required = False
+        self.fields['sales_agent'].queryset = Employee.objects.filter(position='Sales Agent')
+  
+class EmployeeForm(forms.ModelForm):
+    POSITION = (
+        ('General Manager', 'General Manager'),
+        ('Sales Coordinator', 'Sales Coordinator'),
+        ('Sales Agent', 'Sales Agent'),
+        ('Credits and Collection Personnel', 'Credits and Collection Personnel'),
+        ('Supervisor', 'Supervisor'),
+        ('Line Leader', 'Line Leader'),
+        ('Production Manager', 'Production Manager'),
+        ('Cutting', 'Cutting'),
+        ('Printing', 'Printing'),
+        ('Extruder', 'Extruder'),
+        ('Delivery', 'Delivery'),
+        ('Warehouse', 'Warehouse'),
+        ('Utility', 'Utility'),
+        ('Maintenance', 'Maintenance'),
+
+    )
+
+    class Meta:
+        model = Employee
+        fields = ('first_name', 'last_name', 'birth_date', 'address', 'email', 'contact_number', 'sss',
+        'philhealth', 'pagibig', 'tin', 'position')
+        widgets = {
+            'birth_date': DateInput()
+        }
+
+    contact_number = forms.CharField(max_length=11)
+    position = forms.CharField(widget = forms.Select(choices=POSITION))
+
+    def __init__(self, *args, **kwargs):
+        super(EmployeeForm, self).__init__(*args, **kwargs)
+        self.fields['sss'].required = False
+        self.fields['philhealth'].required = False
+        self.fields['pagibig'].required = False
+        self.fields['tin'].required = False
     
     #class ClientPOForm(forms.ModelForm):
         

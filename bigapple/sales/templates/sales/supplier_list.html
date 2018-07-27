@@ -1,6 +1,6 @@
 {% extends 'sales_coordinator_page_ui.html' %}
   {% block content %}
-
+  	<h2 class="ui header">{{ title }}</h2>
 		<table class="ui stripped table">
         	<thead>
           	<tr>
@@ -14,7 +14,9 @@
     		<tbody>
 				{% for supplier in supplier  %}
     			<tr>
-    				<td>{{ supplier.company_name }}</td>
+    				<td>
+						<a href="{% url 'inventory:supplier_details_list' supplier.id %}">{{ supplier.company_name }}</a>
+					</td>
     				<td>{{ supplier.contact_person }}</td>
     				<td>{{ supplier.mobile_number }}</td>
 					<td>{{ supplier.email_address }}</td>
