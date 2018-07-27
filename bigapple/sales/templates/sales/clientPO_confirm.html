@@ -63,18 +63,20 @@
 
 			</tbody>
     	</table>
+                {% if clientconstant.payment_terms < client.creditstatus.calculate_days_overdue %}
+                <h2> This client's credit status is {{ client.creditstatus.calculate_days_overdue }} days overdue. </h2>
+                {% else %}
+                <h2> This client's credit status is cleared. </h2>
 
-                { if clientconstant.payment_terms < clientcreditstatus.calculate_days_overdue }
-                <h2> You are not eligible to issue a Purchase Order at this time as there are credit status issues linked to your account. </h2>
+                #TODO: condition to show materials requirement and inventory levels
 
-                    {% else %}
+
 
                     <div class="row">
                         <div class="center">
                             <button id="" class="ui green basic button" type="button" style="width: 200px;">Confirm</button>
                         </div>
                     </div>
-                 #TODO: do credit status
                     
                 </form>
             </div>
