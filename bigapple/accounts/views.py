@@ -9,9 +9,6 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
-from .models import Address
-from .models import ContactNumber
-from .models import Email
 from .models import Employee
 from .models import Client
 

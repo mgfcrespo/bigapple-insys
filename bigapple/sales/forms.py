@@ -6,6 +6,7 @@ from decimal import Decimal
 from django.contrib.admin.widgets import AdminDateWidget
 
 from .models import ClientItem, ClientPO, Product, Supplier, ClientPayment
+from accounts.models import Client, Employee
 
 class DateInput(forms.DateInput):
     input_type = 'date'
