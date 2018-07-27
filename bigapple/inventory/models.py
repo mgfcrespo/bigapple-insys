@@ -30,22 +30,44 @@ class SupplierRawMaterials(models.Model):
 
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     price = models.DecimalField('price', decimal_places=2, max_digits=50)
-    item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='Raw Material')
-    rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='--', null=True, blank=True)
-    item_name = models.CharField('item_name', max_length=200, default='Not Specified')
+    rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='not specified', null=True,
+                               blank=True)
 
-    def __str__(self):
-        return str(self.supplier) +' : ' + str(self.item_name)
 
 class Inventory(models.Model):
-
     item = models.CharField('item', max_length=200)
     item_type = models.CharField('item_type', max_length=200)
     description = models.CharField('description', max_length=200, blank=True, null=True)
     quantity = models.IntegerField('quantity', default=0)
-   
+
     def __str__(self):
-        return str(self.item) 
+        return str(self.item)
+
+class InventoryCountAsof(models.Model):
+    RM_TYPES = (
+        ('--', '----------------'),
+        ('LDPE', 'Low-density polyethylene'),
+        ('LLDPE', 'Linear low-density polyethylene'),
+        ('HDPE', 'High-density polyethylene'),
+        ('PP', 'Polypropylene'),
+        ('PET', 'Polyethylene terephthalate')
+    )
+
+    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
+    old_count = models.IntegerField('old_count', default=0)
+    new_count = models.IntegerField('new_count', default=0)
+    date_counted = models.DateField('date_counted', )
+    time = models.TimeField('time', auto_now_add=True, blank=True)
+    #item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='Raw Material')
+    rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='--', null=True, blank=True)
+    item_name = models.CharField('item_name', max_length=200, default='Not Specified')
+
+
+    def __str__(self):
+        return str(self.supplier) +' : ' + str(self.item_name)
+
+
+
 
 class SupplierPO(models.Model):
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
@@ -136,6 +158,7 @@ class PurchaseRequisitionItems(models.Model):
     def __str__(self):
         return str(self.purchreq) + ' : ' + str(self.item)
 
+'''
 class InventoryCountAsof(models.Model):
     inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
     person = models.ForeignKey(Employee, on_delete=models.CASCADE, default = 1)
@@ -146,7 +169,7 @@ class InventoryCountAsof(models.Model):
 
     def __str__(self):
         return str(self.id) +' : '+str(self.inventory) +' : ' + str(self.date_counted)
-
+'''
 #TODO
 class SupplierSalesInvoice(models.Model):
     supplier_po = models.ForeignKey(SupplierPO, on_delete=models.CASCADE)

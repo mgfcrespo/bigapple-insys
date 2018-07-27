@@ -1,4 +1,4 @@
-{% extends 'production_manager_page_ui.html' %}
+{% extends template %}
 
   {% block content %}
 
@@ -14,6 +14,7 @@
           	</tr>
     		</thead>
     		<tbody>
+				{% if items %}
 				{% for items in items %}
     			<tr class = "row">
 					<td> 
@@ -34,6 +35,9 @@
                     </td>
     			</tr>
 				{% endfor %}
+			{% else %}
+				<td>No Inventory items to show!</td>
+			{% endif %}
 			</tbody>
     	</table>
 	</div>

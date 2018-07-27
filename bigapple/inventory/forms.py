@@ -56,7 +56,7 @@ class SupplierRawMaterialsForm(ModelForm):
 
     class Meta:
         model = SupplierRawMaterials
-        fields = ( 'supplier', 'price', 'rm_type', 'item_type', 'item_name')
+        fields = ( 'supplier', 'price', 'rm_type') # 'item_type', 'item_name'
 
     supplier = forms.ModelChoiceField(queryset=Supplier.objects.all())
     item_type = forms.CharField(max_length=200, label = 'item_name', widget = forms.Select(choices=ITEM_TYPES))

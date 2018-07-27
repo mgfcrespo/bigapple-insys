@@ -1,0 +1,52 @@
+{% extends template %}
+
+  {% block content %}
+
+	<div class = "ui container">
+		<h4 class="ui header">{{ title }}</h4>
+		<table class="ui stripped table">
+        	<thead>
+          	<tr class = "row">
+                <th class="four wide">Supplier</th>
+				<th class="four wide">Type</th>
+				<th class="six wide">Price</th>
+				<th style="width: 100px;"></th>
+          	</tr>
+    		</thead>
+    		<tbody>
+				{% for items in items %}
+    			<tr class = "row">
+					<td>{{ items.supplier }}</td>
+                    <td>{{ items.rm_type }}</td>
+                    <td>{{ items.price }}</td>
+                    <td>
+						<a style = "padding: 5px;" href="{% url 'inventory:supplier_rawmat_edit' items.id %}">
+							<i class="yellow edit icon"></i>
+						</a>
+						<a style = "padding: 5px;" href="{% url 'inventory:supplier_rawmat_delete' items.id %}">
+							<i class="red trash icon"></i>
+						</a>
+                    </td>
+    			</tr>
+				{% endfor %}
+			</tbody>
+    	</table>
+	</div>
+ <!-- Modal Confirm Delete -->
+	 <!-- <div class="ui modal">
+		<div class="header">Header</div>
+		<div class="content">
+			<p></p>
+		</div>
+		<div class="actions">
+			<div class="ui approve button">Approve</div>
+			<div class="ui button">Neutral</div>
+			<div class="ui cancel button">Cancel</div>
+		</div>
+	</div> -->
+
+	
+	{% block script %}
+	{% endblock %}
+	
+{% endblock %}

@@ -73,6 +73,7 @@ class PreProduct(models.Model):
 
 # could be substitute for quotation request
 class ClientPO(models.Model):
+
     STATUS =(
         ('Waiting', 'Waiting'),
         ('Approved', 'Approved'),
@@ -283,7 +284,7 @@ class SalesInvoice(models.Model):
         self.net_vat = client_constants.net_vat
         self.total_amount_computed = self.calculate_total_amount_computed()
         # self.days_passed= self.calculate_days_passed()
-        self.date_due = self.calculate_date_due()
+        #self.date_due = self.calculate_date_due()
 
 
         super(SalesInvoice, self).save(*args, **kwargs)

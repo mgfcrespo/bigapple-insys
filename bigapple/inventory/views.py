@@ -5,6 +5,7 @@ from django.forms import formset_factory, inlineformset_factory
 from django.db.models import aggregates
 from django.contrib import messages
 
+
 from .models import SupplierSalesInvoice
 from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, SupplierRawMaterials, InventoryCountAsof, Employee
 from .models import MaterialRequisition, MaterialRequisitionItems, PurchaseRequisition, PurchaseRequisitionItems
@@ -14,15 +15,54 @@ from .forms import MaterialRequisitionForm, MaterialRequisitionItemsForm, Purcha
 
 # Create your views here.
 # Inventory
+
+def inventory_item_add(request):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
+    form = InventoryForm(request.POST)
+    supplier = Supplier.objects.all()
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return redirect('inventory:inventory_item_list')
+
+    context = {
+        'supplier' : supplier,
+        'form' : form,
+        'title': 'Add Inventroy Item',
+        'actiontype': 'Submit',
+        'template': template
+    }
+
+    return render(request, 'inventory/inventory_item_add.html', context)
+
+
 def inventory_item_list(request):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     items = Inventory.objects.all()
     context = {
         'title': 'Inventory List',
-        'items' : items 
+        'items' : items,
+        'template': template
     }
     return render (request, 'inventory/inventory_item_list.html', context)
 
 def inventory_item_edit(request, id):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     items = Inventory.objects.get(id=id)
     form = InventoryForm(request.POST or None, instance=items)
 
@@ -35,16 +75,40 @@ def inventory_item_edit(request, id):
         'items' : items,
         'title' : "Edit Inventory Item",
         'actiontype' : "Submit",
+        'template': template
     }
     return render(request, 'inventory/inventory_item_add.html', context)
 
 def inventory_item_delete(request, id):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     items = Inventory.objects.get(id=id)
     items.delete()
     return HttpResponseRedirect('../../inventory-item-list')
 
+
+# Inventory Count TODO
+def inventory_count_form(request):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
+
 # Inventory Count 
 def inventory_count_form(request, id):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
+
     data = Inventory.objects.get(id=id)
     form = InventoryCountAsofForm(request.POST)
     
@@ -52,7 +116,9 @@ def inventory_count_form(request, id):
     form.fields["inventory"].initial = data.id
     
     if request.method == 'POST':
-        
+
+
+
         #Get session user id
         # employee_id = request.session['session_userid']
         # current_employee = Employee.objects.get(id=employee_id)
@@ -86,24 +152,55 @@ def inventory_count_form(request, id):
         'form' : form,
         'data': data,
         'title': 'Inventory Count',
-        'actiontype': 'Update'
+        'actiontype': 'Submit',
+        'template': template,
+        #'actiontype': 'Update'
     }
 
     return render(request, 'inventory/inventory_count_form.html', context)
 
 def inventory_count_list(request, id):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     i = Inventory.objects.get(id=id)
 
     items = InventoryCountAsof.objects.filter(inventory=id).order_by('-time')
     context = {
-        'title': i.item,
-        'items' : items 
+
+        'title': i.item_name,
+        'items' : items,
+        'template': template
     }
     return render (request, 'inventory/inventory_count_list.html', context)
 
 # Supplier Raw Material
 
+
+def supplier_rawmat_list(request):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
+    items = SupplierRawMaterials.objects.all()
+    context = {
+        'title': 'List of Supplier Raw Material',
+        'items' : items,
+        'template': template}
+
 def supplier_details_list(request, id):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
+
     items = SupplierRawMaterials.objects.filter(supplier = id)
     data = SupplierSalesInvoice.objects.filter(id = id)
     title1 = 'Supplier Raw Material'
@@ -112,11 +209,18 @@ def supplier_details_list(request, id):
        'title1': title1,
        'title2': title2,
         'items' : items,
-        'data': data
+        'data': data,
+        'template': template
     }
     return render (request, 'inventory/supplier_details_list.html', context)
 
 def supplier_rawmat_add(request):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     form = SupplierRawMaterialsForm(request.POST)
     title =  'Add Supplier Raw Material'
 
@@ -155,13 +259,20 @@ def supplier_rawmat_add(request):
 
     context = {
         'form' : form,
+        'actiontype': 'Submit',
+        'template': template,
         'title': title,
-        'actiontype': 'Submit'
     }
 
     return render(request, 'inventory/supplier_rawmat_add.html', context)
 
 def supplier_rawmat_edit(request, id):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     items = SupplierRawMaterials.objects.get(id=id)
     form = SupplierRawMaterialsForm(request.POST or None, instance=items)
     data = Supplier.objects.get(id = items.supplier.id)
@@ -174,10 +285,17 @@ def supplier_rawmat_edit(request, id):
         'items' : items,
         'title' : "Edit Supplier Raw Material",
         'actiontype' : "Submit",
+        'template': template,
     }
     return render(request, 'inventory/supplier_rawmat_add.html', context)
 
 def supplier_rawmat_delete(request, id):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     items = SupplierRawMaterials.objects.get(id=id)
     data = Supplier.objects.get(id = items.supplier.id)
     items.delete()
@@ -185,14 +303,22 @@ def supplier_rawmat_delete(request, id):
 
 # Material Requisition
 def materials_requisition_list(request):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     mr = MaterialRequisition.objects.all()
     context = {
         'title' :'Material Requisition List',
-        'mr' : mr 
+        'mr' : mr ,
+        'template': template
     }
     return render (request, 'inventory/materials_requisition_list.html', context)
 
 def materials_requisition_details(request, id):
+<<<<<<< HEAD
     count = 0
     mr = MaterialRequisition.objects.get(id=id) #get MR
     mri = MaterialRequisitionItems.objects.filter(matreq=mr) #get MR Items 
@@ -209,15 +335,35 @@ def materials_requisition_details(request, id):
     else:
         style = "ui red message"
 
+=======
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
+    mr = MaterialRequisition.objects.get(id=id)
+    mri = MaterialRequisitionItems.objects.filter(matreq=mr)
+>>>>>>> b20fd28c685bacebc98c424010083fed4596c269
     context = {
         'mr' : mr,
         'title' : mr,
         'mri' : mri,
+<<<<<<< HEAD
         'style' : style,
+=======
+        'template': template
+>>>>>>> b20fd28c685bacebc98c424010083fed4596c269
     }
     return render(request, 'inventory/materials_requisition_details.html', context)
 
 def materials_requisition_approval(request, id):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     mr = MaterialRequisition.objects.get(id=id) #get id of matreq
     mri = MaterialRequisitionItems.objects.filter(matreq=mr) #get all items in matreq
     count = 0
@@ -255,10 +401,19 @@ def materials_requisition_approval(request, id):
     return redirect('inventory:materials_requisition_details', id = mr.id)
 
 def materials_requisition_form(request):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     #note:instance should be an object
     matreq_item_formset = inlineformset_factory(MaterialRequisition, MaterialRequisitionItems, form=MaterialRequisitionItemsForm, extra=1, can_delete=True)
+    form = MaterialRequisitionForm(request.POST)
+
+
+
     if request.method == "POST":
-        form = MaterialRequisitionForm(request.POST)
         #Set ClientPO.client from session user
         #form.fields['client'].initial = Client.objects.get(id = request.session['session_userid'])
         message = ""
@@ -292,35 +447,65 @@ def materials_requisition_form(request):
         else:
             message = "Form is not valid"
 
+<<<<<<< HEAD
+=======
+
+        form.fields["issued_to"].queryset = Employee.objects.filter(position__in=['General Manager', 'Sales Coordinator', 'Supervisor',
+        'Line Leader', 'Production Manager', 'Cutting', 'Printing', 'Extruder', 'Delivery', 'Warehouse', 'Utility', 
+        'Maintenance'])
+
+
+>>>>>>> b20fd28c685bacebc98c424010083fed4596c269
         return redirect('inventory:materials_requisition_list')
     
     else:
         return render(request, 'inventory/materials_requisition_form.html',
                               {'formset':matreq_item_formset(),
-                               'form': MaterialRequisitionForm}
+                               'form': MaterialRequisitionForm,
+                               'template': template}
                               )
-    return redirect('inventory:materials_requisition_list')
+    #return redirect('inventory:materials_requisition_list')
 
 #Purchase Requisition
 def purchase_requisition_list(request):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     pr = PurchaseRequisition.objects.all()
     context = {
         'title' :'Purchase Requisition List',
-        'pr' : pr 
+        'pr' : pr ,
+        'template': template
     }
     return render (request, 'inventory/purchase_requisition_list.html', context)
 
 def purchase_requisition_details(request, id):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     pr = PurchaseRequisition.objects.get(id=id)
     pri = PurchaseRequisitionItems.objects.filter(purchreq=pr)
     context = {
         'pr' : pr,
         'title' : pr,
         'pri' : pri,
+        'template': template
     }
     return render(request, 'inventory/purchase_requisition_details.html', context)
 
 def purchase_requisition_approval(request, id):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     pr = PurchaseRequisition.objects.get(id=id)
     
     #def clean(self):
@@ -338,6 +523,12 @@ def purchase_requisition_approval(request, id):
             return redirect('inventory:purchase_requisition_list')
 
 def purchase_requisition_form(request):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     #note:instance should be an object
     purchreq_item_formset = inlineformset_factory(PurchaseRequisition, PurchaseRequisitionItems, form=PurchaseRequisitionItemsForm, extra=1, can_delete=True)
 
@@ -381,13 +572,20 @@ def purchase_requisition_form(request):
     else:
         return render(request, 'inventory/purchase_requisition_form.html',
                               {'formset':purchreq_item_formset(),
-                               'form': PurchaseRequisitionForm}
+                               'form': PurchaseRequisitionForm,
+                               'template': template}
                               )
 
 
 # Supplier PO
 
 def supplierPO_form(request):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     #note:instance should be an object
     supplierpo_item_formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm, extra=1, can_delete=True)
 
@@ -435,7 +633,8 @@ def supplierPO_form(request):
     else:
         return render(request, 'inventory/supplierPO_form.html',
                               {'formset':supplierpo_item_formset(),
-                               'form': SupplierPOForm}
+                               'form': SupplierPOForm,
+                               'template': template}
                               )
 
 def supplierPO_form_test(request):
@@ -460,24 +659,44 @@ def supplierPO_form_test(request):
                               )
 
 def supplierPO_list(request):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     mr = SupplierPO.objects.all()
     context = {
         'title' :'Supplier PO List',
         'mr' : mr,
+        'template': template
     }
     return render (request, 'inventory/supplierPO_list.html', context)
 
 def supplierPO_details(request, id):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     mr = SupplierPO.objects.get(id=id)
     mri = SupplierPOItems.objects.filter(supplier_po=mr)
     context = {
         'mr' : mr,
         'title' : mr,
         'mri' : mri,
+        'template': template
     }
     return render(request, 'inventory/supplierPO_details.html', context)
 
 def load_items(request):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     supplier_po = request.GET.get('supplier_po')
     items = Inventory.objects.filter(supplier_id=id).order_by('item_name')
     return render(request, 'inventory/dropdown_supplier_item.html', {'items': items})

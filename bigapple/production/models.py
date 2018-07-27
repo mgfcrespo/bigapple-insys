@@ -87,6 +87,15 @@ class JobOrder(models.Model):
         jo = str(self.id).zfill(5)
         return jo
 
+class MachineSchedule(models.Model):
+    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True)
+    job_task = models.CharField('job_task', max_length=200, default='Extruder', blank=True)
+    duration = models.DurationField()
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.id)
+
 class ExtruderSchedule(models.Model):
     SHIFTS = (
         ('Shift 1', 'shift 1'),
