@@ -11,15 +11,33 @@
                     <label>Supplier</label>
                     {{ form.supplier }}
                 </div>
-                <div class="field">
-                    <label>Price</label>
-                    {{ form.price }}
+                <div class="two fields">
+                    <div class="field">
+                        <label>Item Type</label>
+                        {{ form.item_type }}
+                    </div>
+                    <div class="field">
+                        <label>Item Name</label>
+                        {{ form.item_name }}
+                    </div>
                 </div>
-                <div class="field">
-                    <label>RM Type</label>
-                    {{ form.rm_type }}
-                </div>
+                <div class = "fields">
+                    <div class="field">
+                        <label>RM Type</label>
+                        {{ form.rm_type }}
+                    </div>
+                    <div class="field">
+                        <div style = "margin-top:30px;" class="ui left pointing label">
+                            For Raw Materials Only
+                        </div>
+                    </div>
                     
+                    <div class="field">
+                        <label>Price</label>
+                        {{ form.price }}
+                    </div>
+                </div>
+              
                 <button class="ui basic green button" type="submit">Submit</button>
             </form>
         </div>

@@ -323,9 +323,7 @@ def arrange_schedule():
         loop_count += 1
 
 
-
     #GENERATE GANTT CHART
-
 
     df = gantt_chart_dict
     '''
@@ -347,7 +345,7 @@ def arrange_schedule():
 
 #TODO Add scheduling values lists.
 #TODO convert to now() + deltatime (scheduling time values)
-#TODO grey area >>> How to adjust durations? hint: not all start times are now()
+#TODO gray area >>> How to adjust durations? hint: not all start times are now()
 def production_schedule(request):
   div_next = arrange_schedule()
 

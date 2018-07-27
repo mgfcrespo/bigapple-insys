@@ -81,6 +81,7 @@ class ClientPO(models.Model):
         ('Ready for delivery', 'Ready for delivery'),
         ('Cancelled', 'Cancelled'),
         ('Disapproved', 'Disapproved')
+
     )
 
     date_issued = models.DateTimeField('date_issued', auto_now_add=True)
@@ -101,6 +102,10 @@ class ClientPO(models.Model):
         date1 = datetime.strptime(self.date_issued, date_format)
         date2 = datetime.strptime(self.date_required, date_format)
         return date2 - date1
+        
+    def evaluate_materials_requirement(self):
+    
+    def evaluate_credit_status(self):
     '''
 
 
@@ -201,6 +206,10 @@ class ClientItem(models.Model):
             self.price_per_piece = Decimal(0.0)
         super(ClientItem, self).save(*args, **kwargs)
 
+        '''
+        def calculate_materials_requirement(self):
+        '''
+
 
 
 class SalesInvoice(models.Model):
@@ -288,11 +297,18 @@ class ClientCreditStatus(models.Model):
                                               default=Decimal(0))  # accumulation of ClientPayment.balance
     overdue_balance = models.DecimalField('overdue_balance', decimal_places=2, max_digits=12,
                                           default=Decimal(0))  # sum of payments not made within payment terms
+    remarks = models.CharField('remarks', max_length=500)
 
     def __str__(self):
         return str('Credit Status: %s' % (self.client))
 
+    def calculate_balance_sum(self):
+        return self.outstanding_balance + self.overdue_balance
+
     '''
+    def calculate_days_overdue(self):
+        return date SI issued - date today
+
     def calculate_payments_sum(self):
         client_payment = ClientPayment.objects.filter(client_id = self.client)#filter by current client
         if not client_payment:
@@ -311,6 +327,7 @@ class ClientCreditStatus(models.Model):
     def save(self, *args, **kwargs):
         self.outstanding_balance = self.calculate_invoice_sum() - self.calculate_payments_sum()
         super(ClientCreditStatus, self).save(*args, **kwargs)
+    
  '''
 
     class Meta:

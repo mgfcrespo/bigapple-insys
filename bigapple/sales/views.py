@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView, ListView, FormView
-from .models import ClientItem, ClientPO, ClientCreditStatus, Client, Product
+from .models import ClientItem, ClientPO, ClientCreditStatus, Product
 from django.shortcuts import render, redirect
 from .forms import ClientPOFormItems, ClientPOForm
 from django.urls import reverse_lazy
 from django.forms import formset_factory, inlineformset_factory
+from datetime import datetime, date
 
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -12,12 +13,14 @@ from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse
 from django.db.models import aggregates
 from production.models import JobOrder
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment
-from .forms import ClientPOForm, SupplierForm, ClientPaymentForm
+from accounts.models import Employee
+from .forms import ClientPOForm, SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
 from django import forms
 import sys
 from decimal import Decimal
 
 #Forecasting imports
+'''
 import numpy as np
 from math import sqrt
 import pandas as pd
@@ -26,7 +29,7 @@ import matplotlib.pyplot as plt
 #from sklearn.metrics import mean_squared_error
 from matplotlib.pylab import rcParams
 rcParams['figure.figsize'] = 15, 6
-
+'''
 
 # Create your views here.
 # CRUD SUPPLIER
@@ -41,7 +44,7 @@ def supplier_add(request):
     context = {
         'form' : form,
         'title' : "Add Supplier",
-        'actiontype' : "Add",
+        'actiontype' : "Submit",
     }
     return render(request, 'sales/supplier_add.html', context)
 
@@ -50,6 +53,7 @@ def supplier_add(request):
 def supplier_list(request):
     supplier = Supplier.objects.all()
     context = {
+        'title': 'Supplier List',
         'supplier' : supplier 
     }
     return render (request, 'sales/supplier_list.html', context)
@@ -123,7 +127,7 @@ def delete_clientPO(request, id):
         return HttpResponseRedirect('../clientPO_list')
 
 
-# PO List/Detail view
+# PO List/Detail view + PO Confirm
 class POListView(ListView):
     template_name = 'sales/clientPO_list.html'
     model = ClientPO
@@ -157,6 +161,10 @@ class PODetailView(DetailView):
     model = ClientPO
     template_name = 'sales/clientPO_detail.html'
 
+class POConfirmView(DetailView):
+    model = ClientPO
+    template_name = 'sales/clientPO_confirm.html'
+
 
 # JO List/Detail view
 class JOListView(ListView):
@@ -166,6 +174,10 @@ class JOListView(ListView):
 class JODetailView(DetailView):
     model = JobOrder
     template_name = 'sales/JO_details.html'
+
+class FinishedJOListView(ListView):
+    template_name = 'sales/finished_JO_list.html'
+    model = JobOrder
 
 
 # Invoice List/Detail View
@@ -277,6 +289,16 @@ def payment_detail_view(request, pk):
 
     return render(request, 'sales/client_payment_detail.html', context)
 
+def statement_of_accounts_list_view(request):
+    credits_status = ClientCreditStatus.objects.all()
+
+    context = {
+        'credits_status' : credits_status,
+        'date' : date.now()
+    }
+
+    return render(request, 'sales/statement_of_accounts.html', context)
+
 #SAMPLE DYNAMIC FORM
 def create_client_po(request):
     #note:instance should be an object
@@ -378,15 +400,98 @@ def rush_order_list(request):
     }
     return render (request, 'sales/rush_order_list.html', context)
 
-def rush_order_assessment(request):
-    rush_order = ClientPO.objects.filter() #modify! lead time input
+def rush_order_assessment(request, pk):
+    rush_order = ClientPO.objects.get(pk=pk)
+
     context = {
-        'rush_order': rush_order
+        'rush_order' : rush_order
     }
-    return render(request, 'sales/rush_order_assessment.html', context)
+
+    return render('sales/rush_order_assessment.html', context)
 
 
+#CLIENT CRUD
+def client_add(request):
+    form = ClientForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return redirect('sales:client_list')
 
+    context = {
+        'form' : form,
+        'title' : "Add Client",
+        'actiontype' : "Submit",
+    }
+    return render(request, 'sales/client_add.html', context)
+
+def client_list(request):
+    data = Client.objects.all()
+    context = {
+        'title': 'Client List',
+        'data' : data 
+    }
+    return render (request, 'sales/client_list.html', context)
+
+def client_edit(request, id):
+    data = Client.objects.get(id=id)
+    form = ClientForm(request.POST or None, instance=data)
+
+    if form.is_valid():
+        form.save()
+        return redirect('sales:client_list')
+    
+    context = {
+        'form' : form,
+        'data' : data,
+        'title' : "Edit Client",
+        'actiontype' : "Submit",
+    }
+    return render(request, 'sales/client_add.html', context)
+
+#EMPLOYEE CRUD
+def employee_add(request):
+    form = EmployeeForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return redirect('sales:employee_list')
+
+    context = {
+        'form' : form,
+        'title' : "Add Employee",
+        'actiontype' : "Submit",
+    }
+    return render(request, 'sales/employee_add.html', context)
+
+def employee_list(request):
+    data = Employee.objects.all()
+    context = {
+        'title': 'Employee List',
+        'data' : data 
+    }
+    return render (request, 'sales/employee_list.html', context)
+
+def employee_edit(request, id):
+    data = Employee.objects.get(id=id)
+    form = EmployeeForm(request.POST or None, instance=data)
+    if form.is_valid():
+        form.save()
+        return redirect('sales:employee_list')
+    
+    context = {
+        'form' : form,
+        'data' : data,
+        'title' : "Edit Employee",
+        'actiontype' : "Submit",
+    }
+    return render(request, 'sales/employee_add.html', context)
+
+def employee_delete(request, id):
+    data = Employee.objects.get(id=id)
+    data.delete()
+    return redirect('sales:employee_list')
+	
 '''
 #Forecasting view
 def call_forecasting(request):

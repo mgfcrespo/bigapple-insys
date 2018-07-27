@@ -15,7 +15,9 @@
           	</tr>
     		</thead>
     		<tbody>
-				{% if mr %}
+
+			{% if mr %}
+
 				{% for mr in mr %}
     			<tr class = "row">
                     <td> 
@@ -28,7 +30,13 @@
     			</tr>
 				{% endfor %}
 			{% else %}
+
 				<td>No Material Requisitions to show!</td>
+
+			<td>
+				<p>There are no Material Requisitions to display</p>
+			</td>
+
 			{% endif %}
 			</tbody>
     	</table>

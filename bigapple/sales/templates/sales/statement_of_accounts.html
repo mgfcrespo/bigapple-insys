@@ -1,0 +1,50 @@
+
+
+{% block content %}
+<div class="sixteen wide column">
+    <table>
+        <thead>
+            <tr>
+                <th>Client</th>
+                <th>Receivables as of <p>{{date}}</p></th>
+                <th>Overdue Balance</th>
+                <th>Days Overdue</th>
+                <th>Payment Terms</th>
+                <th>Account Supervisor</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for ClientCreditStatus in credits_status %}
+            <tr>
+                <td>
+                    ({{ ClientCreditStatus.client }})
+                </td>
+                <td>
+                    {% ClientCreditStatus.calculate_balance_sum %}
+                </td>
+                <td>
+                    ({{ ClientCreditStatus.overdue_balance }})
+                </td>
+                <td>
+                    ({{ ClientCreditStatus.calculate_days_overdue }})
+                </td>
+                <td>
+                    ({{ ClientCreditStatus.client.clientconstant.payment_terms }})
+                </td>
+                <td>
+                    ({{ ClientCreditStatus.client.sales_agent }})
+                </td>
+                <td>
+                    ({{ ClientCreditStatus.remarks }})
+                </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}
