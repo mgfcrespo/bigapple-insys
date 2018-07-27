@@ -4,6 +4,7 @@
 
 	<div class="ui container">
 		<h2 class="ui header">{{ title }}</h2>
+		{{msg}}
 		<table class="ui striped table">
         	<thead>
           	<tr class = "row">
@@ -24,8 +25,16 @@
                     <td>{{ mr.date_issued }}</td>
 					<td>{{ mr.issued_to }}</td>
 					<td>{{ mr.shift }}</td>
-                    <td>{{ mr.status }}</td>
-    			</tr>
+					{% if mr.status == 'approved' %}
+						<td class="positive">
+							<i class="icon checkmark">Approved</i>
+						</td>
+					{% else %}
+						<td class = "warning">
+							<i class = "hourglass half icon">Waiting</i>
+						</td>
+					{% endif%}
+				</tr>
 				{% endfor %}
 			{% else %}
 			<td>

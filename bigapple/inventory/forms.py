@@ -10,6 +10,9 @@ from django.forms.formsets import BaseFormSet
 # from django_select2.forms import ModelSelect2Widget
 # from linked_select2.forms import LinkedModelSelect2Widget
 
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
 class InventoryForm(forms.ModelForm):
     
     ITEM_TYPES = (
@@ -71,15 +74,13 @@ class SupplierPOForm(ModelForm):
     class Meta:
         model = SupplierPO
         fields = ('delivery_date', 'supplier')
+        widgets = {
+            'delivery_date': DateInput()
+        }
 
-        delivery_date = forms.DateField(initial=date.today(), widget = forms.DateInput(attrs={'id':'delivery_date'}))
         supplier = forms.CharField(max_length=200, label = 'supplier', widget = forms.Select(attrs={'id':'supplier'}))
         
 class SupplierPOItemsForm(ModelForm):
-    price = forms.CharField(label = 'price', widget = forms.TextInput(
-        attrs={'id':'price', 'name':'price'}
-    ))
-
     class Meta:
         model = SupplierPOItems
         fields = ('item_name', 'quantity')
