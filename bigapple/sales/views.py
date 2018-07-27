@@ -18,14 +18,14 @@ import sys
 from decimal import Decimal
 
 #Forecasting imports
-#import numpy as np
-#from math import sqrt
-#import pandas as pd
-# import pandas._libs.tslibs.timedeltas
-# import matplotlib.pyplot as plt
-# from sklearn.metrics import mean_squared_error
-# from matplotlib.pylab import rcParams
-# rcParams['figure.figsize'] = 15, 6
+import numpy as np
+from math import sqrt
+import pandas as pd
+import pandas._libs.tslibs.timedeltas
+import matplotlib.pyplot as plt
+#from sklearn.metrics import mean_squared_error
+from matplotlib.pylab import rcParams
+rcParams['figure.figsize'] = 15, 6
 
 
 # Create your views here.
@@ -128,6 +128,30 @@ class POListView(ListView):
     template_name = 'sales/clientPO_list.html'
     model = ClientPO
 
+#TODO Continue this
+def po_list_view(request):
+    user = request.session['session_position']
+    client = Client.objects.get(id=user) #note that client here is the current user
+    if request.session['session_position'] == "Client":
+        template = 'client_page_ui.html'
+        client_po = ClientPO.objects.get(client=client)
+    elif request.session['session_position'] == "Sales Coordinator":
+        template = 'sales_coordinator_page_ui.html'
+        client_po = ClientPO.objects.all()
+    elif request.session['session_position'] == "Sales Agent":
+        template = 'sales_agent_page_ui.html'
+        customer = Client.objects.filter(sales_agent = client.id)
+        client_po = ClientPO.objects.filter(client=customer.id)
+    else:
+        template = 'general_manager_page_ui.html'
+        client_po = ClientPO.objects.all()
+
+    context = {
+        'client_po' : client_po,
+        'template' : template
+    }
+
+    return render(request, 'sales/client_payment_list.html', context)
 
 class PODetailView(DetailView):
     model = ClientPO
@@ -192,8 +216,6 @@ def invoice_detail_view(request, pk, *args, **kwargs):
 def add_payment(request, pk, *args, **kwargs):
     form = ClientPaymentForm()
 
-    #TODO Payment is recorded but changes (amount_due) are not reflected in invoice
-    #TODO Payment list is not rendering
     if request.method == "POST":
             form = ClientPaymentForm(request.POST)
             form = form.save()
@@ -219,7 +241,6 @@ def add_payment(request, pk, *args, **kwargs):
             form = ClientPaymentForm()
     return form
 
-#TODO Add the actual list of payments made by client
 def payment_list_view(request):
     client = Client.objects.get(id=request.session['session_userid'])
     credits_status = ClientCreditStatus.objects.get(client = client)

@@ -71,6 +71,7 @@ class InventoryCountAsof(models.Model):
     old_count = models.IntegerField('old_count', default=0)
     new_count = models.IntegerField('new_count', default=0)
     date_counted = models.DateField('date_counted', )
+    time = models.TimeField('time', auto_now_add=True, blank=True)
     rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='not specified', null=True, blank=True)
 
     def __str__(self):

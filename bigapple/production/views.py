@@ -3,7 +3,9 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 
-from .models import Machine, SalesInvoice, Employee
+from .forms import JODetailsForm
+
+from .models import Machine, SalesInvoice, Employee, ClientPO
 from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule
 from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm
 
@@ -336,25 +338,12 @@ def arrange_schedule():
     title = str("Production Schedule as of " + str(dt.now().strftime('%b %d, %Y at %I:%M %p')))
     fig = ff.create_gantt(df, title=title, group_tasks=True, show_colorbar=True, showgrid_x=True, showgrid_y=True, index_col='Resource')
     div_next = opy.plot(fig, auto_open=False, output_type='div')
-<<<<<<< HEAD
-
 
     return div_next
 
   if __name__ == '__arrange_schedule__':
     arrange_schedule()
 
-
-=======
-
-
-    return div_next
-
-  if __name__ == '__arrange_schedule__':
-    arrange_schedule()
-
-
->>>>>>> 79da26047d5c8fb7ebc88a9e90a468afe07585b0
 
 #TODO Add scheduling values lists.
 #TODO convert to now() + deltatime (scheduling time values)
@@ -385,44 +374,65 @@ def production_schedule(request):
 
 def job_order_list(request):
     data = JobOrder.objects.all()
+
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
     context = {
         'title': 'Job Order List',
         'data' : data,
+        'template' : template
     }
     return render (request, 'production/job_order_list.html', context)
 
 def job_order_details(request, id):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
+
     data = JobOrder.objects.get(id=id)
     client_po_data = ClientPO.objects.get(id = data.client_po.id)
     form = JODetailsForm(request.POST or None)
     extrusion = ExtruderSchedule.objects.filter(job_order=data.id).order_by('date', 'time_out')
     printing = PrintingSchedule.objects.filter(job_order=data.id).order_by('date', 'time_out')
     cutting = CuttingSchedule.objects.filter(job_order=data.id).order_by('date', 'time_out')
-    
+
     if request.method == 'POST':
       data.status = request.POST.get("status")
       data.remarks = request.POST.get("remarks")
-      
+
       if data.status == 'Waiting':
         client_po_data.status = 'Waiting'
       elif data.status == 'On Queue':
-        client_po_data.status = 'Approved' 
+        client_po_data.status = 'Approved'
+        prod_sched_flag = 1
       elif data.status == 'Under Extrusion':
         client_po_data.status = 'Under production'
+        prod_sched_flag = 1
       elif data.status == 'Under Printing':
         client_po_data.status = 'Under production'
+        prod_sched_flag = 1
       elif data.status == 'Under Cutting':
         client_po_data.status = 'Under production'
+        prod_sched_flag = 1
       elif data.status == 'Under Packaging':
         client_po_data.status = 'Under production'
+        prod_sched_flag = 1
       elif data.status == 'Ready for delivery':
-        client_po_data.status = 'Ready for delivery' 
+        client_po_data.status = 'Ready for delivery'
+        prod_sched_flag = 1
       elif data.status == 'Cancelled':
         client_po_data.status = 'Cancelled' 
 
-
       client_po_data.save()
       data.save()
+
       return redirect('production:job_order_details', id = data.id)
         
     form.fields["status"].initial = data.status
@@ -435,11 +445,19 @@ def job_order_details(request, id):
       'extrusion': extrusion,
       'printing': printing,
       'cutting': cutting,
+      'template': template
     }
     return render(request, 'production/job_order_details.html', context)
 
 # EXTRUDER 
 def add_extruder_schedule(request, id):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
+
     data = JobOrder.objects.get(id=id)
     form = ExtruderScheduleForm(request.POST or None)
     print(form.errors)
@@ -457,12 +475,20 @@ def add_extruder_schedule(request, id):
       'data': data,
       'title' : data.job_order,
       'form': form,
+      'template': template
     }
     
     return render (request, 'production/add_extruder_schedule.html', context)
 
 # PRINTING
 def add_printing_schedule(request, id):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
+
     data = JobOrder.objects.get(id=id)
     form = PrintingScheduleForm(request.POST or None)
     print(form.errors)
@@ -480,12 +506,20 @@ def add_printing_schedule(request, id):
       'data': data,
       'title' : data.job_order,
       'form': form,
+      'template': template
     }
     
     return render (request, 'production/add_printing_schedule.html', context)
 
     # PRINTING
 def add_cutting_schedule(request, id):
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
+
     data = JobOrder.objects.get(id=id)
     form = CuttingScheduleForm(request.POST or None)
     print(form.errors)
@@ -503,6 +537,7 @@ def add_cutting_schedule(request, id):
       'data': data,
       'title' : data.job_order,
       'form': form,
+      'template': template
     }
     
     return render (request, 'production/add_cutting_schedule.html', context)

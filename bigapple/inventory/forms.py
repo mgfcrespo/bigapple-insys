@@ -100,7 +100,13 @@ class MaterialRequisitionForm(forms.ModelForm):
 
         issued_to = forms.ModelChoiceField(queryset=Employee.objects.all())
 
+        def __init__(self, *args, **kwargs):
+            super(MaterialRequisitionForm, self).__init__(*args, **kwargs)
+            self.fields['issued_to'].queryset = Employee.objects.exclude(position='Sales Agent') \
+            .exclude(position='Credits and Collection Personnel')
 
+        # form.fields["issued_to"].queryset = Employee.objects.exclude(position='Sales Agent') \
+        #     .exclude(position='Credits and Collection Personnel')
 class MaterialRequisitionItemsForm(forms.ModelForm):
 
     class Meta:

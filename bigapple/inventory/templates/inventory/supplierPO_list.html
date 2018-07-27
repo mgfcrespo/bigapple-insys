@@ -1,4 +1,4 @@
-{% extends 'production_manager_page_ui.html' %}
+{% extends template %}
 
   {% block content %}
 
@@ -15,6 +15,7 @@
           	</tr>
     		</thead>
     		<tbody>
+				{% if mr %}
 				{% for mr in mr %}
     			<tr class = "row">
                     <td> 
@@ -26,6 +27,9 @@
                     <td>{{ mr.total_amount }}</td>
     			</tr>
 				{% endfor %}
+			{% else %}
+				<td>No Supplier Purchase Order to show!</td>
+			{% endif %}
 			</tbody>
     	</table>
 	</div>

@@ -73,8 +73,7 @@ class PreProduct(models.Model):
 
 # could be substitute for quotation request
 class ClientPO(models.Model):
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     STATUS =(
         ('Waiting', 'Waiting'),
         ('Approved', 'Approved'),
@@ -82,17 +81,6 @@ class ClientPO(models.Model):
         ('Ready for delivery', 'Ready for delivery'),
         ('Cancelled', 'Cancelled'),
         ('Disapproved', 'Disapproved')
-=======
-=======
->>>>>>> 79da26047d5c8fb7ebc88a9e90a468afe07585b0
-    STATUS = (
-        ('waiting', 'waiting'),
-        ('approved', 'approved'),
-        ('under production', 'under production'),
-        ('ready for delivery', 'ready for delivery'),
-        ('disapproved', 'disapproved')
-
->>>>>>> 79da26047d5c8fb7ebc88a9e90a468afe07585b0
     )
 
     date_issued = models.DateTimeField('date_issued', auto_now_add=True)
@@ -287,7 +275,7 @@ class SalesInvoice(models.Model):
         self.net_vat = client_constants.net_vat
         self.total_amount_computed = self.calculate_total_amount_computed()
         # self.days_passed= self.calculate_days_passed()
-        self.date_due = self.calculate_date_due()
+        #self.date_due = self.calculate_date_due()
 
 
         super(SalesInvoice, self).save(*args, **kwargs)

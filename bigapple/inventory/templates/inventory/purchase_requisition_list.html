@@ -1,4 +1,4 @@
-{% extends 'production_manager_page_ui.html' %}
+{% extends template %}
 
   {% block content %}
 
@@ -15,6 +15,7 @@
           	</tr>
     		</thead>
     		<tbody>
+				{% if pr %}
 				{% for pr in pr %}
     			<tr class = "row">
                     <td> 
@@ -26,6 +27,9 @@
                     <td>{{ pr.status }}</td>
     			</tr>
 				{% endfor %}
+			{% else %}
+				<td>No Purchase Requisitions to show!</td>
+			{% endif %}
 			</tbody>
     	</table>
 	</div>
