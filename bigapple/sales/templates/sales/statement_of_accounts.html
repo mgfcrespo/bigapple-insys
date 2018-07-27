@@ -22,13 +22,16 @@
                     ({{ ClientCreditStatus.client }})
                 </td>
                 <td>
-                    {% calculate_balance_sum ClientCreditStatus %}
+                    {% ClientCreditStatus.calculate_balance_sum %}
                 </td>
                 <td>
-                    ({{ ClientCreditStatus. }}) #refer method for total days
+                    ({{ ClientCreditStatus.overdue_balance }})
                 </td>
                 <td>
-                    ({{ ClientCreditStatus.client. }}) #refer payment_terms (under ClientConstant model)
+                    ({{ ClientCreditStatus.calculate_days_overdue }})
+                </td>
+                <td>
+                    ({{ ClientCreditStatus.client.clientconstant.payment_terms }})
                 </td>
                 <td>
                     ({{ ClientCreditStatus.client.sales_agent }})
