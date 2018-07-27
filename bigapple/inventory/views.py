@@ -10,6 +10,7 @@ from .models import MaterialRequisition, MaterialRequisitionItems, PurchaseRequi
 from .forms import SupplierPOItemsForm, InventoryForm, SupplierPOForm, SupplierRawMaterialsForm, InventoryCountAsofForm
 from .forms import MaterialRequisitionForm, MaterialRequisitionItemsForm, PurchaseRequisitionForm, PurchaseRequisitionItemsForm
 
+
 # Create your views here.
 # Inventory
 def inventory_item_list(request):

@@ -29,7 +29,7 @@
                 </tbody>    
             </table>
             
-            <button class="ui basic green button" type="submit" data-tooltip="Update Inventory Quantity" data-position="top left" data-inverted="">{{actiontype}}</button>
+            <button onclick="return confirm('Are you sure?')" class="ui basic green button" type="submit" data-tooltip="Update Inventory Quantity" data-position="top left" data-inverted="">{{actiontype}}</button>
             <a class="ui basic red button" href="{% url 'inventory:inventory_item_list'%}">Back</a>
         </form>
     </div>

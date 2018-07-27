@@ -15,6 +15,7 @@
           	</tr>
     		</thead>
     		<tbody>
+			{% if data %}
 				{% for data in data  %}
     			<tr>
     				<td>{{ data.full_name }}</td>
@@ -30,6 +31,11 @@
 					</td>
     			</tr>
 				{% endfor %}
+			{% else %}
+			<td>
+				<p>There are no Employees to display</p>
+			</td>
+			{% endif %}
 			</tbody>
     	</table>
 	

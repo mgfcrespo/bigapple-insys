@@ -28,7 +28,7 @@
 						<a style = "padding: 5px;" href="{% url 'inventory:inventory_item_edit' items.id %}">
 							<i class="yellow edit icon"></i>
 						</a>
-						<a style = "padding: 5px;" href="{% url 'inventory:inventory_item_delete' items.id %}">
+						<a onclick="return confirm('Are you sure?')" class = "button"style = "padding: 5px;" href="{% url 'inventory:inventory_item_delete' items.id %}">
 							<i class="red trash icon"></i>
 						</a>
                     </td>

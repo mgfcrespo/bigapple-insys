@@ -14,6 +14,7 @@
           	</tr>
     		</thead>
     		<tbody>
+			{% if data %}
 				{% for data in data  %}
     			<tr>
     				<td>
@@ -30,6 +31,11 @@
 					</td>
     			</tr>
 				{% endfor %}
+			{% else %}
+			<td>
+				<p>There are no Clients to display</p>
+			</td>
+			{% endif %}
 			</tbody>
     	</table>
 	

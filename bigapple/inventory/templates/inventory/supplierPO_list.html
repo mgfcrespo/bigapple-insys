@@ -15,6 +15,7 @@
           	</tr>
     		</thead>
     		<tbody>
+			{% if mr %}
 				{% for mr in mr %}
     			<tr class = "row">
                     <td> 
@@ -26,6 +27,11 @@
                     <td>{{ mr.total_amount }}</td>
     			</tr>
 				{% endfor %}
+			{% else %}
+			<td>
+				<p>There are no Supplier PO to display</p>
+			</td>
+			{% endif %}
 			</tbody>
     	</table>
 	</div>

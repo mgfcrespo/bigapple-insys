@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView, ListView, FormView
-from .models import ClientItem, ClientPO, ClientCreditStatus, Client, Product
+from .models import ClientItem, ClientPO, ClientCreditStatus, Product
 from django.shortcuts import render, redirect
 from .forms import ClientPOFormItems, ClientPOForm
 from django.urls import reverse_lazy
@@ -13,7 +13,8 @@ from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse
 from django.db.models import aggregates
 from production.models import JobOrder
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment
-from .forms import ClientPOForm, SupplierForm, ClientPaymentForm
+from accounts.models import Employee
+from .forms import ClientPOForm, SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
 from django import forms
 import sys
 from decimal import Decimal

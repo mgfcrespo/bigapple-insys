@@ -15,6 +15,7 @@
           	</tr>
     		</thead>
     		<tbody>
+			{% if items %}
 				{% for items in items %}
     			<tr class = "row">
 					<td>{{ items.date_counted }}</td>
@@ -23,6 +24,11 @@
                     <td>{{ items.new_count }}</td>
     			</tr>
 				{% endfor %}
+			{% else %}
+			<td>
+				<p>There are no History Count to display</p>
+			</td>
+			{% endif %}
 			</tbody>
 		</table>
 		<a href="{% url 'inventory:inventory_item_list'%}">Back</a>

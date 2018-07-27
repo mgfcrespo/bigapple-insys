@@ -9,12 +9,13 @@
 					<table class="ui stripped table">
 						<thead>
 						  <tr class = "row">
-							<th>Type</th>
-							<th>Price</th>
-							<th></th>
+							<th class="six wide">Type</th>
+							<th class="four wide">Price</th>
+							<th class="six wide"></th>
 						  </tr>
 						</thead>
 						<tbody>
+						{% if items %}
 							{% for items in items %}
 							<tr class = "row">
 								{% if items.item_type == "Raw Materials" %}
@@ -23,16 +24,21 @@
 									<td>{{ items.item_name }}</td>
 								{% endif %}
 								<td>{{ items.price }}</td>
-								<td>
+								<td class="right aligned">
 									<a style = "padding: 5px;" href="{% url 'inventory:supplier_rawmat_edit' items.id %}">
 										<i class="yellow edit icon"></i>
 									</a>
-									<a style = "padding: 5px;" href="{% url 'inventory:supplier_rawmat_delete' items.id %}">
+									<a onclick="return confirm('Are you sure?')" style = "padding: 5px;" href="{% url 'inventory:supplier_rawmat_delete' items.id %}">
 										<i class="red trash icon"></i>
 									</a>
 								</td>
 							</tr>
 							{% endfor %}
+						{% else %}
+						<td>
+							<p>There are no Items to display</p>
+						</td>
+						{% endif %}
 						</tbody>
 					</table>
 			</div>
@@ -48,6 +54,7 @@
 						</tr>
 					</thead>
 					<tbody>
+					{% if mr %}
 						{% for data in data %}
 						<tr class = "row">
 							<td>{{ data }}</td>
@@ -56,6 +63,11 @@
 							<td>{{ data.total_amount }}</td>
 						</tr>
 						{% endfor %}
+					{% else %}
+					<td>
+						<p>There are no Sales Invoice to display</p>
+					</td>
+					{% endif %}
 					</tbody>
 				</table>
 			</div>
