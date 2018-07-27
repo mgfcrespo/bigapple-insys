@@ -149,6 +149,10 @@ class JODetailView(DetailView):
     model = JobOrder
     template_name = 'sales/JO_details.html'
 
+class FinishedJOListView(ListView):
+    template_name = 'sales/finished_JO_list.html'
+    model = JobOrder
+
 
 # Invoice List/Detail View
 class InvoiceListView(ListView):

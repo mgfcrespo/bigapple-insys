@@ -10,9 +10,16 @@ urlpatterns = [
 			path('po-list-view/PO<int:pk>/', views.PODetailView.as_view(), name='po-detail-view'),
 			path('create-client-po-form/', views.create_client_po, name='create-client-po-form'),
 
+<<<<<<< HEAD
 			#JO urls
 			path('JO-list/', views.JOListView.as_view(), name='JO_list'),
 			path('JO-details/JO<int:pk>/', views.JODetailView.as_view(), name='JO_details'),
+=======
+          #JO urls
+          path('JO-list/', views.JOListView.as_view(), name='JO_list'),
+          path('JO-details/JO<int:pk>/', views.JODetailView.as_view(), name='JO_details'),
+          path('JO-finished/', views.FinishedJOListView.as_view(), name='finished_JO_list'),
+>>>>>>> 6f8a5590d3ee039e60cff7d2f69b1f5f1fc3632b
 
 			#sales_invoice urls
 			path('sales-invoice-list/<int:pk>/', views.InvoiceListView.as_view(), name='sales_invoice_list'),
