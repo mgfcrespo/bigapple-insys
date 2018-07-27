@@ -10,16 +10,16 @@ from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleFo
 #scheduling import
 # Import Python wrapper for or-tools constraint solver.
 
-# from ortools.constraint_solver import pywrapcp
-# from datetime import timedelta as td
-# from datetime import datetime as dt
+from ortools.constraint_solver import pywrapcp
+from datetime import timedelta as td
+from datetime import datetime as dt
 
 
-# import plotly
-# import plotly.offline as opy
-# import plotly.plotly as py
-# import plotly.figure_factory as ff
-# import plotly.graph_objs as go
+import plotly
+import plotly.offline as opy
+import plotly.plotly as py
+import plotly.figure_factory as ff
+import plotly.graph_objs as go
 
 #from ortools.constraint_solver import pywrapcp
 from datetime import timedelta
