@@ -305,6 +305,9 @@ class ClientCreditStatus(models.Model):
         return self.outstanding_balance + self.overdue_balance
 
     '''
+    def calculate_days_overdue(self):
+        return date SI issued - date today
+
     def calculate_payments_sum(self):
         client_payment = ClientPayment.objects.filter(client_id = self.client)#filter by current client
         if not client_payment:
@@ -324,7 +327,6 @@ class ClientCreditStatus(models.Model):
         self.outstanding_balance = self.calculate_invoice_sum() - self.calculate_payments_sum()
         super(ClientCreditStatus, self).save(*args, **kwargs)
     
-    def calculate_days_overdue(self):
  '''
 
     class Meta:

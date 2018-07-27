@@ -64,14 +64,17 @@
 			</tbody>
     	</table>
 
-                <h2></h2> #refer materials requirement method
-                <h2></h2> #refer credit status
+                { if clientconstant.payment_terms < clientcreditstatus.calculate_days_overdue }
+                <h2> You are not eligible to issue a Purchase Order at this time as there are credit status issues linked to your account. </h2>
+
+                    {% else %}
 
                     <div class="row">
                         <div class="center">
                             <button id="" class="ui green basic button" type="button" style="width: 200px;">Confirm</button>
                         </div>
                     </div>
+                 #TODO: do credit status
                     
                 </form>
             </div>
