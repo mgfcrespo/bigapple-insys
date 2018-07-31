@@ -8,70 +8,69 @@
 
             <div class="row">
 
-                <form>
+                <h3 class="ui header">{{clientpo}}</h3>
+		<table class="ui cell padded table">
+        	<thead>
+          	<tr>
+                <th>Material Type</th>
 
-                    <div class="row">
-                        <div class="sixteen wide column">
-                            <input id="name" type="text" disabled="true">
-                            <label for="name">Company Name</label>
-                        </div>
-                    </div>
-                    <div class="row">
+              <th>Width (inches)</th>
+              <th>Length(inches)</th>
+                <th>Thickness(inches)</th>
+              <th>Color</th>
+              <th>Gusset</th>
+              <th>Quantity</th>
+                 <th>Laminate</th>
+                <th>Printed</th>
+                <th>Price/pc</th>
+              <th>Item Price Sub-Total</th>
+          	</tr>
+    		</thead>
 
-                        <div class="sixteen wide column">
-                            <input type="text" class="datepicker" placeholder="Date Needed" disabled="true">
-                            <label for="dateSet">Date Needed</label>
-                        </div>
 
-                        <div class="ui checkbox">
-                            <input type="checkbox" tabindex="0" class="hidden">
-                            <label>Laminate</label>
-                        </div>
+            <tbody>
 
-                    </div>
+                {% for clientitem in clientpo.clientitem_set.all %}
+                <tr>
+                    <td>{{ clientitem.products }}</td>
 
-                    <div class="row">
-                        <div class="sixteen wide column">
-                            <input id="terms" type="text" disabled="true">
-                            <label for="terms">Terms</label>
-                        </div>
-                    </div>
+                    <td>{{ clientitem.width }}</td>
+                    <td>{{ clientitem.length}}</td>
+                    <td>{{ clientitem.thickness}}</td>
+                    <td>{{ clientitem.color }}</td>
+                    <td>{{ clientitem.gusset}}</td>
+                    <td>{{ clientitem.quantity }}</td>
 
-                    <div class="row">
-                        <select class="browser-default" disabled="true">  
-								<option value="" disabled>Item</option>
-								<option value="1" selected>Item 1</option>
-    							<option value="2">Item 2</option>
-    							<option value="3">Item 3</option>
-    							<option value="4">Item 4</option>
-								<option value="5">Item 5</option>
-    							<option value="6">Item 6</option>
-    							<option value="7">Item 7</option>
-    							<option value="8">Item 9</option>								
-                        </select>
-                    </div>
+                     {% if clientitem.laminate ==  True %}
+                   <td><i class="icon checkmark"></i></td>
+                   {% else %}
+                   <td ><i class="icon close"></i></td>
+                    {% endif %}
 
-                    <div class="row">
-                        <div class="sixteen wide column">
-                            <input id="description" type="text" disabled="true">
-                            <label for="description">Description</label>
-                        </div>
-                    </div>
+                      {% if clientitem.printed ==  True %}
+                   <td><i class="icon checkmark"></i></td>
+                   {% else %}
+                   <td ><i class="icon close"></i></td>
+                    {% endif %}
+                    <td>{{ clientitem.item_price}}</td>
 
-                    <div class="row">
-                        <div class="four wide column">
-                            <input id="quantity" type="text" disabled="true">
-                            <label for="quantity">Quantity</label>
-                        </div>
-                        <div class="four wide column">
-                            <input id="unitPrice" type="text" disabled="true">
-                            <label for="unitPrice">Unit Price</label>
-                        </div>
-                        <div class="four wide column">
-                            <input id="amount" type="text" disabled="true">
-                            <label for="amount">Amount</label>
-                        </div>
-                    </div>
+                    <td>Item Price: {{clientitem.price_per_piece}}</td>
+                </tr>
+                {% endfor %}
+
+                <tr>Total: {{clientpo.total_amount}}</tr>
+
+
+			</tbody>
+    	</table>
+                {% if clientconstant.payment_terms < client.creditstatus.calculate_days_overdue %}
+                <h2> This client's credit status is {{ client.creditstatus.calculate_days_overdue }} days overdue. </h2>
+                {% else %}
+                <h2> This client's credit status is cleared. </h2>
+
+                #TODO: condition to show materials requirement and inventory levels
+
+
 
                     <div class="row">
                         <div class="center">

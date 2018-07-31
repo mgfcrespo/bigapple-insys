@@ -1,26 +1,30 @@
-{% extends 'sales_coordinator_page_ui.html' %} {% block content %}
+{% block content %}
 
-<h3 class="ui header">Job Order List</h3>
+<h3 class="ui header">Finished Job Order Report</h3>
 
 
-    <table class="ui cell padded table">
+    <table class="ui celled padded table">
         <thead>
             <tr>
                 <th>Purchase Order ID</th>
                 <th>PO Number</th>
                 <th>Client</th>
                 <th>Items</th>
-                <th>Status</th>
+                <th>Sales Invoice Issued</th>
+
             </tr>
         </thead>
         <tbody>
             {% if object_list %}
-                {% for JobOrder in object_list %}
+                {% for JobOrder.status == 'Ready for delivery' in object_list %}
                 <tr>
                     <td><a href="{% url 'sales:JO_details' JobOrder.id %}">{{ JobOrder }}</a></td>
                     <td>{{ JobOrder.client_po }}</td>
                     <td>{{ JobOrder.client_po.client }}</td>
-                    <td>{{ JobOrder.status }}</td>
+                    {% for JobOrder.client_po.clientitems %}
+                    #print items
+                    {% endfor %}
+                    <td> {{ JobOrder.client_po.SalesInvoice }} </td> #modify
                 </tr>
                 {% endfor %}
             {% else %}
@@ -31,5 +35,3 @@
 
         </tbody>
     </table>
-
-{% endblock %}

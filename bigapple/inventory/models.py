@@ -11,7 +11,7 @@ from sales.models import Supplier
 #     address = models.CharField('address', max_length=200)
 #     contact_number = models.CharField('contact_number', max_length=45)
 
-class Inventory(models.Model):
+class SupplierRawMaterials(models.Model):
     ITEM_TYPES = (
         ('Raw Materials', 'Raw Materials'),
         ('Machine Parts', 'Machine Parts'),
@@ -28,34 +28,20 @@ class Inventory(models.Model):
         ('PET', 'Polyethylene terephthalate')
     )
 
-    item_name = models.CharField('item_name', max_length=200, default='not specified')
-    item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='not specified')
-    rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='not specified', null=True, blank=True)
-    description = models.CharField('description', max_length=200)
-    quantity = models.IntegerField('quantity')
-
-    def itemtype(self): 
-        return self.item_type +' : ' + str(self.rm_type)
-
-    def __str__(self):
-        return self.item_name 
-
-
-# POLISH- not sure if everything is here
-class SupplierRawMaterials(models.Model):
-    RM_TYPES = (
-        ('--', '----------------'),
-        ('LDPE', 'Low-density polyethylene'),
-        ('LLDPE', 'Linear low-density polyethylene'),
-        ('HDPE', 'High-density polyethylene'),
-        ('PP', 'Polypropylene'),
-        ('PET', 'Polyethylene terephthalate')
-    )
-
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     price = models.DecimalField('price', decimal_places=2, max_digits=50)
     rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='not specified', null=True,
                                blank=True)
+
+
+class Inventory(models.Model):
+    item = models.CharField('item', max_length=200)
+    item_type = models.CharField('item_type', max_length=200)
+    description = models.CharField('description', max_length=200, blank=True, null=True)
+    quantity = models.IntegerField('quantity', default=0)
+
+    def __str__(self):
+        return str(self.item)
 
 class InventoryCountAsof(models.Model):
     RM_TYPES = (
@@ -71,10 +57,15 @@ class InventoryCountAsof(models.Model):
     old_count = models.IntegerField('old_count', default=0)
     new_count = models.IntegerField('new_count', default=0)
     date_counted = models.DateField('date_counted', )
-    rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='not specified', null=True, blank=True)
+    time = models.TimeField('time', auto_now_add=True, blank=True)
+    #item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='Raw Material')
+    rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='--', null=True, blank=True)
+    item_name = models.CharField('item_name', max_length=200, default='Not Specified')
+
 
     def __str__(self):
-        return str(self.supplier) +' : ' + str(self.rm_type)
+        return str(self.supplier) +' : ' + str(self.item_name)
+
 
 
 
@@ -120,17 +111,10 @@ class SupplierPOTracking(models.Model):
         return self.supplier_po
 
 class MaterialRequisition(models.Model):
-    SHIFTS = (
-        ('Shift 1', 'shift 1'),
-        ('Shift 2', 'shift 2'),
-        ('Shift 3', 'shift 3')
-    )
-
     date_issued = models.DateField('date_issued', auto_now_add=True)
-    issued_to = models.ForeignKey(Employee, on_delete = models.CASCADE, null=True)
-    shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     approval = models.BooleanField('approval', default=False)
     status = models.CharField('status', default='waiting', max_length=200)
+    jo = models.ForeignKey(JobOrder, on_delete=models.CASCADE)
 
     def __str__(self):
         lead_zero = str(self.id).zfill(5)
@@ -140,12 +124,11 @@ class MaterialRequisition(models.Model):
 
 class MaterialRequisitionItems(models.Model):
     matreq = models.ForeignKey(MaterialRequisition, on_delete=models.CASCADE)
-    brand = models.ForeignKey(Inventory, on_delete=models.CASCADE)
-    quantity = models.IntegerField('quantity')
-    to_be_used_for = models.CharField('to_be_used_for', max_length=200)
+    item = models.CharField('item', default='Not Specified', max_length=200)
+    quantity = models.IntegerField('quantity', default=0)
 
     def __str__(self):
-        return str(self.matreq) +' : ' + str(self.brand)
+        return str(self.matreq) +' : ' + str(self.id)
 
 class PurchaseRequisition(models.Model):
     placed_by = models.ForeignKey(Employee, on_delete = models.CASCADE, null=True)
@@ -167,7 +150,18 @@ class PurchaseRequisitionItems(models.Model):
     def __str__(self):
         return str(self.purchreq) + ' : ' + str(self.item)
 
+'''
+class InventoryCountAsof(models.Model):
+    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
+    person = models.ForeignKey(Employee, on_delete=models.CASCADE, default = 1)
+    old_count = models.IntegerField('old_count', default=0)
+    new_count = models.IntegerField('new_count', default=0)
+    date_counted = models.DateField('date_counted', auto_now_add=True)
+    time = models.TimeField('time', auto_now_add=True, blank=True)
 
+    def __str__(self):
+        return str(self.id) +' : '+str(self.inventory) +' : ' + str(self.date_counted)
+'''
 #TODO
 class SupplierSalesInvoice(models.Model):
     supplier_po = models.ForeignKey(SupplierPO, on_delete=models.CASCADE)
@@ -175,7 +169,6 @@ class SupplierSalesInvoice(models.Model):
     date = models.DateField('date', auto_now_add=True)
     vat = models.DecimalField('vat', decimal_places=2, max_digits=50)
     total_amount = models.IntegerField('total_amount')
-
 
     def __str__(self):
         lead_zero = str(self.id).zfill(5)

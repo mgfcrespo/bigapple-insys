@@ -1,11 +1,12 @@
-{% extends 'production_manager_page_ui.html' %}
+{% extends template %}
 
 {% block content %}
 
 <div class = "ui centered grid">
     <div class="six wide tablet ten wide computer column">
+       {{message}}
         <form class="ui form segment" action = "{% url 'inventory:purchase_requisition_approval' pr.id%}" method="POST" role="form">
-            <h2 class="ui header">{{ title }}</h2>
+            <h2 class="ui header">PR {{ title }}</h2>
             {% csrf_token %}
             <div class="two fields">
                 <div class = "field">
@@ -69,7 +70,6 @@
                     $("#decline_btn").prop('disabled', true);
                     $('#approve_btn').prop('disabled', false);
                 }
-
             });
         });
     </script>

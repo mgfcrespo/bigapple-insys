@@ -1,4 +1,4 @@
-{% extends 'general_manager_page_ui.html' %}
+{% extends template %}
 
 {% block content %}
 
@@ -14,7 +14,7 @@
             <div class="four fields">
                 <div class = "field">
                     <label for="">Client PO</label>
-                    <span>{{ data.client_po.client_po }}</span>
+                    <span>{{ data.client_po }}</span>
                 </div>
                 <div class = "field">
                     <label for="">Client</label>
@@ -38,10 +38,12 @@
                         <label for="">Amount Due</label>
                         <span>{{data.client_po.amount_due }}</span>
                     </div>
-                    <div class = "field"></div>
                     <div class = "field">
                         <label for="">Status</label>
-                        <span>{{form.status }}</span>
+                        <span id = "status">{{data.status }}</span>
+                    </div>
+                    <div class = "field">
+                        <a id="approve_btn" class="ui green button" href="{% url 'joborder:jo_approval' data.id %}">Approve</a>
                     </div>
             </div>
             <div class="field">
@@ -195,6 +197,12 @@
             $(function() {
                 $('.menu .item').tab();         
             })
+			
+			 $(function() {
+                if($('#status').text()=='On Queue'){
+                    $('#approve_btn').hide();
+                }
+            });
 
         });
     </script>

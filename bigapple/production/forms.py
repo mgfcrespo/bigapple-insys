@@ -103,7 +103,6 @@ class JODetailsForm(forms.ModelForm):
     
     class Meta:
         model = JobOrder
-        fields = ('status', 'remarks')
+        fields = ('remarks',)
 
-    status = forms.CharField(widget = forms.Select(choices=STATUS))
     remarks = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))

@@ -1,4 +1,4 @@
-{% extends 'production_manager_page_ui.html' %}
+{% extends template %}
 
 {% block content %}
 
@@ -8,19 +8,12 @@
         {% csrf_token %}
         <div class="field">
             <label>Item</label>
-            {{ form.item_name }}
+            {{ form.item }}
         </div>
         <div class="fields">
             <div class="field">
                 <label>Type</label>
                 {{ form.item_type }}
-            </div>
-            <div class="field">
-                <label>RM Type</label>
-                {{ form.rm_type }}
-            </div>
-            <div class="ui left pointing label">
-                For Raw Materials Only
             </div>
             <div class="field">
                 <label>Quantity</label>

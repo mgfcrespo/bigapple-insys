@@ -1,4 +1,4 @@
-{% extends 'production_manager_page_ui.html' %}
+{% extends template %}
 
   {% block content %}
 
@@ -15,6 +15,11 @@
           	</tr>
     		</thead>
     		<tbody>
+<<<<<<< HEAD
+				{% if mr %}
+=======
+			{% if mr %}
+>>>>>>> 728844a52a80da32853506f03b8d00f690504ded
 				{% for mr in mr %}
     			<tr class = "row">
                     <td> 
@@ -26,6 +31,15 @@
                     <td>{{ mr.total_amount }}</td>
     			</tr>
 				{% endfor %}
+			{% else %}
+<<<<<<< HEAD
+				<td>No Supplier Purchase Order to show!</td>
+=======
+			<td>
+				<p>There are no Supplier PO to display</p>
+			</td>
+>>>>>>> 728844a52a80da32853506f03b8d00f690504ded
+			{% endif %}
 			</tbody>
     	</table>
 	</div>

@@ -1,0 +1,42 @@
+{% extends 'global_base_ui.html' %}
+
+  {% block content %}
+  	<h2 class="ui header">{{ title }}</h2>
+		<table class="ui stripped table">
+        	<thead>
+          	<tr>
+          	  	<th>Person</th>
+                <th>Age</th>
+              	<th>Address</th>
+                <th>Email</th>
+                <th>Contact</th>
+                <th>Position</th>
+				<th></th>
+          	</tr>
+    		</thead>
+    		<tbody>
+			{% if data %}
+				{% for data in data  %}
+    			<tr>
+    				<td>{{ data.full_name }}</td>
+    				<td>{{ data.age }}</td>
+    				<td>{{ data.address }}</td>
+                    <td>{{ data.email }}</td>
+                    <td>{{ data.contact_number }}</td>
+                    <td>{{ data.position }}</td>
+					<td>
+						<a style = "padding: 5px;"  href="{% url 'sales:employee_edit' data.id %}">
+							<i class="yellow edit icon"></i>
+						</a>
+					</td>
+    			</tr>
+				{% endfor %}
+			{% else %}
+			<td>
+				<p>There are no Employees to display</p>
+			</td>
+			{% endif %}
+			</tbody>
+    	</table>
+	
+{% endblock %}

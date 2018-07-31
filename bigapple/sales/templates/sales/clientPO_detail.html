@@ -46,13 +46,15 @@
                    {% else %}
                    <td ><i class="icon close"></i></td>
                     {% endif %}
-                    <td>{{ clientitem.item_price}}</td>
 
-                    <td>Total: {{clientitem.price_per_piece}}</td>
+                    <td>{{clientitem.price_per_piece}}</td>
+                    <td>Total: {{ clientitem.item_price}}</td>
+
+
                 </tr>
                 {% endfor %}
 
-                <tr>Total: {{clientpo.total_amount}}</tr>
+                <tr>Grand Total: {{clientpo.total_amount}}</tr>
 
 
 			</tbody>

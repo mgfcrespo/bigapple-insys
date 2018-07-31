@@ -10,8 +10,34 @@ from django.forms.formsets import BaseFormSet
 # from django_select2.forms import ModelSelect2Widget
 # from linked_select2.forms import LinkedModelSelect2Widget
 
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
 class InventoryForm(forms.ModelForm):
     
+    ITEM_TYPES = (
+        ('Raw Materials', 'Raw Materials'),
+        ('Machine Parts', 'Machine Parts'),
+        ('Ink', 'Ink'),
+        ('Others', 'Others')
+    )
+
+    item_type = forms.CharField(max_length=200, label = 'item_type', widget = forms.Select(choices=ITEM_TYPES))
+    description = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))
+
+    class Meta:
+        model = Inventory
+        fields = ( 'item', 'item_type', 'description', 'quantity')
+
+    def __init__(self, *args, **kwargs):
+        super(InventoryForm, self).__init__(*args, **kwargs)
+        self.fields['item'].required = False
+        self.fields['item_type'].required = False
+        self.fields['description'].required = False
+        self.fields['quantity'].required = False
+        self.fields['quantity'].widget.attrs['readonly'] = True
+
+class SupplierRawMaterialsForm(ModelForm):
     ITEM_TYPES = (
         ('Raw Materials', 'Raw Materials'),
         ('Machine Parts', 'Machine Parts'),
@@ -28,60 +54,41 @@ class InventoryForm(forms.ModelForm):
         ('PET', 'Polyethylene terephthalate')
     )
 
-    item_type = forms.CharField(max_length=200, label = 'item_name', widget = forms.Select(choices=ITEM_TYPES))
-    rm_type = forms.CharField(max_length=200, label = 'rm_type', widget = forms.Select(choices=RM_TYPES))
-
-    description = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))
-
-    class Meta:
-        model = Inventory
-        fields = ('item_name', 'item_type', 'rm_type', 'description', 'quantity')
-
-
-class SupplierRawMaterialsForm(ModelForm):
-    RM_TYPES = (
-        ('--', '----------------'),
-        ('LDPE', 'Low-density polyethylene'),
-        ('LLDPE', 'Linear low-density polyethylene'),
-        ('HDPE', 'High-density polyethylene'),
-        ('PP', 'Polypropylene'),
-        ('PET', 'Polyethylene terephthalate')
-    )
-
     class Meta:
         model = SupplierRawMaterials
-        fields = ( 'supplier', 'price', 'rm_type')
+        fields = ( 'supplier', 'price', 'rm_type') # 'item_type', 'item_name'
 
     supplier = forms.ModelChoiceField(queryset=Supplier.objects.all())
+    item_type = forms.CharField(max_length=200, label = 'item_name', widget = forms.Select(choices=ITEM_TYPES))
     rm_type = forms.CharField(max_length=200, label = 'rm_type', widget = forms.Select(choices=RM_TYPES))
 
 class InventoryCountAsofForm(ModelForm):
     class Meta:
         model = InventoryCountAsof
         fields = ( 'inventory', 'new_count')
+
         inventory = forms.ModelChoiceField(queryset=Inventory.objects.all())
 
 class SupplierPOForm(ModelForm):
 
     class Meta:
         model = SupplierPO
-        fields = ('supplier', 'delivery_date')
+        fields = ('delivery_date', 'supplier')
+        widgets = {
+            'delivery_date': DateInput()
+        }
 
-        delivery_date = forms.DateField(initial=date.today())
         supplier = forms.CharField(max_length=200, label = 'supplier', widget = forms.Select(attrs={'id':'supplier'}))
         
 class SupplierPOItemsForm(ModelForm):
-    price = forms.CharField(label = 'price', widget = forms.TextInput(
-        attrs={'id':'price', 'name':'price'}
-    ))
-
     class Meta:
         model = SupplierPOItems
-        fields = ('item_name', 'price', 'quantity', 'total_price')
+        fields = ('item_name', 'quantity')
 
-    def __init__(self, *args, **kwargs):
-        super(SupplierPOItemsForm, self).__init__(*args, **kwargs)
-        self.fields['item_name'].queryset = Inventory.objects.none()
+        inventory = forms.ModelChoiceField(queryset=SupplierRawMaterials.objects.all())
+    # def __init__(self, *args, **kwargs):
+    #     super(SupplierPOItemsForm, self).__init__(*args, **kwargs)
+    #     self.fields['item_name'].queryset = Inventory.objects.none()
 
         # if 'supplier_po.supplier' in self.data:
         #     try:
@@ -92,22 +99,18 @@ class SupplierPOItemsForm(ModelForm):
         # elif self.instance.pk:
         #     self.fields['item_name'].queryset = self.instance.supplier_po.supplier.item_name_set.order_by('item_name')
 
+
 class MaterialRequisitionForm(forms.ModelForm):
 
     class Meta:
         model = MaterialRequisition
-        fields = ('issued_to', 'shift')
-
-        issued_to = forms.ModelChoiceField(queryset=Employee.objects.all())
-
+        fields = ()
 
 class MaterialRequisitionItemsForm(forms.ModelForm):
 
     class Meta:
         model = MaterialRequisitionItems
-        fields = ('brand', 'quantity', 'to_be_used_for')
-
-        brand = forms.ModelChoiceField(queryset=Inventory.objects.all())
+        fields = ('matreq', 'item', 'quantity')
 
 class PurchaseRequisitionForm(forms.ModelForm):
 
@@ -117,6 +120,12 @@ class PurchaseRequisitionForm(forms.ModelForm):
 
         placed_by = forms.ModelChoiceField(queryset=Employee.objects.all())
 
+    def __init__(self, *args, **kwargs):
+        super(PurchaseRequisitionForm, self).__init__(*args, **kwargs)
+       
+        self.fields["issued_to"].queryset = Employee.objects.filter(position__in=['General Manager', 'Sales Coordinator', 'Supervisor',
+        'Line Leader', 'Production Manager', 'Cutting', 'Printing', 'Extruder', 'Delivery', 'Warehouse', 'Utility', 
+        'Maintenance'])
 
 class PurchaseRequisitionItemsForm(forms.ModelForm):
 
