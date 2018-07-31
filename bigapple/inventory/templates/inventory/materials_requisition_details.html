@@ -22,26 +22,16 @@
                     <span id = "status">{{ mr.status }}</span>
                 </div>
             </div>
-            <div class="two fields">
-                <div class = "field">
-                    <label for="">Issued to:</label>
-                    <span>{{ mr.issued_to }}</span>
-                </div>
-                <div class = "field">
-                    <label for="">Shift:</label>
-                    <span>{{ mr.shift }}</span>
-                </div>
-            </div>
             <table class="ui table">
                 <thead>
-                    <th class="five wide">Brand</th>
+                    <th class="five wide">Item</th>
                     <th class="four wide">Quantity</th>
                     <th class="seven wide">For</th>
                 </thead>
                 <tbody>
                     {% for mri in mri %}
                     <tr>
-                        <td>{{ mri.brand }}</td>
+                        <td>{{ mri.item }}</td>
                         <td>{{ mri.quantity }}</td>
                         <td>{{ mri.to_be_used_for }}</td>
                     </tr>

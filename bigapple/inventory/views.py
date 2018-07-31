@@ -318,14 +318,20 @@ def materials_requisition_list(request):
     return render (request, 'inventory/materials_requisition_list.html', context)
 
 def materials_requisition_details(request, id):
-<<<<<<< HEAD
+    if request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    elif request.session['session_position'] == "Production Manager":
+        template = 'production_manager_page_ui.html'
+    else:
+        template = 'line_leader_page_ui.html'
+
     count = 0
     mr = MaterialRequisition.objects.get(id=id) #get MR
     mri = MaterialRequisitionItems.objects.filter(matreq=mr) #get MR Items 
     style = "ui teal message"
 
     for data in mri:
-        i = Inventory.objects.filter(id = data.brand.id)# get Inventory Items 
+        i = Inventory.objects.filter(item = data.item)# get Inventory Items 
         for x in i:
             if x.quantity >= data.quantity:
                 count = count+1
@@ -335,25 +341,14 @@ def materials_requisition_details(request, id):
     else:
         style = "ui red message"
 
-=======
-    if request.session['session_position'] == "General Manager":
-        template = 'general_manager_page_ui.html'
-    elif request.session['session_position'] == "Production Manager":
-        template = 'production_manager_page_ui.html'
-    else:
-        template = 'line_leader_page_ui.html'
     mr = MaterialRequisition.objects.get(id=id)
     mri = MaterialRequisitionItems.objects.filter(matreq=mr)
->>>>>>> b20fd28c685bacebc98c424010083fed4596c269
     context = {
         'mr' : mr,
         'title' : mr,
         'mri' : mri,
-<<<<<<< HEAD
         'style' : style,
-=======
         'template': template
->>>>>>> b20fd28c685bacebc98c424010083fed4596c269
     }
     return render(request, 'inventory/materials_requisition_details.html', context)
 
@@ -364,12 +359,14 @@ def materials_requisition_approval(request, id):
         template = 'production_manager_page_ui.html'
     else:
         template = 'line_leader_page_ui.html'
+
     mr = MaterialRequisition.objects.get(id=id) #get id of matreq
     mri = MaterialRequisitionItems.objects.filter(matreq=mr) #get all items in matreq
     count = 0
+    #TODO Model is changed
     if request.POST:
         for data in mri:
-            i = Inventory.objects.filter(id = data.brand.id)# get Inventory Items 
+            i = Inventory.objects.filter(item = data.item)# get Inventory Items 
             for x in i:
                 print("MR items:",data.id, data.brand.item, data.quantity)
                 print("Inventory items:", x.id, x.item, x.quantity)
@@ -382,7 +379,7 @@ def materials_requisition_approval(request, id):
 
     if mri.count() == count:
         for data in mri:
-            i = Inventory.objects.filter(id = data.brand.id) # get Inventory Items 
+            i = Inventory.objects.filter(item = data.item) # get Inventory Items 
             for x in i:
                 if x.quantity >= data.quantity:
                     x.quantity = (x.quantity - data.quantity)
@@ -399,72 +396,6 @@ def materials_requisition_approval(request, id):
         return redirect('inventory:materials_requisition_details', id = mr.id)
     
     return redirect('inventory:materials_requisition_details', id = mr.id)
-
-def materials_requisition_form(request):
-    if request.session['session_position'] == "General Manager":
-        template = 'general_manager_page_ui.html'
-    elif request.session['session_position'] == "Production Manager":
-        template = 'production_manager_page_ui.html'
-    else:
-        template = 'line_leader_page_ui.html'
-    #note:instance should be an object
-    matreq_item_formset = inlineformset_factory(MaterialRequisition, MaterialRequisitionItems, form=MaterialRequisitionItemsForm, extra=1, can_delete=True)
-    form = MaterialRequisitionForm(request.POST)
-
-
-
-    if request.method == "POST":
-        #Set ClientPO.client from session user
-        #form.fields['client'].initial = Client.objects.get(id = request.session['session_userid'])
-        message = ""
-        print(form)
-        if form.is_valid():
-            #Save PO form then use newly saved ClientPO as instance for ClientPOItems
-            new_form = form.save()
-            new_form = new_form.pk
-            form_instance = MaterialRequisition.objects.get(id=new_form)
-
-
-
-            #Use PO form instance for PO items
-            formset = matreq_item_formset(request.POST, instance=form_instance)
-            print(formset)
-            if formset.is_valid():
-                for form in formset:
-                    form.save()
-
-                formset_items = Inventory.objects.filter(id = new_form)
-                #formset_item_total = formset_items.aggregate(sum=aggregates.Sum('item_price'))['sum'] or 0
-
-                totalled_matreq = MaterialRequisition.objects.get(id=new_form)
-                #totalled_matreq.total_amount = formset_item_total
-                totalled_matreq.save()
-                message = "Material Requisition Submitted"
-
-            else:
-                message += "Formset error"
-
-        else:
-            message = "Form is not valid"
-
-<<<<<<< HEAD
-=======
-
-        form.fields["issued_to"].queryset = Employee.objects.filter(position__in=['General Manager', 'Sales Coordinator', 'Supervisor',
-        'Line Leader', 'Production Manager', 'Cutting', 'Printing', 'Extruder', 'Delivery', 'Warehouse', 'Utility', 
-        'Maintenance'])
-
-
->>>>>>> b20fd28c685bacebc98c424010083fed4596c269
-        return redirect('inventory:materials_requisition_list')
-    
-    else:
-        return render(request, 'inventory/materials_requisition_form.html',
-                              {'formset':matreq_item_formset(),
-                               'form': MaterialRequisitionForm,
-                               'template': template}
-                              )
-    #return redirect('inventory:materials_requisition_list')
 
 #Purchase Requisition
 def purchase_requisition_list(request):

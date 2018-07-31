@@ -4,7 +4,8 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 
 from .forms import JODetailsForm
-
+from inventory.forms import MaterialRequisitionForm, MaterialRequisitionItemsForm
+from inventory.forms import MaterialRequisition, MaterialRequisitionItems
 from .models import Machine, SalesInvoice, Employee, ClientPO
 from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule
 from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm
@@ -12,18 +13,18 @@ from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleFo
 #scheduling import
 # Import Python wrapper for or-tools constraint solver.
 
-from ortools.constraint_solver import pywrapcp
+
 from datetime import timedelta as td
 from datetime import datetime as dt
 
-
+from ortools.constraint_solver import pywrapcp
 import plotly
 import plotly.offline as opy
 import plotly.plotly as py
 import plotly.figure_factory as ff
 import plotly.graph_objs as go
 
-#from ortools.constraint_solver import pywrapcp
+from ortools.constraint_solver import pywrapcp
 from datetime import timedelta
 
 
@@ -540,3 +541,72 @@ def add_cutting_schedule(request, id):
     
     return render (request, 'production/add_cutting_schedule.html', context)
 
+
+# JO approval 
+def jo_approval(request, id):
+    jo_id = JobOrder.objects.get(id=id) #get JO
+    client_po = ClientPO.objects.get(id = jo_id.client_po.id)
+    client_po.status = 'Approved'
+    client_po.save()
+    jo_id.status = "On Queue"
+    jo_id.save()
+
+    client_items = ClientItem.objects.filter(client_po = jo_id.client_po.id)
+    
+    #forms
+    form = MaterialRequisitionForm
+    form_items = MaterialRequisitionItemsForm
+
+    print("JO:" ,jo_id)
+    print("Client PO:" ,jo_id.client_po.id)
+
+    #variables
+    HDPE = 0
+    PP = 0
+    PET = 0
+    LDPE = 0
+    LLDPE = 0
+    
+    for data in client_items:
+        print(data.material_type, data.quantity)
+
+        if data.products.material_type == "HDPE":
+            #rm for HDPE ratio 3:2:1
+            q = data.quantity
+            x = (q/100)/6
+            HDPE+= x*3
+            PP+= x*2  
+            PET+= x*1
+
+        elif data.products.material_type == "PP":
+            q = data.quantity
+            x= (q/100)/6
+            PP+= x*3
+            PET+= x*2  
+            HDPE+= x*1
+
+        elif data.products.material_type == "LDPE":
+            q = data.quantity
+            x= (q/100)/6
+            LDPE+= x*3
+            LLDPE+= x*2  
+            HDPE+= x*1
+
+    print(LDPE, HDPE, PP, PET, LLDPE)
+
+    MaterialRequisition.objects.create(jo = jo_id)
+    mr_id = MaterialRequisition.objects.last() 
+
+
+    if LDPE != 0:
+        MaterialRequisitionItems.objects.create(matreq = mr_id, item = "LDPE", quantity = LDPE)
+    if HDPE != 0:
+        MaterialRequisitionItems.objects.create(matreq = mr_id, item = "HDPE", quantity = HDPE)
+    if PP != 0:
+        MaterialRequisitionItems.objects.create(matreq = mr_id, item = "PP", quantity = PP)
+    if PET != 0:
+        MaterialRequisitionItems.objects.create(matreq = mr_id, item = "PET", quantity = PET)
+    if LLDPE != 0:
+        MaterialRequisitionItems.objects.create(matreq = mr_id, item = "LLDPE", quantity = LLDPE)
+
+    return redirect('production:job_order_details', id = jo_id.id)
