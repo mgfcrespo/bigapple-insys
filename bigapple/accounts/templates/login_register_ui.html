@@ -22,7 +22,30 @@
 <body>
 
 
-    {% block login %} {%endblock %}
+    <div class="ui middle aligned center aligned grid" style="padding: 10px;">
+        <div class="column">
+            <div class="content">
+
+                <h1>
+                    Big Apple Plastic Manufacturing Co.
+                </h1>
+
+                <div class="ui middle inverted raised padded text container segment" style="width: 500px;">
+
+                    {% block login %} {%endblock %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <style>
+        body>.grid {
+            height: 100%;
+        }
+
+    </style>
 
     <script type="text/javascript" src="{% static 'jquery-3.2.1.min.js' %}"></script>
     <!--Formset files-->
