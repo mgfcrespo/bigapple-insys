@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory, inlineformset_factory
 from django.db.models import aggregates
+from django.contrib import messages
 
 
 from .models import SupplierSalesInvoice
@@ -323,12 +324,30 @@ def materials_requisition_details(request, id):
         template = 'production_manager_page_ui.html'
     else:
         template = 'line_leader_page_ui.html'
+
+    count = 0
+    mr = MaterialRequisition.objects.get(id=id) #get MR
+    mri = MaterialRequisitionItems.objects.filter(matreq=mr) #get MR Items 
+    style = "ui teal message"
+
+    for data in mri:
+        i = Inventory.objects.filter(item = data.item)# get Inventory Items 
+        for x in i:
+            if x.quantity >= data.quantity:
+                count = count+1
+    
+    if mri.count() == count:
+        style = "ui green message"
+    else:
+        style = "ui red message"
+
     mr = MaterialRequisition.objects.get(id=id)
     mri = MaterialRequisitionItems.objects.filter(matreq=mr)
     context = {
         'mr' : mr,
         'title' : mr,
         'mri' : mri,
+        'style' : style,
         'template': template
     }
     return render(request, 'inventory/materials_requisition_details.html', context)
@@ -340,94 +359,43 @@ def materials_requisition_approval(request, id):
         template = 'production_manager_page_ui.html'
     else:
         template = 'line_leader_page_ui.html'
+
     mr = MaterialRequisition.objects.get(id=id) #get id of matreq
     mri = MaterialRequisitionItems.objects.filter(matreq=mr) #get all items in matreq
-
-    #def clean(self):
+    count = 0
+    #TODO Model is changed
     if request.POST:
-        if 'approve' in request.POST:
-            for mri in mri:
-                items = Inventory.objects.get(id=mri.brand.id) #get items in inventory that is in matreq
-                if Inventory.objects.filter(id=mri.brand.id).exists():
-                    if Inventory.objects.filter(quantity__gte=mri.quantity):
-                        items.quantity = (items.quantity-mri.quantity)
-                        mr.approval = True
-                        mr.status = "approved"
-                        mr.save()
-                        items.save()
-                        return redirect('inventory:materials_requisition_list')
-                    else:
-                        # TODO
-                        # should render error message
-                        messages = "Insufficient Inventory Quantity!"
-                        return redirect('inventory:materials_requisition_details', id = mr.id)
-                else:
-                    message = 'Insufficient Inventory Quantity'
-                    return redirect('inventory:materials_requisition_details', id = mr.id)
-        
+        for data in mri:
+            i = Inventory.objects.filter(item = data.item)# get Inventory Items 
+            for x in i:
+                print("MR items:",data.id, data.brand.item, data.quantity)
+                print("Inventory items:", x.id, x.item, x.quantity)
 
-def materials_requisition_form(request):
-    if request.session['session_position'] == "General Manager":
-        template = 'general_manager_page_ui.html'
-    elif request.session['session_position'] == "Production Manager":
-        template = 'production_manager_page_ui.html'
+                if x.quantity >= data.quantity:
+                    count = count+1
+
+    print("MR items:", mri.count())
+    print("# of approved: ",count)
+
+    if mri.count() == count:
+        for data in mri:
+            i = Inventory.objects.filter(item = data.item) # get Inventory Items 
+            for x in i:
+                if x.quantity >= data.quantity:
+                    x.quantity = (x.quantity - data.quantity)
+                    mr.approval = True
+                    mr.status = "approved"
+                    mr.save()
+                    x.save()
+                    print(x.quantity)
+
+        messages.success(request, 'Material Requisitio has been approved!')
+
     else:
-        template = 'line_leader_page_ui.html'
-    #note:instance should be an object
-    matreq_item_formset = inlineformset_factory(MaterialRequisition, MaterialRequisitionItems, form=MaterialRequisitionItemsForm, extra=1, can_delete=True)
-    form = MaterialRequisitionForm(request.POST)
-
-
-
-    if request.method == "POST":
-        #Set ClientPO.client from session user
-        #form.fields['client'].initial = Client.objects.get(id = request.session['session_userid'])
-        message = ""
-        print(form)
-        if form.is_valid():
-            #Save PO form then use newly saved ClientPO as instance for ClientPOItems
-            new_form = form.save()
-            new_form = new_form.pk
-            form_instance = MaterialRequisition.objects.get(id=new_form)
-
-
-
-            #Use PO form instance for PO items
-            formset = matreq_item_formset(request.POST, instance=form_instance)
-            print(formset)
-            if formset.is_valid():
-                for form in formset:
-                    form.save()
-
-                formset_items = Inventory.objects.filter(id = new_form)
-                #formset_item_total = formset_items.aggregate(sum=aggregates.Sum('item_price'))['sum'] or 0
-
-                totalled_matreq = MaterialRequisition.objects.get(id=new_form)
-                #totalled_matreq.total_amount = formset_item_total
-                totalled_matreq.save()
-                message = "Material Requisition Submitted"
-
-            else:
-                message += "Formset error"
-
-        else:
-            message = "Form is not valid"
-
-
-        form.fields["issued_to"].queryset = Employee.objects.filter(position__in=['General Manager', 'Sales Coordinator', 'Supervisor',
-        'Line Leader', 'Production Manager', 'Cutting', 'Printing', 'Extruder', 'Delivery', 'Warehouse', 'Utility', 
-        'Maintenance'])
-
-
-        return redirect('inventory:materials_requisition_list')
+        messages.warning(request, 'Insufficient Inventory!')
+        return redirect('inventory:materials_requisition_details', id = mr.id)
     
-    else:
-        return render(request, 'inventory/materials_requisition_form.html',
-                              {'formset':matreq_item_formset(),
-                               'form': MaterialRequisitionForm,
-                               'template': template}
-                              )
-    #return redirect('inventory:materials_requisition_list')
+    return redirect('inventory:materials_requisition_details', id = mr.id)
 
 #Purchase Requisition
 def purchase_requisition_list(request):

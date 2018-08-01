@@ -10,6 +10,9 @@ from django.forms.formsets import BaseFormSet
 # from django_select2.forms import ModelSelect2Widget
 # from linked_select2.forms import LinkedModelSelect2Widget
 
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
 class InventoryForm(forms.ModelForm):
     
     ITEM_TYPES = (
@@ -71,15 +74,13 @@ class SupplierPOForm(ModelForm):
     class Meta:
         model = SupplierPO
         fields = ('delivery_date', 'supplier')
+        widgets = {
+            'delivery_date': DateInput()
+        }
 
-        delivery_date = forms.DateField(initial=date.today(), widget = forms.DateInput(attrs={'id':'delivery_date'}))
         supplier = forms.CharField(max_length=200, label = 'supplier', widget = forms.Select(attrs={'id':'supplier'}))
         
 class SupplierPOItemsForm(ModelForm):
-    price = forms.CharField(label = 'price', widget = forms.TextInput(
-        attrs={'id':'price', 'name':'price'}
-    ))
-
     class Meta:
         model = SupplierPOItems
         fields = ('item_name', 'quantity')
@@ -98,28 +99,18 @@ class SupplierPOItemsForm(ModelForm):
         # elif self.instance.pk:
         #     self.fields['item_name'].queryset = self.instance.supplier_po.supplier.item_name_set.order_by('item_name')
 
+
 class MaterialRequisitionForm(forms.ModelForm):
 
     class Meta:
         model = MaterialRequisition
-        fields = ('issued_to', 'shift')
-
-        issued_to = forms.ModelChoiceField(queryset=Employee.objects.all())
-
-    def __init__(self, *args, **kwargs):
-        super(MaterialRequisitionForm, self).__init__(*args, **kwargs)
-       
-        self.fields["issued_to"].queryset = Employee.objects.filter(position__in=['General Manager', 'Sales Coordinator', 'Supervisor',
-        'Line Leader', 'Production Manager', 'Cutting', 'Printing', 'Extruder', 'Delivery', 'Warehouse', 'Utility', 
-        'Maintenance'])
+        fields = ()
 
 class MaterialRequisitionItemsForm(forms.ModelForm):
 
     class Meta:
         model = MaterialRequisitionItems
-        fields = ('brand', 'quantity', 'to_be_used_for')
-
-        brand = forms.ModelChoiceField(queryset=Inventory.objects.all())
+        fields = ('matreq', 'item', 'quantity')
 
 class PurchaseRequisitionForm(forms.ModelForm):
 

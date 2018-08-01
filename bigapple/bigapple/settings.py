@@ -94,8 +94,13 @@ DATABASES = {
         'NAME': 'bigapple_db',
         'USER': 'root',
         'PASSWORD': '',
+<<<<<<< HEAD
         'HOST': '127.0.0.1',
+        'PORT': '8888',
+=======
+        'HOST': 'localhost',
         'PORT': '3306',
+>>>>>>> d895ba1d65dac05d62d1a331a3c56f0f125c0ec9
     }
 }
 

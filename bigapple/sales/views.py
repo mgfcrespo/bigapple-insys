@@ -20,7 +20,7 @@ import sys
 from decimal import Decimal
 
 #Forecasting imports
-'''
+
 import numpy as np
 from math import sqrt
 import pandas as pd
@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt
 #from sklearn.metrics import mean_squared_error
 from matplotlib.pylab import rcParams
 rcParams['figure.figsize'] = 15, 6
-'''
+
 
 # Create your views here.
 # CRUD SUPPLIER

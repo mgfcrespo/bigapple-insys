@@ -15,6 +15,7 @@
           	</tr>
     		</thead>
     		<tbody>
+            {% if data %}
                 {% for data in data %}
                 <tr class = "row">
                     <td> 
@@ -30,7 +31,12 @@
                     </td>
                 </tr>
                 {% endfor %}
-				
+            {% else %}
+            <td>
+                <p>There are no Job Orders to display</p>
+            </td>
+            {% endif %}
+
 			</tbody>
     	</table>
 	</div>

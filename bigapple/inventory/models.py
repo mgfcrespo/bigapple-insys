@@ -111,17 +111,10 @@ class SupplierPOTracking(models.Model):
         return self.supplier_po
 
 class MaterialRequisition(models.Model):
-    SHIFTS = (
-        ('Shift 1', 'shift 1'),
-        ('Shift 2', 'shift 2'),
-        ('Shift 3', 'shift 3')
-    )
-
     date_issued = models.DateField('date_issued', auto_now_add=True)
-    issued_to = models.ForeignKey(Employee, on_delete = models.CASCADE, null=True)
-    shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     approval = models.BooleanField('approval', default=False)
     status = models.CharField('status', default='waiting', max_length=200)
+    jo = models.ForeignKey(JobOrder, on_delete=models.CASCADE)
 
     def __str__(self):
         lead_zero = str(self.id).zfill(5)
@@ -131,12 +124,11 @@ class MaterialRequisition(models.Model):
 
 class MaterialRequisitionItems(models.Model):
     matreq = models.ForeignKey(MaterialRequisition, on_delete=models.CASCADE)
-    brand = models.ForeignKey(Inventory, on_delete=models.CASCADE)
-    quantity = models.IntegerField('quantity')
-    to_be_used_for = models.CharField('to_be_used_for', max_length=200)
+    item = models.CharField('item', default='Not Specified', max_length=200)
+    quantity = models.IntegerField('quantity', default=0)
 
     def __str__(self):
-        return str(self.matreq) +' : ' + str(self.brand)
+        return str(self.matreq) +' : ' + str(self.id)
 
 class PurchaseRequisition(models.Model):
     placed_by = models.ForeignKey(Employee, on_delete = models.CASCADE, null=True)
