@@ -1,28 +1,20 @@
-{% extends 'login_register_ui.html' %}
+{% extends 'login_register_ui.html' %} {% block login %}
 
-{% block login %}
-
-<form method = "post" action = "{% url 'login' %}" >
-                                	{% csrf_token %}
-
-										    {%if form.errors %}
+<form method="post" action="{% url 'login' %}">
+    {% csrf_token %} {%if form.errors %}
     <p>Error, incorrect username or password.</p>
-    {% endif %}
-
-    {% if next %}
+    {% endif %} {% if next %}
     <p>You can't access this page</p>
     {% endif %}
 
-										<label>Username: {{form.username}}</label>
-										<label>Password: {{form.password}}</label>
+    <label>Username: {{form.username}}</label>
+    <label>Password: {{form.password}}</label>
 
-           							<div class="center">
-         								<input class="ui button" type="submit" value="Login">
-
-	   								</div>
-            						</form>
+    <div class="center">
+        <input class="ui button" type="submit" value="Login">
+        <input class="ui button" type="clear" value="clear">
+    </div>
+    
+</form>
 
 {% endblock %}
-
-
-
