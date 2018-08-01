@@ -1,15 +1,12 @@
 from django.db import models
 from django.db.models import Sum, Avg
 from datetime import date, timezone
-from accounts.models import Employee
+from accounts.models import Employee 
 from sales.models import Supplier
+from production.models import JobOrder
+
 
 # Create your models here.
-
-# class Supplier(models.Model):
-#     name = models.CharField('name', max_length=200)
-#     address = models.CharField('address', max_length=200)
-#     contact_number = models.CharField('contact_number', max_length=45)
 
 class SupplierRawMaterials(models.Model):
     ITEM_TYPES = (
@@ -30,8 +27,7 @@ class SupplierRawMaterials(models.Model):
 
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     price = models.DecimalField('price', decimal_places=2, max_digits=50)
-    rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='not specified', null=True,
-                               blank=True)
+    rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='not specified', null=True, blank=True)
 
 
 class Inventory(models.Model):
@@ -65,8 +61,6 @@ class InventoryCountAsof(models.Model):
 
     def __str__(self):
         return str(self.supplier) +' : ' + str(self.item_name)
-
-
 
 
 class SupplierPO(models.Model):

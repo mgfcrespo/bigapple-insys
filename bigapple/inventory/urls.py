@@ -16,7 +16,6 @@ urlpatterns = [
     path('supplier-rawmat-edit/<int:id>/', views.supplier_rawmat_edit, name='supplier_rawmat_edit'),
     path('supplier-rawmat-delete/<int:id>/', views.supplier_rawmat_delete, name='supplier_rawmat_delete'),
     #material requisition
-    path('materials-requisition-form/', views.materials_requisition_form, name='materials_requisition_form'),
     path('materials-requisition-list/', views.materials_requisition_list, name='materials_requisition_list'),
     path('materials-requisition-details/<int:id>/', views.materials_requisition_details, name='materials_requisition_details'),
     path('materials-requisition-approval/<int:id>/', views.materials_requisition_approval, name='materials_requisition_approval'),

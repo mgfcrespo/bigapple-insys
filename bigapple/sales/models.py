@@ -31,16 +31,16 @@ class ClientConstant(models.Model):
     def __str__(self):
         return str(self.client)
 
+#TODO set prod_price to material cost
 class Product(models.Model):
-	RM_TYPES = (
+    RM_TYPES = (
         ('LDPE', 'Low-density polyethylene'),
         ('HDPE', 'High-density polyethylene'),
-        ('PP', 'Polypropylene'),
+        ('PP', 'Polypropylene')
     )
-	
-    #TODO set prod_price to material cost
+    
+    material_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, null=True, blank=True)
     products = models.CharField('products', max_length=300)
-	material_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, null=True, blank=True)
     prod_price = models.DecimalField('prod_price', decimal_places=2, max_digits=12, default=0)
     constant = models.DecimalField('constant', decimal_places=2, max_digits=12, default=0)
     description = models.CharField('description', max_length=200)

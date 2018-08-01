@@ -1,12 +1,11 @@
 from django.db import models
-
+from decimal import Decimal
 # Create your models here.
 from django.db import models
 from accounts.models import Employee
 from sales.models import ClientPO, SalesInvoice
-from inventory.models import SupplierRawMaterials
-# from sales.models import OrderSheet
 
+# from sales.models import OrderSheet
 
 SHIFTS = (
     ('Shift 1', 'shift 1'),

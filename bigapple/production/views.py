@@ -437,8 +437,9 @@ def add_extruder_schedule(request, id):
     data = JobOrder.objects.get(id=id)
     form = ExtruderScheduleForm(request.POST or None)
 	
-	client_po = ClientPO.objects.get(id=data.client_po.id)
+    client_po = ClientPO.objects.get(id=data.client_po.id)
     e = ExtruderSchedule.objects.filter(job_order = data.id)
+
     if e.count == 0:
         data.status = 'Under Cutting'
         client_po.status = 'Under production'
@@ -481,7 +482,7 @@ def add_printing_schedule(request, id):
     data = JobOrder.objects.get(id=id)
     form = PrintingScheduleForm(request.POST or None)
 	
-	client_po = ClientPO.objects.get(id=data.client_po.id)
+    client_po = ClientPO.objects.get(id=data.client_po.id)
     p = PrintingSchedule.objects.filter(job_order = data.id)
     if e.count == 0:
         data.status = 'Under Printing'
@@ -521,8 +522,9 @@ def add_cutting_schedule(request, id):
     data = JobOrder.objects.get(id=id)
     form = CuttingScheduleForm(request.POST or None)
 	
-	client_po = ClientPO.objects.get(id=data.client_po.id)
+    client_po = ClientPO.objects.get(id=data.client_po.id)
     c = CuttingSchedule.objects.filter(job_order = data.id)
+
     if e.count == 0:
         data.status = 'Under Cutting'
         client_po.status = 'Under production'

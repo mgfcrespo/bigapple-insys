@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 from .models import Supplier, Product, ClientPO, ClientItem, ClientCreditStatus, SalesInvoice, ClientConstant, ProductionCost
-from production.models import JobOrder, CuttingSchedule, PrintingSchedule, ExtruderSchedule, Machine
 # Register your models here.
 
 admin.site.register(Supplier)
