@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h2 class="ui header">Printing Schedule</h2>
+<h2 class="ui header">Printing Form</h2>
  
 <div class="sixteen wide column">
     <div class="ui inverted segment">
@@ -14,30 +14,31 @@
                     {{ form.job_order }}
                 </div>
             </div>
-              <div class="four fields">
-                <div class="field">
-                    <span>Time In:</span>
+            <div class="fields">
+                <div class = "three wide field">
+                    <label>Machine #:</label>
+                    {{ form.machine }}
+                </div>    
+                <div class = "three wide field"></div>
+                <div class = "three wide field">
+                    <label>Time In:</label>
                     {{ form.time_in }}
                 </div>
-                <div class="field">
-                    <span>Day</span>
-                    {{ form.day }}
+                <div class = "two wide field">
+                    <label>Day In:</label>
+                    {{ form.day_in }}
                 </div>
-                <div class="field">
-                    <label>Machine Number:</label>
-                    {{ form.machine }}
+                <div class = "three wide field">
+                    <label>Time Out:</label>
+                    {{ form.time_out }}
                 </div>
-                <div class="field">
-                    <label>Operator:</label>
-                    {{ form.operator }}
+                <div class = "two wide field">
+                    <label>Day Out:</label>
+                    {{ form.day_out }}
                 </div>
-                <div class="field">
-                    <label>Shift:</label>
-                    {{ form.shift }}
-                </div>
-            </div>
+            </div>    
 
-            <div class="fields">
+            <div class="three fields">
                 <div class="field">
                     <label>No. of Rolls:</label>
                     {{ form.number_rolls }}

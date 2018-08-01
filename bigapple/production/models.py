@@ -110,15 +110,16 @@ class ExtruderSchedule(models.Model):
 
     job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-    operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    #operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
     #stock_kind = models.CharField('stock_kind',choices=STOCK_KIND, max_length=250, default='not specified')
     #material = models.CharField('material', max_length=200)
     #treating = models.CharField('treating', max_length=200)
     date = models.DateField('date', auto_now_add=True, blank=True)
-    shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
-    day = models.CharField('day', choices=DAY, max_length=200, default='a.m.')
+    #shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
+    day_in = models.CharField('day_in', choices=DAY, max_length=200, default='a.m.')
+    day_out = models.CharField('day_out', choices=DAY, max_length=200, default='a.m.')
     time_in = models.TimeField('time_in', blank=True)
-    time_out = models.TimeField('time_out', auto_now_add=True, blank=True)
+    time_out = models.TimeField('time_out', blank=True)
     weight_rolls = models.DecimalField('weight_rolls', decimal_places=2, max_digits=12, null=True, blank=True)
     core_weight = models.DecimalField('core_weight', decimal_places=2, max_digits=12, null=True, blank=True)
     net_weight = models.DecimalField('net_weight', decimal_places=2, max_digits=12, null=True, blank=True)  # idk if necessary
@@ -126,16 +127,22 @@ class ExtruderSchedule(models.Model):
     number_rolls = models.DecimalField('number_rolls', decimal_places=2, max_digits=12, null=True, blank=True)
     starting_scrap = models.DecimalField('starting_scrap', decimal_places=2, max_digits=12, null=True, blank=True)
     extruder_scrap = models.DecimalField('extruder_scrap', decimal_places=2, max_digits=12, null=True, blank=True)
-    balance = models.DecimalField('balance', decimal_places=2, max_digits=12, null=True, blank=True)
+    balance = models.IntegerField('balance')
     remarks = models.CharField('remarks', max_length=1000, null=True, blank=True)
 
     def __str__(self):
-        data = str(self.job_order) + ' : ' + str(self.id) + ' : ' + str(self.operator.full_name)
+        data = str(self.job_order) + ' : ' + str(self.id)
         return data + ' : ' + str(self.date)
 
     def time_in_day(self):
-        return str(self.time_in) + ' : ' + str(self.day)
+        return str(self.time_in) + ' : ' + str(self.day_in)
 
+    def time_out_day(self):
+        return str(self.time_out) + ' : ' + str(self.day_out)
+
+    def save(self, *args, **kwargs):
+        self.balance = self.weight_rolls* Decimal(4.74) 
+        super(ExtruderSchedule, self).save(*args, **kwargs)
 
 class PrintingSchedule(models.Model):
     SHIFTS = (
@@ -151,12 +158,12 @@ class PrintingSchedule(models.Model):
 
     job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-    operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    # operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
     date = models.DateField('date', auto_now_add=True, blank=True)
-    shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
-    day = models.CharField('day', choices=DAY, max_length=200, default='a.m.')
+    day_in = models.CharField('day_in', choices=DAY, max_length=200, default='a.m.')
+    day_out = models.CharField('day_out', choices=DAY, max_length=200, default='a.m.')
     time_in = models.TimeField('time_in', blank=True)
-    time_out = models.TimeField('time_out', auto_now_add=True, blank=True)
+    time_out = models.TimeField('time_out',  blank=True)
     #repeat_order = models.BooleanField('repeat_order', default=False)
     #output_kilos = models.DecimalField('output_kilos', decimal_places=2, max_digits=12)
     number_rolls = models.DecimalField('number_rolls', decimal_places=2, max_digits=12)
@@ -165,11 +172,14 @@ class PrintingSchedule(models.Model):
     remarks = models.CharField('remarks', max_length=1000, null=True, blank=True)
 
     def __str__(self):
-        data = str(self.job_order) + ' : ' + str(self.id) + ' : ' + str(self.operator.full_name)
+        data = str(self.job_order) + ' : ' + str(self.id)
         return data + ' : ' + str(self.date)
 
     def time_in_day(self):
-        return str(self.time_in) + ' : ' + str(self.day)
+        return str(self.time_in) + ' : ' + str(self.day_in)
+
+    def time_out_day(self):
+        return str(self.time_out) + ' : ' + str(self.day_out)
 
 class CuttingSchedule(models.Model):
     SHIFTS = (
@@ -190,15 +200,15 @@ class CuttingSchedule(models.Model):
 
     job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-    operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    # operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
     #print_name = models.CharField('print_name', max_length=200)
     #sealing = models.CharField('sealing', max_length=200)
     #handle = models.CharField('handle', max_length=200)
     date = models.DateField('date', auto_now_add=True, blank=True)
-    shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
-    day = models.CharField('day', choices=DAY, max_length=200, default='a.m.')
-    time_in = models.TimeField('time_in', blank=True)
-    time_out = models.TimeField('time_out', auto_now_add=True, blank=True)
+    day_in = models.CharField('day_in', choices=DAY, max_length=200, default='a.m.')
+    day_out = models.CharField('day_out', choices=DAY, max_length=200, default='a.m.')
+    time_in = models.TimeField('time_in', blank=True )
+    time_out = models.TimeField('time_out', blank=True)
     line = models.CharField('line', choices=LINE, default='1', max_length=200)
     quantity = models.DecimalField('quantity', decimal_places=2, max_digits=12)
     output_kilos = models.DecimalField('output_kilos', decimal_places=2, max_digits=12, null=True, blank=True)
@@ -208,8 +218,11 @@ class CuttingSchedule(models.Model):
     remarks = models.CharField('remarks', max_length=1000, null=True, blank=True)
 
     def __str__(self):
-        data = str(self.job_order) + ' : ' + str(self.id) + ' : ' + str(self.operator.full_name)
+        data = str(self.job_order) + ' : ' + str(self.id)
         return data + ' : ' + str(self.date)
 
     def time_in_day(self):
-        return str(self.time_in) + ' : ' + str(self.day)
+        return str(self.time_in) + ' : ' + str(self.day_in)
+
+    def time_out_day(self):
+        return str(self.time_out) + ' : ' + str(self.day_out)

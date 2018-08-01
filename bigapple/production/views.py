@@ -388,13 +388,14 @@ def job_order_list(request):
     return render (request, 'production/job_order_list.html', context)
 
 def job_order_details(request, id):
+
     if request.session['session_position'] == "General Manager":
         template = 'general_manager_page_ui.html'
     elif request.session['session_position'] == "Production Manager":
         template = 'production_manager_page_ui.html'
     else:
         template = 'line_leader_page_ui.html'
-
+		
     data = JobOrder.objects.get(id=id)
     client_po_data = ClientPO.objects.get(id = data.client_po.id)
     form = JODetailsForm(request.POST or None)
@@ -403,38 +404,13 @@ def job_order_details(request, id):
     cutting = CuttingSchedule.objects.filter(job_order=data.id).order_by('date', 'time_out')
 
     if request.method == 'POST':
-      data.status = request.POST.get("status")
       data.remarks = request.POST.get("remarks")
-
-      if data.status == 'Waiting':
-        client_po_data.status = 'Waiting'
-      elif data.status == 'On Queue':
-        client_po_data.status = 'Approved'
-        prod_sched_flag = 1
-      elif data.status == 'Under Extrusion':
-        client_po_data.status = 'Under production'
-        prod_sched_flag = 1
-      elif data.status == 'Under Printing':
-        client_po_data.status = 'Under production'
-        prod_sched_flag = 1
-      elif data.status == 'Under Cutting':
-        client_po_data.status = 'Under production'
-        prod_sched_flag = 1
-      elif data.status == 'Under Packaging':
-        client_po_data.status = 'Under production'
-        prod_sched_flag = 1
-      elif data.status == 'Ready for delivery':
-        client_po_data.status = 'Ready for delivery'
-        prod_sched_flag = 1
-      elif data.status == 'Cancelled':
-        client_po_data.status = 'Cancelled' 
 
       client_po_data.save()
       data.save()
 
-      return redirect('production:job_order_details', id = data.id)
+      return redirect('joborder:job_order_details', id = data.id)
         
-    form.fields["status"].initial = data.status
     form.fields["remarks"].initial = data.remarks
 
     context = {
@@ -444,29 +420,33 @@ def job_order_details(request, id):
       'extrusion': extrusion,
       'printing': printing,
       'cutting': cutting,
-      'template': template
+	   'template' : template
     }
-    return render(request, 'production/job_order_details.html', context)
+    return render(request, 'joborder/job_order_details.html', context)
 
 # EXTRUDER 
 def add_extruder_schedule(request, id):
+	
     if request.session['session_position'] == "General Manager":
         template = 'general_manager_page_ui.html'
     elif request.session['session_position'] == "Production Manager":
         template = 'production_manager_page_ui.html'
     else:
         template = 'line_leader_page_ui.html'
-
+		
     data = JobOrder.objects.get(id=id)
     form = ExtruderScheduleForm(request.POST or None)
     print(form.errors)
     if request.method == 'POST':
-      if form.is_valid():
-        form.save()
-        return redirect('production:job_order_details', id = data.id)
+        if form.is_valid():
+            x = request.POST.get("weight_rolls")
+            y = Decimal(x)*Decimal(4.74) 
+            form.balance = int(y)
+            print(form.balance)
+            form.save()
+            return redirect('production:job_order_details', id = data.id)
 
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Extruder')
-    form.fields["operator"].queryset = Employee.objects.filter(position='Extruder')
     form.fields["job_order"].queryset = JobOrder.objects.filter(id=data.id)
     form.fields["job_order"].initial = data.id
     
@@ -474,20 +454,21 @@ def add_extruder_schedule(request, id):
       'data': data,
       'title' : data.job_order,
       'form': form,
-      'template': template
+	   'template' : template
     }
     
     return render (request, 'production/add_extruder_schedule.html', context)
 
 # PRINTING
 def add_printing_schedule(request, id):
+	
     if request.session['session_position'] == "General Manager":
         template = 'general_manager_page_ui.html'
     elif request.session['session_position'] == "Production Manager":
         template = 'production_manager_page_ui.html'
     else:
         template = 'line_leader_page_ui.html'
-
+		
     data = JobOrder.objects.get(id=id)
     form = PrintingScheduleForm(request.POST or None)
     print(form.errors)
@@ -497,7 +478,6 @@ def add_printing_schedule(request, id):
         return redirect('production:job_order_details', id = data.id)
 
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Printing')
-    form.fields["operator"].queryset = Employee.objects.filter(position='Printing')
     form.fields["job_order"].queryset = JobOrder.objects.filter(id=data.id)
     form.fields["job_order"].initial = data.id
     
@@ -505,20 +485,21 @@ def add_printing_schedule(request, id):
       'data': data,
       'title' : data.job_order,
       'form': form,
-      'template': template
+	  'template' : template
     }
     
     return render (request, 'production/add_printing_schedule.html', context)
 
-    # PRINTING
+    # Cutting
 def add_cutting_schedule(request, id):
+	
     if request.session['session_position'] == "General Manager":
         template = 'general_manager_page_ui.html'
     elif request.session['session_position'] == "Production Manager":
         template = 'production_manager_page_ui.html'
     else:
         template = 'line_leader_page_ui.html'
-
+		
     data = JobOrder.objects.get(id=id)
     form = CuttingScheduleForm(request.POST or None)
     print(form.errors)
@@ -528,7 +509,6 @@ def add_cutting_schedule(request, id):
         return redirect('production:job_order_details', id = data.id)
 
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Cutting')
-    form.fields["operator"].queryset = Employee.objects.filter(position='Cutting')
     form.fields["job_order"].queryset = JobOrder.objects.filter(id=data.id)
     form.fields["job_order"].initial = data.id
     
@@ -536,14 +516,14 @@ def add_cutting_schedule(request, id):
       'data': data,
       'title' : data.job_order,
       'form': form,
-      'template': template
+	  'template' : template
     }
     
     return render (request, 'production/add_cutting_schedule.html', context)
 
-
 # JO approval 
 def jo_approval(request, id):
+		
     jo_id = JobOrder.objects.get(id=id) #get JO
     client_po = ClientPO.objects.get(id = jo_id.client_po.id)
     client_po.status = 'Approved'
