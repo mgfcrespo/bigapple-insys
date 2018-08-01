@@ -36,16 +36,12 @@
 
         <div style="color: white; padding: 10px;">
 
-            <!-- NAV BAR CONTENT HERE -->
+        {% block left_sidebar %} {% endblock %}
 
         </div>
 
         <div class="center" style="font-size: 12px; padding: 10px;">
             <center>
-                <a>
-                    <i class="cog icon"></i>
-                    Settings
-                </a>&nbsp;&nbsp;&nbsp;
                 <a href="{% url 'accounts:logout' %}">
                     <i class="power off icon"></i>
                     Log out
@@ -56,8 +52,6 @@
                 </a>
             </center>
         </div>
-
-        {% block left_sidebar %} {% endblock %}
 
         <div style="font-size: 10px; color:white; padding: 10px;">
             <center>
