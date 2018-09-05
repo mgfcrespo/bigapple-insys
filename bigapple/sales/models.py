@@ -62,21 +62,6 @@ class ProductionCost(models.Model):
 
     def __str__(self):
         return str(self.cost_type)
-class PreProduct(models.Model):
-    GUSSET = (
-        ('Side Seal', 'Side Seal'),
-        ('Bottom Seal Double', 'Bottom Seal Double'),
-        ('Big Bottom Seal', 'Big Bottom Seal'),
-        ('Bottom Seal Single', 'Bottom Seal Single'),
-    )
-
-    products = models.CharField('products', max_length=200)
-    width = models.DecimalField('width', decimal_places=2, max_digits=12, blank=False)
-    length = models.DecimalField('length', decimal_places=2, max_digits=12, blank=False)
-    gusset = models.CharField('gusset', choices=GUSSET, default='Side Seal', max_length=200)
-    prod_price = models.DecimalField('prod_price', decimal_places=3, max_digits=12, default=0)
-    description = models.CharField('description', max_length=200)
-
 
 # could be substitute for quotation request
 class ClientPO(models.Model):
