@@ -25,6 +25,7 @@ urlpatterns = [
     path('purchase-requisition-details/<int:id>/', views.purchase_requisition_details, name='purchase_requisition_details'),
     path('purchase-requisition-approval/<int:id>/', views.purchase_requisition_approval, name='purchase_requisition_approval'),
     #inventory Count
+    path('inventory-count-form/', views.inventory_count_form, name='inventory_count_form'),
     path('inventory-count-form/<int:id>/', views.inventory_count_form, name='inventory_count_form'),
     path('inventory-count-list/<int:id>/', views.inventory_count_list, name='inventory_count_list'),
     #SupplierPO
