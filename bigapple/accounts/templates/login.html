@@ -1,4 +1,6 @@
-{% extends 'login_register_ui.html' %} {% block login %}
+{% extends 'login_register_ui.html' %}
+
+{% block login %}
 
 <form method="post" action="{% url 'login' %}">
     {% csrf_token %} {%if form.errors %}
@@ -7,12 +9,12 @@
     <p>You can't access this page</p>
     {% endif %}
 
-    <label>Username: {{form.username}}</label>
-    <label>Password: {{form.password}}</label>
+    <label>Username: </label>{{form.username}}
+    <br>
+    <label>Password: </label>{{form.password}}
 
     <div class="center">
         <input class="ui button" type="submit" value="Login">
-
     </div>
 </form>
 
