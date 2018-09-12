@@ -28,7 +28,7 @@ urlpatterns = [
 			#rush order urls
 			path('rush-order-list/', views.rush_order_list, name='sales_rush_order_list'),
 
-		          #supplier urls
+		    #supplier urls
 			path('supplier-list/', views.supplier_list, name='supplier_list'),
 			path('supplier-add/', views.supplier_add, name='supplier_add'),
 			path('supplier-edit/<int:id>/', views.supplier_edit, name='supplier_edit'),
