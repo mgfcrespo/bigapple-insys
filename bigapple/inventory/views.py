@@ -246,7 +246,7 @@ def supplier_rawmat_add(request):
                         print("Item Exists")
                     else:
                         iform = InventoryForm({
-                            'item': request.POST.get("item_name"),
+                            'item': request.POST.get("item"),
                             'item_type': request.POST.get("item_type"),
                         })
                         print("Item saved")
@@ -629,5 +629,5 @@ def load_items(request):
     else:
         template = 'line_leader_page_ui.html'
     supplier_po = request.GET.get('supplier_po')
-    items = Inventory.objects.filter(supplier_id=id).order_by('item_name')
+    items = Inventory.objects.filter(supplier_id=id).order_by('item')
     return render(request, 'inventory/dropdown_supplier_item.html', {'items': items})
