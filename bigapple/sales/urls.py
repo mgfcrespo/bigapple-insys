@@ -20,6 +20,7 @@ urlpatterns = [
 			path('sales-invoice-list/', views.InvoiceListView.as_view(), name='sales_invoice_list'),
 			path('sales-invoice-details/<int:pk>/', views.invoice_detail_view, name='sales_invoice_details'),
 			path('sales-invoice-details/<int:pk>', views.invoice_detail_view, name='add_payment_form'),
+			path('sales-statement-of-accounts/', views.statement_of_accounts_list_view, name='statement_of_accounts'),
 
 			#client credit urls
 			path('client-payment-list/', views.payment_list_view, name='client_payment_list'),
@@ -28,7 +29,7 @@ urlpatterns = [
 			#rush order urls
 			path('rush-order-list/', views.rush_order_list, name='sales_rush_order_list'),
 
-		          #supplier urls
+		    #supplier urls
 			path('supplier-list/', views.supplier_list, name='supplier_list'),
 			path('supplier-add/', views.supplier_add, name='supplier_add'),
 			path('supplier-edit/<int:id>/', views.supplier_edit, name='supplier_edit'),
