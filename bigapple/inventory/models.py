@@ -72,7 +72,7 @@ class InventoryCountAsof(models.Model):
     time = models.TimeField('time', auto_now_add=True, blank=True)
     item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='Raw Material')
     rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='--', null=True, blank=True)
-    item = models.CharField('item_name', max_length=200, default='Not Specified')
+    item = models.CharField('item', max_length=200, default='Not Specified')
 
 
     def __str__(self):
@@ -92,7 +92,7 @@ class SupplierPO(models.Model):
 
 class SupplierPOItems(models.Model):
     supplier_po = models.ForeignKey(SupplierPO, on_delete=models.CASCADE)
-    item_name = models.ForeignKey(Inventory, on_delete=models.CASCADE)
+    item = models.ForeignKey(Inventory, on_delete=models.CASCADE)
     price = models.DecimalField('price', decimal_places = 2, max_digits=50,)
     quantity = models.IntegerField('quantity')
     total_price = models.DecimalField('total_price', decimal_places = 2, max_digits=50,)
@@ -109,7 +109,7 @@ class SupplierPOItems(models.Model):
         super(SupplierPOItems, self).save(*args, **kwargs)
 
     def __str__(self):
-        return str(self.supplier_po) +' : ' + str(self.item_name)
+        return str(self.supplier_po) +' : ' + str(self.item)
 
 #TODO
 class SupplierPOTracking(models.Model):
