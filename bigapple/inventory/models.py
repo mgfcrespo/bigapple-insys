@@ -32,8 +32,16 @@ class SupplierRawMaterials(models.Model):
 
 
 class Inventory(models.Model):
+    ITEM_TYPES = (
+        ('Raw Materials', 'Raw Materials'),
+        ('Machine Parts', 'Machine Parts'),
+        ('Ink', 'Ink'),
+        ('Others', 'Others')
+    )
+
     item = models.CharField('item', max_length=200)
-    item_type = models.CharField('item_type', max_length=200)
+    item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='not specified', null=True,
+                                 blank=True)
     description = models.CharField('description', max_length=200, blank=True, null=True)
     quantity = models.IntegerField('quantity', default=0)
 
@@ -41,6 +49,13 @@ class Inventory(models.Model):
         return str(self.item)
 
 class InventoryCountAsof(models.Model):
+    ITEM_TYPES = (
+        ('Raw Materials', 'Raw Materials'),
+        ('Machine Parts', 'Machine Parts'),
+        ('Ink', 'Ink'),
+        ('Others', 'Others')
+    )
+
     RM_TYPES = (
         ('--', '----------------'),
         ('LDPE', 'Low-density polyethylene'),
@@ -55,13 +70,13 @@ class InventoryCountAsof(models.Model):
     new_count = models.IntegerField('new_count', default=0)
     date_counted = models.DateField('date_counted', )
     time = models.TimeField('time', auto_now_add=True, blank=True)
-    #item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='Raw Material')
+    item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='Raw Material')
     rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='--', null=True, blank=True)
-    item_name = models.CharField('item_name', max_length=200, default='Not Specified')
+    item = models.CharField('item_name', max_length=200, default='Not Specified')
 
 
     def __str__(self):
-        return str(self.supplier) +' : ' + str(self.item_name)
+        return str(self.supplier) +' : ' + str(self.item)
 
 
 class SupplierPO(models.Model):
