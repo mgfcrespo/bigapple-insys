@@ -25,7 +25,7 @@
 
     <div class="ui vertical inverted left visible sidebar menu">
 
-        <div style="color: white; padding: 10px;">
+        <div style="color: white; padding: 25px;">
             <h2>
                 {{request.session.session_fullname}}
             </h2>
@@ -36,22 +36,9 @@
 
         <div style="color: white; padding: 10px;">
 
-            {% block %}
+            {% block left_sidebar %}
 
-            if employee.position == 'General Manager':
-                return render(request, 'general_manager_ui.html')
-            elif employee.position == 'Sales Coordinator':
-                return render(request, 'sales_coordinator_ui.html')
-            elif employee.position == 'Sales Agent':
-                return render(request, 'sales_agent_page_ui.html')
-            elif employee.position == 'Credits and Collection Personnel':
-                return render(request, 'credit_and_collection_personnel_ui.html')
-            elif employee.position == 'Supervisor':
-                return render(request, 'supervisor_page_ui.html')
-            elif employee.position == 'Production Manager':
-                return render(request, 'production_manager_ui.html')
-            elif employee.position == 'Line Leader':
-                return render(request, 'line_leader_ui.html')
+                
 
             {% endblock %}
 
@@ -63,10 +50,6 @@
                     <i class="power off icon"></i>
                     Log out
                 </a>&nbsp;&nbsp;&nbsp;
-                <a>
-                    <i class="question icon"></i>
-                    FAQs
-                </a>
             </center>
         </div>
 
@@ -101,8 +84,16 @@
     <script src="{% static 'jquery.formset.js' %}" charset="utf-8"></script>
 
     <script src="{% static 'semantic.min.js' %}"></script>
+
+    <script>
+        $('.ui.accordion').accordion();
+    </script>
+
     {% block script %} {% endblock %}
 
 </body>
+
+
+
 
 </html>

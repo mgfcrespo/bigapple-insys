@@ -1,58 +1,6 @@
- {% extends "global_base_ui.html" %} {% block left_sidebar %}
+{% extends "global_base_ui.html" %} {% block left_sidebar %}
 
-
-<a href="{% url 'accounts:user-page-view' %}" class="item">
-    <i class="chart bar icon"></i>  
-    Dashboard
-</a>
-<a href="{% url 'sales:create-client-po-form' %}" class="item">
-    <i class="plus icon"></i>
-    Create Purchase Order
-</a>
-<a href="{% url 'sales:create-client-po-form' %}" class="item">
-    <i class="file alternate icon"></i>
-    Purchase Orders
-</a>
-<a href="{% url 'sales:po-list-view' %}" class="item"> 
-    <i class="chart area icon"></i>
-    Client Demand Forecast
-</a>
-<a href="{% url 'sales:JO_list' %}" class="item">
-    <i class="edit outline icon"></i>
-    Job Orders
-</a>
-<a href="" class="item">
-    <i class="money bill alternate outline icon"></i>
-    Sales Invoices
-</a>
-<!--
-<a href="" class="item">
-    <i class="user outline icon"></i>
-    Clients
-</a>
--->
-<a href="" class="item">
-    <i class="warehouse icon"></i>
-    Raw Materials Inventory
-</a>
-<a href="" class="item">
-    <i class="chart line icon"></i>
-    Inventory Forecast
-</a>
-<a href="" class="item">
-    <i class="edit outline icon"></i>
-    Create Supplier Purchase Order
-</a>
-<a href="" class="item">
-    <i class="file outline icon"></i>
-    Supplier Purchase Order
-</a>
-<a href="" class="item">
-    <i class="dolly icon"></i>
-    Suppliers
-</a>
-
-<div class="ui vertical following fluid accordion text menu" style="font-size: 15px; padding: 10px;">
+<div class="ui vertical following fluid accordion text menu" style="font-size: 20px; padding: 20px;">
     <div class="item">
         <a class="title">
             <i class="dropdown icon"></i>
@@ -122,12 +70,5 @@
         </div>
     </div>
 </div>
-
-<script>
-    $('.ui.accordion')
-        .accordion();
-
-</script>
-
 
 {% endblock %} {% block content %} {% endblock %}

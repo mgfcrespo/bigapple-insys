@@ -4,7 +4,7 @@
 <h2>Create PO Form</h2>
 
 <div class="ui segment">
-    <p>Note: Minimum Order Quantity per item is 10'000 pcs. Order quantities below MOQ will be priced based on MOQ</p>
+    <p>Note: Minimum Order Quantity per item is 10,000 pcs. Order quantities below MOQ will be priced based on MOQ</p>
     <p>Note: "No. of print colors" is only viable for printed orders</p>
 </div>
 
@@ -15,7 +15,7 @@
         {% include 'sales/template_form.html' %}
 
 
-        <table style="width:100%" class = "ui celled padded table">
+        <table style="width:100%;" class = "ui celled padded table">
             <thead>
             <tr>
                 <th>Material Type</th>
@@ -30,23 +30,23 @@
                 <th>No. of Print Colors</th>
             </tr>
             </thead>
-         <tbody>
-            {% for form in formset %}
-            <tr id="{{ form.prefix }}-row" class="formset_class">
-                {% if form.instance.pk %} {{ form.DELETE }}{% endif %}
-                <td>{{form.products}}</td>
-                <td>{{form.width}}</td>
-                <td>{{form.length}}</td>
-                <td>{{form.thickness}}</td>
-                <td>{{form.gusset}}</td>
-                <td>{{form.color}}</td>
-                <td>{{form.quantity}}</td>
-                <td>{{form.laminate}}</td>
-                <td>{{form.printed}}</td>
-                <td>{{form.color_quantity}}</td>
-            </tr>
-            {% endfor %}
-         </tbody>
+            <tbody>
+                {% for form in formset %}
+                <tr id="{{ form.prefix }}-row" class="formset_class">
+                    {% if form.instance.pk %} {{ form.DELETE }}{% endif %}
+                    <td>{{form.products}}</td>
+                    <td>{{form.width}}</td>
+                    <td>{{form.length}}</td>
+                    <td>{{form.thickness}}</td>
+                    <td>{{form.gusset}}</td>
+                    <td>{{form.color}}</td>
+                    <td>{{form.quantity}}</td>
+                    <td>{{form.laminate}}</td>
+                    <td>{{form.printed}}</td>
+                    <td>{{form.color_quantity}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
 
 
