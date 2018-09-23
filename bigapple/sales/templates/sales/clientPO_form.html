@@ -4,7 +4,7 @@
 <h2>Create PO Form</h2>
 
 <div class="ui segment">
-  <p>Note: Minimum Order Quantity per item is 10'000 pcs. Order quantities below MOQ will be priced based on MOQ</p>
+    <p>Note: Minimum Order Quantity per item is 10'000 pcs. Order quantities below MOQ will be priced based on MOQ</p>
     <p>Note: "No. of print colors" is only viable for printed orders</p>
 </div>
 
@@ -34,10 +34,10 @@
             {% for form in formset %}
             <tr id="{{ form.prefix }}-row" class="formset_class">
                 {% if form.instance.pk %} {{ form.DELETE }}{% endif %}
-              <td> {{form.products}}</td>
+                <td>{{form.products}}</td>
                 <td>{{form.width}}</td>
-               <td> {{form.length}}</td>
-               <td> {{form.thickness}}</td>
+                <td>{{form.length}}</td>
+                <td>{{form.thickness}}</td>
                 <td>{{form.gusset}}</td>
                 <td>{{form.color}}</td>
                 <td>{{form.quantity}}</td>

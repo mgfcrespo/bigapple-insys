@@ -36,7 +36,22 @@
 
         <div style="color: white; padding: 10px;">
 
-            {% block left_sidebar %}
+            {% block %}
+
+            if employee.position == 'General Manager':
+                return render(request, 'general_manager_ui.html')
+            elif employee.position == 'Sales Coordinator':
+                return render(request, 'sales_coordinator_ui.html')
+            elif employee.position == 'Sales Agent':
+                return render(request, 'sales_agent_page_ui.html')
+            elif employee.position == 'Credits and Collection Personnel':
+                return render(request, 'credit_and_collection_personnel_ui.html')
+            elif employee.position == 'Supervisor':
+                return render(request, 'supervisor_page_ui.html')
+            elif employee.position == 'Production Manager':
+                return render(request, 'production_manager_ui.html')
+            elif employee.position == 'Line Leader':
+                return render(request, 'line_leader_ui.html')
 
             {% endblock %}
 
