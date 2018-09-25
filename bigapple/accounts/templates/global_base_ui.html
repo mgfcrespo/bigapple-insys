@@ -25,7 +25,7 @@
 
     <div class="ui vertical inverted left visible sidebar menu">
 
-        <div style="color: white; padding: 10px;">
+        <div style="color: white; padding: 25px;">
             <h2>
                 {{request.session.session_fullname}}
             </h2>
@@ -38,6 +38,8 @@
 
             {% block left_sidebar %}
 
+                
+
             {% endblock %}
 
         </div>
@@ -48,10 +50,6 @@
                     <i class="power off icon"></i>
                     Log out
                 </a>&nbsp;&nbsp;&nbsp;
-                <a>
-                    <i class="question icon"></i>
-                    FAQs
-                </a>
             </center>
         </div>
 
@@ -86,8 +84,16 @@
     <script src="{% static 'jquery.formset.js' %}" charset="utf-8"></script>
 
     <script src="{% static 'semantic.min.js' %}"></script>
+
+    <script>
+        $('.ui.accordion').accordion();
+    </script>
+
     {% block script %} {% endblock %}
 
 </body>
+
+
+
 
 </html>

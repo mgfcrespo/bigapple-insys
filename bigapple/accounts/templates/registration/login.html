@@ -2,21 +2,24 @@
 
 <form method="post" action="{% url 'login' %}">
     {% csrf_token %} {%if form.errors %}
-    <p>Error, incorrect username or password.</p>
+    <p style="color: red;">Error, incorrect username or password.</p>
     {% endif %} {% if next %}
-    <p>You can't access this page</p>
+    <p style="color: red;">You can't access this page</p>
     {% endif %}
 
-    <label>Username: {{form.username}}</label>
-    <label>Password: {{form.password}}</label>
+    <div>
+        <div>
+            <label>Username: </label> {{form.username}}
+            <br>
+            <label>Password: </label> {{form.password}}
+        </div>
 
-    <br>
-    
-    <center>
+        <br>
+
         <button class="ui green basic button" type="submit" style="width: 100px;">Login</button>
-        <button class="ui yellow basic button" type="clear" style="width: 100px;">Clear</button>
-    </center>
-    
+        <button class="ui yellow basic button" type="reset" style="width: 100px;">Clear</button>
+    </div>
+
 </form>
 
 {% endblock %}
