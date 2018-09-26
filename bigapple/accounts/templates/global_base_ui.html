@@ -11,13 +11,9 @@
 
     <title>Big Apple Plastic Manufacturing Co.Information System</title>
 
-    <!-- CSS -->
     <!-- <link rel="icon" href="{% static 'images/BAicon.png' %}" sizes="32x32">-->
     <link rel="stylesheet" type="text/css" href="{% static 'semantic.min.css' %}">
 
-    <!-- GANTT CHART RESOURCES -->
-    <link rel="stylesheet" href="../../static/gantt chart/dist/frappe-gantt.css" />
-    <script src="../../static/gantt chart/dist/frappe-gantt.js"></script>
 </head>
 
 <body>
@@ -25,37 +21,46 @@
 
     <div class="ui vertical inverted left visible sidebar menu">
 
-        <div style="color: white; padding: 25px;">
-            <h2>
-                {{request.session.session_fullname}}
-            </h2>
-            <p>
+        <div style="color: white; padding-left: 20px; padding-top: 15px; padding-right: 15px;">
+            <h1>
                 {{request.session.session_position}}
-            </p>
-        </div>
+            </h1>
+            <div style="color: white; margin-top: -5px;">
+               <div class="ui vertical following fluid accordion text menu" style="color: #1aa62a;font-size: 20px; margin-top: -5px;">
+                    <div class="item">
+                        <a class="title">
+                            <i class="bars icon"></i>
+                            {{request.session.session_fullname}}
+                        </a>
+                        <div class="content menu">
+                            <a href="" class="item">
+                                <i class="home icon"></i>
+                                Home
+                            </a>
+                            <a href="" class="item">
+                                <i class="id badge icon"></i>
+                                Account Details
+                            </a>
+                            <a href="{% url 'accounts:logout' %}" class="item">
+                                <i class="power off icon"></i>
+                                Log out
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <div style="color: white; padding: 10px;">
+        <div style="color: white;">
 
             {% block left_sidebar %}
-
-                
 
             {% endblock %}
 
         </div>
 
-        <div class="center" style="font-size: 12px; padding: 10px;">
+        <div style="font-size: 10px; color:white;position: absolute; bottom: 10px;">
             <center>
-                <a href="{% url 'accounts:logout' %}">
-                    <i class="power off icon"></i>
-                    Log out
-                </a>&nbsp;&nbsp;&nbsp;
-            </center>
-        </div>
-
-        <div style="font-size: 10px; color:white; padding: 10px;">
-            <center>
-                <div class="footer-copyright">
+                <div class="ui inverted footer">
                     <div class="container">
                         <span>Copyright ©
                             <script type="text/javascript">
@@ -67,12 +72,11 @@
             </center>
         </div>
     </div>
-
+    </div>
     <div class="segment">
         <div class="container" style="margin:10px 10px 10px 300px">
 
             {% block content %} {% endblock %}
-
 
         </div>
     </div>

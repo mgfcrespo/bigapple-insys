@@ -44,7 +44,7 @@ class ClientPOForm(ModelForm):
 
     class Meta:
         model = ClientPO
-        fields = ('date_required', 'other_info')
+        fields = ('date_required', 'other_info', 'client')
         widgets = {
             'date_required': DateInput()
         }
@@ -55,6 +55,9 @@ class ClientPOForm(ModelForm):
             self.fields['date_required'].label = "Date Required"
             self.fields['other_info'].required = False
             self.fields['other_info'].label = "Other Info"
+            self.fields['client'].queryset = Employee.objects.filter(position='Client')
+            self.fields['client'].required = True
+            self.fields['client'].label = "Client"
 
 
 class ClientPaymentForm(ModelForm):
