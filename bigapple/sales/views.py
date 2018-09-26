@@ -294,7 +294,7 @@ def statement_of_accounts_list_view(request):
 
     context = {
         'credits_status' : credits_status,
-        'date' : date.now()
+        'date' : datetime.now()
     }
 
     return render(request, 'sales/statement_of_accounts.html', context)
