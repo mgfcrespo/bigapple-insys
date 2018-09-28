@@ -53,10 +53,12 @@ class ClientPOForm(ModelForm):
             super(ClientPOForm, self).__init__(*args, **kwargs)
             self.fields['date_required'].required = True
             self.fields['date_required'].label = "Date Required"
+
             self.fields['other_info'].required = False
             self.fields['other_info'].label = "Other Info"
-            self.fields['client'].queryset = Employee.objects.filter(position='Client')
-            self.fields['client'].required = True
+
+            self.fields['client'].queryset = Client.objects.filter('Client.sales_agent.id = Employee.id')
+            self.fields['client'].required = False
             self.fields['client'].label = "Client"
 
 

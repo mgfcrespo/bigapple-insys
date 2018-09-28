@@ -1,43 +1,38 @@
- {% extends 'global_base_ui.html' %} {% block left_sidebar %}
+{% extends 'global_base_ui.html' %} {% block left_sidebar %}
 
-    <a href="{% url 'accounts:user-page-view' %}" class="item">
-        <i class="chart bar icon"></i>  
-            Dashboard
+<a href="" class="item">
+    <i class="calendar alternate outline icon"></i>
+    Production Schedule
+</a>
+
+<a href="{% url 'production:job_orders_list' %}" class="item">
+    <i class="edit outline icon"></i>
+    Job Orders
+</a>
+
+<a href="{% url'production:add_extruder_schedule' %}" class="item">
+    <i class="industry icon"></i>
+    Add Extruder Schedule
+</a>
+
+<a href="{% url'production:add_cutting_schedule' %}" class="item">
+    <i class="cut icon"></i>
+    Add Cutting Schedule
+</a>
+
+<a href="{% url'production:add_printing_schedule' %}" class="item">
+    <i class="print icon"></i>
+    Add Printing Schedule
     </a>
 
-    <a href="scheduling_page.html" class="item">
-        <i class="calendar alternate outline icon"></i>
-        Production Schedule
-    </a>
+<a href="" class="item">
+    <i class="clipboard check icon"></i>
+    Add QA Schedule
+</a>
 
-    <a href="orders_page.html" class="item">
-        <i class="edit outline icon"></i>
-        Job Orders
-    </a>
-
-    <a href="" class="item">
-        <i class="industry icon"></i>
-        Add Extruder Schedule
-    </a>
-
-    <a href="" class="item">
-        <i class="cut icon"></i>
-        Add Cutting Schedule
-    </a>
-
-    <a href="" class="item">
-        <i class="print icon"></i>
-        Add Printing Schedule
-        </a>
-
-    <a href="" class="item">
-        <i class="clipboard check icon"></i>
-        Add QA Schedule
-    </a>
-
-    <a href="" class="item">
-        <i class="plus circle icon"></i>
-        Create Materials Requisition
-    </a>
+<a href="{% url 'inventory:materials_requisition_list' %}" class="item">
+    <i class="plus circle icon"></i>
+    Create Materials Requisition
+</a>
 
 {% endblock %} {% block content %} {% endblock %}
