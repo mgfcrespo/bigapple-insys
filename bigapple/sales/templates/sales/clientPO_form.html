@@ -1,6 +1,5 @@
 {% extends "client_page_ui.html" %} {% block content %}
 
-
 <h2>Create PO Form</h2>
 
 <div class="ui segment">
@@ -13,7 +12,6 @@
 
         {% csrf_token %}
         {% include 'sales/template_form.html' %}
-
 
         <table style="width:100%;" class = "ui celled padded table">
             <thead>
@@ -48,7 +46,6 @@
                 {% endfor %}
             </tbody>
         </table>
-
 
         {{formset.management_form}}
         <button type="submit" class="ui green basic button" onclick="return confirm('Are you sure?')">Submit</button>

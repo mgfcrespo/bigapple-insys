@@ -27,21 +27,12 @@ class SupplierRawMaterials(models.Model):
 
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     price = models.DecimalField('price', decimal_places=2, max_digits=50)
-    item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='not specified', null=True, blank=True)
     rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='not specified', null=True, blank=True)
 
 
 class Inventory(models.Model):
-    ITEM_TYPES = (
-        ('Raw Materials', 'Raw Materials'),
-        ('Machine Parts', 'Machine Parts'),
-        ('Ink', 'Ink'),
-        ('Others', 'Others')
-    )
-
     item = models.CharField('item', max_length=200)
-    item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='not specified', null=True,
-                                 blank=True)
+    item_type = models.CharField('item_type', max_length=200)
     description = models.CharField('description', max_length=200, blank=True, null=True)
     quantity = models.IntegerField('quantity', default=0)
 
@@ -49,13 +40,6 @@ class Inventory(models.Model):
         return str(self.item)
 
 class InventoryCountAsof(models.Model):
-    ITEM_TYPES = (
-        ('Raw Materials', 'Raw Materials'),
-        ('Machine Parts', 'Machine Parts'),
-        ('Ink', 'Ink'),
-        ('Others', 'Others')
-    )
-
     RM_TYPES = (
         ('--', '----------------'),
         ('LDPE', 'Low-density polyethylene'),
@@ -70,13 +54,13 @@ class InventoryCountAsof(models.Model):
     new_count = models.IntegerField('new_count', default=0)
     date_counted = models.DateField('date_counted', )
     time = models.TimeField('time', auto_now_add=True, blank=True)
-    item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='Raw Material')
+    #item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='Raw Material')
     rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='--', null=True, blank=True)
-    item = models.CharField('item', max_length=200, default='Not Specified')
+    item_name = models.CharField('item_name', max_length=200, default='Not Specified')
 
 
     def __str__(self):
-        return str(self.supplier) +' : ' + str(self.item)
+        return str(self.supplier) +' : ' + str(self.item_name)
 
 
 class SupplierPO(models.Model):
@@ -92,7 +76,7 @@ class SupplierPO(models.Model):
 
 class SupplierPOItems(models.Model):
     supplier_po = models.ForeignKey(SupplierPO, on_delete=models.CASCADE)
-    item = models.ForeignKey(Inventory, on_delete=models.CASCADE)
+    item_name = models.ForeignKey(Inventory, on_delete=models.CASCADE)
     price = models.DecimalField('price', decimal_places = 2, max_digits=50,)
     quantity = models.IntegerField('quantity')
     total_price = models.DecimalField('total_price', decimal_places = 2, max_digits=50,)
@@ -109,7 +93,7 @@ class SupplierPOItems(models.Model):
         super(SupplierPOItems, self).save(*args, **kwargs)
 
     def __str__(self):
-        return str(self.supplier_po) +' : ' + str(self.item)
+        return str(self.supplier_po) +' : ' + str(self.item_name)
 
 #TODO
 class SupplierPOTracking(models.Model):

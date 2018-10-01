@@ -310,7 +310,7 @@ def create_client_po(request):
         current_client = Client.objects.get(id=client_id)
 
         '''
-        #check if client has  overdue balance
+        #check if client has overdue balance
         credit_status = ClientCreditStatus.objects.get(client_id = current_client)
         if (credit_status.outstanding_balance < 0):
             credit_status = 1
@@ -340,8 +340,6 @@ def create_client_po(request):
             if formset.is_valid():
                 for form in formset:
                     form.save()
-
-
 
                 formset_items = ClientItem.objects.filter(client_po_id = new_form)
                 formset_item_total = formset_items.aggregate(sum=aggregates.Sum('item_price'))['sum'] or 0
