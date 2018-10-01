@@ -6,14 +6,9 @@ from django.views.generic import TemplateView
 app_name='sales'
 urlpatterns = [
 			#PO urls
-			path('po-list-view/', views.POListView.as_view(), name='po-list-view'),
+			path('po-list-view/', views.po_list_view, name='po-list-view'),
 			path('po-list-view/PO<int:pk>/', views.PODetailView.as_view(), name='po-detail-view'),
 			path('create-client-po-form/', views.create_client_po, name='create-client-po-form'),
-
-          #JO urls
-          path('JO-list/', views.JOListView.as_view(), name='JO_list'),
-          path('JO-details/JO<int:pk>/', views.JODetailView.as_view(), name='JO_details'),
-          path('JO-finished/', views.FinishedJOListView.as_view(), name='finished_JO_list'),
 
 			#sales_invoice urls
 			path('sales-invoice-list/<int:pk>/', views.InvoiceListView.as_view(), name='sales_invoice_list'),
@@ -24,7 +19,7 @@ urlpatterns = [
 
 			#client credit urls
 			path('client-payment-list/', views.payment_list_view, name='client_payment_list'),
-			path('client-payment-details/<int:pk>/', views.payment_detail_view, name='client_payment_details'),
+			path('client-payment-details/invoice<int:pk>/', views.payment_detail_view, name='client_payment_details'),
 
 			#rush order urls
 			path('rush-order-list/', views.rush_order_list, name='sales_rush_order_list'),

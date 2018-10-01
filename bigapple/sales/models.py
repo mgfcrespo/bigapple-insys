@@ -14,7 +14,7 @@ from datetime import datetime as dt
 from datetime import timedelta as td
 from datetime import date as d
 
-# TODO Generate object at Client creation
+#TODO: Generate object at Client creation
 class ClientConstant(models.Model):
     PAYMENT_TERMS = (
         ('30 Days', '30 Days'),
@@ -31,7 +31,7 @@ class ClientConstant(models.Model):
     def __str__(self):
         return str(self.client)
 
-#TODO set prod_price to material cost
+#TODO: set prod_price to material cost
 class Product(models.Model):
     RM_TYPES = (
         ('LDPE', 'Low-density polyethylene'),
@@ -55,7 +55,7 @@ class Product(models.Model):
             self.constant = 30
         super(Product, self).save(*args, **kwargs)
 
-#TODO Add Lamination as production cost
+#TODO: Add Lamination as production cost
 class ProductionCost(models.Model):
     cost_type = models.CharField('cost_type', max_length=200)
     cost = models.DecimalField('cost', decimal_places=2, max_digits=12, default=0)
@@ -63,7 +63,7 @@ class ProductionCost(models.Model):
     def __str__(self):
         return str(self.cost_type)
 
-# could be substitute for quotation request
+#TODO: Rush order determinant, materials requirement determinant- basically FEASIBILITY DETERMINANT for pre-confirm
 class ClientPO(models.Model):
 
     STATUS =(
@@ -73,7 +73,6 @@ class ClientPO(models.Model):
         ('Ready for delivery', 'Ready for delivery'),
         ('Cancelled', 'Cancelled'),
         ('Disapproved', 'Disapproved')
-
     )
 
     date_issued = models.DateTimeField('date_issued', auto_now_add=True)
@@ -144,10 +143,10 @@ class ClientItem(models.Model):
     def calculate_price_per_piece(self):
         #Set Production Costs
         electricity = ProductionCost.objects.get(cost_type = 'Electricity')
-        mark_up = ProductionCost.objects.get(cost_type='Mark up')
+        mark_up = ProductionCost.objects.get(cost_type='Mark_up')
         ink = ProductionCost.objects.get(cost_type='Ink')
         cylinder = ProductionCost.objects.get(cost_type='Cylinder')
-        art_labor = ProductionCost.objects.get(cost_type='Art Labor')
+        art_labor = ProductionCost.objects.get(cost_type='Art_labor')
         art_work = ProductionCost.objects.get(cost_type='Artwork')
         lamination = ProductionCost.objects.get(cost_type='Lamination')
 
@@ -249,10 +248,12 @@ class SalesInvoice(models.Model):
         total = self.total_amount + total_net_vat - total_discount
         return total
 
-    # TODO this function does not compute  delta.days (yet)
+    #TODO this function does not compute delta.days (yet)
     def calculate_days_passed(self):
-        delta = dt.now().date() - self.date_issued
-        return delta.days
+        start_date = datetime(self.date_due)
+        end_date = datetime.now().date()
+        days = abs((end_date - start_date).days)
+        return days
 
     def calculate_date_due(self):
         add_days = 0
@@ -275,8 +276,8 @@ class SalesInvoice(models.Model):
         self.discount = client_constants.discount
         self.net_vat = client_constants.net_vat
         self.total_amount_computed = self.calculate_total_amount_computed()
-        # self.days_passed= self.calculate_days_passed()
-        #self.date_due = self.calculate_date_due()
+        self.days_passed= self.calculate_days_passed()
+        self.date_due = self.calculate_date_due()
 
 
         super(SalesInvoice, self).save(*args, **kwargs)
@@ -294,10 +295,8 @@ class ClientCreditStatus(models.Model):
     def __str__(self):
         return str('Credit Status: %s' % (self.client))
 
-    def calculate_balance_sum(self):
-        return self.outstanding_balance + self.overdue_balance
-
     '''
+    #TODO: get days overdue OF ANY SI NA OVERDUE
     def calculate_days_overdue(self):
         return date SI issued - date today
 

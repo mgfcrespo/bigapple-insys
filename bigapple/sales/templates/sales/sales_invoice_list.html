@@ -1,12 +1,12 @@
 
 {% extends 'credit_and_collection_personnel_page_ui.html' %} {% block content %}
 
-<h3 class="ui header">Invoice List</h3>
+<h3 class="ui header">Sales Invoice List</h3>
 
 		<table class= "ui celled padded table" >
         	<thead>
           	<tr>
-          	  	<th>PO#</th>
+          	  	<th>Sales Invoice #</th>
 				<th>Client</th>
                 <th>Date Issued</th>
 				<th>Date Due</th>
@@ -19,7 +19,7 @@
 			{% if object_list %}
 				{% for SalesInvoice in object_list  %}
     			<tr>
-                    <td><a href="{% url 'sales:sales_invoice_details' SalesInvoice.id %}"> {{ SalesInvoice }} </a></td>
+                    <td><a href="{% url 'sales:sales_invoice_details' SalesInvoice.id %}"> {{ SalesInvoice.id }} </a></td>
                     <td> {{ SalesInvoice.client }} </td>
                     <td> {{ SalesInvoice.date_issued }} </td>
 					<td> {{ SalesInvoice.date_due }} </td>

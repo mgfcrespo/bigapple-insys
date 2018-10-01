@@ -2,6 +2,7 @@ from __future__ import print_function
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
+from django.views.generic import DetailView, ListView, FormView
 
 from .forms import JODetailsForm
 from inventory.forms import MaterialRequisitionForm, MaterialRequisitionItemsForm
@@ -17,15 +18,12 @@ from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleFo
 from datetime import timedelta as td
 from datetime import datetime as dt
 
-from ortools.constraint_solver import pywrapcp
+#from ortools.constraint_solver import pywrapcp
 import plotly
 import plotly.offline as opy
 import plotly.plotly as py
 import plotly.figure_factory as ff
 import plotly.graph_objs as go
-
-from ortools.constraint_solver import pywrapcp
-from datetime import timedelta
 
 
 
@@ -422,7 +420,12 @@ def job_order_details(request, id):
       'cutting': cutting,
 	   'template' : template
     }
-    return render(request, 'joborder/job_order_details.html', context)
+    return render(request, 'production/job_order_details.html', context)
+
+class FinishedJOListView(ListView):
+    template_name = 'sales/finished_JO_list.html'
+    model = JobOrder
+
 
 # EXTRUDER 
 def add_extruder_schedule(request, id):
@@ -509,7 +512,7 @@ def add_printing_schedule(request, id):
     
     return render (request, 'production/add_printing_schedule.html', context)
 
-    # Cutting
+# CUTTING
 def add_cutting_schedule(request, id):
 	
     if request.session['session_position'] == "General Manager":

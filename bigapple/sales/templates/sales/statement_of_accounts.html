@@ -22,7 +22,7 @@
                     ({{ ClientCreditStatus.client }})
                 </td>
                 <td>
-                    {% ClientCreditStatus.calculate_balance_sum %}
+                    ({{ ClientCreditStatus.outstanding_balance }})
                 </td>
                 <td>
                     ({{ ClientCreditStatus.overdue_balance }})
@@ -31,7 +31,7 @@
                     ({{ ClientCreditStatus.calculate_days_overdue }})
                 </td>
                 <td>
-                    ({{ ClientCreditStatus.client.clientconstant.payment_terms }})
+                    ({{ ClientCreditStatus.client.client_constant.payment_terms }})
                 </td>
                 <td>
                     ({{ ClientCreditStatus.client.sales_agent }})
