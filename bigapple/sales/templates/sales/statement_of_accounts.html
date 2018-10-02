@@ -1,8 +1,8 @@
 
 
-{% block content %}
-<div class="sixteen wide column">
-    <table>
+{% extends 'sales_coordinator_page_ui.html' %} {% block content %}
+<h2 class="ui header">{{ title }}</h2>
+    <table class="ui striped table">
         <thead>
             <tr>
                 <th>Client</th>
@@ -22,7 +22,8 @@
                     ({{ ClientCreditStatus.client }})
                 </td>
                 <td>
-                    {% ClientCreditStatus.calculate_balance_sum %}
+                    ({{ ClientCreditStatus.calculate_balance_sum }})
+                    {# {% ClientCreditStatus.calculate_balance_sum %} #}
                 </td>
                 <td>
                     ({{ ClientCreditStatus.overdue_balance }})
@@ -44,7 +45,6 @@
 
         </tbody>
     </table>
-</div>
 
 
 {% endblock %}
