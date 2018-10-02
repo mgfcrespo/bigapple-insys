@@ -31,9 +31,9 @@ def inventory_item_add(request):
             return redirect('inventory:inventory_item_list')
 
     context = {
-        'supplier' : supplier,
-        'form' : form,
-        'title': 'Add Inventroy Item',
+        'supplier': supplier,
+        'form': form,
+        'title': 'Add Inventory Item',
         'actiontype': 'Submit',
         'template': template
     }
