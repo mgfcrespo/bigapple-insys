@@ -12,9 +12,10 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse, Http404
 from django.db.models import aggregates
 from production.models import JobOrder
-from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment
+from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment, ClientConstant
 from accounts.models import Employee
 from .forms import ClientPOForm, SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
+from django.contrib.auth.models import User
 from django import forms
 import sys
 from decimal import Decimal
@@ -134,28 +135,36 @@ class POListView(ListView):
 
 #TODO Continue this
 def po_list_view(request):
-    user = request.session['session_position']
-    client = Client.objects.get(id=user) #note that client here is the current user
-    if request.session['session_position'] == "Client":
+
+    user = request.user
+    id = user.id
+    client = Client.objects.filter(accounts_id = id)
+    employee = Employee.objects.filter(accounts_id = id)
+    if client:
         template = 'client_page_ui.html'
-        client_po = ClientPO.objects.get(client=client)
-    elif request.session['session_position'] == "Sales Coordinator":
-        template = 'sales_coordinator_page_ui.html'
-        client_po = ClientPO.objects.all()
-    elif request.session['session_position'] == "Sales Agent":
-        template = 'sales_agent_page_ui.html'
-        customer = Client.objects.filter(sales_agent = client.id)
-        client_po = ClientPO.objects.filter(client=customer.id)
+        client_po = ClientPO.objects.filter(client = Client.objects.get(accounts_id = id))
+    elif employee:
+        if employee.position == "Sales Coordinator":
+            template = 'sales_coordinator_page_ui.html'
+            client_po = ClientPO.objects.all()
+        elif employee.position == "Sales Agent":
+            template = 'sales_agent_page_ui.html'
+            customer = Client.objects.get(sales_agent = client.sales_agent)
+            client_po = ClientPO.objects.filter(client = customer)
+        elif employee.position == "General Manager":
+            template = 'general_manager_page_ui.html'
+            client_po = ClientPO.objects.all()
+        else:
+            template = 'error.html'
     else:
-        template = 'general_manager_page_ui.html'
-        client_po = ClientPO.objects.all()
+        template = 'error.html'
 
     context = {
         'client_po' : client_po,
         'template' : template
     }
 
-    return render(request, 'sales/client_payment_list.html', context)
+    return render(request, 'sales/clientPO_list.html', context)
 
 class PODetailView(DetailView):
     model = ClientPO
@@ -164,21 +173,6 @@ class PODetailView(DetailView):
 class POConfirmView(DetailView):
     model = ClientPO
     template_name = 'sales/clientPO_confirm.html'
-
-
-# JO List/Detail view
-class JOListView(ListView):
-    template_name = 'sales/JO_list.html'
-    model = JobOrder
-
-class JODetailView(DetailView):
-    model = JobOrder
-    template_name = 'sales/JO_details.html'
-
-class FinishedJOListView(ListView):
-    template_name = 'sales/finished_JO_list.html'
-    model = JobOrder
-
 
 # Invoice List/Detail View
 class InvoiceListView(ListView):
@@ -212,8 +206,6 @@ def invoice_detail_view(request, pk, *args, **kwargs):
         salesinvoice.save()
 
         payments = ClientPayment.objects.filter(invoice_issued=salesinvoice)
-
-
 
         context = {'salesinvoice': salesinvoice,
                    'form' : form,
@@ -290,10 +282,15 @@ def payment_detail_view(request, pk):
     return render(request, 'sales/client_payment_detail.html', context)
 
 def statement_of_accounts_list_view(request):
+
     credits_status = ClientCreditStatus.objects.all()
+    client = Client.objects.all()
+    client_constant = ClientConstant.objects.all()
 
     context = {
         'credits_status' : credits_status,
+        'client' : client,
+        'client_constant': client_constant,
         'date' : datetime.now()
     }
 
@@ -301,7 +298,7 @@ def statement_of_accounts_list_view(request):
 
 #SAMPLE DYNAMIC FORM
 def create_client_po(request):
-    #note:instance should be an object
+    #note: instance should be an object
     clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=1, can_delete=True)
 
     if request.method == "POST":
