@@ -83,12 +83,13 @@ class SupplierPOForm(ModelForm):
 class SupplierPOItemsForm(ModelForm):
     class Meta:
         model = SupplierPOItems
-        fields = ('item_name', 'quantity')
+        fields = ('item', 'quantity')
 
         inventory = forms.ModelChoiceField(queryset=SupplierRawMaterials.objects.all())
-    # def __init__(self, *args, **kwargs):
-    #     super(SupplierPOItemsForm, self).__init__(*args, **kwargs)
-    #     self.fields['item_name'].queryset = Inventory.objects.none()
+
+    def __init__(self, *args, **kwargs):
+        super(SupplierPOItemsForm, self).__init__(*args, **kwargs)
+        self.fields['item_name'].queryset = Inventory.objects.none()
 
         # if 'supplier_po.supplier' in self.data:
         #     try:

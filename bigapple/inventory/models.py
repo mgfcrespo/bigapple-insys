@@ -76,7 +76,7 @@ class SupplierPO(models.Model):
 
 class SupplierPOItems(models.Model):
     supplier_po = models.ForeignKey(SupplierPO, on_delete=models.CASCADE)
-    item_name = models.ForeignKey(Inventory, on_delete=models.CASCADE)
+    item = models.ForeignKey(Inventory, on_delete=models.CASCADE)
     price = models.DecimalField('price', decimal_places = 2, max_digits=50,)
     quantity = models.IntegerField('quantity')
     total_price = models.DecimalField('total_price', decimal_places = 2, max_digits=50,)
