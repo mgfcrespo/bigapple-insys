@@ -144,14 +144,18 @@ def po_list_view(request):
         template = 'client_page_ui.html'
         client_po = ClientPO.objects.filter(client = Client.objects.get(accounts_id = id))
     elif employee:
-        if employee.position == "Sales Coordinator":
+        if request.session['session_position'] == "Sales Coordinator":
             template = 'sales_coordinator_page_ui.html'
             client_po = ClientPO.objects.all()
-        elif employee.position == "Sales Agent":
+        elif request.session['session_position'] == "Sales Agent":
             template = 'sales_agent_page_ui.html'
-            customer = Client.objects.get(sales_agent = client.sales_agent)
-            client_po = ClientPO.objects.filter(client = customer)
-        elif employee.position == "General Manager":
+            customers = Client.objects.filter(sales_agent = employee)
+            client_po = []
+            #TODO: potangena mo saka ka na
+            for object in customers:
+                client_po.append(ClientPO.objects.filter(client = object))
+
+        elif request.session['session_position'] == "General Manager":
             template = 'general_manager_page_ui.html'
             client_po = ClientPO.objects.all()
         else:
@@ -352,7 +356,8 @@ def create_client_po(request):
                 invoice = SalesInvoice(client=current_client, client_po=form_instance, total_amount=formset_item_total, amount_due=0)
                 invoice.save()
                 invoice = invoice.pk
-                #TODO Invoice should not be issued unless JO is complete
+
+                #TODO: Invoice should not be issued unless JO is complete
 
                 invoice = SalesInvoice.objects.get(id=invoice)
                 invoice.amount_due = invoice.total_amount_computed
@@ -375,7 +380,7 @@ def create_client_po(request):
             message = "Form is not valid"
 
 
-        #todo change index.html. page should be redirected after successful submission
+        #TODO: change index.html. page should be redirected after successful submission
         return render(request, 'accounts/client_page.html',
                               {'message': message}
                               )
@@ -386,12 +391,12 @@ def create_client_po(request):
                               )
 
 
-
-# RUSH ORDER CRUD
+#RUSH ORDER CRUD
 def rush_order_list(request):
     rush_order = ClientPO.objects.filter() #modify! lead time input
+
     context = {
-        'rush_order' : rush_order
+        'rush_order' : rush_order,
     }
     return render (request, 'sales/rush_order_list.html', context)
 

@@ -9,6 +9,7 @@ from inventory.forms import MaterialRequisitionForm, MaterialRequisitionItemsFor
 from inventory.forms import MaterialRequisition, MaterialRequisitionItems
 from .models import Machine, SalesInvoice, Employee, ClientPO
 from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule
+from sales.models import ClientItem, ClientPO
 from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm
 
 #scheduling import
@@ -445,7 +446,7 @@ def add_extruder_schedule(request, id):
 
     if e.count == 0:
         data.status = 'Under Cutting'
-        client_po.status = 'Under production'
+        client_po.status = 'Under Production'
         data.save()
         client_po.save()
 		
