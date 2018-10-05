@@ -19,25 +19,25 @@
             {% for ClientCreditStatus in credits_status %}
             <tr>
                 <td>
-                    ({{ ClientCreditStatus.client }})
+                    {{ ClientCreditStatus.client }}
                 </td>
                 <td>
-                    ({{ ClientCreditStatus.outstanding_balance }})
+                    {{ ClientCreditStatus.outstanding_balance }}
                 </td>
                 <td>
-                    ({{ ClientCreditStatus.overdue_balance }})
+                    {{ ClientCreditStatus.overdue_balance }}
                 </td>
                 <td>
-                    ({{ ClientCreditStatus.calculate_days_overdue }})
+                    {{ ClientCreditStatus.calculate_days_overdue }}
                 </td>
                 <td>
-                    ({{ ClientCreditStatus.client.client_constant.payment_terms }})
+                    {{ ClientCreditStatus.client.client_constant.payment_terms }}
                 </td>
                 <td>
-                    ({{ ClientCreditStatus.client.sales_agent }})
+                    {{ ClientCreditStatus.client.sales_agent }}
                 </td>
                 <td>
-                    ({{ ClientCreditStatus.remarks }})
+                    {{ ClientCreditStatus.remarks }}
                 </td>
             </tr>
             {% endfor %}

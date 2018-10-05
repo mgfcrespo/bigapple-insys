@@ -145,13 +145,15 @@ def po_list_view(request):
         if request.session['session_position'] == "Sales Coordinator":
             template = 'sales_coordinator_page_ui.html'
             client_po = ClientPO.objects.all()
+        #TODO: Sales Agent access level
         elif request.session['session_position'] == "Sales Agent":
             template = 'sales_agent_page_ui.html'
             customers = Client.objects.filter(sales_agent = employee)
-            client_po = []
-            #TODO: potangena mo saka ka na
-            for object in customers:
-                client_po.append(ClientPO.objects.filter(client = object))
+            client_po = ClientPO.objects.filter(client = customers)
+
+            #FIX: get client_po for SA
+            for ClientPO in customers:
+               client_po.append(ClientPO.objects.filter(client = object))
 
         elif request.session['session_position'] == "General Manager":
             template = 'general_manager_page_ui.html'
@@ -177,10 +179,26 @@ class POConfirmView(DetailView):
     template_name = 'sales/clientPO_confirm.html'
 
 # Invoice List/Detail View
-class InvoiceListView(ListView):
-    template_name = 'sales/sales_invoice_list.html'
-    model = SalesInvoice
+def invoice_list_view(request):
+    invoice = SalesInvoice.objects.all()
 
+    if request.session['session_position'] == "Sales Coordinator":
+        template = 'sales_coordinator_page_ui.html'
+    elif request.session['session_position'] == "Sales Agent":
+        template = 'sales_agent_page_ui.html'
+    elif request.session['session_position'] == "Credits and Collection Personnel":
+        template = 'credit_and_collection_personnel_page_ui.html'
+    elif request.session['session_position'] == "General Manager":
+        template = 'general_manager_page_ui.html'
+    else:
+        template = 'error.html'
+
+    context = {
+     'invoice': invoice,
+     'template': template
+        }
+
+    return render(request, 'sales/sales_invoice_list.html', context)
 
 def invoice_detail_view(request, pk, *args, **kwargs):
 
@@ -287,11 +305,13 @@ def statement_of_accounts_list_view(request):
 
     credits_status = ClientCreditStatus.objects.all()
     client = Client.objects.all()
+    sales_agent = Employee.objects.filter(position = 'Sales Agent')
     client_constant = ClientConstant.objects.all()
 
     context = {
         'credits_status' : credits_status,
         'client' : client,
+        'sales_agent' : sales_agent,
         'client_constant': client_constant,
         'date' : datetime.now()
     }
@@ -359,12 +379,12 @@ def create_client_po(request):
 
                 invoice = SalesInvoice.objects.get(id=invoice)
                 invoice.amount_due = invoice.total_amount_computed
+                invoice.save()
+
                 credit_status = ClientCreditStatus.objects.get(client_id = current_client)
                 outstanding_balance = credit_status.outstanding_balance
                 outstanding_balance += invoice.amount_due
                 credit_status.outstanding_balance = outstanding_balance
-
-                invoice.save()
                 credit_status.save()
 
 

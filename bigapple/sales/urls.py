@@ -11,8 +11,7 @@ urlpatterns = [
 			path('create-client-po-form/', views.create_client_po, name='create-client-po-form'),
 
 			#sales_invoice urls
-			path('sales-invoice-list/<int:pk>/', views.InvoiceListView.as_view(), name='sales_invoice_list'),
-			path('sales-invoice-list/', views.InvoiceListView.as_view(), name='sales_invoice_list'),
+			path('sales-invoice-list/', views.invoice_list_view, name='sales_invoice_list'),
 			path('sales-invoice-details/<int:pk>/', views.invoice_detail_view, name='sales_invoice_details'),
 			path('sales-invoice-details/<int:pk>', views.invoice_detail_view, name='add_payment_form'),
 			path('sales-statement-of-accounts/', views.statement_of_accounts_list_view, name='statement_of_accounts'),
