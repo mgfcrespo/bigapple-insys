@@ -13,20 +13,18 @@
         	<thead>
           	<tr>
                 <th>Material Type</th>
-
-              <th>Width (inches)</th>
-              <th>Length(inches)</th>
+                <th>Width (inches)</th>
+                <th>Length(inches)</th>
                 <th>Thickness(inches)</th>
-              <th>Color</th>
-              <th>Gusset</th>
-              <th>Quantity</th>
-                 <th>Laminate</th>
+                <th>Color</th>
+                <th>Gusset</th>
+                <th>Quantity</th>
+                <th>Laminate</th>
                 <th>Printed</th>
                 <th>Price/pc</th>
               <th>Item Price Sub-Total</th>
           	</tr>
     		</thead>
-
 
             <tbody>
 
@@ -60,7 +58,6 @@
 
                 <tr>Total: {{clientpo.total_amount}}</tr>
 
-
 			</tbody>
     	</table>
                 {% if clientconstant.payment_terms < client.creditstatus.calculate_days_overdue %}
@@ -69,8 +66,6 @@
                 <h2> This client's credit status is cleared. </h2>
 
                 #TODO: condition to show materials requirement and inventory levels
-
-
 
                     <div class="row">
                         <div class="center">

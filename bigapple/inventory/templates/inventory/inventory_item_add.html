@@ -1,31 +1,31 @@
 {% extends template %}
 
-{% block content %}
+    {% block content %}
 
-<div class = "ui container">
-    <form class="ui form" action = "#" method="POST" role="form">
-        <h2 class="ui dividing header">{{ title }}</h2>
-        {% csrf_token %}
-        <div class="field">
-            <label>Item</label>
-            {{ form.item }}
-        </div>
-        <div class="fields">
+    <div class = "ui container">
+        <form class="ui form" action = "#" method="POST" role="form">
+            <h2 class="ui dividing header">{{ title }}</h2>
+            {% csrf_token %}
             <div class="field">
-                <label>Type</label>
-                {{ form.item_type }}
+                <label>Item</label>
+                {{ form.item }}
+            </div>
+            <div class="fields">
+                <div class="field">
+                    <label>Type</label>
+                    {{ form.item_type }}
+                </div>
+                <div class="field">
+                    <label>Quantity</label>
+                    {{ form.quantity }}
+                </div>
             </div>
             <div class="field">
-                <label>Quantity</label>
-                {{ form.quantity }}
+                <label>Description</label>
+                {{ form.description }}
             </div>
-        </div>
-        <div class="field">
-            <label>Description</label>
-            {{ form.description }}
-        </div>
-        <button class="ui basic green button" type="submit">Submit</button>
-    </form>
-</div>
+            <button class="ui basic green button" type="submit">Submit</button>
+        </form>
+    </div>
 
 {% endblock %}

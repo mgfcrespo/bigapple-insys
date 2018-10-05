@@ -99,7 +99,6 @@ class ClientPO(models.Model):
     def evaluate_credit_status(self):
     '''
 
-
 class ClientItem(models.Model):
     COLOR = (
         ('Red', 'Red'),
