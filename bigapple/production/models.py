@@ -109,12 +109,12 @@ class ExtruderSchedule(models.Model):
 
     job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-    #operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
     #stock_kind = models.CharField('stock_kind',choices=STOCK_KIND, max_length=250, default='not specified')
     #material = models.CharField('material', max_length=200)
     #treating = models.CharField('treating', max_length=200)
     date = models.DateField('date', auto_now_add=True, blank=True)
-    #shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
+    shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
     day_in = models.CharField('day_in', choices=DAY, max_length=200, default='a.m.')
     day_out = models.CharField('day_out', choices=DAY, max_length=200, default='a.m.')
     time_in = models.TimeField('time_in', blank=True)
@@ -157,7 +157,7 @@ class PrintingSchedule(models.Model):
 
     job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-    # operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
     date = models.DateField('date', auto_now_add=True, blank=True)
     day_in = models.CharField('day_in', choices=DAY, max_length=200, default='a.m.')
     day_out = models.CharField('day_out', choices=DAY, max_length=200, default='a.m.')
@@ -199,7 +199,7 @@ class CuttingSchedule(models.Model):
 
     job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-    # operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
     #print_name = models.CharField('print_name', max_length=200)
     #sealing = models.CharField('sealing', max_length=200)
     #handle = models.CharField('handle', max_length=200)
