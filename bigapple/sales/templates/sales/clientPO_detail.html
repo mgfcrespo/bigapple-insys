@@ -1,9 +1,7 @@
  {% extends "client_page_ui.html" %} {% block content %}
 
-<body>
-
-		<h3 class="ui header">{{clientpo}}</h3>
-		<table class="ui cell padded table">
+<h3 class="ui dividing header">{{ clientpo }}</h3>
+ <table class="ui cell padded table">
         	<thead>
           	<tr>
                 <th>Material Type</th>
@@ -65,9 +63,6 @@
 	<a href="{% url 'sales:po-list-view' %}">Back</a>
 </button>
 
-
-
-</body>
 
 {% endblock %}
 

@@ -1,9 +1,8 @@
 {% extends "client_page_ui.html" %} {% block content %}
 
-<h3 class="ui header">Purchase Order List</h3>
+<h3 class="ui dividing header">{{ title }}</h3>
 
-
-		<table class="ui cell padded table">
+		<table class="ui striped table center aligned">
         	<thead>
           	<tr>
           	  <th>Purchase Order ID</th>
@@ -35,6 +34,5 @@
 
         </tbody>
     </table>
-
 
 {% endblock %}

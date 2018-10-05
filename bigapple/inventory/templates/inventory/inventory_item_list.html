@@ -1,46 +1,43 @@
 {% extends template %}
 
   {% block content %}
-
-	<div class = "ui container">
-		<h2 class="ui header">{{ title }}</h2>
-		<table class="ui stripped table">
-        	<thead>
-          	<tr class = "row">
-                <th class="four wide">Item</th>
-				<th class="four wide">Type</th>
-				<th class="four wide">Quantity</th>
-				<th class="four wide"></th>
-          	</tr>
-    		</thead>
-    		<tbody>
-				{% if items %}
-				{% for items in items %}
-    			<tr class = "row">
-					<td> 
-						<a href="{% url 'inventory:inventory_count_list' items.id %}">{{ items.item }}</a>
-					</td>
-					<td>{{ items.item_type }}</td>
-					<td>{{ items.quantity }}</td>
-                    <td class="right aligned">
-						<a style = "padding: 5px;" href="{% url 'inventory:inventory_count_form' items.id %}">
-							<i class="primary boxes icon"></i>
-						</a>
-						<a style = "padding: 5px;" href="{% url 'inventory:inventory_item_edit' items.id %}">
-							<i class="yellow edit icon"></i>
-						</a>
-						<a onclick="return confirm('Are you sure?')" class = "button"style = "padding: 5px;" href="{% url 'inventory:inventory_item_delete' items.id %}">
-							<i class="red trash icon"></i>
-						</a>
-                    </td>
-    			</tr>
-				{% endfor %}
-			{% else %}
-				<td>No Inventory items to show!</td>
-			{% endif %}
-			</tbody>
-    	</table>
-	</div>
+<h3 class="ui dividing header">{{ title }}</h3>
+	<table class="ui striped table center aligned">
+		<thead>
+		<tr class = "row">
+			<th class="four wide">Item</th>
+			<th class="four wide">Type</th>
+			<th class="four wide">Quantity</th>
+			<th class="four wide"></th>
+		</tr>
+		</thead>
+		<tbody>
+			{% if items %}
+			{% for items in items %}
+			<tr class = "row">
+				<td>
+					<a href="{% url 'inventory:inventory_count_list' items.id %}">{{ items.item }}</a>
+				</td>
+				<td>{{ items.item_type }}</td>
+				<td>{{ items.quantity }}</td>
+				<td class="right aligned">
+					<a style = "padding: 5px;" href="{% url 'inventory:inventory_count_form' items.id %}">
+						<i class="primary boxes icon"></i>
+					</a>
+					<a style = "padding: 5px;" href="{% url 'inventory:inventory_item_edit' items.id %}">
+						<i class="yellow edit icon"></i>
+					</a>
+					<a onclick="return confirm('Are you sure?')" class = "button"style = "padding: 5px;" href="{% url 'inventory:inventory_item_delete' items.id %}">
+						<i class="red trash icon"></i>
+					</a>
+				</td>
+			</tr>
+			{% endfor %}
+		{% else %}
+			<td>No Inventory items to show!</td>
+		{% endif %}
+		</tbody>
+	</table>
  <!-- Modal Confirm Delete -->
 	 <!-- <div class="ui modal">
 		<div class="header">Header</div>

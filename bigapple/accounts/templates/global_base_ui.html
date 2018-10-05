@@ -33,11 +33,11 @@
                             {{request.session.session_fullname}}
                         </a>
                         <div class="content menu">
-                            <a href="" class="item">
+                            <a href="{% url 'accounts:user-page-view' %}" class="item">
                                 <i class="home icon"></i>
                                 Home
                             </a>
-                            <a href="" class="item">
+                            <a href="{% url 'accounts:account_details' %}" class="item">
                                 <i class="id badge icon"></i>
                                 Account Details
                             </a>
@@ -52,9 +52,7 @@
 
         <div style="color: white;">
 
-            {% block left_sidebar %}
-
-            {% endblock %}
+        {% block left_sidebar %} {% endblock %}
 
         </div>
 
@@ -74,7 +72,7 @@
     </div>
     </div>
     <div class="segment">
-        <div class="container" style="margin:10px 10px 10px 300px">
+        <div class="container" style="margin:25px 35px 10px 300px;">
 
             {% block content %} {% endblock %}
 

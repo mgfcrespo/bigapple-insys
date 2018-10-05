@@ -1,9 +1,7 @@
 {% extends template %}
 
   {% block content %}
-
-	<div class="ui container">
-		<h2 class="ui header">{{ title }}</h2>
+<h3 class="ui dividing header">{{ title }}</h3>
 		{{msg}}
 		<table class="ui striped table">
         	<thead>
@@ -45,6 +43,5 @@
 			{% endif %}
 			</tbody>
     	</table>
-	</div>
 
 {% endblock %}
