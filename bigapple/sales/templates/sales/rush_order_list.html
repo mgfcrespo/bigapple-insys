@@ -1,9 +1,9 @@
-{% extends 'sales_coordinator_page_ui.html' %}
+{% extends 'sidebar.html' %}
 {% block content %}
 
 <h3 class="ui dividing header">{{ title }}</h3>
-<div class="sixteen wide column">
-    <table>
+
+<table class="ui stripped table">
         <thead>
             <tr>
                 <th>Client</th>
@@ -15,7 +15,6 @@
             </tr>
         </thead>
         <tbody>
-
             {% for rush_order in rush_order %}
             <tr>
                 <td>
@@ -39,10 +38,7 @@
                 </td>
             </tr>
             {% endfor %}
-
         </tbody>
     </table>
-</div>
-
 
 {% endblock %}
