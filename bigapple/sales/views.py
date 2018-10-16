@@ -155,6 +155,7 @@ def po_list_view(request):
         template = 'error.html'
 
     context = {
+        'title' : "Client Purchase Order",
         'client_po' : client_po,
         'template' : template
     }
@@ -447,10 +448,10 @@ def client_add(request):
 def client_list(request):
     data = Client.objects.all()
     context = {
-        'title': 'Client List',
+        'title' : 'Client List',
         'data' : data 
     }
-    return render (request, 'sales/client_list.html', context)
+    return render(request, 'sales/client_list.html', context)
 
 def client_edit(request, id):
     data = Client.objects.get(id=id)
@@ -489,7 +490,7 @@ def employee_list(request):
         'title': 'Employee List',
         'data' : data 
     }
-    return render (request, 'sales/employee_list.html', context)
+    return render(request, 'sales/employee_list.html', context)
 
 def employee_edit(request, id):
     data = Employee.objects.get(id=id)
