@@ -1,6 +1,5 @@
 {% extends 'global_base_ui.html' %}
 {% block left_sidebar %}
-
 <!-- Client -->
 <div id= "client_sidebar" style="display: none;">
     <a href="{% url 'sales:create-client-po-form' %}" class="item">
@@ -48,15 +47,15 @@
                 <b>Sales</b>
             </a>
                 <div class="content menu">
-                    <a href="{% url 'sales:create-client-po-form' %}" class="item">
+                    <a href="{% url 'sales:po-list-view' %}" class="item">
                         <i class="file alternate icon"></i>
-                        Create Purchase Order
+                        Client Purchase Orders
                     </a>
                     <a href="" class="item">
                         <i class="chart area icon"></i>
                         Client Demand Forecast
                     </a>
-                    <a href="" class="item">
+                    <a href="{% url 'sales:client_list' %}" class="item">
                         <i class="user outline icon"></i>
                         Clients
                     </a>
@@ -138,13 +137,13 @@
                 </a>
                 <a href="{% url 'sales:po-list-view' %}" class="item">
                     <i class="file alternate icon"></i>
-                    Client Purchase Orders
+                    Purchase Orders
                 </a>
                 <a href="" class="item">
                     <i class="chart area icon"></i>
                     Client Demand Forecast
                 </a>
-                <a href="" class="item">
+                <a href="{% url 'sales:sales_invoice_list' %}" class="item">
                     <i class="money bill alternate outline icon"></i>
                     Sales Invoices
                 </a>
@@ -152,7 +151,7 @@
                     <i class="file alternate icon"></i>
                     Statement of Accounts
                 </a>
-                <a href="" class="item">
+                <a href="{% url 'sales:client_list' %}" class="item">
                     <i class="user outline icon"></i>
                     Clients
                 </a>
@@ -215,11 +214,11 @@
         <i class="chart bar outline icon"></i>
         Client Demand Forecast
     </a>
-    <a href="" class="item">
+    <a href="{% url 'production:job_order_list' %}" class="item">
         <i class="edit outline icon"></i>
         Job Orders
     </a>
-    <a href="" class="item">
+    <a href="{% url 'sales:client_payment_list' %}" class="item">
         <i class="money bill alternate outline icon"></i>
         Client Payments
     </a>
@@ -227,7 +226,7 @@
         <i class="file alternate icon"></i>
         Statement of Accounts
     </a>
-    <a href="" class="item">
+    <a href="{% url 'sales:client_list' %}" class="item">
         <i class="user outline icon"></i>
         Clients
     </a>
@@ -330,8 +329,8 @@
         Client Payments
     </a>
 -->
-    <a href="" class="item">
-        <i class="tags icon"></i>
+    <a href="{% url 'sales:sales_invoice_list' %}" class="item">
+        <i class="money bill alternate outline icon"></i>
         Sales Invoices
     </a>
 <!--

@@ -65,6 +65,37 @@ def user_page_view(request):
             request.session['session_userid'] = client_id
             return render(request, 'accounts/client_page.html')
 
+def user_position(request):
+
+    if hasattr(request.user, 'employee'):
+        employee_id = user.employee.id
+        employee = Employee.objects.get(id=employee_id)
+        request.session['session_position'] = employee.position
+        request.session['session_fullname'] = employee.full_name
+        request.session['session_userid'] = employee_id
+
+        if employee.position == 'General Manager':
+            return render(request, 'accounts/general_manager_page.html')
+        elif employee.position == 'Sales Coordinator':
+            return render(request, 'accounts/sales_coordinator_page.html')
+        elif employee.position == 'Sales Agent':
+            return render(request, 'accounts/sales_agent_page.html')
+        elif employee.position == 'Credits and Collection Personnel':
+            return render(request, 'accounts/credit_and_collection_personnel_page.html')
+        elif employee.position == 'Supervisor':
+            return render(request, 'accounts/supervisor_page.html')
+        elif employee.position == 'Production Manager':
+            return render(request, 'accounts/production_manager_page.html')
+        elif employee.position == 'Line Leader':
+            return render(request, 'accounts/line_leader_page.html')
+
+
 def logout_view(request):
     logout(request)
     return redirect('accounts:user-page-view')
+
+def account_details(request):
+    context = {
+        'title': 'Account Details'
+    }
+    return render(request, 'accounts/account_details.html', context)

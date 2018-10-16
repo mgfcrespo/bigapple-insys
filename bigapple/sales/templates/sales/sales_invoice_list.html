@@ -1,50 +1,49 @@
 {% extends 'sidebar.html' %}
 {% block content %}
+<h3 class="ui dividing header">{{ title }}</h3>
 
-<h3 class="ui header">Sales Invoice List</h3>
+<table class="ui stripped table">
+	<thead>
+		<tr>
+			<th>Sales Invoice #</th>
+			<th>Client</th>
+			<th>Date Issued</th>
+			<th>Date Due</th>
+			<th>Total Amount</th>
+			<th>Amount Due</th>
+			<th>Status</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% if invoice %}
+		{% for SalesInvoice in invoice  %}
+		<tr>
+			<td><a href="{% url 'sales:sales_invoice_details' SalesInvoice.id %}"> {{ SalesInvoice.id }} </a></td>
+			<td> {{ SalesInvoice.client }} </td>
+			<td> {{ SalesInvoice.date_issued }} </td>
+			<td> {{ SalesInvoice.date_due }} </td>
+			<td> {{ SalesInvoice.total_amount_computed }} </td>
+			<td> {{ SalesInvoice.amount_due }} </td>
 
-		<table class= "ui celled padded table" >
-        	<thead>
-          	<tr>
-          	  	<th>Sales Invoice #</th>
-				<th>Client</th>
-                <th>Date Issued</th>
-				<th>Date Due</th>
-                <th>Total Amount</th>
-            	<th>Amount Due</th>
-				<th>Status</th>
-          	</tr>
-    		</thead>
-    		<tbody>
-			{% if invoice %}
-				{% for SalesInvoice in invoice  %}
-    			<tr>
-                    <td><a href="{% url 'sales:sales_invoice_details' SalesInvoice.id %}"> {{ SalesInvoice.id }} </a></td>
-                    <td> {{ SalesInvoice.client }} </td>
-                    <td> {{ SalesInvoice.date_issued }} </td>
-					<td> {{ SalesInvoice.date_due }} </td>
-                    <td> {{ SalesInvoice.total_amount_computed }} </td>
-    				<td> {{ SalesInvoice.amount_due }} </td>
-
-                   {% if SalesInvoice.status ==  "Open" %}
-                   <td><i class="icon checkmark"></i>Open</td>
-                   {% elif  SalesInvoice.status ==  "Closed" %}
-                   <td ><i class="icon close"></i>Closed</td>
-                   {% elif  SalesInvoice.status ==  "Late" %}
-                   <td ><i class="icon close"></i>Closed</td>
-                   <i class="exclamation icon">Late</i>
-                   {% else %}
-                   <td ><i class="ban icon"></i>Cancelled</td>
-                    {% endif %}
-    			</tr>
-				{% endfor %}
-			{% else %}
-			<td>
-				<p>There are no Invoices to display</p>
-			</td>
+		   {% if SalesInvoice.status ==  "Open" %}
+		   <td><i class="icon checkmark"></i>Open</td>
+		   {% elif  SalesInvoice.status ==  "Closed" %}
+		   <td ><i class="icon close"></i>Closed</td>
+		   {% elif  SalesInvoice.status ==  "Late" %}
+		   <td ><i class="icon close"></i>Closed</td>
+		   <i class="exclamation icon">Late</i>
+		   {% else %}
+		   <td ><i class="ban icon"></i>Cancelled</td>
 			{% endif %}
+		</tr>
+		{% endfor %}
+	{% else %}
+	<td>
+		<p>There are no Invoices to display</p>
+	</td>
+	{% endif %}
 
-			</tbody>
-    	</table>
+	</tbody>
+</table>
 
 {% endblock %}
