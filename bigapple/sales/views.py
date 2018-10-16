@@ -6,6 +6,7 @@ from .forms import ClientPOFormItems, ClientPOForm
 from django.urls import reverse_lazy
 from django.forms import formset_factory, inlineformset_factory
 from datetime import datetime, date
+from django.http import JsonResponse
 
 from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -165,12 +166,16 @@ class PODetailView(DetailView):
     template_name = 'sales/clientPO_detail.html'
 
 def confirm_client_po(request, pk):
-    clientpo = ClientPO.objects.get(pk = pk)
-    template = 'general_manager_page_ui.html'
+    clientpo = ClientPO.objects.get(pk=pk)
+    clientpo.status = 'Approved'
+    clientpo.save()
+
+    #materials_requirement =
+   # client =
 
     context = {
         'clientpo' : clientpo,
-        'template' : template
+        #'client' : client
     }
     return render(request, 'sales/clientPO_confirm.html', context)
 

@@ -314,7 +314,8 @@ class ClientCreditStatus(models.Model):
 
         issued_date = overdue_sales_invoice.date_issued
 
-        return issued_date - date.today()
+        return (issued_date - date.today()).days
+
     '''
     
 
