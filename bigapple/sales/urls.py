@@ -9,6 +9,7 @@ urlpatterns = [
 			path('po-list-view/', views.po_list_view, name='po-list-view'),
 			path('po-list-view/PO<int:pk>/', views.PODetailView.as_view(), name='po-detail-view'),
 			path('create-client-po-form/', views.create_client_po, name='create-client-po-form'),
+			path('confirm-client-po/<int:pk>', views.confirm_client_po, name='confirm-client-po'),
 
 			#sales_invoice urls
 			path('sales-invoice-list/', views.invoice_list_view, name='sales_invoice_list'),

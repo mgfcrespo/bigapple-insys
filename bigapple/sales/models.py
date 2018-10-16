@@ -10,9 +10,8 @@ from django.db.models.aggregates import Sum
 from django.db.models import aggregates
 from django.db.models import Prefetch
 
-from datetime import datetime as dt
-from datetime import timedelta as td
-from datetime import date as d
+from datetime import datetime, date
+from datetime import timedelta
 
 #TODO: Generate object at Client creation
 class ClientConstant(models.Model):
@@ -75,25 +74,26 @@ class ClientPO(models.Model):
         ('Disapproved', 'Disapproved')
     )
 
-    date_issued = models.DateTimeField('date_issued', auto_now_add=True)
+    date_issued = models.DateField('date_issued', auto_now_add=True)
     date_required = models.DateField('date_required', blank=False)
     other_info = models.TextField('other_info', max_length=250, blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=2, max_digits=12)
-    status = models.CharField('status', choices=STATUS, default='waiting', max_length=200)
+    status = models.CharField('status', choices=STATUS, default='Waiting', max_length=200)
 
     def __str__(self):
         lead_zero = str(self.id).zfill(5)
         po_number = 'PO #%s' % (lead_zero)
         return str(po_number)
 
-    '''
+
     def calculate_leadtime(self):
-        date_format = "%m/%d/%y"
-        date1 = datetime.strptime(self.date_issued, date_format)
-        date2 = datetime.strptime(self.date_required, date_format)
-        return date2 - date1
-        
+        date1 = date.today()
+        date2 = self.date_required
+        days = (date2 - date1).days
+        return days
+
+    '''
     def evaluate_materials_requirement(self):
     
     def evaluate_credit_status(self):
@@ -219,8 +219,8 @@ class SalesInvoice(models.Model):
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
-    date_issued = models.DateTimeField('date_issued', auto_now_add=True, blank=True)
-    date_due = models.DateTimeField('date_due', auto_now_add=True, blank=True)
+    date_issued = models.DateField('date_issued', auto_now_add=True, blank=True)
+    date_due = models.DateField('date_due', auto_now_add=True, blank=True)
     total_amount = models.DecimalField('total_amount', blank=True, decimal_places=2,
                                        max_digits=12)  # before discount and net_vat
     total_amount_computed = models.DecimalField('total_amount_computed', blank=True, decimal_places=2,
@@ -247,16 +247,13 @@ class SalesInvoice(models.Model):
         total = self.total_amount + total_net_vat - total_discount
         return total
 
-    #TODO this function does not compute delta.days (yet)
     def calculate_days_passed(self):
-        start_date = datetime(self.date_due)
-        end_date = datetime.now().date()
-        days = abs((end_date - start_date).days)
+        start_date = self.date_due
+        end_date = date.today()
+        days = start_date - end_date
         return days
 
     def calculate_date_due(self):
-        add_days = 0
-
         if self.payment_terms == "45 Days":
             add_days = 45
         elif self.payment_terms == "60 Days":
@@ -266,7 +263,7 @@ class SalesInvoice(models.Model):
         else:
             add_days = 30
 
-        date_due = self.date_issued + td(days=add_days)
+        date_due = self.date_issued + timedelta(days=add_days)
         return date_due
 
     def save(self, *args, **kwargs):
@@ -275,8 +272,8 @@ class SalesInvoice(models.Model):
         self.discount = client_constants.discount
         self.net_vat = client_constants.net_vat
         self.total_amount_computed = self.calculate_total_amount_computed()
-        self.days_passed= self.calculate_days_passed()
         self.date_due = self.calculate_date_due()
+        self.days_passed = self.calculate_days_passed()
 
 
         super(SalesInvoice, self).save(*args, **kwargs)
@@ -294,10 +291,16 @@ class ClientCreditStatus(models.Model):
     def __str__(self):
         return str('Credit Status: %s' % (self.client))
 
-    '''
-    #TODO: get days overdue OF ANY SI NA OVERDUE
+    # TODO: get days overdue OF ANY SI NA OVERDUE
     def calculate_days_overdue(self):
-        return date SI issued - date today
+        sales_invoice = SalesInvoice.objects.filter(client = self.client)
+        overdue_sales_invoice = sales_invoice.get(SalesInvoice.status == 'Late')
+
+        issued_date = overdue_sales_invoice.date_issued
+
+        return issued_date - date.today()
+    '''
+    
 
     def calculate_payments_sum(self):
         client_payment = ClientPayment.objects.filter(client_id = self.client)#filter by current client

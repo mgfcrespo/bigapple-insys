@@ -127,11 +127,7 @@ def delete_clientPO(request, id):
 
 
 # PO List/Detail view + PO Confirm
-class POListView(ListView):
-    template_name = 'sales/clientPO_list.html'
-    model = ClientPO
 
-#TODO Continue this
 def po_list_view(request):
 
     user = request.user
@@ -148,13 +144,8 @@ def po_list_view(request):
         #TODO: Sales Agent access level
         elif request.session['session_position'] == "Sales Agent":
             template = 'sales_agent_page_ui.html'
-            customers = Client.objects.filter(sales_agent = employee)
-            client_po = ClientPO.objects.filter(client = customers)
-
-            #FIX: get client_po for SA
-            for ClientPO in customers:
-               client_po.append(ClientPO.objects.filter(client = object))
-
+            customer = Client.objects.filter(sales_agent = Employee.objects.filter(accounts_id = id))
+            client_po = ClientPO.objects.filter(client__in=customer)
         elif request.session['session_position'] == "General Manager":
             template = 'general_manager_page_ui.html'
             client_po = ClientPO.objects.all()
@@ -174,11 +165,18 @@ class PODetailView(DetailView):
     model = ClientPO
     template_name = 'sales/clientPO_detail.html'
 
-class POConfirmView(DetailView):
-    model = ClientPO
-    template_name = 'sales/clientPO_confirm.html'
+def confirm_client_po(request, pk):
+    clientpo = ClientPO.objects.get(pk = pk)
+    template = 'general_manager_page_ui.html'
 
-# Invoice List/Detail View
+    context = {
+        'clientpo' : clientpo,
+        'template' : template
+    }
+    return render(request, 'sales/clientPO_confirm.html', context)
+
+
+#Invoice List/Detail View
 def invoice_list_view(request):
     invoice = SalesInvoice.objects.all()
 
@@ -306,7 +304,7 @@ def statement_of_accounts_list_view(request):
     credits_status = ClientCreditStatus.objects.all()
     client = Client.objects.all()
     sales_agent = Employee.objects.filter(position = 'Sales Agent')
-    client_constant = ClientConstant.objects.all()
+    client_constant = ClientConstant.objects.filter(client = client)
 
     context = {
         'credits_status' : credits_status,
@@ -388,7 +386,6 @@ def create_client_po(request):
                 credit_status.save()
 
 
-
                 message = "PO successfully created"
 
             else:
@@ -411,11 +408,12 @@ def create_client_po(request):
 
 #RUSH ORDER CRUD
 def rush_order_list(request):
-    rush_order = ClientPO.objects.filter() #modify! lead time input
+    rush_order = ClientPO.objects.filter(ClientPO.calculate_leadtime() <= 12)
 
     context = {
         'rush_order' : rush_order,
     }
+
     return render (request, 'sales/rush_order_list.html', context)
 
 def rush_order_assessment(request, pk):
