@@ -49,8 +49,6 @@ def supplier_add(request):
     }
     return render(request, 'sales/supplier_add.html', context)
 
-
-
 def supplier_list(request):
     supplier = Supplier.objects.all()
     context = {

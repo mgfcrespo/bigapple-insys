@@ -1,6 +1,6 @@
 {% extends "client_page_ui.html" %} {% block content %}
 
-<h2>Create PO Form</h2>
+<h3 class="ui dividing header">{{ title }}</h3>
 
 <div class="ui segment">
     <p>Note: Minimum Order Quantity per item is 10,000 pcs. Order quantities below MOQ will be priced based on MOQ</p>
@@ -13,16 +13,16 @@
         {% csrf_token %}
         {% include 'sales/template_form.html' %}
 
-        <table style="width:100%;" class = "ui celled padded table">
+        <table class = "ui striped table center aligned">
             <thead>
             <tr>
-                <th>Material Type</th>
-                <th>Width (inches)</th>
-                <th>Length (inches)</th>
-                <th>Thickness (inches)</th>
-                <th>Gusset</th>
-                <th>Color</th>
-                <th>Quantity</th>
+                <th class="two wide">Material Type</th>
+                <th class="one wide">Width (inches)</th>
+                <th class="one wide">Length (inches)</th>
+                <th class="one wide">Thickness (inches)</th>
+                <th class="two wide">Gusset</th>
+                <th class="two wide">Color</th>
+                <th class="one wide">Quantity</th>
                 <th>Laminate</th>
                 <th>Printed</th>
                 <th>No. of Print Colors</th>

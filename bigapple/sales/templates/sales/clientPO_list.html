@@ -1,9 +1,8 @@
 {% extends "client_page_ui.html" %} {% block content %}
 
-<h3 class="ui header">Purchase Order List</h3>
+<h3 class="ui dividing header">{{ title }}</h3>
 
-
-		<table class="ui cell padded table">
+		<table class="ui striped table center aligned">
         	<thead>
           	<tr>
           	  <th>Purchase Order ID</th>
@@ -22,7 +21,11 @@
     					<td>{{ ClientPO.date_issued }}</td>
     					<td>{{ ClientPO.date_required }}</td>
     					<td>{{ ClientPO.total_amount }}</td>
-						<td>{{ ClientPO.status}}</td>
+						<td>{% if ClientPO.status == 'Waiting' %}
+							<a href="{% url 'sales:confirm-client-po' ClientPO.id %}">{{ ClientPO.status }}</a>
+							{% else %}
+							{{ ClientPO.status }}</td>
+							{% endif %}
     				</tr>
 				{% endfor %}
 			{% else %}
@@ -35,6 +38,5 @@
 
         </tbody>
     </table>
-
 
 {% endblock %}

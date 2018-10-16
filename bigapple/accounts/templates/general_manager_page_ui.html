@@ -3,6 +3,26 @@
     <div class="item">
         <a class="title">
             <i class="dropdown icon"></i>
+            <b>Manager's Tools</b>
+        </a>
+        <div class="content menu">
+            <a href="{% url 'sales:employee_add' %}" class="item">
+                <i class="id badge icon"></i>
+                Add Employee
+            </a>
+             <a href="{% url 'sales:employee_list' %}" class="item">
+                <i class="users icon"></i>
+                 Employee List
+            </a>
+            <a href="{% url 'sales:supplier_add' %}" class="item">
+                <i class="building icon"></i>
+                 Add Supplier
+            </a>
+        </div>
+    </div>
+    <div class="item">
+        <a class="title">
+            <i class="dropdown icon"></i>
             <b>Sales</b>
         </a>
             <div class="content menu">

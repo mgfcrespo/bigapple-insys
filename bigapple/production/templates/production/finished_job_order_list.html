@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block content %}
+{% block content %}
 
-<h3 class="ui header">Finished Job Order Report</h3>
-
+<h3 class="ui dividing header">{{ title }}</h3>
 
     <table class="ui celled padded table">
         <thead>
@@ -38,9 +33,6 @@
 			{% endif %}
 
         </tbody>
-    </table></title>
-</head>
-<body>
+    </table>
 
-</body>
-</html>
+{% endblock %}

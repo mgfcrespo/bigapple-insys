@@ -44,7 +44,7 @@ class ClientPOForm(ModelForm):
 
     class Meta:
         model = ClientPO
-        fields = ('date_required', 'other_info')
+        fields = ('date_required', 'other_info', 'client')
         widgets = {
             'date_required': DateInput()
         }

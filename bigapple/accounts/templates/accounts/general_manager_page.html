@@ -1,6 +1,5 @@
 {% extends 'general_manager_page_ui.html' %} {% block content %}
 <div class="ui relaxed grid">
-
     <div class="four wide column">
         <div class="ui container">
             <div class="segments" style="margin:10px;">
@@ -155,57 +154,38 @@
             <div class="segments" style="margin:10px;">
                 <div class="ui green segment" style="text-align: center">
                     <h3>
-                        Rush Orders:
+                        Client Purchase Orders:
                     </h3>
-                    <table class="ui celled table center aligned">
+                    <table class="ui striped table center aligned">
                         <thead>
-                            <tr>
-                                <th>Company</th>
-                                <th>JO Number</th>
-                                <th>Items</th>
-                                <th>Due Date</th>
-                            </tr>
+                        <tr>
+                          <th>Purchase Order ID</th>
+                          <th>Date Issued</th>
+                          <th>Date Required</th>
+                          <th>Total Amount</th>
+                          <th>Status</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    Company A
-                                </td>
-                                <td>
-                                    12345667890
-                                </td>
-                                <td>
-                                    - 100,000 Pcs. PET Bottle<br> - 100,000 Pcs. Sando bags SML
-                                </td>
-                                <td>
-                                    DD/MM/YYYY
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    Company B
-                                </td>
-                                <td>
-                                    0987654321
-                                </td>
-                                <td>
-                                    - 200,000 Pcs. PET Bottle<br> - 100,000 Pcs. Sando bags SML
-                                </td>
-                                <td>
-                                    DD/MM/YYYY
-                                </td>
-                            </tr>
+                        {% if client_po %}
+                            {% for ClientPO in client_po %}
+                                <tr>
+                                    <td><a href="{% url 'sales:po-detail-view' ClientPO.id %}">{{ClientPO}}</a></td>
+                                    <td>{{ ClientPO.date_issued }}</td>
+                                    <td>{{ ClientPO.date_required }}</td>
+                                    <td>{{ ClientPO.total_amount }}</td>
+                                    <td>{{ ClientPO.status}}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                        <td>
+                            <p>There are no Purchase Orders to display</p>
+                        </td>
+
+                        {% endif %}
 
                         </tbody>
                     </table>
-                </div>
-            </div>
-        </div>
-        <div class=" row ui container">
-            <div class="segments" style="margin:10px;">
-                <div class="ui green segment" style="text-align: center">
-                    <h3>Job Order Status:</h3>
-
                 </div>
             </div>
         </div>
@@ -246,84 +226,41 @@
                 </div>
             </div>
         </div>
-
     </div>
     <div class="eight wide column">
         <div class="ui container">
             <div class="segments" style="margin:10px;">
                 <div class="ui green segment" style="text-align: center">
-                    <h3>Gantt Chart:</h3>
+                    <h3>Job Order Status:</h3>
+                    		<table class="ui stripped table center aligned">
+        	<thead>
+          	<tr class = "row">
+                <th class="three wide">JO#</th>
+				<th class="three wide">Client PO#</th>
+				<th class="two wide">Rush Order</th>
+                <th class="three wide">Status</th>
+          	</tr>
+    		</thead>
+    		<tbody>
+            {% if data %}
+                {% for data in data %}
+                <tr class = "row">
+                    <td>
+                        <a href="{% url 'production:job_order_details' data.id %}">{{ data }}</a>
+                    </td>
+                    <td>{{ data.client_po }}</td>
+                    <td>{{ data.rush_order }}</td>
+                    <td>{{ data.status }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+            <td>
+                <p>There are no Job Orders to display</p>
+            </td>
+            {% endif %}
 
-                    <div class="container">
-                        <div class="gantt-target"></div>
-                    </div>
-                    <script>
-                        var tasks = [{
-                                start: '2018-10-01',
-                                end: '2018-10-08',
-                                name: 'Redesign website',
-                                id: "Task 0",
-                                progress: 20
-                            },
-                            {
-                                start: '2018-10-03',
-                                end: '2018-10-06',
-                                name: 'Write new content',
-                                id: "Task 1",
-                                progress: 5,
-                                dependencies: 'Task 0'
-                            },
-                            {
-                                start: '2018-10-04',
-                                end: '2018-10-08',
-                                name: 'Apply new styles',
-                                id: "Task 2",
-                                progress: 10,
-                                dependencies: 'Task 1'
-                            },
-                            {
-                                start: '2018-10-08',
-                                end: '2018-10-09',
-                                name: 'Review',
-                                id: "Task 3",
-                                progress: 5,
-                                dependencies: 'Task 2'
-                            },
-                            {
-                                start: '2018-10-08',
-                                end: '2018-10-10',
-                                name: 'Deploy',
-                                id: "Task 4",
-                                progress: 0,
-                                dependencies: 'Task 2'
-                            },
-                            {
-                                start: '2018-10-11',
-                                end: '2018-10-11',
-                                name: 'Go Live!',
-                                id: "Task 5",
-                                progress: 0,
-                                dependencies: 'Task 4',
-                                custom_class: 'bar-milestone'
-                            },
-                        ]
-                        var gantt_chart = new Gantt(".gantt-target", tasks, {
-                            on_click: function(task) {
-                                console.log(task);
-                            },
-                            on_date_change: function(task, start, end) {
-                                console.log(task, start, end);
-                            },
-                            on_progress_change: function(task, progress) {
-                                console.log(task, progress);
-                            },
-                            on_view_change: function(mode) {
-                                console.log(mode);
-                            }
-                        });
-                        console.log(gantt_chart);
-
-                    </script>
+			</tbody>
+    	</table>
 
                 </div>
             </div>

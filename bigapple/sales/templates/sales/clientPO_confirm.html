@@ -1,6 +1,8 @@
 {% block content %}
+<h3 class="ui dividing header">{{ title }}</h3>
 
 <div id="basic-form" class="sixteen wide column">
+    <form id="myForm" class="ui form" action="{% url 'sales:confirm-client-po' %}" method="post" enctype="multipart/form-data">
 
     <div class="row">
         <div class="five wide column">

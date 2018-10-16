@@ -3,7 +3,6 @@
 {% block content %}
 <h3 class="ui dividing header">{{ title }}</h3>
 
-<div class="ui centered grid">
     <div class="six wide tablet eight wide computer column">
         <form class="ui form" method="POST">
             {% csrf_token %}
@@ -38,12 +37,11 @@
           
             <div class="center">
                 <button class="ui green basic button" type="submit">{{ actiontype }}</button>
-                <button class="ui red basic button" typle="clear">Back</button>
+                <button class="ui red basic button" type="reset">Clear</button>
             </div>
           </form>
 
     </div>
-</div>
 
 
 
