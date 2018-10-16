@@ -213,7 +213,8 @@ class ClientItem(models.Model):
         super(ClientItem, self).save(*args, **kwargs)
 
         '''
-        def calculate_materials_requirement(self):
+    def calculate_materials_requirement(self):
+        
         '''
 
 

@@ -11,7 +11,7 @@ urlpatterns = [
         #Job Order
         path('job-order-list/', views.job_order_list, name='job_order_list'),
         path('job-order-details/<int:id>', views.job_order_details, name='job_order_details'),
-        path('finished-job-order-list', views.FinishedJOListView.as_view(), name='finished_job_order_list'),
+        path('finished-job-order-list', views.finished_job_order_list_view, name='finished_job_order_list'),
         path('add-extruder-schedule/<int:id>', views.add_extruder_schedule, name='add_extruder_schedule'),
         path('add-printing-schedule/<int:id>', views.add_printing_schedule, name='add_printing_schedule'),
         path('add-cutting-schedule/<int:id>', views.add_cutting_schedule, name='add_cutting_schedule'),

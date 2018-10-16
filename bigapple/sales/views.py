@@ -171,8 +171,8 @@ def confirm_client_po(request, pk):
     clientpo.status = 'Approved'
     clientpo.save()
 
-    #materials_requirement =
-   # client =
+    materials_requirement = clientpo.ClientItems
+    #client =
 
     context = {
         'clientpo' : clientpo,
