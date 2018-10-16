@@ -1,9 +1,7 @@
-{% extends 'global_base_ui.html' %}
+{% extends 'sidebar.html' %}
 
 {% block content %}
 <h3 class="ui dividing header">{{ title }}</h3>
-
-<div class="ui centered grid">
     <div class="six wide tablet eight wide computer column">
         <form class="ui form" method="POST">
             {% csrf_token %}
@@ -49,10 +47,8 @@
                 <button class="ui green basic button" type="submit">{{ actiontype }}</button>
                 <button class="ui red basic button" typle="clear">Back</button>
             </div>
-          </form>
-
+        </form>
     </div>
-</div>
 
 
 

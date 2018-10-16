@@ -1,18 +1,18 @@
-{% extends "client_page_ui.html" %} {% block content %}
+{% extends "sidebar.html" %} {% block content %}
 
 <h3 class="ui dividing header">{{ title }}</h3>
 
-<div class="ui segment">
-    <p>Note: Minimum Order Quantity per item is 10,000 pcs. Order quantities below MOQ will be priced based on MOQ</p>
-    <p>Note: "No. of print colors" is only viable for printed orders</p>
-</div>
-
-<div class="sixteen wide column">
     <form id="myForm" class="ui form" action="{% url 'sales:create-client-po-form' %}" method="post" enctype="multipart/form-data">
-
-        {% csrf_token %}
-        {% include 'sales/template_form.html' %}
-
+    <div class="row">
+        <div class="ui segment eight wide column">
+            <p>Note: Minimum Order Quantity per item is 10,000 pcs. Order quantities below MOQ will be priced based on MOQ</p>
+            <p>Note: "No. of print colors" is only viable for printed orders</p>
+        </div>
+         <div class="one wide column">
+            {% csrf_token %}
+            {% include 'sales/template_form.html' %}
+        </div>
+    </div>
         <table class = "ui striped table center aligned">
             <thead>
             <tr>
@@ -20,12 +20,12 @@
                 <th class="one wide">Width (inches)</th>
                 <th class="one wide">Length (inches)</th>
                 <th class="one wide">Thickness (inches)</th>
-                <th class="two wide">Gusset</th>
-                <th class="two wide">Color</th>
-                <th class="one wide">Quantity</th>
-                <th>Laminate</th>
-                <th>Printed</th>
-                <th>No. of Print Colors</th>
+                <th class="one wide">Gusset</th>
+                <th class="one wide">Color</th>
+                <th class="two wide">Quantity</th>
+                <th class="one wide">Laminate</th>
+                <th class="one wide">Printed</th>
+                <th class="one wide">No. of Print Colors</th>
             </tr>
             </thead>
             <tbody>
@@ -46,7 +46,6 @@
                 {% endfor %}
             </tbody>
         </table>
-
         {{formset.management_form}}
         <button type="submit" class="ui green basic button" onclick="return confirm('Are you sure?')">Submit</button>
     </form>

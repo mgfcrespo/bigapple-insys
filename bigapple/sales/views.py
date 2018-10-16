@@ -129,7 +129,6 @@ def delete_clientPO(request, id):
 # PO List/Detail view + PO Confirm
 
 def po_list_view(request):
-
     user = request.user
     id = user.id
     client = Client.objects.filter(accounts_id = id)
@@ -507,7 +506,7 @@ def employee_delete(request, id):
     data = Employee.objects.get(id=id)
     data.delete()
     return redirect('sales:employee_list')
-	
+
 '''
 #Forecasting view
 def call_forecasting(request):

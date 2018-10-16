@@ -1,8 +1,8 @@
 
 
-<table style="width:100%">
+<table>
 
-    <tbody>
+    <tbody class>
     {% for form in formset %}
     <tr id="{{ form.prefix }}-row" class="formset_class">
         {% for field in form.hidden_fields %}{{ field }}{% endfor %}
