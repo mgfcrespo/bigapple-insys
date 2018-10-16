@@ -1,36 +1,40 @@
-{% extends 'sidebar.html' %}
-{% block content %}
+{% extends "sidebar.html" %} {% block content %}
 
 <h3 class="ui dividing header">{{ title }}</h3>
 
-    <table class="ui striped table center aligned">
-        <thead>
-        <tr>
-          <th>Purchase Order ID</th>
-          <th>Date Issued</th>
-          <th>Date Required</th>
-          <th>Total Amount</th>
-          <th>Status</th>
-        </tr>
-        </thead>
-        <tbody>
+		<table class="ui striped table center aligned">
+        	<thead>
+          	<tr>
+          	  <th>Purchase Order ID</th>
+              <th>Date Issued</th>
+              <th>Date Required</th>
+              <th>Total Amount</th>
+			  <th>Status</th>
+          	</tr>
+    		</thead>
+    		<tbody>
 
-        {% if client_po %}
-            {% for ClientPO in client_po %}
-                <tr>
-                    <td><a href="{% url 'sales:po-detail-view' ClientPO.id %}">{{ClientPO}}</a></td>
-                    <td>{{ ClientPO.date_issued }}</td>
-                    <td>{{ ClientPO.date_required }}</td>
-                    <td>{{ ClientPO.total_amount }}</td>
-                    <td>{{ ClientPO.status}}</td>
-                </tr>
-            {% endfor %}
-        {% else %}
-        <td>
-            <p>There are no Purchase Orders to display</p>
-        </td>
+			{% if client_po %}
+				{% for ClientPO in client_po %}
+    				<tr>
+    					<td><a href="{% url 'sales:po-detail-view' ClientPO.id %}">{{ClientPO}}</a></td>
+    					<td>{{ ClientPO.date_issued }}</td>
+    					<td>{{ ClientPO.date_required }}</td>
+    					<td>{{ ClientPO.total_amount }}</td>
+						<td>{% if ClientPO.status == 'Waiting' %}
+							<a href="{% url 'sales:confirm-client-po' ClientPO.id %}">{{ ClientPO.status }}</a>
+							{% else %}
+							{{ ClientPO.status }}</td>
+							{% endif %}
+    				</tr>
+				{% endfor %}
+			{% else %}
+			<td>
+				<p>There are no Purchase Orders to display</p>
+			</td>
+			
+			{% endif %}
 
-        {% endif %}
 
         </tbody>
     </table>

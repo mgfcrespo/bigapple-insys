@@ -9,6 +9,7 @@ urlpatterns = [
 			path('po-list-view/', views.po_list_view, name='po-list-view'),
 			path('po-list-view/PO<int:pk>/', views.PODetailView.as_view(), name='po-detail-view'),
 			path('create-client-po-form/', views.create_client_po, name='create-client-po-form'),
+			path('confirm-client-po/<int:pk>', views.confirm_client_po, name='confirm-client-po'),
 
 			#sales_invoice urls
 			path('sales-invoice-list/', views.invoice_list_view, name='sales_invoice_list'),
@@ -21,7 +22,8 @@ urlpatterns = [
 			path('client-payment-details/invoice<int:pk>/', views.payment_detail_view, name='client_payment_details'),
 
 			#rush order urls
-			path('rush-order-list/', views.rush_order_list, name='sales_rush_order_list'),
+			path('rush-order-list/', views.rush_order_list, name='rush_order_list'),
+			path('rush-order-assessment/<int:pk>/', views.rush_order_assessment, name='rush_order_assessment'),
 
 		    #supplier urls
 			path('supplier-list/', views.supplier_list, name='supplier_list'),
