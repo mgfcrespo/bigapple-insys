@@ -12,29 +12,33 @@
                 <th>Date Required</th>
                 <th>Lead Time</th>
                 <th>Items</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            {% for rush_order in rush_order %}
+            {% for rush_orders in rush_orders %}
             <tr>
                 <td>
-                    ({{ rush_order.client }})
+                    ({{ rush_orders.client }})
                 </td>
                 <td>
-                    ({{ rush_order }})
+                    ({{ rush_orders }})
                 </td>
                 <td>
-                    ({{ rush_order.date_issued }})
+                    ({{ rush_orders.date_issued }})
                 </td>
                 <td>
-                    ({{ rush_order.date_required }})
+                    ({{ rush_orders.date_required }})
                 </td>
                 <td>
-                    ({{ rush_order. }}) #TODO: refer lead time method
+                    ({{ rush_orders.calculate_leadtime }})
                 </td>
                 #TODO: for loop for rush order items
-                <td>
-                    ({{ rush_order.date_issued }})
+                <td>{% if rush_orders.status == 'Waiting' %}
+							<a href="{% url 'sales:confirm-client-po' ClientPO.id %}">{{ rush_orders.status }}</a>
+							{% else %}
+							{{ rush_orders.status }}
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

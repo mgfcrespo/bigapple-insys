@@ -22,7 +22,8 @@ urlpatterns = [
 			path('client-payment-details/invoice<int:pk>/', views.payment_detail_view, name='client_payment_details'),
 
 			#rush order urls
-			path('rush-order-list/', views.rush_order_list, name='sales_rush_order_list'),
+			path('rush-order-list/', views.rush_order_list, name='rush_order_list'),
+			path('rush-order-assessment/<int:pk>/', views.rush_order_assessment, name='rush_order_assessment'),
 
 		    #supplier urls
 			path('supplier-list/', views.supplier_list, name='supplier_list'),

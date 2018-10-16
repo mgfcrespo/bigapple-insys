@@ -299,7 +299,6 @@ def payment_detail_view(request, pk):
     return render(request, 'sales/client_payment_detail.html', context)
 
 def statement_of_accounts_list_view(request):
-
     credits_status = ClientCreditStatus.objects.all()
     client = Client.objects.all()
     sales_agent = Employee.objects.filter(position = 'Sales Agent')
@@ -407,10 +406,10 @@ def create_client_po(request):
 
 #RUSH ORDER CRUD
 def rush_order_list(request):
-    rush_order = ClientPO.objects.filter(ClientPO.calculate_leadtime() <= 12)
+    rush_orders = ClientPO.objects.filter(rush_order = True)
 
     context = {
-        'rush_order' : rush_order,
+        'rush_orders' : rush_orders,
     }
 
     return render (request, 'sales/rush_order_list.html', context)

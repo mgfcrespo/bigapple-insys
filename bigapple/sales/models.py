@@ -80,6 +80,7 @@ class ClientPO(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=2, max_digits=12)
     status = models.CharField('status', choices=STATUS, default='Waiting', max_length=200)
+    rush_order = models.BooleanField('rush_order', default=False)
 
     def __str__(self):
         lead_zero = str(self.id).zfill(5)
@@ -92,6 +93,21 @@ class ClientPO(models.Model):
         date2 = self.date_required
         days = (date2 - date1).days
         return days
+
+    def rush_order_determinant(self):
+        if self.calculate_leadtime() <= 12:
+            self.rush_order = True
+        else:
+            self.rush_order = False
+
+        return self.rush_order
+
+    def save(self, *args, **kwargs):
+        rush_order = self.rush_order_determinant()
+        self.rush_order = rush_order
+        super(ClientItem, self).save(*args, **kwargs)
+
+
 
     '''
     def evaluate_materials_requirement(self):
