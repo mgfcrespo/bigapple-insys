@@ -65,6 +65,9 @@ def user_page_view(request):
             request.session['session_userid'] = client_id
             return render(request, 'accounts/client_page.html')
 
+def account_details(request):
+    user = request.user
+
 def logout_view(request):
     logout(request)
     return redirect('accounts:user-page-view')
