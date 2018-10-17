@@ -1,18 +1,92 @@
-
 {% extends 'sidebar.html' %}
-
 {% block content %}
+ <h3 class="ui dividing header">{{ title }}</h3>
+    <form class="ui form" method="POST">
+        {% csrf_token %}
+        <div class = "two fields">
+            <div class="field">
+                <label>Email Address</label>
 
-<h3 class="ui dividing header">{{ title }}</h3>
-
-    {% for field in form %}
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <span class ="text-danger small">{{field.errors}}</span>
             </div>
-            <label class = "control-label col-sm-2">{{field.label_tag}}</label>
-            <div class="col-sm-10">{{field}}</div>
-        </div>
-    {% endfor %}
+            <div class="field">
+                <label>Username</label>
 
+            </div>
+        </div>
+        <div class="two fields">
+            <div class="field">
+                <label>First Name</label>
+
+            </div>
+            <div class="field">
+                <label>Last Name</label>
+
+            </div>
+        </div>
+        <div class = "four fields">
+            <div class="field">
+                <label>Password</label>
+
+            </div>
+            <div class="field">
+                <label>Confirm Password</label>
+
+            </div>
+        </div>
+        <div class="field">
+            <label>Address</label>
+
+        </div>
+        <div class = "four fields">
+            <div class="field">
+                <label>Birth Date</label>
+
+            </div>
+            <div class="field">
+                <label>Position</label>
+
+            </div>
+        </div>
+        <div class = "two fields">
+            <div class="field">
+                <label>Contact Nmber</label>
+
+            </div>
+        </div>
+
+        <div class = "four fields">
+            <div class="field">
+                <label>SSS</label>
+                {{ form.sss }}
+            </div>
+            <div class="field">
+                <label>Philhealth</label>
+                {{ form.philhealth }}
+            </div>
+            <div class="field">
+                <label>Pagibig</label>
+                {{ form.pagibig }}
+            </div>
+            <div class="field">
+                <label>Tin</label>
+                {{ form.tin }}
+            </div>
+        </div>
+
+        {% for field in form %}
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <span class ="text-danger small">{{field.errors}}</span>
+                </div>
+                <label class = "control-label col-sm-2">{{field.label_tag}}</label>
+                <div class="col-sm-10">{{field}}</div>
+            </div>
+        {% endfor %}
+
+        <div class="ui inverted segment center aligned">
+            <button class="medium ui green basic button" style="width: 100px" type="submit">{{ actiontype }}</button>
+            <button class="medium ui yellow basic button" style="width: 100px" type="reset">Reset</button>
+        </div>
+
+    </form>
 {% endblock %}

@@ -2,7 +2,6 @@
 {% block content %}
 <h3 class="ui dividing header">{{ title }}</h3>
 
-    <div class="six wide tablet eight wide computer column">
         <form class="ui form" method="POST">
             {% csrf_token %}
             <div class = "two fields">
@@ -65,6 +64,5 @@
             </div>
 
           </form>
-    </div>
 
 {% endblock %}

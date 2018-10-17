@@ -95,7 +95,9 @@ def logout_view(request):
     return redirect('accounts:user-page-view')
 
 def account_details(request):
+
     context = {
-        'title': 'Account Details'
+        'title': 'Account Details',
+        'actiontype': "Update",
     }
     return render(request, 'accounts/account_details.html', context)

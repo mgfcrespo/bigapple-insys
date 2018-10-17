@@ -67,7 +67,7 @@
                         <i class="file alternate icon"></i>
                         Statement of Accounts
                     </a>
-                    <a href="{% url 'sales:sales_rush_order_list' %}" class="item">
+                    <a href="{% url 'sales:rush_order_list' %}" class="item">
                         <i class="shipping fast icon"></i>
                         Rush Orders
                     </a>
@@ -140,7 +140,7 @@
                     Purchase Orders
                 </a>
                 <a href="" class="item">
-                    <i class="chart area icon"></i>
+                    <i class="chart line icon"></i>
                     Client Demand Forecast
                 </a>
                 <a href="{% url 'sales:sales_invoice_list' %}" class="item">
@@ -211,7 +211,7 @@
         Client Purchase Orders
     </a>
     <a href="" class="item">
-        <i class="chart bar outline icon"></i>
+        <i class="chart line icon"></i>
         Client Demand Forecast
     </a>
     <a href="{% url 'production:job_order_list' %}" class="item">
@@ -219,7 +219,7 @@
         Job Orders
     </a>
     <a href="{% url 'sales:client_payment_list' %}" class="item">
-        <i class="money bill alternate outline icon"></i>
+        <i class="credit card outline icon"></i>
         Client Payments
     </a>
     <a href="{% url 'sales:statement_of_accounts' %}" class="item">
@@ -254,29 +254,29 @@
     </a>
 
     <a href="{% url 'inventory:inventory_item_list' %}" class="item">
-        <i class="plus circle icon"></i>
+        <i class="warehouse icon"></i>
+        <i class="plus icon"></i>
         Add Inventory Items
     </a>
-
+    <a href="{% url 'inventory:materials_requisition_list' %}" class="item">
+        <i class="dolly flatbed icon"></i>
+        Materials Requisition
+    </a>
     <a href="" class="item">
-        <i class="plus circle icon"></i>
+        <i class="dolly flatbed icon"></i>
+        <i class="plus icon"></i>
         Create Materials Requisition
     </a>
-
+    <a href="{% url 'inventory:purchase_requisition_list' %}" class="item">
+        <i class="clipboard list icon"></i>
+        Purchase Requisition
+    </a>
     <a href="{% url 'inventory:purchase_requisition_form' %}" class="item">
-        <i class="plus circle icon"></i>
+        <i class="clipboard list icon"></i>
+        <i class="plus icon"></i>
         Create Purchase Requisition
     </a>
 
-    <a href="{% url 'inventory:materials_requisition_list' %}" class="item">
-        <i class="copy outline icon"></i>
-        Materials Requisition
-    </a>
-
-    <a href="{% url 'inventory:purchase_requisition_list' %}" class="item">
-        <i class="copy outline icon"></i>
-        Purchase Requisition
-    </a>
 </div>
 
 <!-- Line Leader -->
