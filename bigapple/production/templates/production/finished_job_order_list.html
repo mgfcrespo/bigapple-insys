@@ -15,14 +15,15 @@
         </thead>
         <tbody>
             {% if object_list %}
-                {% for JobOrder.status == 'Ready for delivery' in object_list %}
+                {% for JobOrder in object_list %}
                 <tr>
                     <td><a href="{% url 'sales:JO_details' JobOrder.id %}">{{ JobOrder }}</a></td>
                     <td>{{ JobOrder.client_po }}</td>
                     <td>{{ JobOrder.client_po.client }}</td>
-                    {% for JobOrder.client_po.clientitems %}
+                    <td>{% for JobOrder.client_po.clientitems %}
                     #print items
-                    {% endfor %}
+                        {% endfor %}
+                    </td>
                     <td> {{ JobOrder.client_po.SalesInvoice }} </td> #modify
                 </tr>
                 {% endfor %}

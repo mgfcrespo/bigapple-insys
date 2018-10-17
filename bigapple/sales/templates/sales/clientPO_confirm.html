@@ -2,6 +2,8 @@
 {% block content %}
 <h3 class="ui dividing header">{{ title }}</h3>
 
+<form action="{% url 'sales:confirm-client-po/<int:pk>' pk=my_pk %}" method=POST>
+
 <div id="basic-form" class="sixteen wide column">
 
     <div class="row">
@@ -71,14 +73,14 @@
 
                     <div class="row">
                         <div class="center">
-                            <button id="" class="ui green basic button" type="button" style="width: 200px;">Confirm</button>
+                            <button id="confirm" class="ui green basic button" type="submit" style="width: 200px;">Confirm</button>
                         </div>
                     </div>
-                    
-                </form>
-            </div>
+           </div>
         </div>
     </div>
 </div>
+    </form>
+
 
 {% endblock %}

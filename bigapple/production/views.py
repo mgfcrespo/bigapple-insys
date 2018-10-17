@@ -423,10 +423,14 @@ def job_order_details(request, id):
     }
     return render(request, 'production/job_order_details.html', context)
 
-class FinishedJOListView(ListView):
-    template_name = 'sales/finished_JO_list.html'
-    model = JobOrder
+def finished_job_order_list_view(request):
+    object_list = JobOrder.objects.filter(status = 'Ready for delivery')
 
+    context = {
+        'object_list' : object_list
+    }
+
+    return render(request, 'production/finished_job_order_list.html', context)
 
 # EXTRUDER 
 def add_extruder_schedule(request, id):

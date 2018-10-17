@@ -213,7 +213,8 @@ class ClientItem(models.Model):
         super(ClientItem, self).save(*args, **kwargs)
 
         '''
-        def calculate_materials_requirement(self):
+    def calculate_materials_requirement(self):
+        
         '''
 
 
@@ -314,7 +315,8 @@ class ClientCreditStatus(models.Model):
 
         issued_date = overdue_sales_invoice.date_issued
 
-        return issued_date - date.today()
+        return (issued_date - date.today()).days
+
     '''
     
 
