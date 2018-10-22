@@ -14,28 +14,30 @@
             </tr>
         </thead>
         <tbody>
-            {% for rush_order in rush_order %}
+            {% for rush_order in rush_orders %}
+            {% if rush_order.calculate_leadtime > 0 %}
             <tr>
                 <td>
-                    ({{ rush_order.client }})
+                    {{ rush_order.client }}
                 </td>
                 <td>
-                    ({{ rush_order }})
+                    <a href="{% url 'sales:rush_order_assessment' rush_order.id %}">{{ rush_order }}</a>
                 </td>
                 <td>
-                    ({{ rush_order.date_issued }})
+                    {{ rush_order.date_issued }}
                 </td>
                 <td>
-                    ({{ rush_order.date_required }})
+                    {{ rush_order.date_required }}
                 </td>
                 <td>
-                    ({{ rush_order. }}) #TODO: refer lead time method
+                    {{ rush_order.calculate_leadtime }}
                 </td>
-                #TODO: for loop for rush order items
+
                 <td>
-                    ({{ rush_order.date_issued }})
+                    {{ rush_order.date_issued }}
                 </td>
             </tr>
+            {% endif %}
             {% endfor %}
         </tbody>
     </table>

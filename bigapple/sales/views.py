@@ -167,17 +167,21 @@ class PODetailView(DetailView):
     template_name = 'sales/clientPO_detail.html'
 
 def confirm_client_po(request, pk):
-    clientpo = ClientPO.objects.get(pk=pk)
+    clientpo = ClientPO.objects.get(id=pk)
     clientpo.status = 'Approved'
     clientpo.save()
 
-    materials_requirement = clientpo.ClientItems
+    pk=pk
+
+    #materials_requirement = clientpo.ClientItems
     #client =
 
     context = {
         'clientpo' : clientpo,
+        'pk' : pk
         #'client' : client
     }
+
     return render(request, 'sales/clientPO_confirm.html', context)
 
 
@@ -203,7 +207,7 @@ def invoice_list_view(request):
 
     return render(request, 'sales/sales_invoice_list.html', context)
 
-def invoice_detail_view(request, pk, *args, **kwargs):
+def invoice_detail_view(request, pk):
 
     salesinvoice = SalesInvoice.objects.get(pk=pk)
     form = ClientPaymentForm()
@@ -230,12 +234,15 @@ def invoice_detail_view(request, pk, *args, **kwargs):
 
         payments = ClientPayment.objects.filter(invoice_issued=salesinvoice)
 
-        context = {'salesinvoice': salesinvoice,
-                   'form' : form,
-                   'payments' : payments}
+        context = {
+            'salesinvoice': salesinvoice,
+            'form' : form,
+            'payments' : payments
+            }
 
     except SalesInvoice.DoesNotExist:
         raise Http404("Sales Invoice does not exist")
+
 
     return render(request, 'sales/sales_invoice_details.html', context)
 
@@ -381,12 +388,12 @@ def create_client_po(request):
 
                 invoice = SalesInvoice.objects.get(id=invoice)
                 invoice.amount_due = invoice.total_amount_computed
-                invoice.save()
-
                 credit_status = ClientCreditStatus.objects.get(client_id = current_client)
                 outstanding_balance = credit_status.outstanding_balance
                 outstanding_balance += invoice.amount_due
                 credit_status.outstanding_balance = outstanding_balance
+
+                invoice.save()
                 credit_status.save()
 
 
@@ -412,6 +419,11 @@ def create_client_po(request):
 
 #RUSH ORDER CRUD
 def rush_order_list(request):
+    client_po = ClientPO.objects.all()
+
+    for each in client_po:
+        each.save()
+
     rush_orders = ClientPO.objects.filter(rush_order = True)
 
     context = {
@@ -427,7 +439,7 @@ def rush_order_assessment(request, pk):
         'rush_order' : rush_order
     }
 
-    return render('sales/rush_order_assessment.html', context)
+    return render(request, 'sales/rush_order_assessment.html', context)
 
 
 #CLIENT CRUD

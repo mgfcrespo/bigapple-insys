@@ -53,9 +53,13 @@ class ClientPOForm(ModelForm):
             super(ClientPOForm, self).__init__(*args, **kwargs)
             self.fields['date_required'].required = True
             self.fields['date_required'].label = "Date Required"
-
+            self.fields['client'].required = True
+            self.fields['date_required'].label = "Client"
+            self.fields['status'].required = True
+            self.fields['status'].label = "Status"
             self.fields['other_info'].required = False
             self.fields['other_info'].label = "Other Info"
+
 
 class ClientPaymentForm(ModelForm):
 
