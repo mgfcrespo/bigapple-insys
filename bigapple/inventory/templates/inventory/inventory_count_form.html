@@ -1,4 +1,4 @@
-{% extends template %}
+{% extends 'sidebar.html' %}
 
 {% block content %}
 
@@ -28,9 +28,9 @@
                     </tr>
                 </tbody>    
             </table>
-            
-            <button onclick="return confirm('Are you sure?')" class="ui basic green button" type="submit" data-tooltip="Update Inventory Quantity" data-position="top left" data-inverted="">{{actiontype}}</button>
-            <a class="ui basic red button" href="{% url 'inventory:inventory_item_list'%}">Back</a>
+
+            <button onclick="return confirm('Are you sure?')" class="medium ui basic green button" style="width: 100px" type="submit" data-tooltip="Update Inventory Quantity" data-position="top left" data-inverted="">{{actiontype}}</button>
+            <a class="medium ui basic red button" href="{% url 'inventory:inventory_item_list'%}">Back</a>
         </form>
     </div>
 </div>

@@ -2,8 +2,7 @@
 {% block content %}
 
 <h3 class="ui dividing header">{{ title }}</h3>
-
-<table class="ui stripped table">
+    <table class="ui stripped table">
         <thead>
             <tr>
                 <th>Client</th>
@@ -12,33 +11,29 @@
                 <th>Date Required</th>
                 <th>Lead Time</th>
                 <th>Items</th>
-                <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            {% for rush_orders in rush_orders %}
+            {% for rush_order in rush_order %}
             <tr>
                 <td>
-                    ({{ rush_orders.client }})
+                    ({{ rush_order.client }})
                 </td>
                 <td>
-                    ({{ rush_orders }})
+                    ({{ rush_order }})
                 </td>
                 <td>
-                    ({{ rush_orders.date_issued }})
+                    ({{ rush_order.date_issued }})
                 </td>
                 <td>
-                    ({{ rush_orders.date_required }})
+                    ({{ rush_order.date_required }})
                 </td>
                 <td>
-                    ({{ rush_orders.calculate_leadtime }})
+                    ({{ rush_order. }}) #TODO: refer lead time method
                 </td>
                 #TODO: for loop for rush order items
-                <td>{% if rush_orders.status == 'Waiting' %}
-							<a href="{% url 'sales:confirm-client-po' ClientPO.id %}">{{ rush_orders.status }}</a>
-							{% else %}
-							{{ rush_orders.status }}
-                    {% endif %}
+                <td>
+                    ({{ rush_order.date_issued }})
                 </td>
             </tr>
             {% endfor %}

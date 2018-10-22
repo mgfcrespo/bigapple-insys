@@ -57,17 +57,6 @@ class ClientPOForm(ModelForm):
             self.fields['other_info'].required = False
             self.fields['other_info'].label = "Other Info"
 
-class ConfirmClientPOForm(ModelForm):
-
-    class Meta:
-        model = ClientPO
-        fields = ('status',)
-
-        def __init__(self, *args, **kwargs):
-            super(ConfirmClientPOForm, self).__init__(*args, **kwargs)
-            self.fields['status'].required = True
-
-
 class ClientPaymentForm(ModelForm):
 
     class Meta:
@@ -138,3 +127,6 @@ class EmployeeForm(forms.ModelForm):
         self.fields['philhealth'].required = False
         self.fields['pagibig'].required = False
         self.fields['tin'].required = False
+    
+    #class ClientPOForm(forms.ModelForm):
+        
