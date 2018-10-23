@@ -15,7 +15,7 @@ from django.db.models import aggregates
 from production.models import JobOrder
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment, ClientConstant
 from accounts.models import Employee
-from .forms import ClientPOForm, SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
+from .forms import ClientPOForm, SupplierForm, ClientPaymentForm, ClientPOForm2, EmployeeForm, ClientForm
 from django.contrib.auth.models import User
 from django import forms
 import sys
@@ -109,7 +109,6 @@ def add_clientPO(request):
             return render(request, 'sales/clientPO_form.html', context)
 '''
 
-
 def edit_clientPO(request, id):
         client_po = ClientPO.objects.get(id=id)
 
@@ -125,7 +124,6 @@ def delete_clientPO(request, id):
         client_po = ClientPO.objects.get(id=id)
         client_po.delete()
         return HttpResponseRedirect('../clientPO_list')
-
 
 # PO List/Detail view + PO Confirm
 
@@ -456,13 +454,16 @@ def client_list(request):
 def client_edit(request, id):
     data = Client.objects.get(id=id)
     form = ClientForm(request.POST or None, instance=data)
+    form1 = ClientConstant(request.POST or None, instance=data)
 
-    if form.is_valid():
+    if form.is_valid() and form1.is_valid():
         form.save()
+        form1.save()
         return redirect('sales:client_list')
     
     context = {
         'form' : form,
+        'form1': form1,
         'data' : data,
         'title' : "Edit Client",
         'actiontype' : "Submit",

@@ -3,75 +3,6 @@
  <h3 class="ui dividing header">{{ title }}</h3>
     <form class="ui form" method="POST">
         {% csrf_token %}
-        <div class = "two fields">
-            <div class="field">
-                <label>Email Address</label>
-
-            </div>
-            <div class="field">
-                <label>Username</label>
-
-            </div>
-        </div>
-        <div class="two fields">
-            <div class="field">
-                <label>First Name</label>
-
-            </div>
-            <div class="field">
-                <label>Last Name</label>
-
-            </div>
-        </div>
-        <div class = "four fields">
-            <div class="field">
-                <label>Password</label>
-
-            </div>
-            <div class="field">
-                <label>Confirm Password</label>
-
-            </div>
-        </div>
-        <div class="field">
-            <label>Address</label>
-
-        </div>
-        <div class = "four fields">
-            <div class="field">
-                <label>Birth Date</label>
-
-            </div>
-            <div class="field">
-                <label>Position</label>
-
-            </div>
-        </div>
-        <div class = "two fields">
-            <div class="field">
-                <label>Contact Nmber</label>
-
-            </div>
-        </div>
-
-        <div class = "four fields">
-            <div class="field">
-                <label>SSS</label>
-                {{ form.sss }}
-            </div>
-            <div class="field">
-                <label>Philhealth</label>
-                {{ form.philhealth }}
-            </div>
-            <div class="field">
-                <label>Pagibig</label>
-                {{ form.pagibig }}
-            </div>
-            <div class="field">
-                <label>Tin</label>
-                {{ form.tin }}
-            </div>
-        </div>
 
         {% for field in form %}
             <div class="form-group">
@@ -83,7 +14,7 @@
             </div>
         {% endfor %}
 
-        <div class="ui inverted segment center aligned">
+        <div class="">
             <button class="medium ui green basic button" style="width: 100px" type="submit">{{ actiontype }}</button>
             <button class="medium ui yellow basic button" style="width: 100px" type="reset">Reset</button>
         </div>
