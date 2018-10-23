@@ -1,275 +1,102 @@
 {% extends 'sidebar.html' %}
 {% block content %}
 
+<h3 class="ui dividing header">Sales Dashboard</h3>
+
 <div>
-    <div class="ui relaxed grid">
-        <div class="four wide column">
-            <div class="ui container">
-                <div class="segments" style="margin:10px;">
-                    <div class="ui green segment" style="text-align: center">
-                        <h3>Extrusion</h3>
-                    </div>
-                    <div class="ui segment" style="text-align: center">
-                        <div class="ui grid">
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company A</div>
-                                </div>
-                            </div>
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company B</div>
-                                </div>
-                            </div>
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company C</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="four wide column">
-            <div class="ui container">
-                <div class="segments" style="margin:10px;">
-                    <div class="ui green segment" style="text-align: center">
-                        <h3>Cutting</h3>
-                    </div>
-                    <div class="ui segment" style="text-align: center">
-                        <div class="ui grid">
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company D</div>
-                                </div>
-                            </div>
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company E</div>
-                                </div>
-                            </div>
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company F</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="four wide column">
-            <div class="ui container">
-                <div class="segments" style="margin:10px;">
-                    <div class="ui green segment" style="text-align: center">
-                        <h3>Printing and Laminating</h3>
-                    </div>
-                    <div class="ui segment" style="text-align: center">
-                        <div class="ui grid">
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company A</div>
-                                </div>
-                            </div>
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company B</div>
-                                </div>
-                            </div>
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company C</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="four wide column">
-            <div class="ui container">
-                <div class="segments" style="margin:10px;">
-                    <div class="ui green segment" style="text-align: center">
-                        <h3>Packing and Q/A</h3>
-                    </div>
-                    <div class="ui segment" style="text-align: center">
-                        <div class="ui grid">
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company A</div>
-                                </div>
-                            </div>
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company B</div>
-                                </div>
-                            </div>
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company C</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="ui horizontal segments">
+        <div class="ui segment">
+            <table class="ui stripped table">
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Purchase Order ID</th>
+                        <th>Date Issued</th>
+                        <th>Date Required</th>
+                        <th>Lead Time</th>
+                        <th>Items</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rush_orders in rush_orders %}
+                    {% if rush_orders.calculate_leadtime > 0 %}
+                    <tr>
+                        <td>
+                            {{ rush_orders.client }}
+                        </td>
+                        <td>
+                            <a href="{% url 'sales:rush_order_assessment' rush_order.id %}">{{ rush_order }}</a>
+                        </td>
+                        <td>
+                            {{ rush_orders.date_issued }}
+                        </td>
+                        <td>
+                            {{ rush_orders.date_required }}
+                        </td>
+                        <td>
+                            {{ rush_orders.calculate_leadtime }}
+                        </td>
 
-        <div class="eight wide column">
-            <div class=" row ui container">
-                <div class="segments" style="margin:10px;">
-                    <div class="ui green segment" style="text-align: center">
-                        <h3>
-                            Client Purchase Orders:
-                        </h3>
-                        <table class="ui striped table center aligned">
-                            <thead>
-                            <tr>
-                              <th>Purchase Order ID</th>
-                              <th>Date Issued</th>
-                              <th>Date Required</th>
-                              <th>Total Amount</th>
-                              <th>Status</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% if client_po %}
-                                {% for ClientPO in client_po %}
-                                    <tr>
-                                        <td><a href="{% url 'sales:po-detail-view' ClientPO.id %}">{{ClientPO}}</a></td>
-                                        <td>{{ ClientPO.date_issued }}</td>
-                                        <td>{{ ClientPO.date_required }}</td>
-                                        <td>{{ ClientPO.total_amount }}</td>
-                                        <td>{{ ClientPO.status}}</td>
-                                    </tr>
-                                {% endfor %}
-                            {% else %}
-                            <td>
-                                <p>There are no Purchase Orders to display</p>
-                            </td>
-
-                            {% endif %}
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class=" row ui container">
-                <div class="segments" style="margin:10px;">
-                    <div class="ui green segment" style="text-align: center">
-                        <h3>Inventory Status:</h3>
-                        <div class="row">
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Item A</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Item B</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Item C</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        <td>
+                            {{ rush_orders.date_issued }}
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <div class="eight wide column">
-            <div class="ui container">
-                <div class="segments" style="margin:10px;">
-                    <div class="ui green segment" style="text-align: center">
-                        <h3>Job Order Status:</h3>
-                                <table class="ui stripped table center aligned">
+        <div class="ui segment">
+
+            <table class="ui stripped table center aligned">
                 <thead>
                 <tr class = "row">
-                    <th class="three wide">JO#</th>
-                    <th class="three wide">Client PO#</th>
-                    <th class="two wide">Rush Order</th>
-                    <th class="three wide">Status</th>
+                    <th>Client</th>
+                    <th>Date Issued</th>
+                    <th>Date Required</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% if data %}
-                    {% for data in data %}
-                    <tr class = "row">
+                    {% if ClientPO_data %}
+                        {% for ClientPO in ClientPO_data %}
+                        <tr>
+                            <td>
+                                {{ ClientPO.client }}
+                            </td>
+                            <td>
+                                {{ ClientPO.date_issued }}
+                            </td>
+                            <td>
+                                {{ ClientPO.date_required }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
                         <td>
-                            <a href="{% url 'production:job_order_details' data.id %}">{{ data }}</a>
+                            <p>There are no Purchase Orders in the last 3 months</p>
                         </td>
-                        <td>{{ data.client_po }}</td>
-                        <td>{{ data.rush_order }}</td>
-                        <td>{{ data.status }}</td>
-                    </tr>
-                    {% endfor %}
-                {% else %}
-                <td>
-                    <p>There are no Job Orders to display</p>
-                </td>
-                {% endif %}
-
+                    {% endif %}
                 </tbody>
             </table>
 
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
+
+<h3 class="ui dividing header">Production Dashboard</h3>
+    <div class="ui horizontal segments">
+        <div class="ui segment">
+            <div style="height: 100px; width: 100%;"></div>
+        </div>
+    </div>
+<h3 class="ui dividing header">Inventory Dashboard</h3>
+    <div class="ui horizontal segments">
+        <div class="ui segment">
+            <div style="height: 100px; width: 100%;"></div>
+        </div>
+        <div class="ui segment">
+
+        </div>
+    </div>
 
 {% endblock %}

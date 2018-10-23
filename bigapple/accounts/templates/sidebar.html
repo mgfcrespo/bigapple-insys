@@ -3,7 +3,7 @@
 <!-- Client -->
 <div id= "client_sidebar" style="display: none;">
     <a href="{% url 'sales:create-client-po-form' %}" class="item">
-        <i class="file alternate icon"></i>
+        <i class="plus square icon"></i>
         Create Purchase Order
     </a>
 
@@ -27,15 +27,30 @@
                 <b>Manager's Tools</b>
             </a>
             <div class="content menu">
+                <a href="{% url 'sales:employee_list' %}" class="item">
+                    <i class="id badge icon"></i>
+                    Employees
+                </a>
+                <a href="{% url 'sales:supplier_list' %}" class="item">
+                    <i class="dolly flatbed icon"></i>
+                    Suppliers
+                </a>
+                <a href="{% url 'sales:client_list' %}" class="item">
+                    <i class="user outline icon"></i>
+                    Clients
+                </a>
                 <a href="{% url 'sales:employee_add' %}" class="item">
+                    <i class="plus icon"></i>
                     <i class="id badge icon"></i>
                     Add Employee
                 </a>
-                 <a href="{% url 'sales:employee_list' %}" class="item">
-                    <i class="users icon"></i>
-                     Employee List
+                <a href="{% url 'sales:client_add' %}" class="item">
+                   <i class="plus icon"></i>
+                    <i class="user outline icon"></i>
+                    Add Client
                 </a>
                 <a href="{% url 'sales:supplier_add' %}" class="item">
+                    <i class="plus icon"></i>
                     <i class="dolly flatbed icon"></i>
                      Add Supplier
                 </a>
@@ -55,13 +70,13 @@
                         <i class="chart area icon"></i>
                         Client Demand Forecast
                     </a>
-                    <a href="{% url 'sales:client_list' %}" class="item">
-                        <i class="user outline icon"></i>
-                        Clients
-                    </a>
                     <a href="{% url 'sales:sales_invoice_list' %}" class="item">
                         <i class="money bill alternate outline icon"></i>
                         Sales Invoices
+                    </a>
+                    <a href="{% url 'sales:client_payment_list' %}" class="item">
+                        <i class="credit card outline icon"></i>
+                        Client Payments
                     </a>
                     <a href="{% url 'sales:statement_of_accounts' %}" class="item">
                         <i class="file alternate icon"></i>
@@ -88,9 +103,24 @@
                     <i class="edit outline icon"></i>
                     Job Orders
                 </a>
+                <a href="{% url 'production:finished_job_order_list' %}" class="item">
+                    <i class="check icon"></i>
+                    Finished Job Orders
+                </a>
+                <a href="" class="item">
+                    <i class="cogs icon"></i>
+                    Machine Schedule
+                </a>
+                <a href="" class="item">
+                    <i class="male icon"></i>
+                    Employee Schedule
+                </a>
+                <a href="" class="item">
+                    <i class="box icon"></i>
+                    Materials Schedule
+                </a>
             </div>
         </div>
-
         <div class="item">
             <a class="title">
                 <i class="dropdown icon"></i>
@@ -105,17 +135,21 @@
                 <i class="chart line icon"></i>
                 Inventory Forecast
             </a>
+            <a href="{% url 'inventory:supplier_rawmat_add' %}" class="item">
+                <i class="dolly icon"></i>
+                Add Raw Material
+            </a>
+            <a href="{% url 'inventory:materials_requisition_list' %}" class="item">
+                <i class="boxes icon"></i>
+                Materials Requisition
+            </a>
             <a href="{% url 'inventory:supplierPO_form' %}" class="item">
-                <i class="edit outline icon"></i>
-                Create Supplier Purchase Order
+                <i class="clipboard icon"></i>
+                Create Supplier Purchase Orders
             </a>
             <a href="{% url 'inventory:supplierPO_list' %}" class="item">
-                <i class="file outline icon"></i>
-                Supplier Purchase Order
-            </a>
-            <a href="{% url 'sales:supplier_list' %}" class="item">
-                <i class="dolly icon"></i>
-                Suppliers
+                <i class="check clipboard icon"></i>
+                Supplier Purchase Orders
             </a>
             </div>
         </div>
@@ -132,12 +166,16 @@
             </a>
             <div class="content menu">
                 <a href="{% url 'sales:create-client-po-form' %}" class="item">
-                    <i class="plus icon"></i>
+                    <i class="plus square icon"></i>
                     Create Purchase Order
                 </a>
                 <a href="{% url 'sales:po-list-view' %}" class="item">
                     <i class="file alternate icon"></i>
                     Purchase Orders
+                </a>
+                <a href="{% url 'sales:rush_order_list' %}" class="item">
+                    <i class="shipping fast icon"></i>
+                    Rush Orders
                 </a>
                 <a href="" class="item">
                     <i class="chart line icon"></i>
@@ -147,6 +185,10 @@
                     <i class="money bill alternate outline icon"></i>
                     Sales Invoices
                 </a>
+                <a href="{% url 'sales:client_payment_list' %}" class="item">
+                    <i class="credit card outline icon"></i>
+                    Client Payments
+                </a>
                 <a href="{% url 'sales:statement_of_accounts' %}" class="item">
                     <i class="file alternate icon"></i>
                     Statement of Accounts
@@ -154,6 +196,10 @@
                 <a href="{% url 'sales:client_list' %}" class="item">
                     <i class="user outline icon"></i>
                     Clients
+                </a>
+                <a href="{% url 'sales:client_add' %}" class="item">
+                    <i class="user plus icon"></i>
+                    Add Client
                 </a>
             </div>
         </div>
@@ -167,9 +213,9 @@
                     <i class="edit outline icon"></i>
                     Job Orders
                 </a>
-                <a href=""class="item">
-                    <i class="calendar alternate icon"></i>
-                    Production Schedule
+                <a href="{% url 'production:finished_job_order_list' %}" class="item">
+                    <i class="check icon"></i>
+                    Finished Job Orders
                 </a>
             </div>
         </div>
@@ -187,13 +233,17 @@
                 <i class="chart line icon"></i>
                 Inventory Forecast
             </a>
-            <a href="" class="item">
-                <i class="edit outline icon"></i>
-                Create Supplier Purchase Order
+            <a href="{% url 'inventory:supplier_rawmat_add' %}" class="item">
+                <i class="dolly icon"></i>
+                Add Raw Material
+            </a>
+            <a href="{% url 'inventory:supplierPO_form' %}" class="item">
+                <i class="clipboard icon"></i>
+                Create Supplier Purchase Orders
             </a>
             <a href="{% url 'inventory:supplierPO_list' %}" class="item">
-                <i class="file outline icon"></i>
-                Supplier Purchase Order
+                <i class="check clipboard icon"></i>
+                Supplier Purchase Orders
             </a>
             <a href="{% url 'sales:supplier_list' %}" class="item">
                 <i class="dolly icon"></i>
@@ -206,6 +256,10 @@
 
 <!-- Sales Agent -->
 <div id= "sales_agent_sidebar" style="display: none;">
+    <a href="{% url 'sales:create-client-po-form' %}" class="item">
+        <i class="plus square icon"></i>
+        Create Purchase Order
+    </a>
     <a href="{% url 'sales:po-list-view' %}" class="item">
         <i class="file alternate icon"></i>
         Client Purchase Orders
@@ -218,13 +272,9 @@
         <i class="edit outline icon"></i>
         Job Orders
     </a>
-    <a href="{% url 'sales:client_payment_list' %}" class="item">
-        <i class="credit card outline icon"></i>
-        Client Payments
-    </a>
-    <a href="{% url 'sales:statement_of_accounts' %}" class="item">
-        <i class="file alternate icon"></i>
-        Statement of Accounts
+    <a href="{% url 'sales:sales_invoice_list' %}" class="item">
+        <i class="money bill alternate outline icon"></i>
+        Sales Invoices
     </a>
     <a href="{% url 'sales:client_list' %}" class="item">
         <i class="user outline icon"></i>
@@ -238,11 +288,26 @@
         <i class="calendar alternate outline icon"></i>
         Production Schedule
     </a>
+    <a href="" class="item">
+        <i class="cogs icon"></i>
+        Machine Schedule
+    </a>
+    <a href="" class="item">
+        <i class="box icon"></i>
+        Materials Schedule
+    </a>
+    <a href="" class="item">
+        <i class="calendar icon"></i>
+        Worker Schedule
+    </a>
     <a href="{% url 'production:job_order_list' %}" class="item">
         <i class="edit outline icon"></i>
         Job Orders
     </a>
-
+    <a href="{% url 'inventory:inventory_item_list' %}" class="item">
+        <i class="warehouse icon"></i>
+        Raw Materials Inventory
+    </a>
     <a href="{% url 'inventory:inventory_count_form' %}" class="item">
         <i class="file outline icon"></i>
         Physical Inventory Count
@@ -260,7 +325,7 @@
     </a>
     <a href="{% url 'inventory:materials_requisition_list' %}" class="item">
         <i class="dolly flatbed icon"></i>
-        Materials Requisition
+        Materials Requisitions
     </a>
     <a href="" class="item">
         <i class="dolly flatbed icon"></i>
@@ -290,26 +355,6 @@
         Job Orders
     </a>
     <a href="" class="item">
-        <i class="industry icon"></i>
-        Add Extruder Schedule
-    </a>
-
-    <a href="" class="item">
-        <i class="cut icon"></i>
-        Add Cutting Schedule
-    </a>
-
-    <a href="" class="item">
-        <i class="print icon"></i>
-        Add Printing Schedule
-    </a>
-
-    <a href="" class="item">
-        <i class="clipboard check icon"></i>
-        Add QA Schedule
-    </a>
-
-    <a href="" class="item">
         <i class="plus circle icon"></i>
         Create Materials Requisition
     </a>
@@ -317,28 +362,18 @@
 
 <!-- Credit And Collection Personnel -->
 <div id= "credit_collection_sidebar" style="display: none;">
-<!--
-    <a href="{% url 'sales:po-list-view' %}" class="item">
-        <i class="file alternate icon"></i>
-        Client Purchase Orders
-    </a>
- -->
-    <!--
-    <a href= "#" class="item">
-        <i class="money bill alternate outline icon"></i>
+    <a href="{% url 'sales:client_payment_list' %}" class="item">
+        <i class="credit card outline icon"></i>
         Client Payments
     </a>
--->
     <a href="{% url 'sales:sales_invoice_list' %}" class="item">
         <i class="money bill alternate outline icon"></i>
         Sales Invoices
     </a>
-<!--
-    <a href="{% url 'sales:client_payment_list' %}" class="item">
+    <a href="{% url 'sales:statement_of_accounts' %}" class="item">
         <i class="file alternate icon"></i>
-        Edit Client Invoice Constants
+        Statement of Accounts
     </a>
-    -->
 </div>
 
 <!-- Supervisor -->
@@ -352,27 +387,6 @@
         <i class="edit outline icon"></i>
         Job Orders
     </a>
-
-    <a href="" class="item">
-        <i class="industry icon"></i>
-        Add Extruder Schedule
-    </a>
-
-    <a href="" class="item">
-        <i class="cut icon"></i>
-        Add Cutting Schedule
-    </a>
-
-    <a href="" class="item">
-        <i class="print icon"></i>
-        Add Printing Schedule
-        </a>
-
-    <a href="" class="item">
-        <i class="clipboard check icon"></i>
-        Add QA Schedule
-    </a>
-
     <a href="{% url 'inventory:materials_requisition_list' %}" class="item">
         <i class="plus circle icon"></i>
         Create Materials Requisition
