@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 app_name='inventory'
 urlpatterns = [
     #inventory items
-    #path('inventory-item-add/', views.inventory_item_add, name='inventory_item_add'),
+    path('inventory-item-add/', views.inventory_item_add, name='inventory_item_add'),
     path('inventory-item-list/', views.inventory_item_list, name='inventory_item_list'),
     path('inventory-item-edit/<int:id>/', views.inventory_item_edit, name='inventory_item_edit'),
     path('inventory-item-delete/<int:id>/', views.inventory_item_delete, name='inventory_item_delete'),
