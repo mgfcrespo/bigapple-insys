@@ -41,7 +41,21 @@ class ClientPOFormItems(ModelForm):
         js = ('/static/create_po.js',)
 
 class ClientPOForm(ModelForm):
+    class Meta:
+        model = ClientPO
+        fields = ('date_required', 'other_info')
+        widgets = {
+            'date_required': DateInput()
+        }
 
+        def __init__(self, *args, **kwargs):
+            super(ClientPOForm, self).__init__(*args, **kwargs)
+            self.fields['date_required'].required = True
+            self.fields['date_required'].label = "Date Required"
+            self.fields['other_info'].required = False
+            self.fields['other_info'].label = "Other Info"
+
+class ClientPOForm2(ModelForm):
     class Meta:
         model = ClientPO
         fields = ('date_required', 'other_info', 'client')
@@ -53,18 +67,19 @@ class ClientPOForm(ModelForm):
             super(ClientPOForm, self).__init__(*args, **kwargs)
             self.fields['date_required'].required = True
             self.fields['date_required'].label = "Date Required"
-
+            self.fields['client'].label = "Client"
+            self.fields['client'].required = True
             self.fields['other_info'].required = False
             self.fields['other_info'].label = "Other Info"
 
 class ClientPaymentForm(ModelForm):
-
     class Meta:
         model = ClientPayment
         fields = ('payment', 'payment_date')
         widgets = {
             'payment_date': DateInput()
         }
+
 class SupplierForm(forms.ModelForm):
 
     class Meta:
