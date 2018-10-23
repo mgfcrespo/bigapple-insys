@@ -387,13 +387,6 @@ def job_order_list(request):
     return render (request, 'production/job_order_list.html', context)
 
 def job_order_details(request, id):
-
-    if request.session['session_position'] == "General Manager":
-        template = 'general_manager_page_ui.html'
-    elif request.session['session_position'] == "Production Manager":
-        template = 'production_manager_page_ui.html'
-    else:
-        template = 'line_leader_page_ui.html'
 		
     data = JobOrder.objects.get(id=id)
     client_po_data = ClientPO.objects.get(id = data.client_po.id)
@@ -418,8 +411,7 @@ def job_order_details(request, id):
       'data': data,
       'extrusion': extrusion,
       'printing': printing,
-      'cutting': cutting,
-	   'template' : template
+      'cutting': cutting
     }
     return render(request, 'production/job_order_details.html', context)
 

@@ -6,11 +6,11 @@
 		<table class="ui stripped table center aligned">
         	<thead>
           	<tr class = "row">
-                <th class="three wide">JO#</th>
-				<th class="three wide">Client PO#</th>
+                <th class="three wide">Job Order #</th>
+				<th class="three wide">Client PO #</th>
 				<th class="two wide">Rush Order</th>
                 <th class="three wide">Status</th>
-                <th class="five wide center aligned">Production Update</th>
+                <th class="five wide center aligned">Update Production</th>
           	</tr>
     		</thead>
     		<tbody>
@@ -21,7 +21,7 @@
                         <a href="{% url 'production:job_order_details' data.id %}">{{ data }}</a>
                     </td>
                     <td>{{ data.client_po }}</td>
-                    <td>{{ data.rush_order }}</td>
+                    <td>{{ data.client_po.rush_order }}</td>
                     <td>{{ data.status }}</td>
                     <td class="center aligned">                        
                         <a  class="ui teal button" href="{% url 'production:add_extruder_schedule' data.id %}">Extrusion</a>

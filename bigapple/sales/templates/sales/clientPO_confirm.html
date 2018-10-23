@@ -70,7 +70,9 @@
 
                     <div class="row">
                         <div class="center">
-                            <form action="{% url 'sales:confirm-client-po/<int:pk>' %}" method=POST>
+
+                            <form action="{% url 'sales:confirm-client-po/' clientpo.id  %}" method="POST">
+                                {% csrf_token %}
                             <button id="confirm" type = "submit" class="ui green basic button"  style="width: 200px;">Confirm</button>
                             </form>
                         </div>

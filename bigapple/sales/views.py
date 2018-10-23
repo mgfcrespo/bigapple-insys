@@ -359,7 +359,7 @@ def create_client_po(request):
             form_instance.client = current_client
             form_instance.save()
 
-            #TODO invoice should no be saved if PO is disapproved
+            #TODO: Invoice should no be saved if PO is disapproved
 
             #Create JO object with ClientPO as a field
             jo = JobOrder(client_po = form_instance)
@@ -382,11 +382,10 @@ def create_client_po(request):
                 # Create Invoice
                 invoice = SalesInvoice(client=current_client, client_po=form_instance, total_amount=formset_item_total, amount_due=0)
                 invoice.save()
-                invoice = invoice.pk
 
                 #TODO: Invoice should not be issued unless JO is complete
 
-                invoice = SalesInvoice.objects.get(id=invoice)
+                invoice = SalesInvoice.objects.get(id=invoice.pk)
                 invoice.amount_due = invoice.total_amount_computed
                 credit_status = ClientCreditStatus.objects.get(client_id = current_client)
                 outstanding_balance = credit_status.outstanding_balance
@@ -407,7 +406,7 @@ def create_client_po(request):
 
 
         #TODO: change index.html. page should be redirected after successful submission
-        return render(request, 'accounts/client_page.html',
+        return render(request, 'accounts/user-page-view.html',
                               {'message': message}
                               )
     else:
@@ -459,6 +458,7 @@ def client_add(request):
 
 def client_list(request):
     data = Client.objects.all()
+
     context = {
         'title' : 'Client List',
         'data' : data 

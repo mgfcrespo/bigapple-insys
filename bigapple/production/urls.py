@@ -6,7 +6,6 @@ app_name='production'
 urlpatterns = [
         url(r'^production_details/', views.production_details, name='production_details'),
         path('overall-production-schedule/', views.production_schedule, name='production_schedule'),
-		path('jo-approval/<int:id>', views.jo_approval, name='jo_approval'),
 
         #Job Order
         path('job-order-list/', views.job_order_list, name='job_order_list'),

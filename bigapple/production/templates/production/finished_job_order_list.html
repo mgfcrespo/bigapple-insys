@@ -1,3 +1,5 @@
+
+{% extends 'sidebar.html' %}
 {% block content %}
 
 <h3 class="ui dividing header">{{ title }}</h3>
@@ -20,8 +22,8 @@
                     <td><a href="{% url 'sales:JO_details' JobOrder.id %}">{{ JobOrder }}</a></td>
                     <td>{{ JobOrder.client_po }}</td>
                     <td>{{ JobOrder.client_po.client }}</td>
-                    <td>{% for JobOrder.client_po.clientitems %}
-                    #print items
+                    <td>{% for item in JobOrder.client_po.clientitems %}
+                    {{ item }}
                         {% endfor %}
                     </td>
                     <td> {{ JobOrder.client_po.SalesInvoice }} </td> #modify

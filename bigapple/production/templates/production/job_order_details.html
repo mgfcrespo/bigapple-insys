@@ -1,4 +1,4 @@
-{% extends template %}
+{% extends 'sidebar.html' %}
 
 {% block content %}
 <h3 class="ui dividing header">{{ title }}</h3>
@@ -10,6 +10,8 @@
             <div class = "field">
                 <label for="">Date Issued</label>
                 <span>{{ data.client_po.date_issued }}</span>
+                <label for="">Date Due</label>
+                <span>{{ data.client_po.date_required }}</span>
             </div>
             <div class="four fields">
                 <div class = "field">
@@ -22,28 +24,25 @@
                 </div>
                 <div class = "field">
                     <label for="">Rush Order</label>
-                    <span>{{ data.rush_order }}</span>
+                    <span>{{ data.client_po.rush_order }}</span>
                 </div>
                 <div class = "field">
                     <label for="">Payment Terms</label>
-                    <span>{{ data.client_po.payment_terms }}</span>
+                    <span>{{ data.client_po.client.clientconstant.payment_terms }}</span>
                 </div>
             </div>
             <div class = "four fields">
                     <div class = "field">
                         <label for="">Total Amount</label>
-                        <span>{{data.client_po.total_amount_computed }}</span>
+                        <span>{{ data.client_po.total_amount_computed }}</span>
                     </div>
                     <div class = "field">
                         <label for="">Amount Due</label>
-                        <span>{{data.client_po.amount_due }}</span>
+                        <span>{{ data.client_po.amount_due }}</span>
                     </div>
                     <div class = "field">
                         <label for="">Status</label>
-                        <span id = "status">{{data.status }}</span>
-                    </div>
-                    <div class = "field">
-                        <a id="approve_btn" class="ui green button" href="{% url 'joborder:jo_approval' data.id %}">Approve</a>
+                        <span id = "status">{{ data.status }}</span>
                     </div>
             </div>
             <div class="field">
@@ -175,7 +174,7 @@
 </div>
 
 
-<a href="{% url 'joborder:job_order_list' %}">Back</a>
+<a href="{% url 'production:job_order_list' %}">Back</a>
 {% endblock %}
 
 {% block script %}
