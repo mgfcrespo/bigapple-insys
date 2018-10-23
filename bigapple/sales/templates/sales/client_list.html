@@ -18,7 +18,7 @@
 				{% for data in data  %}
     			<tr>
     				<td>
-						<a href="{% url 'sales:sales_invoice_list' data.id %}">{{ data.full_name }}</a>
+						{{ data.full_name }}
 					</td>
     				<td>{{ data.company }}</td>
                     <td>{{ data.email }}</td>

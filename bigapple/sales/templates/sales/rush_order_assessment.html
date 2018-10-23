@@ -1,8 +1,9 @@
-<!DOCTYPE html>
+{% extends "sidebar.html" %}
+{% block content %}
+
 <html lang="en">
 
 <head>
-    {% extends "sidebar.html" %}
     <meta charset="UTF-8">
     <title>Rush Order Assessment for {{ rush_order }}</title>
 </head>
@@ -16,3 +17,4 @@
 </body>
 
 </html>
+{% endblock %}
