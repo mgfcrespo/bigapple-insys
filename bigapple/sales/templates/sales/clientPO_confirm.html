@@ -2,16 +2,12 @@
 {% block content %}
 <h3 class="ui dividing header">{{ title }}</h3>
 
-<form action="{% url 'sales:confirm-client-po/<int:pk>' pk=my_pk %}" method=POST>
-
 <div id="basic-form" class="sixteen wide column">
-
     <div class="row">
         <div class="five wide column">
             <h4 class="header1">Confirm Purchase Order</h4>
 
             <div class="row">
-
                 <h3 class="ui header">{{clientpo}}</h3>
 		<table class="ui cell padded table">
         	<thead>
@@ -68,19 +64,22 @@
                 <h2> This client's credit status is {{ client.creditstatus.calculate_days_overdue }} days overdue. </h2>
                 {% else %}
                 <h2> This client's credit status is cleared. </h2>
+                {% endif %}
 
                 #TODO: condition to show materials requirement and inventory levels
 
                     <div class="row">
                         <div class="center">
-                            <button id="confirm" class="ui green basic button" type="submit" style="width: 200px;">Confirm</button>
+                            <form action="{% url 'sales:confirm-client-po/<int:pk>' %}" method=POST>
+                            <button id="confirm" type = "submit" class="ui green basic button"  style="width: 200px;">Confirm</button>
+                            </form>
                         </div>
                     </div>
+
            </div>
         </div>
     </div>
 </div>
-    </form>
 
 
 {% endblock %}

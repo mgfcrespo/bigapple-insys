@@ -6,60 +6,79 @@
 <div>
     <div class="ui horizontal segments">
         <div class="ui segment">
-            <script>
-                window.onload = function () {
+            <table class="ui stripped table">
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Purchase Order ID</th>
+                        <th>Date Issued</th>
+                        <th>Date Required</th>
+                        <th>Lead Time</th>
+                        <th>Items</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rush_orders in rush_orders %}
+                    {% if rush_orders.calculate_leadtime > 0 %}
+                    <tr>
+                        <td>
+                            {{ rush_orders.client }}
+                        </td>
+                        <td>
+                            <a href="{% url 'sales:rush_order_assessment' rush_order.id %}">{{ rush_order }}</a>
+                        </td>
+                        <td>
+                            {{ rush_orders.date_issued }}
+                        </td>
+                        <td>
+                            {{ rush_orders.date_required }}
+                        </td>
+                        <td>
+                            {{ rush_orders.calculate_leadtime }}
+                        </td>
 
-                var Year1 = new Date().getFullYear()-1;
-                var Year2 = new Date().getFullYear();
+                        <td>
+                            {{ rush_orders.date_issued }}
+                        </td>
+                    </tr>
+                    {% endif %}
 
-                var Month = new Date().getMonth();
-                var Day = new Date().getDay();
-
-                var chart = new CanvasJS.Chart("line_Sales1", {
-                    animationEnabled: true,
-                    title: {
-                        text: '{{ request.session.firstName }} '+ Year2 + " in comparison to " + Year1
-                    },
-                    axisX: {
-                        minimum: new Date(Year1, Month, Day),
-                        maximum: new Date(Year2, Month, Day),
-                        valueFormatString: "MMM YY"
-                    },
-                    axisY: {
-                        titleFontColor: "#4F81BC",
-                        suffix: " POs "
-                    },
-                    data: [{
-                        indexLabelFontColor: "darkSlateGray",
-                        name: "",
-                        type: "area",
-                        yValueFormatString: "#,##0 POs",
-                        dataPoints: [
-
-                            { x: new Date(2017, 09, 1), y: 130},
-                            { x: new Date(2017, 10, 1), y: 150},
-                            { x: new Date(2017, 11, 1), y: 175},
-                            { x: new Date(2017, 12, 1), y: 200},
-                            { x: new Date(2018, 01, 1), y: 190},
-                            { x: new Date(2018, 02, 1), y: 150},
-                            { x: new Date(2018, 03, 1), y: 140},
-                            { x: new Date(2018, 04, 1), y: 130},
-                            { x: new Date(2018, 05, 1), y: 120},
-                            { x: new Date(2018, 06, 1), y: 110},
-                            { x: new Date(2018, 07, 1), y: 100},
-                            { x: new Date(2018, 08, 1), y: 115},
-                            { x: new Date(2018, 09, 1), y: 120},
-                        ]
-                    }]
-                });
-                chart.render();
-
-                }
-            </script>
-            <div id="line_Sales1" style="height: 200px; width: 100%;"></div>
-
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
         <div class="ui segment">
+
+            <table class="ui stripped table center aligned">
+                <thead>
+                <tr class = "row">
+                    <th>Client</th>
+                    <th>Date Issued</th>
+                    <th>Date Required</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% if ClientPO_data %}
+                        {% for ClientPO in ClientPO_data %}
+                        <tr>
+                            <td>
+                                {{ ClientPO.client }}
+                            </td>
+                            <td>
+                                {{ ClientPO.date_issued }}
+                            </td>
+                            <td>
+                                {{ ClientPO.date_required }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <td>
+                            <p>There are no Purchase Orders in the last 3 months</p>
+                        </td>
+                    {% endif %}
+                </tbody>
+            </table>
 
         </div>
     </div>
@@ -68,13 +87,13 @@
 <h3 class="ui dividing header">Production Dashboard</h3>
     <div class="ui horizontal segments">
         <div class="ui segment">
-            <div id="" style="height: 100px; width: 100%;"></div>
+            <div style="height: 100px; width: 100%;"></div>
         </div>
     </div>
 <h3 class="ui dividing header">Inventory Dashboard</h3>
     <div class="ui horizontal segments">
         <div class="ui segment">
-            <div id="" style="height: 100px; width: 100%;"></div>
+            <div style="height: 100px; width: 100%;"></div>
         </div>
         <div class="ui segment">
 

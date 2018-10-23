@@ -15,7 +15,7 @@ from django.db.models import aggregates
 from production.models import JobOrder
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment, ClientConstant
 from accounts.models import Employee
-from .forms import ClientPOForm, SupplierForm, ClientPaymentForm, ClientPOForm2, EmployeeForm, ClientForm
+from .forms import ClientPOForm, ClientPOForm2, SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
 from django.contrib.auth.models import User
 from django import forms
 import sys
@@ -165,19 +165,38 @@ class PODetailView(DetailView):
     template_name = 'sales/clientPO_detail.html'
 
 def confirm_client_po(request, pk):
-    clientpo = ClientPO.objects.get(pk=pk)
-    clientpo.status = 'Approved'
-    clientpo.save()
 
-    materials_requirement = clientpo.ClientItems
-    #client =
+    user = request.user
+    id = user.id
+    client = Client.objects.filter(accounts_id = id)
+    employee = Employee.objects.filter(accounts_id = id)
 
-    context = {
-        'clientpo' : clientpo,
-        #'client' : client
-    }
-    return render(request, 'sales/clientPO_confirm.html', context)
+    if client:
+        clientpo = ClientPO.objects.get(pk=pk)
+        clientpo.status = 'Approved'
+        clientpo.save()
 
+        materials_requirement = clientpo.ClientItems
+        #client =
+
+        context = {
+            'clientpo' : clientpo,
+            #'client' : client
+        }
+        return render(request, 'sales/clientPO_confirm.html', context)
+    if employee:
+        clientpo = ClientPO.objects.get(pk=pk)
+        clientpo.status = 'Approved'
+        clientpo.save()
+
+        materials_requirement = clientpo.ClientItems
+        # client =
+
+        context = {
+            'clientpo': clientpo,
+            # 'client' : client
+        }
+        return render(request, 'sales/clientPO_confirm.html', context)
 
 #Invoice List/Detail View
 def invoice_list_view(request):
@@ -454,16 +473,13 @@ def client_list(request):
 def client_edit(request, id):
     data = Client.objects.get(id=id)
     form = ClientForm(request.POST or None, instance=data)
-    form1 = ClientConstant(request.POST or None, instance=data)
 
-    if form.is_valid() and form1.is_valid():
+    if form.is_valid():
         form.save()
-        form1.save()
         return redirect('sales:client_list')
     
     context = {
         'form' : form,
-        'form1': form1,
         'data' : data,
         'title' : "Edit Client",
         'actiontype' : "Submit",

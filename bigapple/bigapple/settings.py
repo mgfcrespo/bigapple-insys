@@ -91,11 +91,11 @@ WSGI_APPLICATION = 'bigapple.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bigapple_db',
+        'NAME': 'bigapple',
         'USER': 'root',
-        'PASSWORD': '*',
+        'PASSWORD': '*Cherisse0816',
         'HOST': '127.0.0.1',
-        'PORT': '8888',
+        'PORT': '3306',
     }
 }
 

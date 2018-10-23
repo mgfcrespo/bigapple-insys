@@ -105,8 +105,7 @@ class ClientPO(models.Model):
     def save(self, *args, **kwargs):
         rush_order = self.rush_order_determinant()
         self.rush_order = rush_order
-        super(ClientItem, self).save(*args, **kwargs)
-
+        super(ClientPO, self).save(*args, **kwargs)
 
 
     '''
@@ -267,7 +266,7 @@ class SalesInvoice(models.Model):
     def calculate_days_passed(self):
         start_date = self.date_due
         end_date = date.today()
-        days = start_date - end_date
+        days = (start_date - end_date).days
         return days
 
     def calculate_date_due(self):
