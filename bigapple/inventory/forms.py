@@ -63,7 +63,7 @@ class SupplierRawMaterialsForm(ModelForm):
     supplier = forms.ModelChoiceField(queryset=Supplier.objects.all())
     item_type = forms.CharField(max_length=200, label = 'item_type', widget = forms.Select(choices=ITEM_TYPES))
     rm_type = forms.CharField(max_length=200, label = 'rm_type', widget = forms.Select(choices=RM_TYPES))
-    item = forms.CharField('item', max_length=200)
+    item = forms.CharField(max_length=200, label= 'item')
 
 class InventoryCountAsofForm(ModelForm):
     class Meta:
