@@ -20,6 +20,7 @@ from django.contrib.auth.models import User
 from django import forms
 import sys
 from decimal import Decimal
+#from utilities import TimeSeriesForecasting, ganttChart
 
 #Forecasting imports
 
@@ -132,30 +133,30 @@ def po_list_view(request):
     id = user.id
     client = Client.objects.filter(accounts_id = id)
     employee = Employee.objects.filter(accounts_id = id)
+    customer = []
     if client:
-        template = 'client_page_ui.html'
         client_po = ClientPO.objects.filter(client = Client.objects.get(accounts_id = id))
+        position = 'Client'
     elif employee:
+        position = 'Employee'
         if request.session['session_position'] == "Sales Coordinator":
-            template = 'sales_coordinator_page_ui.html'
             client_po = ClientPO.objects.all()
         #TODO: Sales Agent access level
         elif request.session['session_position'] == "Sales Agent":
-            template = 'sales_agent_page_ui.html'
-            customer = Client.objects.filter(sales_agent = Employee.objects.filter(accounts_id = id))
-            client_po = ClientPO.objects.filter(client__in=customer)
+            customer = Client.objects.filter(sales_agent = employee)
+            po = ClientPO.objects.all()
+            client_po = []
+            for each in customer:
+                for every in po:
+                    if every.client == each:
+                        client_po.append(every)
         elif request.session['session_position'] == "General Manager":
-            template = 'general_manager_page_ui.html'
             client_po = ClientPO.objects.all()
-        else:
-            template = 'error.html'
-    else:
-        template = 'error.html'
 
     context = {
         'title' : "Client Purchase Order",
         'client_po' : client_po,
-        'template' : template
+        'position' : position
     }
 
     return render(request, 'sales/clientPO_list.html', context)
@@ -165,38 +166,21 @@ class PODetailView(DetailView):
     template_name = 'sales/clientPO_detail.html'
 
 def confirm_client_po(request, pk):
+    clientpo = ClientPO.objects.get(pk=pk)
 
-    user = request.user
-    id = user.id
-    client = Client.objects.filter(accounts_id = id)
-    employee = Employee.objects.filter(accounts_id = id)
-
-    if client:
-        clientpo = ClientPO.objects.get(pk=pk)
+    if request.POST.get('confirm_btn'):
         clientpo.status = 'Approved'
         clientpo.save()
 
-        materials_requirement = clientpo.ClientItems
-        #client =
+    #materials_requirement = clientpo.ClientItem
 
-        context = {
-            'clientpo' : clientpo,
-            #'client' : client
-        }
-        return render(request, 'sales/clientPO_confirm.html', context)
-    if employee:
-        clientpo = ClientPO.objects.get(pk=pk)
-        clientpo.status = 'Approved'
-        clientpo.save()
+    context = {
+        'clientpo': clientpo,
+        'pk' : pk
+        # 'client' : client
+    }
 
-        materials_requirement = clientpo.ClientItems
-        # client =
-
-        context = {
-            'clientpo': clientpo,
-            # 'client' : client
-        }
-        return render(request, 'sales/clientPO_confirm.html', context)
+    return render(request, 'sales/clientPO_confirm.html', context)
 
 #Invoice List/Detail View
 def invoice_list_view(request):
@@ -234,9 +218,7 @@ def invoice_detail_view(request, pk, *args, **kwargs):
         credit_status.save()
         salesinvoice.save()
 
-        form = add_payment(request, pk)
-
-        salesinvoice = SalesInvoice.objects.get(pk=pk)
+        form = add_payment(request, pk, *args, **kwargs)
 
         if salesinvoice.amount_due <= 0 and salesinvoice.status != "Cancelled":
             salesinvoice.status = "Closed"
@@ -395,7 +377,7 @@ def create_client_po(request):
 
                 #TODO: Invoice should not be issued unless JO is complete
 
-                invoice = SalesInvoice.objects.get(id=invoice.pk)
+                #invoice = SalesInvoice.objects.get(id=invoice.pk)
                 invoice.amount_due = invoice.total_amount_computed
                 invoice.save()
 
@@ -439,11 +421,18 @@ def rush_order_list(request):
 def rush_order_assessment(request, pk):
     rush_order = ClientPO.objects.get(pk=pk)
 
+    if request.POST.get('approve_btn'):
+        rush_order.status = 'Approved'
+    elif request.POST.get('deny_btn'):
+        rush_order.save()
+
+
+
     context = {
         'rush_order' : rush_order
     }
 
-    return render('sales/rush_order_assessment.html', context)
+    return render(request, 'sales/rush_order_assessment.html', context)
 
 
 #CLIENT CRUD

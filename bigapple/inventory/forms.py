@@ -58,12 +58,12 @@ class SupplierRawMaterialsForm(ModelForm):
 
     class Meta:
         model = SupplierRawMaterials
-        fields = ( 'supplier', 'price', 'rm_type') # 'item_type', 'item_name'
+        fields = ( 'supplier', 'price', 'rm_type', 'item') # 'item_type', 'item_name'
 
     supplier = forms.ModelChoiceField(queryset=Supplier.objects.all())
-    item_type = forms.CharField(max_length=200, label = 'item_name', widget = forms.Select(choices=ITEM_TYPES))
+    item_type = forms.CharField(max_length=200, label = 'item_type', widget = forms.Select(choices=ITEM_TYPES))
     rm_type = forms.CharField(max_length=200, label = 'rm_type', widget = forms.Select(choices=RM_TYPES))
-    #item = forms.CharField('item', max_length=200)
+    item = forms.CharField('item', max_length=200)
 
 class InventoryCountAsofForm(ModelForm):
     class Meta:
@@ -92,7 +92,7 @@ class SupplierPOItemsForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SupplierPOItemsForm, self).__init__(*args, **kwargs)
-        self.fields['item_name'].queryset = Inventory.objects.none()
+        self.fields['item'].queryset = Inventory.objects.none()
 
         # if 'supplier_po.supplier' in self.data:
         #     try:

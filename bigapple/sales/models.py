@@ -33,9 +33,11 @@ class ClientConstant(models.Model):
 #TODO: set prod_price to material cost
 class Product(models.Model):
     RM_TYPES = (
+        ('LLDPE', 'Linear low-density polyethylene'),
         ('LDPE', 'Low-density polyethylene'),
         ('HDPE', 'High-density polyethylene'),
-        ('PP', 'Polypropylene')
+        ('PP', 'Polypropylene'),
+        ('PET', 'Polyethylene terephthalate')
     )
     
     material_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, null=True, blank=True)
@@ -107,14 +109,6 @@ class ClientPO(models.Model):
         self.rush_order = rush_order
         super(ClientItem, self).save(*args, **kwargs)
 
-
-
-    '''
-    def evaluate_materials_requirement(self):
-    
-    def evaluate_credit_status(self):
-    '''
-
 class ClientItem(models.Model):
     COLOR = (
         ('Red', 'Red'),
@@ -136,7 +130,7 @@ class ClientItem(models.Model):
         ('Bottom Seal Single', 'Bottom Seal Single'),
     )
 
-    products = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, default=1)
+    products = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, default=1, related_name='products')
     laminate = models.BooleanField('laminate', default=True)
     printed = models.BooleanField('printed', default=True)
     color_quantity = models.IntegerField('color_quantity', blank=True, default=0, null=True)
@@ -148,7 +142,7 @@ class ClientItem(models.Model):
     quantity = models.IntegerField('quantity', blank=False)
     item_price = models.DecimalField('item_price', decimal_places=2, max_digits=12, default=0)
     price_per_piece = models.DecimalField('price_per_piece', decimal_places=2, max_digits=12, default=0)
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, null=True)
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, null=True, related_name='client_po')
 
     # sample_layout = models.CharField('sample_layout', max_length=200)
 
@@ -234,8 +228,8 @@ class SalesInvoice(models.Model):
         ('Cancelled', 'Cancelled'),
     )
 
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='client')
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, related_name='client_po')
     date_issued = models.DateField('date_issued', auto_now_add=True, blank=True)
     date_due = models.DateField('date_due', auto_now_add=True, blank=True)
     total_amount = models.DecimalField('total_amount', blank=True, decimal_places=2,
@@ -297,7 +291,7 @@ class SalesInvoice(models.Model):
 
 
 class ClientCreditStatus(models.Model):
-    client = models.OneToOneField(Client, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
     status = models.BooleanField('status', default=False)
     outstanding_balance = models.DecimalField('outstanding_balance', decimal_places=2, max_digits=12,
                                               default=Decimal(0))  # accumulation of ClientPayment.balance
@@ -346,12 +340,12 @@ class ClientCreditStatus(models.Model):
 
 
 class ClientPayment(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
-    invoice_issued = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, null=True)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, related_name='client')
+    invoice_issued = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, null=True, related_name='invoice_issued')
     payment = models.DecimalField('payment', decimal_places=2, max_digits=12,
                                   default=Decimal(0))  # how much the user paid per invoice
     payment_date = models.DateField('payment_date', blank=True)
-    credit_status = models.ForeignKey(ClientCreditStatus, on_delete=models.CASCADE, null=True)
+    credit_status = models.ForeignKey(ClientCreditStatus, on_delete=models.CASCADE, null=True, related_name='credit_status')
     old_balance = models.DecimalField('old_balance', decimal_places=2, max_digits=12, default=Decimal(0))
     new_balance = models.DecimalField('new_balance', decimal_places=2, max_digits=12, default=Decimal(0))
 

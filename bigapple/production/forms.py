@@ -14,24 +14,17 @@ class ExtruderScheduleForm(forms.ModelForm):
         ('Shift 3', 'shift 3')
     )
 
-    DAY = (
-        ('a.m.', 'a.m.'),
-        ('p.m.', 'p.m.')
-    )
-
     class Meta:
         model = ExtruderSchedule
-        fields = ('job_order', 'machine', 'weight_rolls', 'time_in','day_in', 'time_out','day_out',
-        'core_weight', 'net_weight', 'output_kilos', 'number_rolls', 'starting_scrap', 'extruder_scrap','remarks')
+        fields = ('job_order', 'machine', 'weight_rolls', 'datetime_in', 'datetime_out',
+        'core_weight', 'output_kilos', 'number_rolls', 'starting_scrap', 'extruder_scrap','remarks')
         # widgets = {
         #     'time_in': TimeInput(),
         #     'time_out': TimeInput()
         # }
 
-    day_in = forms.CharField(widget = forms.Select(choices=DAY))
-    time_in = forms.TimeField(widget = forms.TimeInput(format=['%H:%M']))
-    day_out = forms.CharField(widget = forms.Select(choices=DAY))
-    time_out = forms.TimeField(widget = forms.TimeInput(format=['%H:%M']))
+    datetime_in = forms.DateTimeField(widget=forms.widgets.DateTimeInput(format="%d/%m/%Y %H:%M:%S", attrs={'placeholder':"DD/MM/YY HH:MM:SS"}))
+    datetime_out = forms.DateTimeField(widget=forms.widgets.DateTimeInput(format="%d/%m/%Y %H:%M:%S", attrs={'placeholder':"DD/MM/YY HH:MM:SS"}))
     remarks = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))
     machine = forms.ModelChoiceField(queryset=Machine.objects.all())
     
@@ -48,17 +41,15 @@ class PrintingScheduleForm(forms.ModelForm):
 
     class Meta:
         model = PrintingSchedule
-        fields = ('job_order', 'machine', 'number_rolls', 'time_in','day_in', 'time_out','day_out',
+        fields = ('job_order', 'machine', 'number_rolls', 'datetime_in', 'datetime_out',
         'exit_scrap','printing_scrap', 'remarks')
         # widgets = {
         # 'time_in': TimeInput(),
         # 'time_out': TimeInput()
         # }
 
-    day_in = forms.CharField(widget = forms.Select(choices=DAY))
-    time_in = forms.TimeField(widget = forms.TimeInput(format=['%H:%M']))
-    day_out = forms.CharField(widget = forms.Select(choices=DAY))
-    time_out = forms.TimeField(widget = forms.TimeInput(format=['%H:%M']))
+    datetime_in = forms.DateTimeField(widget=forms.widgets.DateTimeInput(format="%d/%m/%Y %H:%M:%S", attrs={'placeholder':"DD/MM/YY HH:MM:SS"}))
+    datetime_out = forms.DateTimeField(widget=forms.widgets.DateTimeInput(format="%d/%m/%Y %H:%M:%S", attrs={'placeholder':"DD/MM/YY HH:MM:SS"}))
     remarks = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))
     machine = forms.ModelChoiceField(queryset=Machine.objects.all())
 
@@ -72,25 +63,19 @@ class CuttingScheduleForm(forms.ModelForm):
         ('Line 2', 'Line 2'),
         ('Line 3', 'Line 3')
     )
-    
-    DAY = (
-        ('a.m.', 'a.m.'),
-        ('p.m.', 'p.m.')
-    )
+
 
     class Meta:
         model = CuttingSchedule
-        fields = ('job_order', 'machine', 'line', 'time_in','day_in', 'time_out','day_out',
+        fields = ('job_order', 'machine', 'line', 'datetime_in', 'datetime_out',
         'quantity', 'output_kilos', 'number_rolls', 'exit_scrap', 'cutting_scrap', 'remarks')
         # widgets = {
         #     'time_in': TimeInput(),
         #     'time_out': TimeInput()
         # }
 
-    day_in = forms.CharField(widget = forms.Select(choices=DAY))
-    time_in = forms.TimeField(widget = forms.TimeInput(format=['%H:%M']))
-    day_out = forms.CharField(widget = forms.Select(choices=DAY))
-    time_out = forms.TimeField(widget = forms.TimeInput(format=['%H:%M']))
+    datetime_in = forms.DateTimeField(widget=forms.widgets.DateTimeInput(format="%d/%m/%Y %H:%M:%S", attrs={'placeholder':"DD/MM/YY HH:MM:SS"}))
+    datetime_out = forms.DateTimeField(widget=forms.widgets.DateTimeInput(format="%d/%m/%Y %H:%M:%S", attrs={'placeholder':"DD/MM/YY HH:MM:SS"}))
     line = forms.CharField(max_length=200, label = 'line', widget = forms.Select(choices=LINE))
     remarks = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))
     machine = forms.ModelChoiceField(queryset=Machine.objects.all())
@@ -114,6 +99,6 @@ class JODetailsForm(forms.ModelForm):
     
     class Meta:
         model = JobOrder
-        fields = ('remarks',)
+        fields = ('remarks', 'status')
 
     remarks = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))

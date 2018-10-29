@@ -1,4 +1,7 @@
 from __future__ import print_function
+
+from _pydecimal import Decimal
+
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
@@ -464,7 +467,7 @@ def add_extruder_schedule(request, id):
       'data': data,
       'title' : data.job_order,
       'form': form,
-	   'template' : template
+	  'template' : template
     }
     
     return render (request, 'production/add_extruder_schedule.html', context)
@@ -484,7 +487,7 @@ def add_printing_schedule(request, id):
 	
     client_po = ClientPO.objects.get(id=data.client_po.id)
     p = PrintingSchedule.objects.filter(job_order = data.id)
-    if e.count == 0:
+    if p.count == 0:
         data.status = 'Under Printing'
         client_po.status = 'Under production'
         data.save()
@@ -525,7 +528,7 @@ def add_cutting_schedule(request, id):
     client_po = ClientPO.objects.get(id=data.client_po.id)
     c = CuttingSchedule.objects.filter(job_order = data.id)
 
-    if e.count == 0:
+    if c.count == 0:
         data.status = 'Under Cutting'
         client_po.status = 'Under production'
         data.save()
