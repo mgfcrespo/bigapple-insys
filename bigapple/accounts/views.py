@@ -15,7 +15,7 @@ from .models import Client
 from accounts.forms import SignUpForm
 from sales.models import ClientPO, ClientCreditStatus, Supplier
 from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule
-from inventory.models import InventoryCountAsof, SupplierSalesInvoice
+from inventory.models import InventoryCountAsof
 # Create your views here.
 
 def register(request):
@@ -51,7 +51,6 @@ def user_page_view(request):
         CuttingSchedule_data = CuttingSchedule.objects.all()
 
         InventoryCountAsof_data = InventoryCountAsof.objects.all()
-        SupplierSalesInvoice_data = SupplierSalesInvoice.objects.all()
 
         context = {
             'ClientPO_data': ClientPO_data,
