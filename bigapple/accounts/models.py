@@ -51,12 +51,12 @@ class Employee(models.Model):
 
     def __str__(self):
         return self.full_name
+
 '''
     @property
     def is_production_worker(self):
-        return if (position == )
+        return if (position == 
 '''
-
 
 class Client(models.Model):
     first_name = models.CharField('first_name', max_length=200, default='')

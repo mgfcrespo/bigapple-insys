@@ -34,7 +34,7 @@ class Machine(models.Model):
 
 
 class MachineState(models.Model):
-    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE, related_name='machine')
     state = models.IntegerField('state', default=0)
 
 
@@ -72,7 +72,7 @@ class JobOrder(models.Model):
         ('Cancelled', 'Cancelled')
     )
 
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE)
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, related_name='client_po')
     rush_order = models.BooleanField(default=False)
     status = models.CharField('status', choices=STATUS, max_length=200, default="Waiting")
     remarks = models.CharField('remarks', max_length=250, default="", blank=True)
