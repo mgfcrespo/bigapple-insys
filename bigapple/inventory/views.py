@@ -5,8 +5,6 @@ from django.forms import formset_factory, inlineformset_factory
 from django.db.models import aggregates
 from django.contrib import messages
 
-
-from .models import SupplierSalesInvoice
 from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, SupplierRawMaterials, InventoryCountAsof, Employee
 from .models import MaterialRequisition, MaterialRequisitionItems, PurchaseRequisition, PurchaseRequisitionItems
 from .forms import SupplierPOItemsForm, InventoryForm, SupplierPOForm, SupplierRawMaterialsForm, InventoryCountAsofForm
@@ -150,7 +148,7 @@ def supplier_rawmat_list(request):
 
 def supplier_details_list(request, id):
     items = SupplierRawMaterials.objects.filter(supplier = id)
-    data = SupplierSalesInvoice.objects.filter(id = id)
+    data = SupplierPO.objects.filter(id = id)
     title1 = 'Supplier Raw Material'
     title2 = 'Supplier Sales Invoice'
     context = {
