@@ -1,217 +1,51 @@
 {% extends 'sidebar.html' %}
 {% block content %}
-<div class="ui relaxed grid">
-    <div class="eight wide column">
-        <div class="row">
-            <div class="ui container">
-                <div class="segments" style="margin:10px;">
-                    <div class="ui green segment" style="text-align: center">
-                        <h3>Create Purchase Order (For 1 item only)</h3>
-                    </div>
-                    <div class="ui segment">
 
-                        <div class="form ui">
+<h3 class="ui dividing header">Your Purchase Orders</h3>
 
-                            <div class="ui form">
+<div>
+    <div class="ui horizontal segments">
+        <div class="ui segment">
 
-                                <div class="fields">
-                                    <div class="field six wide column">
-                                        <select class="ui dropdown">
-                                                  <option value="">Item</option>
-                                                  <option value="1">Item 1</option>
-                                                  <option value="2">Item 2</option>
-                                                  <option value="3">Item 3</option>
-                                                  <option value="4">Item 4</option>
-                                                  <option value="5">Item 5</option>
-                                                </select>
-                                    </div>
-                                    <div class="field five wide column">
-                                        <select class="ui dropdown">
-                                                  <option value="">Material</option>
-                                                  <option value="1">Material 1</option>
-                                                  <option value="2">Material 2</option>
-                                                  <option value="3">Material 3</option>
-                                                  <option value="4">Material 4</option>
-                                                  <option value="5">Material 5</option>
-                                                </select>
+            <table class="ui striped table center aligned">
+                <thead>
+                <tr>
+                  <th>Purchase Order ID</th>
+                  <th>Date Issued</th>
+                  <th>Date Required</th>
+                  <th>Total Amount</th>
+                  <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
 
-                                    </div>
-                                    <div class="field five wide column">
-                                        <select class="ui dropdown">
-                                                  <option value="">Color</option>
-                                                  <option value="1">Color 1</option>
-                                                  <option value="2">Color 2</option>
-                                                  <option value="3">Color 3</option>
-                                                  <option value="4">Color 4</option>
-                                                  <option value="5">Color 5</option>
-                                                </select>
-                                    </div>
-                                </div>
+                {% if client_po %}
+                    {% for client_po_list in ClientPO %}
+                        <tr>
+                            <td><a href="{% url 'sales:po-detail-view' ClientPO.id %}">{{ClientPO}}</a></td>
+                            <td>{{ client_po_list.date_issued }}</td>
+                            <td>{{ client_po_list.date_required }}</td>
+                            <td>{{ client_po_list.total_amount }}</td>
+                            <td>
+                                {{ client_po_list.status }}</td>
 
-                                <div class="fields">
-                                    <div class="field">
-                                        <label>Length</label>
-                                        <input type="text" placeholder="Length">
-                                    </div>
-                                    <div class="field">
-                                        <label>Width</label>
-                                        <input type="text" placeholder="Width">
-                                    </div>
-                                    <div class="field">
-                                        <label>Quantity</label>
-                                        <input type="text" placeholder="Quantity">
-                                    </div>
-                                </div>
-                                <div class="fields">
-                                    <div class="field eight wide column">
-                                        <label>Date Needed</label>
-                                        <input type="date">
-                                    </div>
-                                    <div class="field one wide column">
-                                        <div class="ui checkbox">
-                                            <input type="checkbox" name="laminate">
-                                            <label>Laminate</label>
-                                        </div>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                <td>
+                    <p>There are no Purchase Orders to display</p>
+                </td>
 
-                                    </div>
-                                </div>
-                                <div class="fields">
-                                    <button class="ui positive basic button" type="submit">Submit</button>
-                                    <button class="ui secondary basic button" type="reset">Clear</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                {% endif %}
+
+
+            </tbody>
+        </table>
+
         </div>
-        <div class="row">
-            <div class="ui container">
-                <div class="segments" style="margin:10px;">
-                    <div class="ui green segment" style="text-align: center">
-                        <h3>Purchase Order Status</h3>
-                    </div>
-                    <div class="ui segment" style="text-align: center">
-                        <div class="ui grid">
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Purchase Order 1</div>
-                                </div>
-                            </div>
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Purchase Order 2</div>
-                                </div>
-                            </div>
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Purchase Order 3</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="eight wide column">
-        <div class="row">
-            <div class="ui container">
-                <div class="segments" style="margin:10px;">
-                    <div class="ui green segment" style="text-align: center">
-                        <h3>Create Purchase Order (For 1 item only)</h3>
-                    </div>
-                    <div class="ui segment" style="text-align: center">
-                        <div class="ui grid">
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company D</div>
-                                </div>
-                            </div>
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company E</div>
-                                </div>
-                            </div>
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company F</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="ui container">
-                <div class="segments" style="margin:10px;">
-                    <div class="ui green segment" style="text-align: center">
-                        <h3>Purchase Order Status</h3>
-                    </div>
-                    <table class="ui celled table center aligned">
-                        <thead>
-                            <tr>
-                                <th>Purchase Order Number</th>
-                                <th>Items</th>
-                                <th>Price</th>
-                                <th>Due Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    12345
-                                </td>
-                                <td>
-                                    - 100,000 Pcs. PET Bottle<br> - 100,000 Pcs. Sando bags SML
-                                </td>
-                                <td>
-                                    Php 450,000.00
-                                </td>
-                                <td>
-                                    DD/MM/YYYY
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    67890
-                                </td>
-                                <td>
-                                    - 200,000 Pcs. PET Bottle<br> - 100,000 Pcs. Sando bags SML
-                                </td>
-                                <td>
-                                    Php 850,000.00
-                                </td>
-                                <td>
-                                    DD/MM/YYYY
-                                </td>
-                            </tr>
+        <div class="ui segment">
 
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </div>
-
     </div>
 </div>
 {% endblock %}

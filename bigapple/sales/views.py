@@ -15,7 +15,7 @@ from django.db.models import aggregates
 from production.models import JobOrder
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment, ClientConstant
 from accounts.models import Employee
-from .forms import ClientPOForm, SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
+from .forms import ClientPOForm, ClientPOForm2, SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
 from django.contrib.auth.models import User
 from django import forms
 import sys
@@ -109,7 +109,6 @@ def add_clientPO(request):
             return render(request, 'sales/clientPO_form.html', context)
 '''
 
-
 def edit_clientPO(request, id):
         client_po = ClientPO.objects.get(id=id)
 
@@ -125,7 +124,6 @@ def delete_clientPO(request, id):
         client_po = ClientPO.objects.get(id=id)
         client_po.delete()
         return HttpResponseRedirect('../clientPO_list')
-
 
 # PO List/Detail view + PO Confirm
 
@@ -167,23 +165,38 @@ class PODetailView(DetailView):
     template_name = 'sales/clientPO_detail.html'
 
 def confirm_client_po(request, pk):
-    clientpo = ClientPO.objects.get(id=pk)
-    clientpo.status = 'Approved'
-    clientpo.save()
 
-    pk=pk
+    user = request.user
+    id = user.id
+    client = Client.objects.filter(accounts_id = id)
+    employee = Employee.objects.filter(accounts_id = id)
 
-    #materials_requirement = clientpo.ClientItems
-    #client =
+    if client:
+        clientpo = ClientPO.objects.get(pk=pk)
+        clientpo.status = 'Approved'
+        clientpo.save()
 
-    context = {
-        'clientpo' : clientpo,
-        'pk' : pk
-        #'client' : client
-    }
+        materials_requirement = clientpo.ClientItems
+        #client =
 
-    return render(request, 'sales/clientPO_confirm.html', context)
+        context = {
+            'clientpo' : clientpo,
+            #'client' : client
+        }
+        return render(request, 'sales/clientPO_confirm.html', context)
+    if employee:
+        clientpo = ClientPO.objects.get(pk=pk)
+        clientpo.status = 'Approved'
+        clientpo.save()
 
+        materials_requirement = clientpo.ClientItems
+        # client =
+
+        context = {
+            'clientpo': clientpo,
+            # 'client' : client
+        }
+        return render(request, 'sales/clientPO_confirm.html', context)
 
 #Invoice List/Detail View
 def invoice_list_view(request):
@@ -207,7 +220,7 @@ def invoice_list_view(request):
 
     return render(request, 'sales/sales_invoice_list.html', context)
 
-def invoice_detail_view(request, pk):
+def invoice_detail_view(request, pk, *args, **kwargs):
 
     salesinvoice = SalesInvoice.objects.get(pk=pk)
     form = ClientPaymentForm()
@@ -234,15 +247,12 @@ def invoice_detail_view(request, pk):
 
         payments = ClientPayment.objects.filter(invoice_issued=salesinvoice)
 
-        context = {
-            'salesinvoice': salesinvoice,
-            'form' : form,
-            'payments' : payments
-            }
+        context = {'salesinvoice': salesinvoice,
+                   'form' : form,
+                   'payments' : payments}
 
     except SalesInvoice.DoesNotExist:
         raise Http404("Sales Invoice does not exist")
-
 
     return render(request, 'sales/sales_invoice_details.html', context)
 
@@ -387,12 +397,12 @@ def create_client_po(request):
 
                 invoice = SalesInvoice.objects.get(id=invoice.pk)
                 invoice.amount_due = invoice.total_amount_computed
+                invoice.save()
+
                 credit_status = ClientCreditStatus.objects.get(client_id = current_client)
                 outstanding_balance = credit_status.outstanding_balance
                 outstanding_balance += invoice.amount_due
                 credit_status.outstanding_balance = outstanding_balance
-
-                invoice.save()
                 credit_status.save()
 
 
@@ -418,11 +428,6 @@ def create_client_po(request):
 
 #RUSH ORDER CRUD
 def rush_order_list(request):
-    client_po = ClientPO.objects.all()
-
-    for each in client_po:
-        each.save()
-
     rush_orders = ClientPO.objects.filter(rush_order = True)
 
     context = {
@@ -438,7 +443,7 @@ def rush_order_assessment(request, pk):
         'rush_order' : rush_order
     }
 
-    return render(request, 'sales/rush_order_assessment.html', context)
+    return render('sales/rush_order_assessment.html', context)
 
 
 #CLIENT CRUD

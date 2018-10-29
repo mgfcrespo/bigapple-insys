@@ -25,7 +25,7 @@
                             {{ rush_orders.client }}
                         </td>
                         <td>
-                            <a href="{% url 'sales:rush_order_assessment' rush_order.id %}">{{ rush_order }}</a>
+                            <a href="{% url 'sales:rush_order_assessment' rush_orders.id %}">{{ rush_orders }}</a>
                         </td>
                         <td>
                             {{ rush_orders.date_issued }}
@@ -42,6 +42,7 @@
                         </td>
                     </tr>
                     {% endif %}
+
                     {% endfor %}
                 </tbody>
             </table>

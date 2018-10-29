@@ -22,8 +22,10 @@ class InventoryForm(forms.ModelForm):
         ('Others', 'Others')
     )
 
+   # item = forms.CharField('item', max_length=300)
     item_type = forms.CharField(max_length=200, label = 'item_type', widget = forms.Select(choices=ITEM_TYPES))
     description = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))
+   # quantity = forms.IntegerField('quantity')
 
     class Meta:
         model = Inventory
@@ -31,10 +33,10 @@ class InventoryForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(InventoryForm, self).__init__(*args, **kwargs)
-        self.fields['item'].required = False
-        self.fields['item_type'].required = False
-        self.fields['description'].required = False
-        self.fields['quantity'].required = False
+        self.fields['item'].required = True
+        self.fields['item_type'].required = True
+        self.fields['description'].required = True
+        self.fields['quantity'].required = True
         self.fields['quantity'].widget.attrs['readonly'] = True
 
 class SupplierRawMaterialsForm(ModelForm):
@@ -61,6 +63,7 @@ class SupplierRawMaterialsForm(ModelForm):
     supplier = forms.ModelChoiceField(queryset=Supplier.objects.all())
     item_type = forms.CharField(max_length=200, label = 'item_name', widget = forms.Select(choices=ITEM_TYPES))
     rm_type = forms.CharField(max_length=200, label = 'rm_type', widget = forms.Select(choices=RM_TYPES))
+    #item = forms.CharField('item', max_length=200)
 
 class InventoryCountAsofForm(ModelForm):
     class Meta:

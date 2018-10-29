@@ -28,6 +28,8 @@ class SupplierRawMaterials(models.Model):
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
     price = models.DecimalField('price', decimal_places=2, max_digits=50)
     rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='Not specified', null=True, blank=True)
+    item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='Not specified', null=True,
+                                 blank=True)
 
 class Inventory(models.Model):
     ITEM_TYPES = (
