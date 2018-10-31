@@ -168,6 +168,8 @@ class PODetailView(DetailView):
 
 def confirm_client_po(request, pk):
     clientpo = ClientPO.objects.get(pk=pk)
+    client = clientpo.client
+    client_constant = ClientConstant.objects.get(client = client)
 
     if request.GET.get('confirm_btn'):
         clientpo.status = 'Approved'
@@ -177,12 +179,20 @@ def confirm_client_po(request, pk):
     price = item.calculate_price_per_piece() * item.quantity
     products = item.products.material_type
 
-    inventory = Inventory.objects.all()
+    inventory = Inventory.objects.get(rm_type=products)
+
+    if (inventory.quantity > 0):
+        matreq = True
+    else:
+        matreq = False
 
     context = {
         'clientpo': clientpo,
-        'pk' : pk
-        # 'client' : client
+        'pk' : pk,
+        'client' : client,
+        'client_constant' : client_constant,
+        'price' : price,
+        'matreq' : matreq
     }
 
     return render(request, 'sales/clientPO_confirm.html', context)
@@ -273,10 +283,17 @@ def add_payment(request, pk, *args, **kwargs):
     return form
 
 def payment_list_view(request):
-    client = Client.objects.get(id=request.session['session_userid'])
-    credits_status = ClientCreditStatus.objects.get(client = client)
+    user = request.user
+    id = user.id
+    client = Client.objects.filter(accounts_id=id)
+
+    if client:
+        credits_status = ClientCreditStatus.objects.get(client = client)
+    else:
+        credits_status = ClientCreditStatus.objects.all()
 
     sales_invoice = SalesInvoice.objects.filter(client = client)
+
     context = {
         'credit_status' : credits_status,
         'sales_invoice' : sales_invoice
@@ -425,16 +442,25 @@ def rush_order_list(request):
 
 def rush_order_assessment(request, pk):
     rush_order = ClientPO.objects.get(pk=pk)
+    client = rush_order.client
 
     if request.POST.get('approve_btn'):
         rush_order.status = 'Approved'
     elif request.POST.get('deny_btn'):
         rush_order.save()
 
+    #credit status
+    credit_status = ClientCreditStatus.objects.get(client = client)
+    credit_status = credit_status.status
 
+    #cost shit
+    #matreq
+    #simulated sched
 
     context = {
-        'rush_order' : rush_order
+        'rush_order' : rush_order,
+        'credit_status' : credit_status,
+
     }
 
     return render(request, 'sales/rush_order_assessment.html', context)

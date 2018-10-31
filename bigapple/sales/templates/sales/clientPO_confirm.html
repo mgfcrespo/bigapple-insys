@@ -67,9 +67,12 @@
                 <h2> This client's credit status is cleared. </h2>
                 {% endif %}
 
-                #TODO: condition to show materials requirement and inventory levels
-
                 <br>
+
+                {% if matreq %}
+                <h2> The material requirements for this order are met by the inventory stock.</h2>
+                {% else %}
+                <h2> There are not enough materials in inventory stock to accommodate this order. </h2> #issue supplier PO?
                     <div class="row">
                         <div class="center">
                             <form method="get">
