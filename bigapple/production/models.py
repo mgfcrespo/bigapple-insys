@@ -32,12 +32,12 @@ class Machine(models.Model):
         return str(self.machine_type + " Machine #" + self.machine_number)
     '''
 
-
+'''
 class MachineState(models.Model):
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE, related_name='machine')
     state = models.IntegerField('state', default=0)
 
-
+'''
 # class WorkerSchedule(models.Model):
 #     worker = models.ForeignKey(Employee, on_delete=models.CASCADE)
 #     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
@@ -72,7 +72,7 @@ class JobOrder(models.Model):
         ('Cancelled', 'Cancelled')
     )
 
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, related_name='client_po')
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, related_name='joborder_client_po')
     rush_order = models.BooleanField(default=False)
     status = models.CharField('status', choices=STATUS, max_length=200, default="Waiting")
     remarks = models.CharField('remarks', max_length=250, default="", blank=True)
@@ -87,10 +87,10 @@ class JobOrder(models.Model):
         return jo
 
 class MachineSchedule(models.Model):
-    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True, related_name='job_order')
+    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True, related_name='machineschedule_job_order')
     job_task = models.CharField('job_task', max_length=200, default='Extruder', blank=True)
     duration = models.DurationField()
-    machine = models.ForeignKey(Machine, on_delete=models.CASCADE, related_name='machine')
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE, related_name='machineschedule_machine')
 
     def __str__(self):
         return str(self.id)
@@ -102,9 +102,9 @@ class ExtruderSchedule(models.Model):
         ('Shift 3', 'shift 3')
     )
 
-    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, related_name='job_order')
-    machine = models.ForeignKey(Machine, on_delete=models.CASCADE, related_name='machine')
-    operator = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='operator')
+    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, related_name='extruderschedule_job_order')
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE, related_name='extruderschedule_machine')
+    operator = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='extruderschedule_operator')
     #stock_kind = models.CharField('stock_kind',choices=STOCK_KIND, max_length=250, default='not specified')
     #material = models.CharField('material', max_length=200)
     #treating = models.CharField('treating', max_length=200)
@@ -136,9 +136,9 @@ class PrintingSchedule(models.Model):
         ('Shift 3', 'shift 3')
     )
 
-    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True, related_name='job_order')
-    machine = models.ForeignKey(Machine, on_delete=models.CASCADE, related_name='machine')
-    operator = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='operator')
+    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True, related_name='printingschedule_job_order')
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE, related_name='printingschedule_machine')
+    operator = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='printingschedule_operator')
     date = models.DateField('date', auto_now_add=True, blank=True)
     datetime_in = models.DateTimeField('datetime_in')
     datetime_out = models.DateTimeField('datetime_out')
@@ -171,9 +171,9 @@ class CuttingSchedule(models.Model):
         ('Line 2', 'Line 2'),
         ('Line 3', 'Line 3')
     )
-    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True, related_name='job_order')
-    machine = models.ForeignKey(Machine, on_delete=models.CASCADE, related_name='machine')
-    operator = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='operator')
+    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True, related_name='cuttingschedule_job_order')
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE, related_name='cuttingschedule_machine')
+    operator = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='cuttingschedule_operator')
     #print_name = models.CharField('print_name', max_length=200)
     #sealing = models.CharField('sealing', max_length=200)
     #handle = models.CharField('handle', max_length=200)

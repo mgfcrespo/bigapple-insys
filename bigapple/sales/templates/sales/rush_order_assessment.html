@@ -6,15 +6,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Rush Order Assessment for {{ rush_order }}</title>
-</head>
+    </head>
 
 <body>
 
     #CBA
     #Simulated Sched
-    #BUTTON FOR RUSH ORDER DENIAL OR APPROVAL
 
 </body>
 
+                            <form method="post">
+                            <input type="submit" class="ui green basic button" value="Approve" name="approve_btn">
+                            </form>
+
+<br>
+                            <form method="post">
+                            <input type="submit" class="ui red basic button" value="Deny" name="deny_btn">
+                            </form>
 </html>
 {% endblock %}

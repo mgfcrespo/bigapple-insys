@@ -21,7 +21,7 @@
     					<td>{{ ClientPO.date_issued }}</td>
     					<td>{{ ClientPO.date_required }}</td>
     					<td>{{ ClientPO.total_amount }}</td>
-						<td>{% if ClientPO.status == 'Waiting' %}
+						<td>{% if ClientPO.status == 'Waiting' and position == 'Employee' %}
 							<a href="{% url 'sales:confirm-client-po' ClientPO.id %}">{{ ClientPO.status }}</a>
 							{% else %}
 							{{ ClientPO.status }}</td>

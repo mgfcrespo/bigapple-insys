@@ -25,7 +25,7 @@ class SupplierRawMaterials(models.Model):
         ('PET', 'Polyethylene terephthalate')
     )
 
-    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, related_name='supplier')
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, related_name='supplierrawmaterials_supplier')
     price = models.DecimalField('price', decimal_places=2, max_digits=50)
     rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='Not specified', null=True, blank=True)
     item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='Not specified', null=True,
@@ -76,7 +76,7 @@ class InventoryCountAsof(models.Model):
         ('PET', 'Polyethylene terephthalate')
     )
 
-    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='inventory')
+    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='inventorycountasof_inventory')
     old_count = models.IntegerField('old_count', default=0)
     new_count = models.IntegerField('new_count', default=0)
     date_counted = models.DateField('date_counted', )
@@ -91,7 +91,7 @@ class InventoryCountAsof(models.Model):
 
 
 class SupplierPO(models.Model):
-    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, related_name='supplier')
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, related_name='supplierpo_supplier')
     total_amount = models.DecimalField('total_amount', decimal_places = 2, max_digits=50, null=True, blank = True)
     date_issued = models.DateField('date_issued', auto_now_add=True)
     delivery_date = models.DateField('delivery_date')
@@ -102,8 +102,8 @@ class SupplierPO(models.Model):
         return supplier_po
 
 class SupplierPOItems(models.Model):
-    supplier_po = models.ForeignKey(SupplierPO, on_delete=models.CASCADE, related_name='supplier_po')
-    item = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='item')
+    supplier_po = models.ForeignKey(SupplierPO, on_delete=models.CASCADE, related_name='supplierpoitems_supplier_po')
+    item = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='supplierpoitems_item')
     price = models.DecimalField('price', decimal_places = 2, max_digits=50,)
     quantity = models.IntegerField('quantity')
     total_price = models.DecimalField('total_price', decimal_places = 2, max_digits=50,)
@@ -126,7 +126,7 @@ class MaterialRequisition(models.Model):
     date_issued = models.DateField('date_issued', auto_now_add=True)
     approval = models.BooleanField('approval', default=False)
     status = models.CharField('status', default='waiting', max_length=200)
-    jo = models.ForeignKey(JobOrder, on_delete=models.CASCADE, related_name='jo')
+    jo = models.ForeignKey(JobOrder, on_delete=models.CASCADE, related_name='materialrequisition_jo')
 
     def __str__(self):
         lead_zero = str(self.id).zfill(5)
@@ -135,15 +135,15 @@ class MaterialRequisition(models.Model):
 
 
 class MaterialRequisitionItems(models.Model):
-    matreq = models.ForeignKey(MaterialRequisition, on_delete=models.CASCADE, related_name='matreq')
-    item = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='item')
+    matreq = models.ForeignKey(MaterialRequisition, on_delete=models.CASCADE, related_name='materialrequisitionitems_matreq')
+    item = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='materialrequisitionitems_item')
     quantity = models.IntegerField('quantity', default=0)
 
     def __str__(self):
         return str(self.matreq) +' : ' + str(self.id)
 
 class PurchaseRequisition(models.Model):
-    placed_by = models.ForeignKey(Employee, on_delete = models.CASCADE, null=True, related_name='placed_by')
+    placed_by = models.ForeignKey(Employee, on_delete = models.CASCADE, null=True, related_name='purchaserequisition_placed_by')
     date_issued = models.DateField('date_issued', auto_now_add=True)
     date_required = models.DateField('date_required')
     approval = models.BooleanField('approval', default=False)
@@ -155,8 +155,8 @@ class PurchaseRequisition(models.Model):
         return control_number
     
 class PurchaseRequisitionItems(models.Model):
-    purchreq = models.ForeignKey(PurchaseRequisition, on_delete=models.CASCADE, related_name='purchreq')
-    item = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='item')
+    purchreq = models.ForeignKey(PurchaseRequisition, on_delete=models.CASCADE, related_name='purchaserequisitionitems_purchreq')
+    item = models.ForeignKey(Inventory, on_delete=models.CASCADE, related_name='purchaserequisitionitems_item')
     quantity = models.IntegerField('quantity')
 
     def __str__(self):

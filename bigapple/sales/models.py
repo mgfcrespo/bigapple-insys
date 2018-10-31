@@ -22,7 +22,7 @@ class ClientConstant(models.Model):
         ('90 Days', '90 Days')
     )
 
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='client')
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='clientconstant_client')
     payment_terms = models.CharField('payment terms', choices=PAYMENT_TERMS, max_length=200, default="30 Days")
     discount = models.DecimalField('discount', decimal_places=2, max_digits=12, default=0)
     net_vat = models.DecimalField('net_vat', decimal_places=2, max_digits=12, default=.20)
@@ -64,7 +64,6 @@ class ProductionCost(models.Model):
     def __str__(self):
         return str(self.cost_type)
 
-#TODO: Rush order determinant, materials requirement determinant- basically FEASIBILITY DETERMINANT for pre-confirm
 class ClientPO(models.Model):
 
     STATUS =(
@@ -79,7 +78,7 @@ class ClientPO(models.Model):
     date_issued = models.DateField('date_issued', auto_now_add=True)
     date_required = models.DateField('date_required', blank=False)
     other_info = models.TextField('other_info', max_length=250, blank=True)
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, related_name='client')
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, related_name='clientpo_client')
     total_amount = models.DecimalField('total_amount', default=0, decimal_places=2, max_digits=12)
     status = models.CharField('status', choices=STATUS, default='Waiting', max_length=200)
     rush_order = models.BooleanField('rush_order', default=False)
@@ -130,7 +129,7 @@ class ClientItem(models.Model):
         ('Bottom Seal Single', 'Bottom Seal Single'),
     )
 
-    products = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, default=1, related_name='products')
+    products = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, default=1, related_name='clientitem_products')
     laminate = models.BooleanField('laminate', default=True)
     printed = models.BooleanField('printed', default=True)
     color_quantity = models.IntegerField('color_quantity', blank=True, default=0, null=True)
@@ -142,7 +141,7 @@ class ClientItem(models.Model):
     quantity = models.IntegerField('quantity', blank=False)
     item_price = models.DecimalField('item_price', decimal_places=2, max_digits=12, default=0)
     price_per_piece = models.DecimalField('price_per_piece', decimal_places=2, max_digits=12, default=0)
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, null=True, related_name='client_po')
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, null=True, related_name='clientitem_client_po')
 
     # sample_layout = models.CharField('sample_layout', max_length=200)
 
@@ -228,8 +227,8 @@ class SalesInvoice(models.Model):
         ('Cancelled', 'Cancelled'),
     )
 
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='client')
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, related_name='client_po')
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='salesinvoice_client')
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, related_name='salesinvoice_client_po')
     date_issued = models.DateField('date_issued', auto_now_add=True, blank=True)
     date_due = models.DateField('date_due', auto_now_add=True, blank=True)
     total_amount = models.DecimalField('total_amount', blank=True, decimal_places=2,
@@ -291,7 +290,7 @@ class SalesInvoice(models.Model):
 
 
 class ClientCreditStatus(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='client')
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='clientcreditstatus_client')
     status = models.BooleanField('status', default=False)
     outstanding_balance = models.DecimalField('outstanding_balance', decimal_places=2, max_digits=12,
                                               default=Decimal(0))  # accumulation of ClientPayment.balance
@@ -340,12 +339,12 @@ class ClientCreditStatus(models.Model):
 
 
 class ClientPayment(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, related_name='client')
-    invoice_issued = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, null=True, related_name='invoice_issued')
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, related_name='clientpayment_client')
+    invoice_issued = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, null=True, related_name='clientpayment_invoice_issued')
     payment = models.DecimalField('payment', decimal_places=2, max_digits=12,
                                   default=Decimal(0))  # how much the user paid per invoice
     payment_date = models.DateField('payment_date', blank=True)
-    credit_status = models.ForeignKey(ClientCreditStatus, on_delete=models.CASCADE, null=True, related_name='credit_status')
+    credit_status = models.ForeignKey(ClientCreditStatus, on_delete=models.CASCADE, null=True, related_name='clientpayment_credit_status')
     old_balance = models.DecimalField('old_balance', decimal_places=2, max_digits=12, default=Decimal(0))
     new_balance = models.DecimalField('new_balance', decimal_places=2, max_digits=12, default=Decimal(0))
 
@@ -354,7 +353,7 @@ class ClientPayment(models.Model):
 
 
 class PO_Status_History(models.Model):
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, related_name='client_po')
+    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, related_name='po_status_history_client_po')
     date_changed = models.DateTimeField('date_changed', auto_now_add=True, blank=True)
 
 

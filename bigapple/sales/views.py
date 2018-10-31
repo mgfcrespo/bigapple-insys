@@ -14,6 +14,7 @@ from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse
 from django.db.models import aggregates
 from production.models import JobOrder
 from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment, ClientConstant
+from inventory.models import Inventory, Supplier, SupplierRawMaterials, SupplierPO, SupplierPOItems
 from accounts.models import Employee
 from .forms import ClientPOForm, ClientPOForm2, SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
 from django.contrib.auth.models import User
@@ -168,11 +169,15 @@ class PODetailView(DetailView):
 def confirm_client_po(request, pk):
     clientpo = ClientPO.objects.get(pk=pk)
 
-    if request.POST.get('confirm_btn'):
+    if request.GET.get('confirm_btn'):
         clientpo.status = 'Approved'
-        clientpo.save()
+        #clientpo.save()
 
-    #materials_requirement = clientpo.ClientItem
+    item = ClientItem.objects.get(client_po = clientpo)
+    price = item.calculate_price_per_piece() * item.quantity
+    products = item.products.material_type
+
+    inventory = Inventory.objects.all()
 
     context = {
         'clientpo': clientpo,

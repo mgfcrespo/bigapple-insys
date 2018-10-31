@@ -61,8 +61,7 @@ def user_page_view(request):
             'ExtruderSchedule_data': ExtruderSchedule_data,
             'PrintingSchedule_data': PrintingSchedule_data,
             'CuttingSchedule_data': CuttingSchedule_data,
-            'InventoryCountAsof_data': InventoryCountAsof_data,
-            'SupplierSalesInvoice_data': SupplierSalesInvoice_data,
+            'InventoryCountAsof_data': InventoryCountAsof_data
         }
 
         request.session['session_username'] = username

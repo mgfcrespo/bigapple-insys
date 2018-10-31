@@ -59,6 +59,7 @@
                 <tr>Total: {{clientpo.total_amount}}</tr>
 
 			</tbody>
+            <br>
     	</table>
                 {% if clientconstant.payment_terms < client.creditstatus.calculate_days_overdue %}
                 <h2> This client's credit status is {{ client.creditstatus.calculate_days_overdue }} days overdue. </h2>
@@ -68,13 +69,15 @@
 
                 #TODO: condition to show materials requirement and inventory levels
 
+                <br>
                     <div class="row">
                         <div class="center">
-
-                            <form action="{% url 'sales:confirm-client-po/' clientpo.id  %}" method="POST">
+                            <form method="get">
                                 {% csrf_token %}
-                            <button id="confirm" type = "submit" class="ui green basic button"  style="width: 200px;">Confirm</button>
+                                <input type="submit" class="ui green basic button" value="Confirm" id="confirm_btn" name="confirm_btn">
                             </form>
+                            <!-- <button id="confirm" type = "submit" class="ui green basic button"  style="width: 200px;">Confirm</button> -->
+
                         </div>
                     </div>
 
