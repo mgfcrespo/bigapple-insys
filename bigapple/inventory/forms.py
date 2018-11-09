@@ -1,8 +1,8 @@
 from django import forms
 from django.forms import ModelForm, ValidationError, Form, widgets
 from django.contrib.admin.widgets import AdminDateWidget
-from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, MaterialRequisitionItems, SupplierRawMaterials, InventoryCountAsof
-from .models import PurchaseRequisition, PurchaseRequisitionItems, MaterialRequisition, MaterialRequisitionItems
+from .models import Supplier, SupplierPO, SupplierPOItems, Inventory
+from .models import MaterialRequisition
 from .models import Employee
 from datetime import date, datetime
 from django.forms.formsets import BaseFormSet
@@ -39,6 +39,7 @@ class InventoryForm(forms.ModelForm):
         self.fields['quantity'].required = True
         self.fields['quantity'].widget.attrs['readonly'] = True
 
+'''
 class SupplierRawMaterialsForm(ModelForm):
     ITEM_TYPES = (
         ('Raw Materials', 'Raw Materials'),
@@ -69,9 +70,9 @@ class InventoryCountAsofForm(ModelForm):
     class Meta:
         model = InventoryCountAsof
         fields = ( 'inventory', 'new_count')
+         inventory = forms.ModelChoiceField(queryset=Inventory.objects.all())
 
-        inventory = forms.ModelChoiceField(queryset=Inventory.objects.all())
-
+'''
 class SupplierPOForm(ModelForm):
 
     class Meta:
@@ -88,7 +89,7 @@ class SupplierPOItemsForm(ModelForm):
         model = SupplierPOItems
         fields = ('item', 'quantity')
 
-        inventory = forms.ModelChoiceField(queryset=SupplierRawMaterials.objects.all())
+        inventory = forms.ModelChoiceField(queryset=Inventory.objects.all())
 
     def __init__(self, *args, **kwargs):
         super(SupplierPOItemsForm, self).__init__(*args, **kwargs)
@@ -110,12 +111,7 @@ class MaterialRequisitionForm(forms.ModelForm):
         model = MaterialRequisition
         fields = ()
 
-class MaterialRequisitionItemsForm(forms.ModelForm):
-
-    class Meta:
-        model = MaterialRequisitionItems
-        fields = ('matreq', 'item', 'quantity')
-
+'''
 class PurchaseRequisitionForm(forms.ModelForm):
 
     class Meta:
@@ -139,6 +135,7 @@ class PurchaseRequisitionItemsForm(forms.ModelForm):
 
         item = forms.ModelChoiceField(queryset=Inventory.objects.all())
 
+'''
 class BaseMRFormSet(BaseFormSet):
     def clean(self):
         """

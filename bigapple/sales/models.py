@@ -9,27 +9,14 @@ from decimal import Decimal
 from django.db.models.aggregates import Sum
 from django.db.models import aggregates
 from django.db.models import Prefetch
+from production.models import JobOrder
+#from django.apps import apps
+#JobOrder = apps.get_model('production', 'JobOrder')
 
 from datetime import datetime, date
 from datetime import timedelta
 
-#TODO: Generate object at Client creation
-class ClientConstant(models.Model):
-    PAYMENT_TERMS = (
-        ('30 Days', '30 Days'),
-        ('45 Days', '45 Days'),
-        ('60 Days', '60 Days'),
-        ('90 Days', '90 Days')
-    )
-
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='clientconstant_client')
-    payment_terms = models.CharField('payment terms', choices=PAYMENT_TERMS, max_length=200, default="30 Days")
-    discount = models.DecimalField('discount', decimal_places=2, max_digits=12, default=0)
-    net_vat = models.DecimalField('net_vat', decimal_places=2, max_digits=12, default=.20)
-
-    def __str__(self):
-        return str(self.client)
-
+'''
 #TODO: set prod_price to material cost
 class Product(models.Model):
     RM_TYPES = (
@@ -107,6 +94,45 @@ class ClientPO(models.Model):
         rush_order = self.rush_order_determinant()
         self.rush_order = rush_order
         super(ClientItem, self).save(*args, **kwargs)
+'''
+
+class ProductionCost(models.Model):
+    id = models.IntegerField(primary_key=True)
+    cost_type = models.CharField(max_length=45)
+    cost = models.FloatField()
+
+    class Meta:
+        managed = False
+        db_table = 'sales_mgt_productioncost'
+
+    def __str__(self):
+        return str(self.cost_type)
+
+class Product(models.Model):
+    RM_TYPES = (
+        ('LLDPE', 'Linear low-density polyethylene'),
+        ('LDPE', 'Low-density polyethylene'),
+        ('HDPE', 'High-density polyethylene'),
+        ('PP', 'Polypropylene'),
+        ('PET', 'Polyethylene terephthalate')
+    )
+
+    id = models.IntegerField(primary_key=True)
+    material_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, null=True, blank=True)
+    products = models.CharField('products', max_length=300)
+    prod_price = models.FloatField()
+    constant = models.FloatField()
+    description = models.CharField('description', max_length=200)
+
+    def __str__(self):
+        return str(self.products)
+
+    def save(self, *args, **kwargs):
+        if self.products == "HDPE":
+            self.constant = 31
+        else:
+            self.constant = 30
+        super(Product, self).save(*args, **kwargs)
 
 class ClientItem(models.Model):
     COLOR = (
@@ -129,19 +155,22 @@ class ClientItem(models.Model):
         ('Bottom Seal Single', 'Bottom Seal Single'),
     )
 
-    products = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, default=1, related_name='clientitem_products')
-    laminate = models.BooleanField('laminate', default=True)
-    printed = models.BooleanField('printed', default=True)
-    color_quantity = models.IntegerField('color_quantity', blank=True, default=0, null=True)
-    width = models.DecimalField('width', decimal_places=2, max_digits=12, blank=False)
-    length = models.DecimalField('length', decimal_places=2, max_digits=12, blank=False)
-    thickness = models.DecimalField('thickness', decimal_places=3, max_digits=12, blank=False)
+    id = models.IntegerField(primary_key=True)
+    laminate = models.IntegerField()
+    printed = models.IntegerField()
+    width = models.FloatField()
+    length = models.FloatField()
+    thickness = models.FloatField()
+    quantity = models.IntegerField()
+    item_price = models.FloatField()
+    price_per_piece = models.FloatField()
+    client_po = models.ForeignKey(JobOrder, on_delete=models.CASCADE, db_column='client_po')
     color = models.CharField('color', choices=COLOR, max_length=200, blank=False, default='Plain')
     gusset = models.CharField('gusset', choices=GUSSET, default='None', max_length=200)
-    quantity = models.IntegerField('quantity', blank=False)
-    item_price = models.DecimalField('item_price', decimal_places=2, max_digits=12, default=0)
-    price_per_piece = models.DecimalField('price_per_piece', decimal_places=2, max_digits=12, default=0)
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, null=True, related_name='clientitem_client_po')
+    products = models.ForeignKey(Product, on_delete=models.CASCADE, db_column='products')
+
+    class Meta:
+        db_table = 'sales_mgt_clientitem'
 
     # sample_layout = models.CharField('sample_layout', max_length=200)
 
@@ -161,10 +190,10 @@ class ClientItem(models.Model):
         #Set Constants based on Product picked by client
         material_weight = 0
         material_cost = 0
-        if self.products == "HDPE":
+        if self.product == "HDPE":
             material_weight = 68
             material_cost = ProductionCost.objects.get(cost_type="HDPE_Materials")
-        elif self.products == "LDPE":
+        elif self.product == "LDPE":
             material_weight = 66
             material_cost = ProductionCost.objects.get(cost_type="LDPE_Materials")
         else:
@@ -210,15 +239,7 @@ class ClientItem(models.Model):
         
         '''
 
-
-
 class SalesInvoice(models.Model):
-    PAYMENT_TERMS = (
-        ('30 Days', '30 Days'),
-        ('45 Days', '45 Days'),
-        ('60 Days', '60 Days'),
-        ('90 Days', '90 Days')
-    )
 
     STATUS = (
         ('Open', 'Open'),
@@ -227,22 +248,19 @@ class SalesInvoice(models.Model):
         ('Cancelled', 'Cancelled'),
     )
 
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='salesinvoice_client')
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, related_name='salesinvoice_client_po')
-    date_issued = models.DateField('date_issued', auto_now_add=True, blank=True)
-    date_due = models.DateField('date_due', auto_now_add=True, blank=True)
-    total_amount = models.DecimalField('total_amount', blank=True, decimal_places=2,
-                                       max_digits=12)  # before discount and net_vat
-    total_amount_computed = models.DecimalField('total_amount_computed', blank=True, decimal_places=2,
-                                                max_digits=12)  # after discount and net_vat
-    discount = models.DecimalField('discount', decimal_places=2, max_digits=12, default=0)
-    net_vat = models.DecimalField('net_vat', decimal_places=2, max_digits=12, default=0)
-    amount_due = models.DecimalField('amount_due', blank=True, decimal_places=2,
-                                     max_digits=12)  # (self.total_amount * self.discount * self.net_vat)
+    id = models.IntegerField(primary_key=True)
+    date_issued = models.DateField()
+    date_due = models.DateField()
+    total_amount = models.FloatField()
+    amount_due = models.FloatField()
+    total_paid = models.FloatField()
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    client_po = models.ForeignKey(JobOrder, on_delete=models.CASCADE)
     status = models.CharField('status', choices=STATUS, max_length=200, default="Open")
-    payment_terms = models.CharField('payment terms', choices=PAYMENT_TERMS, max_length=200, default="30 Days")
-    days_passed = models.IntegerField('days_passed', default=0)
-    total_paid = models.DecimalField('total_paid', blank=True, decimal_places=3, max_digits=12, default=0)
+
+    class Meta:
+
+        db_table = 'sales_mgt_salesinvoice'
 
     def __str__(self):
         # lead_zero = str(self.client_po).zfill(5)
@@ -252,8 +270,8 @@ class SalesInvoice(models.Model):
 
 
     def calculate_total_amount_computed(self):
-        total_discount = self.total_amount * self.discount
-        total_net_vat =  self.total_amount * self.net_vat
+        total_discount = self.total_amount * self.client.discount
+        total_net_vat =  self.total_amount * self.client.net_vat
         total = self.total_amount + total_net_vat - total_discount
         return total
 
@@ -264,11 +282,11 @@ class SalesInvoice(models.Model):
         return days
 
     def calculate_date_due(self):
-        if self.payment_terms == "45 Days":
+        if self.client.payment_terms == "45 Days":
             add_days = 45
-        elif self.payment_terms == "60 Days":
+        elif self.client.payment_terms == "60 Days":
             add_days = 60
-        elif self.payment_terms == "90 Days":
+        elif self.client.payment_terms == "90 Days":
             add_days = 90
         else:
             add_days = 30
@@ -277,18 +295,16 @@ class SalesInvoice(models.Model):
         return date_due
 
     def save(self, *args, **kwargs):
-        client_constants = ClientConstant.objects.get(client=self.client)
-        self.payment_terms = client_constants.payment_terms
-        self.discount = client_constants.discount
-        self.net_vat = client_constants.net_vat
+        client = self.client
+        self.payment_terms = client.payment_terms
+        self.discount = client.discount
+        self.net_vat = client.net_vat
         self.total_amount_computed = self.calculate_total_amount_computed()
         self.date_due = self.calculate_date_due()
         self.days_passed = self.calculate_days_passed()
-
-
         super(SalesInvoice, self).save(*args, **kwargs)
 
-
+'''
 class ClientCreditStatus(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='clientcreditstatus_client')
     status = models.BooleanField('status', default=False)
@@ -309,8 +325,6 @@ class ClientCreditStatus(models.Model):
         issued_date = overdue_sales_invoice.date_issued
 
         return (issued_date - date.today()).days
-
-    '''
     
 
     def calculate_payments_sum(self):
@@ -334,36 +348,36 @@ class ClientCreditStatus(models.Model):
     
  '''
 
-    class Meta:
-        verbose_name_plural = "Client credit status"
-
 
 class ClientPayment(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, related_name='clientpayment_client')
-    invoice_issued = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, null=True, related_name='clientpayment_invoice_issued')
-    payment = models.DecimalField('payment', decimal_places=2, max_digits=12,
-                                  default=Decimal(0))  # how much the user paid per invoice
-    payment_date = models.DateField('payment_date', blank=True)
-    credit_status = models.ForeignKey(ClientCreditStatus, on_delete=models.CASCADE, null=True, related_name='clientpayment_credit_status')
-    old_balance = models.DecimalField('old_balance', decimal_places=2, max_digits=12, default=Decimal(0))
-    new_balance = models.DecimalField('new_balance', decimal_places=2, max_digits=12, default=Decimal(0))
+    id = models.IntegerField(primary_key=True)
+    payment = models.FloatField()
+    payment_date = models.DateField()
+    old_balance = models.FloatField()
+    new_balance = models.FloatField()
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE)
+
+    class Meta:
+
+        db_table = 'sales_mgt_clientpayment'
 
     def __str__(self):
         return str(self.id)
 
 
-class PO_Status_History(models.Model):
-    client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, related_name='po_status_history_client_po')
-    date_changed = models.DateTimeField('date_changed', auto_now_add=True, blank=True)
-
-
 class Supplier(models.Model):
-    company_name = models.CharField('company_name', max_length=200)
-    first_name = models.CharField('first_name', max_length=200)
-    last_name = models.CharField('last_name', max_length=200)
-    mobile_number = models.CharField('mobile_number', max_length=11)
-    email_address = models.CharField('email_address', max_length=200)
-    description = models.CharField('description', max_length=200, blank=True)
+    id = models.IntegerField(primary_key=True)
+    company_name = models.CharField(max_length=45)
+    first_name = models.CharField(max_length=45)
+    last_name = models.CharField(max_length=45)
+    mobile_number = models.CharField(max_length=45)
+    email_address = models.CharField(max_length=45)
+    description = models.CharField(max_length=45, blank=True, null=True)
+
+    class Meta:
+
+        db_table = 'sales_mgt_supplier'
 
     def contact_person(self):
         return self.last_name + ", " + str(self.first_name)

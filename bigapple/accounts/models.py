@@ -25,29 +25,28 @@ class Employee(models.Model):
 
     )
 
-    # age = models.IntegerField('age')
-    first_name = models.CharField('first_name', max_length=200)
-    last_name = models.CharField('last_name', max_length=200)
-    birth_date = models.DateField('birth_date')
-    address = models.CharField('address', max_length=200, blank =True)
-    email = models.CharField('email', max_length=200, blank =True)
-    contact_number = models.CharField('contact_number', max_length=200, blank =True)
-    sss = models.CharField('sss', max_length=200, blank =True)
-    philhealth = models.CharField('philhealth', max_length=200, blank =True)
-    pagibig = models.CharField('pagibig', max_length=200, blank =True)
-    tin = models.CharField('tin', max_length=200, blank=True)
+    id = models.IntegerField(primary_key=True)
+    first_name = models.CharField(max_length=45)
+    last_name = models.CharField(max_length=45)
+    address = models.CharField(max_length=45)
+    email = models.CharField(max_length=45)
+    contact_number = models.CharField(max_length=45)
+    sss = models.CharField(max_length=45)
+    philhealth = models.CharField(max_length=45)
+    pagibig = models.CharField(max_length=45)
+    tin = models.CharField(max_length=45)
     position = models.CharField('position', choices=POSITION, max_length=200, default='not specified')
     accounts = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank = True)
+
+
+    class Meta:
+
+        db_table = 'accounts_mgt_employee'
 
     @property
     def full_name(self):
         "Returns the person's full name."
         return '%s %s' % (self.first_name, self.last_name)
-
-    @property
-    def age(self):
-        today = date.today()
-        return today.year - self.birth_date.year - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
 
     def __str__(self):
         return self.full_name
@@ -59,16 +58,27 @@ class Employee(models.Model):
 '''
 
 class Client(models.Model):
-    first_name = models.CharField('first_name', max_length=200, default='')
-    last_name = models.CharField('last_name', max_length=200, default='')
-    company = models.CharField('company', max_length=200)
-    address = models.CharField('address', max_length=200, blank =True)
-    email = models.CharField('email', max_length=200, blank =True)
-    contact_number = models.CharField('contact_number', max_length=200, blank =True)
-    tin = models.CharField('tin', max_length=200, blank=True)
+    id = models.IntegerField(primary_key=True)
+    first_name = models.CharField(max_length=45)
+    last_name = models.CharField(max_length=45)
+    company = models.CharField(max_length=45)
+    address = models.CharField(max_length=45)
+    email = models.CharField(max_length=45)
+    contact_number = models.CharField(max_length=45)
+    tin = models.CharField(max_length=45)
+    sales_agent = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    payment_terms = models.CharField(max_length=45)
+    discount = models.FloatField(blank=True, null=True)
+    net_vat = models.FloatField()
+    credit_status = models.IntegerField()
+    outstanding_balance = models.FloatField()
+    overdue_balance = models.FloatField()
+    remarks = models.CharField(max_length=45, blank=True, null=True)
     accounts = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
-    sales_agent = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True)
 
+    class Meta:
+
+        db_table = 'accounts_mgt_client'
     @property
     def full_name(self):
         "Returns the person's full name."
@@ -76,5 +86,14 @@ class Client(models.Model):
 
     def __str__(self):
         return self.full_name
+
+class AgentClientRel(models.Model):
+    index = models.IntegerField(primary_key=True)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+
+    class Meta:
+
+        db_table = 'accounts_mgt_agentclientrel'
 
 

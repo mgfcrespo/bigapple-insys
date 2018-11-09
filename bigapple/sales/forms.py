@@ -5,7 +5,7 @@ from production.models import JobOrder
 from decimal import Decimal
 from django.contrib.admin.widgets import AdminDateWidget
 
-from .models import ClientItem, ClientPO, Product, Supplier, ClientPayment
+from .models import ClientItem, Product, Supplier, ClientPayment, JobOrder
 from accounts.models import Client, Employee
 
 class DateInput(forms.DateInput):
@@ -18,8 +18,7 @@ class ClientPOFormItems(ModelForm):
 
     class Meta:
         model = ClientItem
-        fields = ('products', 'width', 'length', 'thickness', 'gusset', 'color', 'quantity', 'laminate', 'printed', 'color_quantity')
-        help_texts = {'color_quantity': "Only fill this if printed is checked"}
+        fields = ('products', 'width', 'length', 'thickness', 'gusset', 'color', 'quantity', 'laminate', 'printed')
 
     def __init__(self, *args, **kwargs):
         super(ClientPOFormItems, self).__init__(*args, **kwargs)
@@ -34,27 +33,11 @@ class ClientPOFormItems(ModelForm):
         self.fields['gusset'].required = False
         self.fields['color'].required = True
         self.fields['quantity'].required = True
-        self.fields['color_quantity'].required = False
-        self.fields['color_quantity'].label = 'No. of Printing Colors'
 
     class Media:
         js = ('/static/create_po.js',)
 
-class ClientPOForm(ModelForm):
-    class Meta:
-        model = ClientPO
-        fields = ('date_required', 'other_info')
-        widgets = {
-            'date_required': DateInput()
-        }
-
-        def __init__(self, *args, **kwargs):
-            super(ClientPOForm, self).__init__(*args, **kwargs)
-            self.fields['date_required'].required = True
-            self.fields['date_required'].label = "Date Required"
-            self.fields['other_info'].required = False
-            self.fields['other_info'].label = "Other Info"
-
+'''
 class ClientPOForm2(ModelForm):
     class Meta:
         model = ClientPO
@@ -71,7 +54,7 @@ class ClientPOForm2(ModelForm):
             self.fields['client'].required = True
             self.fields['other_info'].required = False
             self.fields['other_info'].label = "Other Info"
-
+'''
 class ClientPaymentForm(ModelForm):
     class Meta:
         model = ClientPayment
@@ -127,11 +110,9 @@ class EmployeeForm(forms.ModelForm):
 
     class Meta:
         model = Employee
-        fields = ('first_name', 'last_name', 'birth_date', 'address', 'email', 'contact_number', 'sss',
+        fields = ('first_name', 'last_name', 'address', 'email', 'contact_number', 'sss',
         'philhealth', 'pagibig', 'tin', 'position')
-        widgets = {
-            'birth_date': DateInput()
-        }
+
 
     contact_number = forms.CharField(max_length=11)
     position = forms.CharField(widget = forms.Select(choices=POSITION))

@@ -5,10 +5,10 @@ from django.forms import formset_factory, inlineformset_factory
 from django.db.models import aggregates
 from django.contrib import messages
 
-from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, SupplierRawMaterials, InventoryCountAsof, Employee
-from .models import MaterialRequisition, MaterialRequisitionItems, PurchaseRequisition, PurchaseRequisitionItems
-from .forms import SupplierPOItemsForm, InventoryForm, SupplierPOForm, SupplierRawMaterialsForm, InventoryCountAsofForm
-from .forms import MaterialRequisitionForm, MaterialRequisitionItemsForm, PurchaseRequisitionForm, PurchaseRequisitionItemsForm
+from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, Employee
+from .models import MaterialRequisition
+from .forms import SupplierPOItemsForm, InventoryForm, SupplierPOForm
+from .forms import MaterialRequisitionForm
 
 
 # Create your views here.
@@ -77,7 +77,7 @@ def inventory_count_form(request):
 # Inventory Count 
 def inventory_count_form(request, id):
     data = Inventory.objects.get(id=id)
-    form = InventoryCountAsofForm(request.POST)
+    form = InventoryForm(request.POST)
     
     form.fields["inventory"].queryset = Inventory.objects.filter(id=data.id)
     form.fields["inventory"].initial = data.id
@@ -96,16 +96,16 @@ def inventory_count_form(request, id):
             data.save()
 
             i = request.POST.get('inventory')
-            item = InventoryCountAsof.objects.filter(inventory=i) #item previously counted
+            item = i #item previously counted
             print(item)
             if item.exists():
-                counted = InventoryCountAsof.objects.filter(inventory=i).latest('time')#get latest
+                #counted = i.latest('time')#get latest
 
                 new_form = form.save()
                 new_form = new_form.pk
-                form_instance = InventoryCountAsof.objects.get(id=new_form) #get current form
+                form_instance = item #get current form
 
-                form_instance.old_count = counted.new_count
+                form_instance.old_count = i.new_count
                 form_instance.save()
             else:   
                 form.save()
@@ -128,26 +128,26 @@ def inventory_count_form(request, id):
 def inventory_count_list(request, id):
     i = Inventory.objects.get(id=id)
 
-    items = InventoryCountAsof.objects.filter(inventory=id).order_by('-time')
     context = {
 
-        'title': i.item_name,
-        'items' : items
+        'title': i.item
+
     }
     return render (request, 'inventory/inventory_count_list.html', context)
 
 # Supplier Raw Material
 
-
+'''
 def supplier_rawmat_list(request):
     items = SupplierRawMaterials.objects.all()
     context = {
         'title': 'List of Supplier Raw Material',
         'items' : items
     }
+'''
 
 def supplier_details_list(request, id):
-    items = SupplierRawMaterials.objects.filter(supplier = id)
+    items = Inventory.objects.filter(supplier = id)
     data = SupplierPO.objects.filter(id = id)
     title1 = 'Supplier Raw Material'
     title2 = 'Supplier Sales Invoice'
@@ -158,9 +158,9 @@ def supplier_details_list(request, id):
         'data': data
     }
     return render (request, 'inventory/supplier_details_list.html', context)
-
+'''
 def supplier_rawmat_add(request):
-    form = SupplierRawMaterialsForm(request.POST)
+    form = Inventory(request.POST)
     title =  'Add Supplier Raw Material'
 
     if title == 'Add Supplier Raw Material':
@@ -225,7 +225,7 @@ def supplier_rawmat_delete(request, id):
     data = Supplier.objects.get(id = items.supplier.id)
     items.delete()
     return redirect('inventory:supplier_details_list', id = data.id)
-
+'''
 # Material Requisition
 def materials_requisition_list(request):
     mr = MaterialRequisition.objects.all()
@@ -236,33 +236,31 @@ def materials_requisition_list(request):
     return render (request, 'inventory/materials_requisition_list.html', context)
 
 def materials_requisition_details(request, id):
-
     count = 0
     mr = MaterialRequisition.objects.get(id=id) #get MR
-    mri = MaterialRequisitionItems.objects.filter(matreq=mr) #get MR Items 
+
     style = "ui teal message"
 
-    for data in mri:
+    for data in mr:
         i = Inventory.objects.filter(item = data.item)# get Inventory Items 
         for x in i:
             if x.quantity >= data.quantity:
                 count = count+1
     
-    if mri.count() == count:
+    if mr.count() == count:
         style = "ui green message"
     else:
         style = "ui red message"
 
     mr = MaterialRequisition.objects.get(id=id)
-    mri = MaterialRequisitionItems.objects.filter(matreq=mr)
+
     context = {
         'mr' : mr,
         'title' : mr,
-        'mri' : mri,
         'style' : style
     }
     return render(request, 'inventory/materials_requisition_details.html', context)
-
+'''
 def materials_requisition_approval(request, id):
     if request.session['session_position'] == "General Manager":
         template = 'general_manager_page_ui.html'
@@ -441,7 +439,7 @@ def purchase_requisition_form(request):
                               {'formset':purchreq_item_formset(),
                                'form': PurchaseRequisitionForm}
                               )
-
+'''
 
 # Supplier PO
 
@@ -469,7 +467,7 @@ def supplierPO_form(request):
                     form.save()
 
                 formset_items = SupplierPOItems.objects.filter(id = new_form)
-                formset_items_rm = SupplierRawMaterials.objects.filter(id = id)
+                formset_items_rm = Inventory.objects.filter(id = id)
                 formset_items.price = formset_items_rm.price 
 
                 formset_item_total = formset_items.aggregate(sum=aggregates.Sum('total_price'))['sum'] or 0

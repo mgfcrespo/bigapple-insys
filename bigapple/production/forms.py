@@ -5,7 +5,23 @@ from django.contrib.admin.widgets import AdminDateWidget
 from django.utils import formats
 from datetime import date
 
-from .models import ExtruderSchedule, PrintingSchedule, CuttingSchedule, Machine, Employee, JobOrder
+from .models import ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule, Machine, Employee, JobOrder
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+class ClientPOForm(ModelForm):
+    class Meta:
+        model = JobOrder
+        fields = ('date_required',)
+        widgets = {
+            'date_required': DateInput()
+        }
+
+        def __init__(self, *args, **kwargs):
+            super(ClientPOForm, self).__init__(*args, **kwargs)
+            self.fields['date_required'].required = True
+            self.fields['date_required'].label = "Date Required"
 
 class ExtruderScheduleForm(forms.ModelForm):
     SHIFTS = (
@@ -33,16 +49,11 @@ class ExtruderScheduleForm(forms.ModelForm):
         self.fields['remarks'].required = False
 
 class PrintingScheduleForm(forms.ModelForm):
-    
-    DAY = (
-        ('a.m.', 'a.m.'),
-        ('p.m.', 'p.m.')
-    )
 
     class Meta:
         model = PrintingSchedule
         fields = ('job_order', 'machine', 'number_rolls', 'datetime_in', 'datetime_out',
-        'exit_scrap','printing_scrap', 'remarks')
+        'starting_scrap', 'printing_scrap', 'remarks')
         # widgets = {
         # 'time_in': TimeInput(),
         # 'time_out': TimeInput()
@@ -68,7 +79,7 @@ class CuttingScheduleForm(forms.ModelForm):
     class Meta:
         model = CuttingSchedule
         fields = ('job_order', 'machine', 'line', 'datetime_in', 'datetime_out',
-        'quantity', 'output_kilos', 'number_rolls', 'exit_scrap', 'cutting_scrap', 'remarks')
+        'quantity', 'output_kilos', 'number_rolls', 'starting_scrap', 'cutting_scrap', 'remarks')
         # widgets = {
         #     'time_in': TimeInput(),
         #     'time_out': TimeInput()
@@ -82,6 +93,26 @@ class CuttingScheduleForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CuttingScheduleForm, self).__init__(*args, **kwargs)
+        self.fields['remarks'].required = False
+
+class LaminatingScheduleForm(forms.ModelForm):
+
+    class Meta:
+        model = LaminatingSchedule
+        fields = ('job_order', 'machine',  'datetime_in', 'datetime_out',
+        'starting_scrap', 'laminating_scrap', 'remarks')
+        # widgets = {
+        # 'time_in': TimeInput(),
+        # 'time_out': TimeInput()
+        # }
+
+    datetime_in = forms.DateTimeField(widget=forms.widgets.DateTimeInput(format="%d/%m/%Y %H:%M:%S", attrs={'placeholder':"DD/MM/YY HH:MM:SS"}))
+    datetime_out = forms.DateTimeField(widget=forms.widgets.DateTimeInput(format="%d/%m/%Y %H:%M:%S", attrs={'placeholder':"DD/MM/YY HH:MM:SS"}))
+    remarks = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))
+    machine = forms.ModelChoiceField(queryset=Machine.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        super(LaminatingScheduleForm, self).__init__(*args, **kwargs)
         self.fields['remarks'].required = False
 	
 class JODetailsForm(forms.ModelForm):

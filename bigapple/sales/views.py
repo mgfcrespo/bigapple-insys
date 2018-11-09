@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView, ListView, FormView
-from .models import ClientItem, ClientPO, ClientCreditStatus, Product
+from .models import ClientItem, Product
 from django.shortcuts import render, redirect
-from .forms import ClientPOFormItems, ClientPOForm
+from .forms import ClientPOFormItems
 from django.urls import reverse_lazy
 from django.forms import formset_factory, inlineformset_factory
 from datetime import datetime, date
@@ -13,10 +13,11 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse, Http404
 from django.db.models import aggregates
 from production.models import JobOrder
-from .models import Supplier, ClientItem, ClientPO, ClientCreditStatus, Client, SalesInvoice, ClientPayment, ClientConstant
-from inventory.models import Inventory, Supplier, SupplierRawMaterials, SupplierPO, SupplierPOItems
+from .models import Supplier, ClientItem, Client, SalesInvoice, ClientPayment
+from inventory.models import Inventory, Supplier, SupplierPO, SupplierPOItems
 from accounts.models import Employee
-from .forms import ClientPOForm, ClientPOForm2, SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
+from .forms import SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
+from production.forms import ClientPOForm
 from django.contrib.auth.models import User
 from django import forms
 import sys
@@ -24,7 +25,6 @@ from decimal import Decimal
 #from utilities import TimeSeriesForecasting, ganttChart
 
 #Forecasting imports
-
 import numpy as np
 from math import sqrt
 import pandas as pd
@@ -112,7 +112,7 @@ def add_clientPO(request):
 '''
 
 def edit_clientPO(request, id):
-        client_po = ClientPO.objects.get(id=id)
+        client_po = JobOrder.objects.get(id=id)
 
         context = {
             'title': "Edit Purchase Order",
@@ -123,7 +123,7 @@ def edit_clientPO(request, id):
         return render(request, 'sales/edit_clientPO.html/', context)
 
 def delete_clientPO(request, id):
-        client_po = ClientPO.objects.get(id=id)
+        client_po = JobOrder.objects.get(id=id)
         client_po.delete()
         return HttpResponseRedirect('../clientPO_list')
 
@@ -136,23 +136,23 @@ def po_list_view(request):
     employee = Employee.objects.filter(accounts_id = id)
     customer = []
     if client:
-        client_po = ClientPO.objects.filter(client = Client.objects.get(accounts_id = id))
+        client_po = JobOrder.objects.filter(client = Client.objects.get(accounts_id = id))
         position = 'Client'
     elif employee:
         position = 'Employee'
         if request.session['session_position'] == "Sales Coordinator":
-            client_po = ClientPO.objects.all()
+            client_po = JobOrder.objects.all()
         #TODO: Sales Agent access level
         elif request.session['session_position'] == "Sales Agent":
             customer = Client.objects.filter(sales_agent = employee)
-            po = ClientPO.objects.all()
+            po = JobOrder.objects.all()
             client_po = []
             for each in customer:
                 for every in po:
                     if every.client == each:
                         client_po.append(every)
         elif request.session['session_position'] == "General Manager":
-            client_po = ClientPO.objects.all()
+            client_po = JobOrder.objects.all()
 
     context = {
         'title' : "Client Purchase Order",
@@ -163,13 +163,12 @@ def po_list_view(request):
     return render(request, 'sales/clientPO_list.html', context)
 
 class PODetailView(DetailView):
-    model = ClientPO
+    model = JobOrder
     template_name = 'sales/clientPO_detail.html'
 
 def confirm_client_po(request, pk):
-    clientpo = ClientPO.objects.get(pk=pk)
+    clientpo = JobOrder.objects.get(pk=pk)
     client = clientpo.client
-    client_constant = ClientConstant.objects.get(client = client)
 
     if request.GET.get('confirm_btn'):
         clientpo.status = 'Approved'
@@ -190,7 +189,6 @@ def confirm_client_po(request, pk):
         'clientpo': clientpo,
         'pk' : pk,
         'client' : client,
-        'client_constant' : client_constant,
         'price' : price,
         'matreq' : matreq
     }
@@ -229,8 +227,7 @@ def invoice_detail_view(request, pk, *args, **kwargs):
         salesinvoice = SalesInvoice.objects.get(pk=pk)
 
         client = Client.objects.get(id=salesinvoice.client_id)
-        credit_status = ClientCreditStatus.objects.get(client=client)
-        credit_status.save()
+        client.save()
         salesinvoice.save()
 
         form = add_payment(request, pk, *args, **kwargs)
@@ -263,12 +260,10 @@ def add_payment(request, pk, *args, **kwargs):
 
             salesinvoice = SalesInvoice.objects.get(pk=pk)
             client = Client.objects.get(id = salesinvoice.client_id)
-            credit_status = ClientCreditStatus.objects.get(client=client)
 
             payment = ClientPayment.objects.get(id=form.pk)
             payment.client = client
             payment.invoice_issued = salesinvoice
-            payment.credit_status = credit_status
 
             payment.old_balance = salesinvoice.amount_due
             salesinvoice.amount_due -= payment.payment
@@ -278,6 +273,7 @@ def add_payment(request, pk, *args, **kwargs):
 
             salesinvoice.save()
             payment.save()
+            client.save()
 
             form = ClientPaymentForm()
     return form
@@ -288,9 +284,9 @@ def payment_list_view(request):
     client = Client.objects.filter(accounts_id=id)
 
     if client:
-        credits_status = ClientCreditStatus.objects.get(client = client)
+        credits_status = client.credit_status
     else:
-        credits_status = ClientCreditStatus.objects.all()
+        credits_status = Client.objects.all().values_list('credit_status', flat=True)
 
     sales_invoice = SalesInvoice.objects.filter(client = client)
 
@@ -313,7 +309,7 @@ def payment_detail_view(request, pk):
 
     sales_invoice.save()
 
-    po = ClientPO.objects.get(id = sales_invoice_po.id)
+    po = JobOrder.objects.get(id = sales_invoice_po.id)
     po_items = ClientItem.objects.filter(client_po = po)
 
     payments = ClientPayment.objects.filter(invoice_issued=sales_invoice)
@@ -326,16 +322,16 @@ def payment_detail_view(request, pk):
     return render(request, 'sales/client_payment_detail.html', context)
 
 def statement_of_accounts_list_view(request):
-    credits_status = ClientCreditStatus.objects.all()
+    credits_status = Client.objects.all().values_list('credit_status', flat=True)
     client = Client.objects.all()
     sales_agent = Employee.objects.filter(position = 'Sales Agent')
-    client_constant = ClientConstant.objects.filter(client = client)
+    #client_constant = ClientConstant.objects.filter(client = client)
 
     context = {
         'credits_status' : credits_status,
         'client' : client,
         'sales_agent' : sales_agent,
-        'client_constant': client_constant,
+     #   'client_constant': client_constant,
         'date' : datetime.now()
     }
 
@@ -344,7 +340,7 @@ def statement_of_accounts_list_view(request):
 #SAMPLE DYNAMIC FORM
 def create_client_po(request):
     #note: instance should be an object
-    clientpo_item_formset = inlineformset_factory(ClientPO, ClientItem, form=ClientPOFormItems, extra=1, can_delete=True)
+    clientpo_item_formset = inlineformset_factory(JobOrder, ClientItem, form=ClientPOFormItems, extra=1, can_delete=True)
 
     if request.method == "POST":
 
@@ -367,7 +363,7 @@ def create_client_po(request):
             #Save PO form then use newly saved ClientPO as instance for ClientPOItems
             new_form = form.save()
             new_form = new_form.pk
-            form_instance = ClientPO.objects.get(id=new_form)
+            form_instance = JobOrder.objects.get(job_order=new_form)
 
             # Set ClientPO.client from session user
             form_instance.client = current_client
@@ -376,8 +372,8 @@ def create_client_po(request):
             #TODO: Invoice should no be saved if PO is disapproved
 
             #Create JO object with ClientPO as a field
-            jo = JobOrder(client_po = form_instance)
-            jo.save()
+            #jo = JobOrder(client_po = form_instance)
+            #jo.save()
 
             #Use PO form instance for PO items
             formset = clientpo_item_formset(request.POST, instance=form_instance)
@@ -389,7 +385,7 @@ def create_client_po(request):
                 formset_items = ClientItem.objects.filter(client_po_id = new_form)
                 formset_item_total = formset_items.aggregate(sum=aggregates.Sum('item_price'))['sum'] or 0
 
-                totalled_clientpo = ClientPO.objects.get(id=new_form)
+                totalled_clientpo = JobOrder.objects.get(job_order=new_form)
                 totalled_clientpo.total_amount = formset_item_total
                 totalled_clientpo.save()
 
@@ -403,11 +399,9 @@ def create_client_po(request):
                 invoice.amount_due = invoice.total_amount_computed
                 invoice.save()
 
-                credit_status = ClientCreditStatus.objects.get(client_id = current_client)
-                outstanding_balance = credit_status.outstanding_balance
+                outstanding_balance = current_client.outstanding_balance
                 outstanding_balance += invoice.amount_due
-                credit_status.outstanding_balance = outstanding_balance
-                credit_status.save()
+                current_client.save()
 
 
                 message = "PO successfully created"
@@ -432,7 +426,7 @@ def create_client_po(request):
 
 #RUSH ORDER CRUD
 def rush_order_list(request):
-    rush_orders = ClientPO.objects.filter(rush_order = True)
+    rush_orders = JobOrder.objects.filter(rush_order = True)
 
     context = {
         'rush_orders' : rush_orders,
@@ -441,7 +435,7 @@ def rush_order_list(request):
     return render (request, 'sales/rush_order_list.html', context)
 
 def rush_order_assessment(request, pk):
-    rush_order = ClientPO.objects.get(pk=pk)
+    rush_order = JobOrder.objects.get(pk=pk)
     client = rush_order.client
 
     if request.POST.get('approve_btn'):
@@ -450,10 +444,10 @@ def rush_order_assessment(request, pk):
         rush_order.save()
 
     #credit status
-    credit_status = ClientCreditStatus.objects.get(client = client)
-    credit_status = credit_status.status
+    credit_status = Client.objects.all().values_list('credit_status', flat=True)
 
     #cost shit
+
     #matreq
     #simulated sched
 

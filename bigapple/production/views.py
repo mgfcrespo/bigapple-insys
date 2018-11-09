@@ -8,15 +8,17 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView, ListView, FormView
 
 from .forms import JODetailsForm
-from inventory.forms import MaterialRequisitionForm, MaterialRequisitionItemsForm
-from inventory.forms import MaterialRequisition, MaterialRequisitionItems
-from .models import Machine, SalesInvoice, Employee, ClientPO
+from inventory.forms import MaterialRequisitionForm
+from inventory.forms import MaterialRequisition
+from .models import Machine, Employee
 from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule
-from sales.models import ClientItem, ClientPO
+from sales.models import ClientItem, SalesInvoice
 from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm
 
 #scheduling import
 # Import Python wrapper for or-tools constraint solver.
+import ortools.constraint_solver
+from ortools.constraint_solver import pywrapcp
 
 
 from datetime import timedelta as td
@@ -67,7 +69,7 @@ Input can accept deadlines.
 #TODO fix arrange_schedule() to take in 2 parameters (2 2D Lists) based from actual data. Also take note of machine and job count
 def arrange_schedule():
   # Create the solver.
-  solver = pywrapcp.Solver('jobshop')
+  solver = ortools.constraint_solver.pywrapcp.Solver('jobshop')
 
   machines_count = 3
   jobs_count = 3
@@ -392,7 +394,7 @@ def job_order_list(request):
 def job_order_details(request, id):
 		
     data = JobOrder.objects.get(id=id)
-    client_po_data = ClientPO.objects.get(id = data.client_po.id)
+    client_po_data = JobOrder.objects.get(id = data.client_po.id)
     form = JODetailsForm(request.POST or None)
     extrusion = ExtruderSchedule.objects.filter(job_order=data.id).order_by('date', 'time_out')
     printing = PrintingSchedule.objects.filter(job_order=data.id).order_by('date', 'time_out')
@@ -440,7 +442,7 @@ def add_extruder_schedule(request, id):
     data = JobOrder.objects.get(id=id)
     form = ExtruderScheduleForm(request.POST or None)
 	
-    client_po = ClientPO.objects.get(id=data.client_po.id)
+    client_po = JobOrder.objects.get(id=data.client_po.id)
     e = ExtruderSchedule.objects.filter(job_order = data.id)
 
     if e.count == 0:
@@ -485,7 +487,7 @@ def add_printing_schedule(request, id):
     data = JobOrder.objects.get(id=id)
     form = PrintingScheduleForm(request.POST or None)
 	
-    client_po = ClientPO.objects.get(id=data.client_po.id)
+    client_po = JobOrder.objects.get(id=data.client_po.id)
     p = PrintingSchedule.objects.filter(job_order = data.id)
     if p.count == 0:
         data.status = 'Under Printing'
@@ -525,7 +527,7 @@ def add_cutting_schedule(request, id):
     data = JobOrder.objects.get(id=id)
     form = CuttingScheduleForm(request.POST or None)
 	
-    client_po = ClientPO.objects.get(id=data.client_po.id)
+    client_po = JobOrder.objects.get(id=data.client_po.id)
     c = CuttingSchedule.objects.filter(job_order = data.id)
 
     if c.count == 0:
@@ -557,7 +559,7 @@ def add_cutting_schedule(request, id):
 def jo_approval(request, id):
 		
     jo_id = JobOrder.objects.get(id=id) #get JO
-    client_po = ClientPO.objects.get(id = jo_id.client_po.id)
+    client_po = JobOrder.objects.get(id = jo_id.client_po.id)
     client_po.status = 'Approved'
     client_po.save()
     jo_id.status = "On Queue"
@@ -567,7 +569,6 @@ def jo_approval(request, id):
     
     #forms
     form = MaterialRequisitionForm
-    form_items = MaterialRequisitionItemsForm
 
     print("JO:" ,jo_id)
     print("Client PO:" ,jo_id.client_po.id)
@@ -611,14 +612,14 @@ def jo_approval(request, id):
 
 
     if LDPE != 0:
-        MaterialRequisitionItems.objects.create(matreq = mr_id, item = "LDPE", quantity = LDPE)
+        MaterialRequisition.objects.create(matreq = mr_id, item = "LDPE", quantity = LDPE)
     if HDPE != 0:
-        MaterialRequisitionItems.objects.create(matreq = mr_id, item = "HDPE", quantity = HDPE)
+        MaterialRequisition.objects.create(matreq = mr_id, item = "HDPE", quantity = HDPE)
     if PP != 0:
-        MaterialRequisitionItems.objects.create(matreq = mr_id, item = "PP", quantity = PP)
+        MaterialRequisition.objects.create(matreq = mr_id, item = "PP", quantity = PP)
     if PET != 0:
-        MaterialRequisitionItems.objects.create(matreq = mr_id, item = "PET", quantity = PET)
+        MaterialRequisition.objects.create(matreq = mr_id, item = "PET", quantity = PET)
     if LLDPE != 0:
-        MaterialRequisitionItems.objects.create(matreq = mr_id, item = "LLDPE", quantity = LLDPE)
+        MaterialRequisition.objects.create(matreq = mr_id, item = "LLDPE", quantity = LLDPE)
 
     return redirect('production:job_order_details', id = jo_id.id)

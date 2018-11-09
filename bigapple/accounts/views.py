@@ -13,9 +13,9 @@ from .models import Employee
 from .models import Client
 
 from accounts.forms import SignUpForm
-from sales.models import ClientPO, ClientCreditStatus, Supplier
+from sales.models import Supplier
 from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule
-from inventory.models import InventoryCountAsof
+from inventory.models import Inventory
 # Create your views here.
 
 def register(request):

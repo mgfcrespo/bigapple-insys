@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import Machine, JobOrder
-from .models import ExtruderSchedule, PrintingSchedule, CuttingSchedule
+from .models import ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
 
 # Register your models here.
 
@@ -11,3 +11,4 @@ admin.site.register(JobOrder)
 admin.site.register(ExtruderSchedule)
 admin.site.register(PrintingSchedule)
 admin.site.register(CuttingSchedule)
+admin.site.register(LaminatingSchedule)
