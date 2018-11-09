@@ -39,10 +39,9 @@ def user_page_view(request):
         user = request.user
         username = request.user.username
 
-        ClientPO_data = ClientPO.objects.all()
-        rush_orders = ClientPO.objects.filter(rush_order=True)
+        ClientPO_data = JobOrder.objects.all()
+        rush_orders = JobOrder.objects.filter(rush_order=True)
 
-        ClientCreditStatus_data = ClientCreditStatus.objects.all()
         Supplier_data = Supplier.objects.all()
 
         JobOrder_data = JobOrder.objects.all()
@@ -50,18 +49,17 @@ def user_page_view(request):
         PrintingSchedule_data = PrintingSchedule.objects.all()
         CuttingSchedule_data = CuttingSchedule.objects.all()
 
-        InventoryCountAsof_data = InventoryCountAsof.objects.all()
+        Inventory_data = Inventory.objects.all()
 
         context = {
             'ClientPO_data': ClientPO_data,
             'rush_orders': rush_orders,
-            'ClientCreditStatus_data': ClientCreditStatus_data,
             'Supplier_data': Supplier_data,
             'JobOrder_data': JobOrder_data,
             'ExtruderSchedule_data': ExtruderSchedule_data,
             'PrintingSchedule_data': PrintingSchedule_data,
             'CuttingSchedule_data': CuttingSchedule_data,
-            'InventoryCountAsof_data': InventoryCountAsof_data
+            'InventoryCountAsof_data': Inventory_data
         }
 
         request.session['session_username'] = username

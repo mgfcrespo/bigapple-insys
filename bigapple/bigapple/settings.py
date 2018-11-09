@@ -29,19 +29,25 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
-INSTALLED_APPS = [
+'''
     'sales.apps.SalesConfig',
     'production.apps.ProductionConfig',
     'inventory.apps.InventoryConfig',
     'accounts.apps.AccountsConfig',
+    '''
+
+INSTALLED_APPS = [
+    'sales',
+    'production',
+    'inventory',
+    'accounts',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'reset_migrations'
+    #'reset_migrations'
 ]
 
 MIDDLEWARE = [
