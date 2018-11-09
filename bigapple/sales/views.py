@@ -25,14 +25,14 @@ from decimal import Decimal
 #from utilities import TimeSeriesForecasting, ganttChart
 
 #Forecasting imports
-import numpy as np
-from math import sqrt
-import pandas as pd
-import pandas._libs.tslibs.timedeltas
-import matplotlib.pyplot as plt
+#import numpy as np
+#from math import sqrt
+#import pandas as pd
+#import pandas._libs.tslibs.timedeltas
+#import matplotlib.pyplot as plt
 #from sklearn.metrics import mean_squared_error
-from matplotlib.pylab import rcParams
-rcParams['figure.figsize'] = 15, 6
+#from matplotlib.pylab import rcParams
+#rcParams['figure.figsize'] = 15, 6
 
 
 # Create your views here.

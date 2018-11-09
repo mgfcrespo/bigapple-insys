@@ -95,6 +95,7 @@ class JobOrder(models.Model):
         jo = str(self.id).zfill(5)
         return jo
 
+'''
 class MachineSchedule(models.Model):
     job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, null=True, related_name='machineschedule_job_order')
     job_task = models.CharField('job_task', max_length=200, default='Extruder', blank=True)
@@ -103,13 +104,14 @@ class MachineSchedule(models.Model):
 
     def __str__(self):
         return str(self.id)
+'''
 
 class ExtruderSchedule(models.Model):
     index = models.IntegerField(primary_key=True)
-    machine = models.ForeignKey(Machine, on_delete=models.CASCADE, db_column='machine')
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
     shift = models.IntegerField()
-    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, db_column='job_order')
+    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE)
     datetime_in = models.DateTimeField()
     datetime_out = models.DateTimeField()
     weight_rolls = models.FloatField()
@@ -136,10 +138,10 @@ class ExtruderSchedule(models.Model):
 
 class PrintingSchedule(models.Model):
     index = models.IntegerField(primary_key=True)
-    machine = models.ForeignKey(Machine, on_delete=models.CASCADE, db_column='machine')
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
     shift = models.IntegerField()
-    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, db_column='job_order')
+    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE)
     datetime_in = models.DateTimeField()
     datetime_out = models.DateTimeField()
     weight_rolls = models.FloatField()
@@ -166,10 +168,10 @@ class PrintingSchedule(models.Model):
 
 class CuttingSchedule(models.Model):
     index = models.IntegerField(primary_key=True)
-    machine = models.ForeignKey(Machine, on_delete=models.CASCADE, db_column='machine')
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
     shift = models.IntegerField()
-    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, db_column='job_order')
+    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE)
     datetime_in = models.DateTimeField()
     datetime_out = models.DateTimeField()
     weight_rolls = models.FloatField()
@@ -199,10 +201,10 @@ class CuttingSchedule(models.Model):
 
 class LaminatingSchedule(models.Model):
     index = models.IntegerField(primary_key=True)
-    machine = models.ForeignKey(Machine, on_delete=models.CASCADE, db_column='machine')
+    machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
     shift = models.IntegerField()
-    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE, db_column='job_order')
+    job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE)
     datetime_in = models.DateTimeField()
     datetime_out = models.DateTimeField()
     starting_scrap = models.FloatField()

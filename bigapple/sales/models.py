@@ -123,6 +123,7 @@ class Product(models.Model):
     prod_price = models.FloatField()
     constant = models.FloatField()
     description = models.CharField('description', max_length=200)
+    pass
 
     def __str__(self):
         return str(self.products)
@@ -164,10 +165,10 @@ class ClientItem(models.Model):
     quantity = models.IntegerField()
     item_price = models.FloatField()
     price_per_piece = models.FloatField()
-    client_po = models.ForeignKey(JobOrder, on_delete=models.CASCADE, db_column='client_po')
+    client_po = models.ForeignKey(JobOrder, on_delete=models.CASCADE)
     color = models.CharField('color', choices=COLOR, max_length=200, blank=False, default='Plain')
     gusset = models.CharField('gusset', choices=GUSSET, default='None', max_length=200)
-    products = models.ForeignKey(Product, on_delete=models.CASCADE, db_column='products')
+    products = models.ForeignKey(Product, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'sales_mgt_clientitem'
