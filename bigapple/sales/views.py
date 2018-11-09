@@ -132,18 +132,18 @@ def delete_clientPO(request, id):
 def po_list_view(request):
     user = request.user
     id = user.id
-    client = Client.objects.filter(accounts_id = id)
-    employee = Employee.objects.filter(accounts_id = id)
+    client = Client.objects.get(accounts_id = id)
+    employee = Employee.objects.get(accounts_id = id)
     customer = []
     if client:
         client_po = JobOrder.objects.filter(client = Client.objects.get(accounts_id = id))
         position = 'Client'
     elif employee:
         position = 'Employee'
-        if request.session['session_position'] == "Sales Coordinator":
+        if employee.position == "Sales Coordinator":
             client_po = JobOrder.objects.all()
         #TODO: Sales Agent access level
-        elif request.session['session_position'] == "Sales Agent":
+        elif employee.position == "Sales Agent":
             customer = Client.objects.filter(sales_agent = employee)
             po = JobOrder.objects.all()
             client_po = []
@@ -151,7 +151,7 @@ def po_list_view(request):
                 for every in po:
                     if every.client == each:
                         client_po.append(every)
-        elif request.session['session_position'] == "General Manager":
+        elif employee.position == "General Manager":
             client_po = JobOrder.objects.all()
 
     context = {
