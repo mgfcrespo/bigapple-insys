@@ -135,7 +135,7 @@
                 <i class="chart line icon"></i>
                 Inventory Forecast
             </a>
-            <a href="{% url 'inventory:supplier_rawmat_add' %}" class="item">
+            <a href="{% url 'inventory:inventory_item_add' %}" class="item">
                 <i class="dolly icon"></i>
                 Add Raw Material
             </a>
@@ -233,7 +233,7 @@
                 <i class="chart line icon"></i>
                 Inventory Forecast
             </a>
-            <a href="{% url 'inventory:supplier_rawmat_add' %}" class="item">
+            <a href="{% url 'inventory:inventory_item_add' %}" class="item">
                 <i class="dolly icon"></i>
                 Add Raw Material
             </a>
@@ -312,13 +312,11 @@
         <i class="file outline icon"></i>
         Physical Inventory Count
     </a>
-
     <a href="{% url 'inventory:inventory_item_list' %}" class="item">
         <i class="warehouse icon"></i>
         Inventory
     </a>
-
-    <a href="{% url 'inventory:inventory_item_list' %}" class="item">
+    <a href="{% url 'inventory:inventory_item_add' %}" class="item">
         <i class="warehouse icon"></i>
         <i class="plus icon"></i>
         Add Inventory Items
@@ -326,20 +324,6 @@
     <a href="{% url 'inventory:materials_requisition_list' %}" class="item">
         <i class="dolly flatbed icon"></i>
         Materials Requisitions
-    </a>
-    <a href="" class="item">
-        <i class="dolly flatbed icon"></i>
-        <i class="plus icon"></i>
-        Create Materials Requisition
-    </a>
-    <a href="{% url 'inventory:purchase_requisition_list' %}" class="item">
-        <i class="clipboard list icon"></i>
-        Purchase Requisition
-    </a>
-    <a href="{% url 'inventory:purchase_requisition_form' %}" class="item">
-        <i class="clipboard list icon"></i>
-        <i class="plus icon"></i>
-        Create Purchase Requisition
     </a>
 
 </div>
