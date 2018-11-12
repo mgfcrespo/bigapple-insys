@@ -6,7 +6,6 @@
     <div class="row">
         <div class="ui segment eight wide column">
             <p>Note: Minimum Order Quantity per item is 10,000 pcs. Order quantities below MOQ will be priced based on MOQ</p>
-            <p>Note: "No. of print colors" is only viable for printed orders</p>
         </div>
          <div class="one wide column">
             {% csrf_token %}
@@ -16,16 +15,15 @@
         <table class = "ui striped table center aligned">
             <thead>
             <tr>
-                <th class="two wide">Material Type</th>
+                <th class="two wide">Item</th>
                 <th class="one wide">Width (inches)</th>
                 <th class="one wide">Length (inches)</th>
                 <th class="one wide">Thickness (inches)</th>
                 <th class="one wide">Gusset</th>
                 <th class="one wide">Color</th>
                 <th class="two wide">Quantity</th>
-                <th class="one wide">Laminate</th>
+                <th class="one wide">Laminated</th>
                 <th class="one wide">Printed</th>
-                <th class="one wide">No. of Print Colors</th>
             </tr>
             </thead>
             <tbody>
@@ -41,7 +39,6 @@
                     <td>{{form.quantity}}</td>
                     <td>{{form.laminate}}</td>
                     <td>{{form.printed}}</td>
-                    <td>{{form.color_quantity}}</td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -12,20 +12,26 @@
                             {% csrf_token %}
                             <div class="row">
                                 <div class="input-field col s12">
-                                    {{form.rm_name}}
-                                    <label for="supplier">RM Name:</label>
+                                    {{form.item}}
+                                    <label for="supplier">Item</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
                                     {{ form.rm_type }}
-                                    <label for="item_name">RM Type:</label>
+                                    <label for="item_name">Material Type (for Raw Materials)</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    {{ form.quantity }}
-                                    <label for="item_type">Quantity:</label>
+                                    {{ form.price }}
+                                    <label for="item_type">Price per piece</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    {{ form.description }}
+                                    <label for="item_type">Description</label>
                                 </div>
                             </div>
                             <div class="row">

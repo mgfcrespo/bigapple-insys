@@ -132,39 +132,41 @@ def delete_clientPO(request, id):
 def po_list_view(request):
     user = request.user
     id = user.id
-    client = Client.objects.get(accounts_id = id)
-    employee = Employee.objects.get(accounts_id = id)
-    customer = []
+    client = Client.objects.filter(accounts_id = id)
+    employee = Employee.objects.filter(accounts_id = id)
+    x = ''
     if client:
         client_po = JobOrder.objects.filter(client = Client.objects.get(accounts_id = id))
-        position = 'Client'
+        x = 'Client'
     elif employee:
-        position = 'Employee'
-        if employee.position == "Sales Coordinator":
+        x = 'Employee'
+        if Employee.objects.get(accounts_id = id).position == "Sales Coordinator" or "General Manager":
             client_po = JobOrder.objects.all()
         #TODO: Sales Agent access level
         elif employee.position == "Sales Agent":
             customer = Client.objects.filter(sales_agent = employee)
             po = JobOrder.objects.all()
             client_po = []
-            for each in customer:
-                for every in po:
-                    if every.client == each:
-                        client_po.append(every)
-        elif employee.position == "General Manager":
-            client_po = JobOrder.objects.all()
+            #for each in customer:
+             #   for every in po:
+              #      if every.client == each:
+               #         client_po.append(every)
 
     context = {
         'title' : "Client Purchase Order",
         'client_po' : client_po,
-        'position' : position
+        'x' : x
     }
 
     return render(request, 'sales/clientPO_list.html', context)
 
-class PODetailView(DetailView):
-    model = JobOrder
-    template_name = 'sales/clientPO_detail.html'
+def po_detail_view(request, pk):
+    client_po = JobOrder.objects.get(pk=pk)
+
+    context = {'client_po': client_po}
+
+    return render(request, 'sales/clientPO_detail.html', context)
+
 
 def confirm_client_po(request, pk):
     clientpo = JobOrder.objects.get(pk=pk)
@@ -172,15 +174,17 @@ def confirm_client_po(request, pk):
 
     if request.GET.get('confirm_btn'):
         clientpo.status = 'Approved'
-        #clientpo.save()
+        clientpo.save()
 
     item = ClientItem.objects.get(client_po = clientpo)
     price = item.calculate_price_per_piece() * item.quantity
-    products = item.products.material_type
+    products = item.products
+    material = products.material_type
 
-    inventory = Inventory.objects.get(rm_type=products)
+    inventory = Inventory.objects.get(rm_type=material)
+    quantity = inventory.quantity
 
-    if (inventory.quantity > 0):
+    if quantity > 0:
         matreq = True
     else:
         matreq = False
@@ -281,17 +285,15 @@ def add_payment(request, pk, *args, **kwargs):
 def payment_list_view(request):
     user = request.user
     id = user.id
-    client = Client.objects.filter(accounts_id=id)
+    client = Client.objects.get(accounts_id=id)
 
-    if client:
-        credits_status = client.credit_status
-    else:
-        credits_status = Client.objects.all().values_list('credit_status', flat=True)
-
-    sales_invoice = SalesInvoice.objects.filter(client = client)
+    client = client
+    sales_invoice = SalesInvoice.objects.filter(client=client)
+    client_payment = ClientPayment.objects.filter(client = client)
 
     context = {
-        'credit_status' : credits_status,
+        'client' : client,
+        'client_payment' : client_payment,
         'sales_invoice' : sales_invoice
     }
 
@@ -322,16 +324,13 @@ def payment_detail_view(request, pk):
     return render(request, 'sales/client_payment_detail.html', context)
 
 def statement_of_accounts_list_view(request):
-    credits_status = Client.objects.all().values_list('credit_status', flat=True)
     client = Client.objects.all()
-    sales_agent = Employee.objects.filter(position = 'Sales Agent')
-    #client_constant = ClientConstant.objects.filter(client = client)
+    sales_invoice = SalesInvoice.objects.all()
+
 
     context = {
-        'credits_status' : credits_status,
         'client' : client,
-        'sales_agent' : sales_agent,
-     #   'client_constant': client_constant,
+        'sales_invoice' : sales_invoice,
         'date' : datetime.now()
     }
 
@@ -349,6 +348,8 @@ def create_client_po(request):
         #Get session user id
         client_id = request.session['session_userid']
         current_client = Client.objects.get(id=client_id)
+        form.client = current_client
+        form.save()
 
         '''
         #check if client has overdue balance
@@ -363,9 +364,9 @@ def create_client_po(request):
             #Save PO form then use newly saved ClientPO as instance for ClientPOItems
             new_form = form.save()
             new_form = new_form.pk
-            form_instance = JobOrder.objects.get(job_order=new_form)
+            form_instance = JobOrder.objects.get(id=new_form)
 
-            # Set ClientPO.client from session user
+            #Set ClientPO.client from session user
             form_instance.client = current_client
             form_instance.save()
 
@@ -385,7 +386,8 @@ def create_client_po(request):
                 formset_items = ClientItem.objects.filter(client_po_id = new_form)
                 formset_item_total = formset_items.aggregate(sum=aggregates.Sum('item_price'))['sum'] or 0
 
-                totalled_clientpo = JobOrder.objects.get(job_order=new_form)
+                totalled_clientpo = JobOrder.objects.get(id=new_form)
+                totalled_clientpo.client = current_client
                 totalled_clientpo.total_amount = formset_item_total
                 totalled_clientpo.save()
 
@@ -395,8 +397,8 @@ def create_client_po(request):
 
                 #TODO: Invoice should not be issued unless JO is complete
 
-                #invoice = SalesInvoice.objects.get(id=invoice.pk)
-                invoice.amount_due = invoice.total_amount_computed
+                invoice = SalesInvoice.objects.get(id=invoice.pk)
+                invoice.amount_due = invoice.calculate_total_amount_computed
                 invoice.save()
 
                 outstanding_balance = current_client.outstanding_balance
@@ -447,14 +449,31 @@ def rush_order_assessment(request, pk):
     credit_status = Client.objects.all().values_list('credit_status', flat=True)
 
     #cost shit
+    items = ClientItem.objects.filter(client_po = rush_order)
+    #profit =
 
     #matreq
+    products = []
+    material = []
+    for each in items:
+        products.append(each.products)
+        material.append(each.material_type)
+    #TODO: get each item's material requirement
+    inventory = Inventory.objects.get(rm_type=material)
+    quantity = inventory.quantity
+
+    if quantity > 0:
+        matreq = True
+    else:
+        matreq = False
+
     #simulated sched
 
     context = {
         'rush_order' : rush_order,
         'credit_status' : credit_status,
-
+        'matreq' : matreq,
+        #'simulated_sched' : simulated_sched
     }
 
     return render(request, 'sales/rush_order_assessment.html', context)

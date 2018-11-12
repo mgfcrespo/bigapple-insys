@@ -4,14 +4,16 @@ from django.forms import ModelForm, BaseModelFormSet
 from datetime import date, datetime
 
 from django.urls import reverse
+from traitlets import Float
+
 from accounts.models import Client
 from decimal import Decimal
 from django.db.models.aggregates import Sum
 from django.db.models import aggregates
 from django.db.models import Prefetch
 from production.models import JobOrder
-#from django.apps import apps
-#JobOrder = apps.get_model('production', 'JobOrder')
+# from django.apps import apps
+# JobOrder = apps.get_model('production', 'JobOrder')
 
 from datetime import datetime, date
 from datetime import timedelta
@@ -96,17 +98,6 @@ class ClientPO(models.Model):
         super(ClientItem, self).save(*args, **kwargs)
 '''
 
-class ProductionCost(models.Model):
-    id = models.IntegerField(primary_key=True)
-    cost_type = models.CharField(max_length=45)
-    cost = models.FloatField()
-
-    class Meta:
-        managed = False
-        db_table = 'sales_mgt_productioncost'
-
-    def __str__(self):
-        return str(self.cost_type)
 
 class Product(models.Model):
     RM_TYPES = (
@@ -134,6 +125,19 @@ class Product(models.Model):
         else:
             self.constant = 30
         super(Product, self).save(*args, **kwargs)
+
+
+class ProductionCost(models.Model):
+    id = models.IntegerField(primary_key=True)
+    cost_type = models.CharField(max_length=45)
+    cost = models.FloatField()
+
+    def __str__(self):
+        return str(self.cost_type)
+
+    class Meta:
+        db_table = 'sales_mgt_productioncost'
+
 
 class ClientItem(models.Model):
     COLOR = (
@@ -179,8 +183,8 @@ class ClientItem(models.Model):
         return str(self.id)
 
     def calculate_price_per_piece(self):
-        #Set Production Costs
-        electricity = ProductionCost.objects.get(cost_type = 'Electricity')
+        # Set Production Costs
+        electricity = ProductionCost.objects.get(cost_type='Electricity')
         mark_up = ProductionCost.objects.get(cost_type='Mark_up')
         ink = ProductionCost.objects.get(cost_type='Ink')
         cylinder = ProductionCost.objects.get(cost_type='Cylinder')
@@ -188,40 +192,40 @@ class ClientItem(models.Model):
         art_work = ProductionCost.objects.get(cost_type='Artwork')
         lamination = ProductionCost.objects.get(cost_type='Lamination')
 
-        #Set Constants based on Product picked by client
+        # Set Constants based on Product picked by client
         material_weight = 0
         material_cost = 0
-        if self.product == "HDPE":
+        if self.products == "HDPE":
             material_weight = 68
             material_cost = ProductionCost.objects.get(cost_type="HDPE_Materials")
-        elif self.product == "LDPE":
+        elif self.products == "LDPE":
             material_weight = 66
             material_cost = ProductionCost.objects.get(cost_type="LDPE_Materials")
         else:
             material_weight = 66
             material_cost = ProductionCost.objects.get(cost_type="PP_Materials")
 
-        #Get the tens of order quantity (Sets quantity standard qty if order is below MOQ)
+        # Get the tens of order quantity (Sets quantity standard qty if order is below MOQ)
         order_qty = self.quantity / 1000
         if order_qty < 10:
             order_qty = 10
 
-        order_qty = Decimal(order_qty)
-        #Set printing cost (if viable)
+        # Set printing cost (if viable)
         printing_cost = 0
         lamination_cost = 0
         if self.printed == True:
-            printing_cost += (art_work.cost * self.color_quantity) + \
-                         (art_labor.cost/order_qty) + (cylinder.cost/order_qty) + (ink.cost/order_qty)
+            printing_cost += (art_work.cost) + \
+                             (art_labor.cost / order_qty) + (cylinder.cost / order_qty) + (ink.cost / order_qty)
 
         if self.laminate == True:
-            lamination_cost += lamination.cost/order_qty
+            lamination_cost += lamination.cost / order_qty
 
-        price_per_piece = Decimal('0.0')
-        #Calculate total per item
+        price_per_piece = float(0.0)
+        # Calculate total per item
         price_per_piece += (self.length * self.width * self.thickness * material_weight * \
-                 (material_cost.cost + (material_cost.cost * mark_up.cost) + (material_cost.cost * electricity.cost)) \
-                     + order_qty + printing_cost + lamination_cost)/1000
+                            (material_cost.cost + (material_cost.cost * mark_up.cost) + (
+                                        material_cost.cost * electricity.cost)) \
+                            + order_qty + printing_cost + lamination_cost) / 1000
 
         return price_per_piece
 
@@ -240,8 +244,8 @@ class ClientItem(models.Model):
         
         '''
 
-class SalesInvoice(models.Model):
 
+class SalesInvoice(models.Model):
     STATUS = (
         ('Open', 'Open'),
         ('Closed', 'Closed'),
@@ -253,6 +257,7 @@ class SalesInvoice(models.Model):
     date_issued = models.DateField()
     date_due = models.DateField()
     total_amount = models.FloatField()
+    total_amount_computed = models.FloatField(null=True, blank=True)
     amount_due = models.FloatField()
     total_paid = models.FloatField()
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
@@ -260,7 +265,6 @@ class SalesInvoice(models.Model):
     status = models.CharField('status', choices=STATUS, max_length=200, default="Open")
 
     class Meta:
-
         db_table = 'sales_mgt_salesinvoice'
 
     def __str__(self):
@@ -269,17 +273,16 @@ class SalesInvoice(models.Model):
         po_number = self.client_po
         return str(po_number)
 
-
     def calculate_total_amount_computed(self):
-        total_discount = self.total_amount * self.client.discount
-        total_net_vat =  self.total_amount * self.client.net_vat
-        total = self.total_amount + total_net_vat - total_discount
+        total_discount = float(self.total_amount * self.client.discount)
+        total_net_vat = float(self.total_amount * self.client.net_vat)
+        total = float(self.total_amount + total_net_vat - total_discount)
         return total
 
     def calculate_days_passed(self):
         start_date = self.date_due
         end_date = date.today()
-        days = start_date - end_date
+        days = (start_date - end_date).days
         return days
 
     def calculate_date_due(self):
@@ -304,6 +307,7 @@ class SalesInvoice(models.Model):
         self.date_due = self.calculate_date_due()
         self.days_passed = self.calculate_days_passed()
         super(SalesInvoice, self).save(*args, **kwargs)
+
 
 '''
 class ClientCreditStatus(models.Model):
@@ -360,7 +364,6 @@ class ClientPayment(models.Model):
     invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE)
 
     class Meta:
-
         db_table = 'sales_mgt_clientpayment'
 
     def __str__(self):
@@ -377,7 +380,6 @@ class Supplier(models.Model):
     description = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
-
         db_table = 'sales_mgt_supplier'
 
     def contact_person(self):

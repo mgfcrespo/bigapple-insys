@@ -13,12 +13,16 @@
         	<thead>
           	<tr>
           	  <th>Account Balance</th>
-                <td>{{credit_status.outstanding_balance}}</td>
+
+                <td>{{ client.outstanding_balance }}</td>
+
                 </tr>
 
             <tr>
           	  <th>Balance Overdue</th>
-                <td>{{credit_status.overdue_balance}}</td>
+
+                <td>{{ client.overdue_balance }}</td>
+
                 </tr>
             </thead>
         </table>
@@ -34,7 +38,7 @@
 		<table class= "ui celled padded table" id="Invoice">
         	<thead>
           	<tr>
-          	  	<th>PO#</th>
+          	  	<th>PO #</th>
                 <th>Date Issued</th>
                 <th>Date Due</th>
                 <th>Total Amount</th>

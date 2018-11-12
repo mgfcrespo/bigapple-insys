@@ -1,7 +1,7 @@
 {% extends 'sidebar.html' %}
 {% block content %}
 
-<h3 class="ui dividing header">{{ clientpo }}</h3>
+<h3 class="ui dividing header">{{ client_po }}</h3>
  <table class="ui cell padded table">
         	<thead>
           	<tr>
@@ -23,7 +23,7 @@
 
             <tbody>
 
-                {% for clientitem in clientpo.clientitem_set.all %}
+                {% for clientitem in client_po.clientitem_set.all %}
                 <tr>
                     <td>{{ clientitem.products }}</td>
 
@@ -53,7 +53,7 @@
                 </tr>
                 {% endfor %}
 
-                <tr>Grand Total: {{clientpo.total_amount}}</tr>
+                <tr>Grand Total: {{client_po.total_amount}}</tr>
 
 
 			</tbody>

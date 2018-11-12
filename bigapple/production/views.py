@@ -11,9 +11,9 @@ from .forms import JODetailsForm
 from inventory.forms import MaterialRequisitionForm
 from inventory.forms import MaterialRequisition
 from .models import Machine, Employee
-from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule
+from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
 from sales.models import ClientItem, SalesInvoice
-from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm
+from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm, LaminatingScheduleForm
 
 #scheduling import
 # Import Python wrapper for or-tools constraint solver.
@@ -431,25 +431,15 @@ def finished_job_order_list_view(request):
 
 # EXTRUDER 
 def add_extruder_schedule(request, id):
-	
-    if request.session['session_position'] == "General Manager":
-        template = 'general_manager_page_ui.html'
-    elif request.session['session_position'] == "Production Manager":
-        template = 'production_manager_page_ui.html'
-    else:
-        template = 'line_leader_page_ui.html'
 		
     data = JobOrder.objects.get(id=id)
     form = ExtruderScheduleForm(request.POST or None)
-	
-    client_po = JobOrder.objects.get(id=data.client_po.id)
+
     e = ExtruderSchedule.objects.filter(job_order = data.id)
 
     if e.count == 0:
         data.status = 'Under Cutting'
-        client_po.status = 'Under Production'
         data.save()
-        client_po.save()
 		
     print(form.errors)
     if request.method == 'POST':
@@ -468,32 +458,21 @@ def add_extruder_schedule(request, id):
     context = {
       'data': data,
       'title' : data.job_order,
-      'form': form,
-	  'template' : template
+      'form': form
     }
     
     return render (request, 'production/add_extruder_schedule.html', context)
 
 # PRINTING
 def add_printing_schedule(request, id):
-	
-    if request.session['session_position'] == "General Manager":
-        template = 'general_manager_page_ui.html'
-    elif request.session['session_position'] == "Production Manager":
-        template = 'production_manager_page_ui.html'
-    else:
-        template = 'line_leader_page_ui.html'
 		
     data = JobOrder.objects.get(id=id)
     form = PrintingScheduleForm(request.POST or None)
-	
-    client_po = JobOrder.objects.get(id=data.client_po.id)
+
     p = PrintingSchedule.objects.filter(job_order = data.id)
     if p.count == 0:
         data.status = 'Under Printing'
-        client_po.status = 'Under production'
         data.save()
-        client_po.save()
 		
     print(form.errors)
     if request.method == 'POST':
@@ -508,33 +487,22 @@ def add_printing_schedule(request, id):
     context = {
       'data': data,
       'title' : data.job_order,
-      'form': form,
-	  'template' : template
+      'form': form
     }
     
     return render (request, 'production/add_printing_schedule.html', context)
 
 # CUTTING
 def add_cutting_schedule(request, id):
-	
-    if request.session['session_position'] == "General Manager":
-        template = 'general_manager_page_ui.html'
-    elif request.session['session_position'] == "Production Manager":
-        template = 'production_manager_page_ui.html'
-    else:
-        template = 'line_leader_page_ui.html'
 		
     data = JobOrder.objects.get(id=id)
     form = CuttingScheduleForm(request.POST or None)
-	
-    client_po = JobOrder.objects.get(id=data.client_po.id)
+
     c = CuttingSchedule.objects.filter(job_order = data.id)
 
     if c.count == 0:
         data.status = 'Under Cutting'
-        client_po.status = 'Under production'
         data.save()
-        client_po.save()
 		
     print(form.errors)
     if request.method == 'POST':
@@ -549,12 +517,39 @@ def add_cutting_schedule(request, id):
     context = {
       'data': data,
       'title' : data.job_order,
-      'form': form,
-	  'template' : template
+      'form': form
     }
     
     return render (request, 'production/add_cutting_schedule.html', context)
 
+
+def add_laminating_schedule(request, id):
+    data = JobOrder.objects.get(id=id)
+    form = LaminatingScheduleForm(request.POST or None)
+
+    l = LaminatingSchedule.objects.filter(job_order=data.id)
+
+    if l.count == 0:
+        data.status = 'Under Laminating'
+        data.save()
+
+    print(form.errors)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            return redirect('production:job_order_details', id=data.id)
+
+    form.fields["machine"].queryset = Machine.objects.filter(machine_type='Laminating')
+    form.fields["job_order"].queryset = JobOrder.objects.filter(id=data.id)
+    form.fields["job_order"].initial = data.id
+
+    context = {
+        'data': data,
+        'title': data.job_order,
+        'form': form
+    }
+
+    return render(request, 'production/add_laminating_schedule.html', context)
 # JO approval 
 def jo_approval(request, id):
 		

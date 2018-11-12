@@ -4,11 +4,6 @@ from datetime import date, timezone
 from accounts.models import Employee 
 from sales.models import Supplier, ClientItem
 
-from django.apps import apps
-
-#ClientItem = apps.get_model('sales', 'ClientItem')
-#Supplier = apps.get_model('sales', 'Supplier')
-
 
 # Create your models here.
 

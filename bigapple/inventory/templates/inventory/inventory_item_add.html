@@ -12,17 +12,29 @@
             </div>
             <div class="fields">
                 <div class="field">
-                    <label>Type</label>
+                    <label>Item Type</label>
                     {{ form.item_type }}
+                </div>
+                <div class="field">
+                    <label>Material Type (for Raw Materials)</label>
+                    {{ form.rm_type }}
                 </div>
                 <div class="field">
                     <label>Quantity</label>
                     {{ form.quantity }}
                 </div>
+                <div class="field">
+                <label>Price per unit</label>
+                {{ form.price }}
+            </div>
+                <div class="field">
+                <label>Supplier</label>
+                {{ form.supplier }}
             </div>
             <div class="field">
                 <label>Description</label>
                 {{ form.description }}
+            </div>
             </div>
 
 

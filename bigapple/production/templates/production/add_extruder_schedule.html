@@ -1,5 +1,4 @@
-{% extends template %}
-
+{% extends 'sidebar.html' %}
 {% block content %}
 
 <h3 class="ui dividing header">{{ title }}</h3>
@@ -21,20 +20,12 @@
                 </div>    
                 <div class = "three wide field"></div>
                 <div class = "three wide field">
-                    <label>Time In:</label>
-                    {{ form.time_in }}
-                </div>
-                <div class = "two wide field">
-                    <label>Day In:</label>
-                    {{ form.day_in }}
+                    <label>Date and Time In:</label>
+                    {{ form.datetime_in }}
                 </div>
                 <div class = "three wide field">
-                    <label>Time Out:</label>
-                    {{ form.time_out }}
-                </div>
-                <div class = "two wide field">
-                    <label>Day Out:</label>
-                    {{ form.day_out }}
+                    <label>Date and Time Out:</label>
+                    {{ form.datetime_out }}
                 </div>
             </div>    
 
@@ -46,10 +37,6 @@
                 <div class="field">
                     <label>Core Weight:</label>
                     {{ form.core_weight }}
-                </div>
-                <div class="field">
-                    <label>Net Weight:</label>
-                    {{ form.net_weight }}
                 </div>
                 <div class="field">
                     <label>Output Kilos:</label>

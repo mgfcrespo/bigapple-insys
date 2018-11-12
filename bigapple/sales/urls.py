@@ -7,7 +7,7 @@ app_name='sales'
 urlpatterns = [
 			#PO urls
 			path('po-list-view/', views.po_list_view, name='po-list-view'),
-			path('po-list-view/PO<int:pk>/', views.PODetailView.as_view(), name='po-detail-view'),
+			path('po-list-view/PO<int:pk>/', views.po_detail_view, name='po-detail-view'),
 			path('create-client-po-form/', views.create_client_po, name='create-client-po-form'),
 			path('confirm-client-po/<int:pk>/', views.confirm_client_po, name='confirm-client-po'),
 

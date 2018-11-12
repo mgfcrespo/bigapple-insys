@@ -14,28 +14,33 @@
             </tr>
         </thead>
         <tbody>
-            {% for ClientCreditStatus in credits_status %}
+            {% for each in client %}
             <tr>
                 <td>
-                    {{ ClientCreditStatus.client }}
+                    {{ each }}
                 </td>
                 <td>
-                    {{ ClientCreditStatus.outstanding_balance }}
+                    {{ each.outstanding_balance }}
                 </td>
                 <td>
-                    {{ ClientCreditStatus.overdue_balance }}
+                    {{ each.overdue_balance }}
                 </td>
                 <td>
-                    {{ ClientCreditStatus.calculate_days_overdue }}
+                    {% for every in sales_invoice %}
+                        {% if sales_invoice.client == each %}
+                        {{ every.calculate_days_overdue }}
+
+                        {% endif %}
+                    {% endfor %}
                 </td>
                 <td>
-                    {{ ClientCreditStatus.client.client_constant.payment_terms }}
+                    {{ each.payment_terms }}
                 </td>
                 <td>
-                    {{ ClientCreditStatus.client.sales_agent }}
+                    {{ each.sales_agent }}
                 </td>
                 <td>
-                    {{ ClientCreditStatus.remarks }}
+                    {{ each.remarks }}
                 </td>
             </tr>
             {% endfor %}

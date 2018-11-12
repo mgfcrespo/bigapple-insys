@@ -15,7 +15,7 @@ class ClientPOForm(ModelForm):
         model = JobOrder
         fields = ('date_required',)
         widgets = {
-            'date_required': DateInput()
+            'date_required': DateInput(),
         }
 
         def __init__(self, *args, **kwargs):

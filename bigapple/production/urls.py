@@ -14,4 +14,5 @@ urlpatterns = [
         path('add-extruder-schedule/<int:id>', views.add_extruder_schedule, name='add_extruder_schedule'),
         path('add-printing-schedule/<int:id>', views.add_printing_schedule, name='add_printing_schedule'),
         path('add-cutting-schedule/<int:id>', views.add_cutting_schedule, name='add_cutting_schedule'),
+        path('add-laminating-schedule/<int:id>', views.add_laminating_schedule, name='add_laminating_schedule'),
 ];

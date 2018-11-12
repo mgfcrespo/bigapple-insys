@@ -2,8 +2,9 @@ from django.db import models
 from decimal import Decimal
 # Create your models here.
 from django.db import models
-from accounts.models import Employee
+from accounts.models import Employee, Client
 #from sales.models import ClientItem
+from datetime import date, timedelta, datetime
 
 from django.apps import apps
 
@@ -14,7 +15,8 @@ class Machine(models.Model):
     MACHINE_TYPE = (
         ('Cutting', 'Cutting'),
         ('Printing', 'Printing'),
-        ('Extruder', 'Extruder')
+        ('Extruder', 'Extruder'),
+        ('Laminating', 'Laminating')
     )
 
     machine_type = models.CharField('machine_type', choices=MACHINE_TYPE, max_length=200, default='not specified')
@@ -72,20 +74,19 @@ class JobOrder(models.Model):
         ('Cancelled', 'Cancelled')
     )
 
-
     status = models.CharField('status', choices=STATUS, max_length=200, default="Waiting")
     job_order = models.IntegerField(primary_key=True)
     remarks = models.CharField(max_length=45, blank=True, null=True)
-    is_laminate = models.IntegerField()
     rush_order = models.IntegerField()
-    date_issued = models.DateTimeField()
-    date_required = models.DateTimeField()
-    client = models.CharField(max_length=45)
+    date_issued = models.DateField('date_issued', auto_now_add=True)
+    date_required = models.DateField()
+    client = models.ForeignKey(Client, on_delete= models.CASCADE)
     total_amount = models.FloatField()
 
     class Meta:
 
         db_table = 'production_mgt_joborder'
+
     def __str__(self):
         lead_zero = str(self.id).zfill(5)
         jo_number = 'JO_%s' % (lead_zero)
@@ -94,6 +95,25 @@ class JobOrder(models.Model):
     def job_order(self):
         jo = str(self.id).zfill(5)
         return jo
+
+    def calculate_leadtime(self):
+        date1 = date.today()
+        date2 = self.date_required
+        days = (date2 - date1).days
+        return days
+
+    def rush_order_determinant(self):
+        if self.calculate_leadtime() <= 12:
+            self.rush_order = True
+        else:
+            self.rush_order = False
+
+        return self.rush_order
+
+    def save(self, *args, **kwargs):
+        rush_order = self.rush_order_determinant()
+        self.rush_order = rush_order
+        super(JobOrder, self).save(*args, **kwargs)
 
 '''
 class MachineSchedule(models.Model):

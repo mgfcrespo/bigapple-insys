@@ -22,22 +22,38 @@ class InventoryForm(forms.ModelForm):
         ('Others', 'Others')
     )
 
-   # item = forms.CharField('item', max_length=300)
+    RM_TYPES = (
+        ('--', '----------------'),
+        ('LDPE', 'Low-density polyethylene'),
+        ('LLDPE', 'Linear low-density polyethylene'),
+        ('HDPE', 'High-density polyethylene'),
+        ('PP', 'Polypropylene'),
+        ('PET', 'Polyethylene terephthalate')
+    )
+
+    item = forms.CharField(max_length=300)
     item_type = forms.CharField(max_length=200, label = 'item_type', widget = forms.Select(choices=ITEM_TYPES))
+    rm_type = forms.CharField(max_length=200, label = 'rm_type', widget = forms.Select(choices=RM_TYPES))
     description = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))
-   # quantity = forms.IntegerField('quantity')
+    quantity = forms.IntegerField()
+    price = forms.FloatField()
+    supplier = forms.ModelChoiceField(queryset=Supplier.objects.all())
+
 
     class Meta:
         model = Inventory
-        fields = ( 'item', 'item_type', 'description', 'quantity')
+        fields = ( 'item', 'item_type', 'rm_type', 'description', 'quantity', 'price')
 
     def __init__(self, *args, **kwargs):
         super(InventoryForm, self).__init__(*args, **kwargs)
         self.fields['item'].required = True
         self.fields['item_type'].required = True
-        self.fields['description'].required = True
+        self.fields['rm_type'].required = True
+        self.fields['description'].required = False
         self.fields['quantity'].required = True
-        self.fields['quantity'].widget.attrs['readonly'] = True
+        self.fields['price'].required = True
+        self.fields['supplier'].required = True
+
 
 '''
 class SupplierRawMaterialsForm(ModelForm):
