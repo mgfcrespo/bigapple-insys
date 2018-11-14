@@ -142,6 +142,7 @@ class ExtruderSchedule(models.Model):
     extruder_scrap = models.FloatField()
     balance = models.FloatField
     remarks = models.CharField(max_length=45, blank=True, null=True)
+    final = models.BooleanField(blank=True, null=True)
     #item = models.ForeignKey(ClientItem, on_delete=models.CASCADE)
 
     class Meta:
@@ -171,6 +172,7 @@ class PrintingSchedule(models.Model):
     starting_scrap = models.FloatField()
     printing_scrap = models.FloatField()
     remarks = models.CharField(max_length=45, blank=True, null=True)
+    final = models.BooleanField(blank=True, null=True)
    #item = models.ForeignKey(ClientItem, on_delete=models.CASCADE)
 
     class Meta:
@@ -203,6 +205,7 @@ class CuttingSchedule(models.Model):
     remarks = models.CharField(max_length=45, blank=True, null=True)
     quantity = models.IntegerField()
     line = models.IntegerField()
+    final = models.BooleanField(blank=True, null=True)
     #item = models.ForeignKey(ClientItem, on_delete=models.CASCADE)
 
     class Meta:
@@ -231,6 +234,7 @@ class LaminatingSchedule(models.Model):
     laminating_scrap = models.FloatField()
     remarks = models.CharField(max_length=45, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
+    final = models.BooleanField(blank=True, null=True)
     #item = models.ForeignKey(ClientItem, on_delete=models.CASCADE)
 
     class Meta:

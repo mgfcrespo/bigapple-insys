@@ -451,7 +451,10 @@ def add_extruder_schedule(request, id):
             y = Decimal(x)*Decimal(4.74) 
             form.balance = float(y)
             print(form.balance)
-            form.save()
+            new_schedule = form.save()
+            if new_schedule.final:
+                data.status = 'Under Cutting'
+                data.save()
             return redirect('production:job_order_details', id = id)
 
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Extruder')

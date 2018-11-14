@@ -21,7 +21,7 @@
                         <a href="{% url 'production:job_order_details' data.id %}">{{ data }}</a>
                     </td>
                     <td>{{ data }}</td>
-                    <td>% if data.rush_order == 0 %}
+                    <td>{% if data.rush_order == 0 %}
                             No
                             {% else %}
                             Yes

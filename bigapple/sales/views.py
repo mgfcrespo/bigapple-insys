@@ -189,7 +189,7 @@ def confirm_client_po(request, pk):
             matreq = False
 
     if request.method == "POST":
-        clientpo.status == "On Queue"
+        clientpo.status = "On Queue"
         clientpo.save()
 
         for every in items:

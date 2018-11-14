@@ -31,15 +31,18 @@ class ExtruderScheduleForm(forms.ModelForm):
         (3, 3)
     )
 
+
+
     class Meta:
         model = ExtruderSchedule
         fields = ('job_order', 'machine', 'operator', 'weight_rolls', 'datetime_in', 'datetime_out', 'shift',
-        'core_weight', 'output_kilos', 'number_rolls', 'starting_scrap', 'extruder_scrap','remarks')
+        'core_weight', 'output_kilos', 'number_rolls', 'starting_scrap', 'extruder_scrap','remarks','final',)
         widgets = {
              'datetime_in': DateTimeInput(),
              'datetime_out': DateTimeInput(),
          }
 
+    #final = forms.BooleanField(initial=False, required=False)
     shift = forms.IntegerField(widget = forms.Select(choices=SHIFTS))
     operator = forms.ModelChoiceField(queryset=Employee.objects.filter(position="Extruder"))
     datetime_in = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
@@ -58,11 +61,12 @@ class PrintingScheduleForm(forms.ModelForm):
         (2, 2),
         (3, 3)
     )
+    final = forms.BooleanField(initial=False, required=False)
 
     class Meta:
         model = PrintingSchedule
         fields = ('job_order', 'machine', 'operator', 'number_rolls', 'datetime_in', 'datetime_out', 'shift',
-        'starting_scrap', 'printing_scrap', 'remarks')
+        'starting_scrap', 'printing_scrap', 'remarks', 'final',)
         widgets = {
             'datetime_in': DateTimeInput(),
             'datetime_out': DateTimeInput()
@@ -93,12 +97,13 @@ class CuttingScheduleForm(forms.ModelForm):
         ('Line 3', 'Line 3')
     )
 
+    final = forms.BooleanField(initial=False, required=False)
 
 
     class Meta:
         model = CuttingSchedule
         fields = ('job_order', 'machine', 'operator', 'line', 'datetime_in', 'datetime_out', 'shift',
-        'quantity', 'output_kilos', 'number_rolls', 'starting_scrap', 'cutting_scrap', 'remarks')
+        'quantity', 'output_kilos', 'number_rolls', 'starting_scrap', 'cutting_scrap', 'remarks', 'final',)
         widgets = {
             'datetime_in': DateTimeInput(),
             'datetime_out': DateTimeInput()
@@ -123,11 +128,12 @@ class LaminatingScheduleForm(forms.ModelForm):
         (2, 2),
         (3, 3)
     )
+    final = forms.BooleanField(initial=False, required=False)
 
     class Meta:
         model = LaminatingSchedule
         fields = ('job_order', 'machine', 'operator', 'datetime_in', 'datetime_out', 'shift',
-        'starting_scrap', 'laminating_scrap', 'remarks')
+        'starting_scrap', 'laminating_scrap', 'remarks', 'final')
         widgets = {
             'datetime_in': DateTimeInput(),
             'datetime_out': DateTimeInput()
