@@ -75,7 +75,7 @@
                 <h2> There are not enough materials in inventory stock to accommodate this order. </h2> #issue supplier PO?
                     <div class="row">
                         <div class="center">
-                            <form method="get">
+                            <form method="post">
                                 {% csrf_token %}
                                 <input type="submit" class="ui green basic button" value="Confirm" id="confirm_btn" name="confirm_btn">
                             </form>

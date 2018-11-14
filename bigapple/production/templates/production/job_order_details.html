@@ -6,39 +6,39 @@
     <div class="six wide tablet sixteen wide computer column">
         <form id = "myForm" class="ui form segment" action = "" method="POST" role="form">
             {% csrf_token %}
-            <h2 class="ui header">JO#: {{ title }}</h2>
+            <h2 class="ui header">JO #: {{ title }}</h2>
             <div class = "field">
                 <label for="">Date Issued</label>
-                <span>{{ data.client_po.date_issued }}</span>
+                <span>{{ data.date_issued }}</span>
                 <label for="">Date Due</label>
-                <span>{{ data.client_po.date_required }}</span>
+                <span>{{ data.date_required }}</span>
             </div>
             <div class="four fields">
                 <div class = "field">
                     <label for="">Client PO</label>
-                    <span>{{ data.client_po }}</span>
+                    <span>{{ data }}</span>
                 </div>
                 <div class = "field">
                     <label for="">Client</label>
-                    <span>{{ data.client_po.client }}</span>
+                    <span>{{ data.client }}</span>
                 </div>
                 <div class = "field">
                     <label for="">Rush Order</label>
-                    <span>{{ data.client_po.rush_order }}</span>
+                    <span>{% if data.rush_order == 0 %}
+                            No
+                            {% else %}
+                            Yes</span>
+                    {% endif %}
                 </div>
                 <div class = "field">
                     <label for="">Payment Terms</label>
-                    <span>{{ data.client_po.client.clientconstant.payment_terms }}</span>
+                    <span>{{ data.client.payment_terms }}</span>
                 </div>
             </div>
             <div class = "four fields">
                     <div class = "field">
                         <label for="">Total Amount</label>
-                        <span>{{ data.client_po.total_amount_computed }}</span>
-                    </div>
-                    <div class = "field">
-                        <label for="">Amount Due</label>
-                        <span>{{ data.client_po.amount_due }}</span>
+                        <span>{{ data.total_amount }}</span>
                     </div>
                     <div class = "field">
                         <label for="">Status</label>
@@ -66,10 +66,9 @@
         <h4 class="ui block inverted header">Extrusion Schedule</h4>
         <table class="ui celled table">
             <thead>
-                <th>Date</th>
                 <th>Machine</th>
-                <th>Time In</th>
-                <th>Time Out</th>
+                <th>Datetime In</th>
+                <th>Datetime Out</th>
                 <th>Weight Rolls</th>
                 <th>Core Weight</th>
                 <th>Net Weight</th>
@@ -83,10 +82,9 @@
             <tbody>
                 {% for e in extrusion %}
                 <tr>
-                    <td>{{ e.date }}</td>
-                    <td>{{ e.machine.machine_number }}</td>
-                    <td>{{ e.time_in_day }}</td>
-                    <td>{{ e.time_out_day }}</td>
+                    <td>{{ e.machine }}</td>
+                    <td>{{ e.datetime_in }}</td>
+                    <td>{{ e.datetime_out }}</td>
                     <td>{{ e.weight_rolls }}</td>
                     <td>{{ e.core_weight }}</td>
                     <td>{{ e.net_weight }}</td>
@@ -108,10 +106,9 @@
         <h4 class="ui block inverted header">Printing Schedule</h4>
         <table class="ui celled table">
             <thead>
-                <th>Date</th>
                 <th>Machine</th>
-                <th>Time In</th>
-                <th>Time Out</th>
+                <th>Datetime In</th>
+                <th>Datetime Out</th>
                 <th>Number Rolls</th>
                 <th>Starting Scrap</th>
                 <th>Printing Scrap</th>
@@ -120,10 +117,9 @@
             <tbody>
                 {% for p in printing %}
                 <tr>
-                    <td>{{ p.date }}</td>
-                    <td>{{ p.machine.machine_number }}</td>
-                    <td>{{ p.time_in_day }}</td>
-                    <td>{{ p.time_out_day }}</td>
+                    <td>{{ p.machine }}</td>
+                    <td>{{ p.datetime_in }}</td>
+                    <td>{{ p.datetime_out }}</td>
                     <td>{{ p.number_rolls }}</td>
                     <td>{{ p.exit_scrap }}</td>
                     <td>{{ p.printing_scrap }}</td>
@@ -140,10 +136,9 @@
         <h4 class="ui block inverted header">Cutting Schedule</h4>
         <table class="ui celled table">
             <thead>
-                <th>Date</th>
                 <th>Machine</th>
-                <th>Time In</th>
-                <th>Time Out</th>
+                <th>Datetime In</th>
+                <th>Datetime Out</th>
                 <th>Line</th>
                 <th>Quantity</th>
                 <th>Output Kilos</th>
@@ -155,10 +150,9 @@
             <tbody>
                 {% for c in cutting %}
                 <tr>
-                    <td>{{ c.date }}</td>
-                    <td>{{ c.machine.machine_number }}</td>
-                    <td>{{ c.time_in_day }}</td>
-                    <td>{{ c.time_out_day }}</td>
+                    <td>{{ c.machine }}</td>
+                    <td>{{ c.datetime_in }}</td>
+                    <td>{{ c.datetime_out }}</td>
                     <td>{{ c.line }}</td>
                     <td>{{ c.quantity }}</td>
                     <td>{{ c.output_kilos }}</td>

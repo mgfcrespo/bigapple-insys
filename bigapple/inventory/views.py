@@ -9,6 +9,7 @@ from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, Employee
 from .models import MaterialRequisition
 from .forms import SupplierPOItemsForm, InventoryForm, SupplierPOForm
 from .forms import MaterialRequisitionForm
+from datetime import datetime, date
 
 
 # Create your views here.
@@ -36,9 +37,13 @@ def inventory_item_add(request):
 def inventory_item_list(request):
 
     items = Inventory.objects.all()
+    issued_to_production = MaterialRequisition.objects.filter(datetime_issued = date.today())
+
     context = {
         'title': 'Inventory List',
-        'items' : items
+        'items' : items,
+        'issued_to_production' : issued_to_production,
+        'now' : datetime.now()
     }
     return render (request, 'inventory/inventory_item_list.html', context)
 
@@ -64,16 +69,6 @@ def inventory_item_delete(request, id):
     items.delete()
     return HttpResponseRedirect('../../inventory-item-list')
 
-
-# Inventory Count TODO
-def inventory_count_form(request):
-    if request.session['session_position'] == "General Manager":
-        template = 'general_manager_page_ui.html'
-    elif request.session['session_position'] == "Production Manager":
-        template = 'production_manager_page_ui.html'
-    else:
-        template = 'line_leader_page_ui.html'
-
 # Inventory Count 
 def inventory_count_form(request, id):
     data = Inventory.objects.get(id=id)
@@ -83,8 +78,6 @@ def inventory_count_form(request, id):
     form.fields["inventory"].initial = data.id
     
     if request.method == 'POST':
-
-
 
         #Get session user id
         employee_id = request.session['session_userid']

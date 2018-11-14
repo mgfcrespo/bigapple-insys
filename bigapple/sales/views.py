@@ -1,5 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView, ListView, FormView
+
+from inventory.forms import MaterialRequisitionForm
 from .models import ClientItem, Product
 from django.shortcuts import render, redirect
 from .forms import ClientPOFormItems
@@ -171,23 +173,37 @@ def po_detail_view(request, pk):
 def confirm_client_po(request, pk):
     clientpo = JobOrder.objects.get(pk=pk)
     client = clientpo.client
+    items = ClientItem.objects.filter(client_po = clientpo)
 
-    if request.GET.get('confirm_btn'):
-        clientpo.status = 'Approved'
+    for every in items:
+        price = every.calculate_price_per_piece() * every.quantity
+        products = every.products
+        material = products.material_type
+
+        inventory = Inventory.objects.get(rm_type=material)
+        quantity = inventory.quantity
+
+        if quantity > 0:
+            matreq = True
+        else:
+            matreq = False
+
+    if request.method == "POST":
+        clientpo.status == "On Queue"
         clientpo.save()
 
-    item = ClientItem.objects.get(client_po = clientpo)
-    price = item.calculate_price_per_piece() * item.quantity
-    products = item.products
-    material = products.material_type
+        for every in items:
+            form = MaterialRequisitionForm(request.POST)
 
-    inventory = Inventory.objects.get(rm_type=material)
-    quantity = inventory.quantity
+            form.client_item = every
+            form.save()
 
-    if quantity > 0:
-        matreq = True
-    else:
-        matreq = False
+            print(form)
+            if form.is_valid():
+                form.save()
+
+        return redirect('sales:clientPO_list')
+
 
     context = {
         'clientpo': clientpo,

@@ -21,7 +21,9 @@ class Inventory(models.Model):
         ('LLDPE', 'Linear low-density polyethylene'),
         ('HDPE', 'High-density polyethylene'),
         ('PP', 'Polypropylene'),
-        ('PET', 'Polyethylene terephthalate')
+        ('PET', 'Polyethylene terephthalate'),
+        ('Pelletized PE', 'Pelletized polyethylene '),
+        ('Pelletized HD', 'Pelletized high-density polyethylene'),
     )
 
     item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='Not specified', null=True, blank=True)
@@ -84,9 +86,11 @@ class SupplierPOItems(models.Model):
         return str(self.supplier_po) +' : ' + str(self.item)
 
 class MaterialRequisition(models.Model):
+
     id = models.IntegerField(primary_key=True)
-    datetime_issued = models.DateTimeField()
-    item = models.CharField(max_length=45)
+    datetime_issued = models.DateTimeField(auto_now_add=True)
+    shift = models.IntegerField()
+    item = models.ForeignKey(Inventory, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     client_item = models.ForeignKey(ClientItem, on_delete=models.CASCADE)
 

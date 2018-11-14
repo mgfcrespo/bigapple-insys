@@ -7,6 +7,8 @@
 			<th class="four wide">Item</th>
 			<th class="four wide">Type</th>
 			<th class="four wide">Quantity</th>
+			<th class="four wide">Quantity Issued to Production as of {{ now }}</th>
+
 			<th class="four wide"></th>
 		</tr>
 		</thead>
@@ -19,6 +21,11 @@
 				</td>
 				<td>{{ items.item_type }}</td>
 				<td>{{ items.quantity }}</td>
+                {% for every in issued_to_production %}
+                    {% if every.item == items %}
+				<td>{{ every.quantity }}</td>
+                    {% endif %}
+                {% endfor %}
 				<td class="right aligned">
 					<a style = "padding: 5px;" href="{% url 'inventory:inventory_count_form' items.id %}">
 						<i class="primary boxes icon"></i>
