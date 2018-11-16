@@ -42,7 +42,7 @@ class ExtruderScheduleForm(forms.ModelForm):
              'datetime_out': DateTimeInput(),
          }
 
-    #final = forms.BooleanField(initial=False, required=False)
+    final = forms.BooleanField(initial=False, required=False)
     shift = forms.IntegerField(widget = forms.Select(choices=SHIFTS))
     operator = forms.ModelChoiceField(queryset=Employee.objects.filter(position="Extruder"))
     datetime_in = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])

@@ -3,82 +3,81 @@
 
 <h3 class="ui dividing header">Job Order # {{ id }}</h3>
 
-<div class="sixteen wide column">
-    <div class="ui inverted segment">
-        <form class="ui inverted form" action = "#" method="POST" role="form">
-            {% csrf_token %}
-            <div class="fields">
-                <div class = "two wide field">
-                    <label>Job Order #:</label>
-                    {{ form.job_order }}
-                </div>
-                <div class = "three wide field">
-                    <label>Machine #:</label>
-                    {{ form.machine }}
-                </div>
-                <div class = "three wide field">
-                    <label>Operator:</label>
-                    {{ form.operator }}
-                </div>
-                <div class = "three wide field"></div>
-                <div class = "three wide field">
-                    <label>Date and Time In (DD-MM-YYYY HH:MM):</label>
-                    <input type="datetime" name="datetime_in" value="{{ form.datetime_in }}">
-                </div>
-                <div class = "three wide field">
-                    <label>Date and Time Out (DD-MM-YYYY HH:MM):</label>
-                    <input type="datetime" name="datetime_out" value="{{ form.datetime_out }}">
-                </div>
-                <div class = "two wide field">
-                    <label>Shift:</label>
-                    {{ form.shift }}
-                </div>
+<div class="ui inverted segment">
+    <form class="ui inverted form" action = "#" method="POST" role="form">
+        {% csrf_token %}
+        <div class="five fields">
+            <div class = "field">
+                <label>Job Order #:</label>
+                {{ form.job_order }}
             </div>
-
-            <div class="fields">
-                <div class="field">
-                    <label>Weight Rolls:</label>
-                    {{ form.weight_rolls }}
-                </div>
-                <div class="field">
-                    <label>Core Weight:</label>
-                    {{ form.core_weight }}
-                </div>
-                <div class="field">
-                    <label>Output Kilos:</label>
-                    {{ form.output_kilos }}
-                </div>
-                <div class="field">
-                    <label>No. of Rolls:</label>
-                    {{ form.number_rolls }}
-                </div>
-                <div class="field">
-                    <label>Starting Scrap:</label>
-                    {{ form.starting_scrap }}
-                </div>
-                <div class="field">
-                    <label>Printing Scrap:</label>
-                    {{ form.printing_scrap }}
-                </div>
-                <div class="field">
-                    <label>Last Batch?</label>
+            <div class = "field">
+                <label>Machine #:</label>
+                {{ form.machine }}
+            </div>
+            <div class = "field">
+                <label>Operator:</label>
+                {{ form.operator }}
+            </div>
+            <div class="field">
+                <label>Shift:</label>
+                {{ form.shift }}
+            </div>
+            <div class="field">
+                <div class="row center aligned">
+                    <label>Last Batch:</label><br>
                     {{ form.final }}
                 </div>
             </div>
+        </div>
+        <div class = "two fields">
             <div class="field">
-                <div class="field">
-                    <label>Remarks:</label>
-                    {{ form.remarks }}
-                </div>
+                <label>Date and Time In (DD-MM-YYYY HH:MM):</label>
+                <input type="datetime" name="datetime_in" value="{{ form.datetime_in }}">
             </div>
-            <div class = "ui centered grid">
-                <div class = "row">
-                    <button class="ui green button" type="submit">Submit</button>
-                </div>
+            <div class="field">
+                <label>Date and Time Out (DD-MM-YYYY HH:MM):</label>
+                <input type="datetime" name="datetime_out" value="{{ form.datetime_out }}">
             </div>
-        </form>
+        </div>
+        <div class="six fields">
+            <div class="field">
+                <label>Weight Rolls:</label>
+                {{ form.weight_rolls }}
+            </div>
+            <div class="field">
+                <label>Core Weight:</label>
+                {{ form.core_weight }}
+            </div>
+            <div class="field">
+                <label>Output Kilos:</label>
+                {{ form.output_kilos }}
+            </div>
+            <div class="field">
+                <label>No. of Rolls:</label>
+                {{ form.number_rolls }}
+            </div>
+            <div class="field">
+                <label>Starting Scrap:</label>
+                {{ form.starting_scrap }}
+            </div>
+            <div class="field">
+                <label>Printing Scrap:</label>
+                {{ form.printing_scrap }}
+            </div>
+        </div>
+        <div class="field">
+            <label>Remarks:</label>
+            {{ form.remarks }}
+        </div>
+        <div>
+            <div class = "row">
+                <button class="ui green small button" type="submit">Submit</button>
+                <button class="ui yellow small button" type="reset">Clear</button>
+            </div>
+        </div>
 
-    </div>
+    </form>
 </div>
 
 

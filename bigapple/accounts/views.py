@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.sessions.models import Session
+from django.db.models import Sum
 from django.template import loader
 from django.http import HttpResponse
 
@@ -39,28 +40,56 @@ def user_page_view(request):
         user = request.user
         username = request.user.username
 
-        ClientPO_data = JobOrder.objects.all()
-        rush_orders = JobOrder.objects.filter(rush_order=True)
-
+        Client_data = Client.objects.all()
         Supplier_data = Supplier.objects.all()
 
         JobOrder_data = JobOrder.objects.all()
-        ExtruderSchedule_data = ExtruderSchedule.objects.all()
-        PrintingSchedule_data = PrintingSchedule.objects.all()
-        CuttingSchedule_data = CuttingSchedule.objects.all()
 
-        Inventory_data = Inventory.objects.all()
+        JobOrder_data5 = JobOrder.objects.order_by('-id')[:5]
+
+        rush_order = JobOrder.objects.filter(rush_order=True)[:5]
+
+        LDPE = Inventory.objects.filter(rm_type='LDPE').aggregate(Sum('quantity'))
+        LLDPE = Inventory.objects.filter(rm_type='LLDPE').annotate(Sum('quantity'))
+        HDPE = Inventory.objects.filter(item_type='HDPE').annotate(Sum('quantity'))
+        PP = Inventory.objects.filter(item_type='PP').annotate(Sum('quantity'))
+        PET = Inventory.objects.filter(item_type='PET').annotate(Sum('quantity'))
+
+        status_waiting = JobOrder.objects.filter(status='Waiting')
+        status_onqueue = JobOrder.objects.filter(status='On Queue').count()
+        status_cutting = JobOrder.objects.filter(status='Under Cutting').count()
+        status_extrusion = JobOrder.objects.filter(status='Under Extrusion').count()
+        status_printing = JobOrder.objects.filter(status='Under Printing').count()
+        status_packaging = JobOrder.objects.filter(status='Under Packaging').count()
+        status_ready = JobOrder.objects.filter(status='Ready for Delivery').count()
+        status_delivered = JobOrder.objects.filter(status='Delivered').count()
+        status_cancelled = JobOrder.objects.filter(status='Cancelled').count()
 
         context = {
-            'ClientPO_data': ClientPO_data,
-            'rush_orders': rush_orders,
+            'rush_order': rush_order,
+
+            'LDPE': LDPE,
+            'LLDPE': LLDPE,
+            'HDPE': HDPE,
+            'PP': PP,
+            'PET': PET,
+
+            'status_waiting': status_waiting,
+            'status_onqueue': status_onqueue,
+            'status_cutting': status_cutting,
+            'status_extrusion': status_extrusion,
+            'status_printing': status_printing,
+            'status_packaging': status_packaging,
+            'status_ready': status_ready,
+            'status_delivered': status_delivered,
+            'status_cancelled': status_cancelled,
+
+            'Client_data': Client_data,
             'Supplier_data': Supplier_data,
             'JobOrder_data': JobOrder_data,
-            'ExtruderSchedule_data': ExtruderSchedule_data,
-            'PrintingSchedule_data': PrintingSchedule_data,
-            'CuttingSchedule_data': CuttingSchedule_data,
-            'InventoryCountAsof_data': Inventory_data
-        }
+
+            'JobOrder_data5': JobOrder_data5,
+            }
 
         request.session['session_username'] = username
         if hasattr(request.user, 'employee'):

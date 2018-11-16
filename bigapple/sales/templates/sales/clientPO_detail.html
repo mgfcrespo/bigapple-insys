@@ -2,21 +2,20 @@
 {% block content %}
 
 <h3 class="ui dividing header">{{ client_po }}</h3>
- <table class="ui cell padded table">
+ <table class="ui cell padded table center aligned">
         	<thead>
           	<tr>
                 <th>Material Type</th>
-
-              <th>Width (inches)</th>
-              <th>Length(inches)</th>
+                <th>Width (inches)</th>
+                <th>Length(inches)</th>
                 <th>Thickness(inches)</th>
-              <th>Color</th>
-              <th>Gusset</th>
-              <th>Quantity</th>
-                 <th>Laminate</th>
+                <th>Color</th>
+                <th>Gusset</th>
+                <th>Quantity</th>
+                <th>Laminate</th>
                 <th>Printed</th>
                 <th>Price/pc</th>
-              <th>Item Price Sub-Total</th>
+                <th>Item Price Sub-Total</th>
           	</tr>
     		</thead>
 
@@ -26,7 +25,6 @@
                 {% for clientitem in client_po.clientitem_set.all %}
                 <tr>
                     <td>{{ clientitem.products }}</td>
-
                     <td>{{ clientitem.width }}</td>
                     <td>{{ clientitem.length}}</td>
                     <td>{{ clientitem.thickness}}</td>
@@ -35,21 +33,19 @@
                     <td>{{ clientitem.quantity }}</td>
 
                      {% if clientitem.laminate ==  True %}
-                   <td><i class="icon checkmark"></i></td>
-                   {% else %}
-                   <td ><i class="icon close"></i></td>
-                    {% endif %}
+                        <td><i class="icon checkmark"></i></td>
+                     {% else %}
+                        <td ><i class="icon close"></i></td>
+                     {% endif %}
 
-                      {% if clientitem.printed ==  True %}
-                   <td><i class="icon checkmark"></i></td>
-                   {% else %}
-                   <td ><i class="icon close"></i></td>
-                    {% endif %}
+                     {% if clientitem.printed ==  True %}
+                        <td><i class="icon checkmark"></i></td>
+                     {% else %}
+                        <td ><i class="icon close"></i></td>
+                     {% endif %}
 
                     <td>{{clientitem.price_per_piece}}</td>
                     <td>Total: {{ clientitem.item_price}}</td>
-
-
                 </tr>
                 {% endfor %}
 

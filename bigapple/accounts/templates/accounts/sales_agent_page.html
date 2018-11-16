@@ -1,33 +1,144 @@
 {% extends 'sidebar.html' %}
 {% block content %}
 
-<h3 class="ui dividing header">Sales Dashboard</h3>
-
 <div>
-    <div class="ui horizontal segments">
-        <div class="ui segment">
+    <h3 class="ui dividing header">Sales Dashboard</h3>
 
-        </div>
-        <div class="ui segment">
+    <div>
+        <div class="ui horizontal segments">
+            <div class="ui segment">
 
+                <h4 class="ui dividing header">Client Purchase Orders </h4>
+                <div>
+                    <table class="ui striped table center aligned">
+                        <thead>
+                        <tr>
+                          <th>Purchase Order ID</th>
+                          <th>Date Issued</th>
+                          <th>Date Required</th>
+                          <th>Total Amount</th>
+                          <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% if JobOrder_data5 %}
+                            {% for each in JobOrder_data5 %}
+                                <tr>
+                                    <td><a href="{% url 'sales:po-detail-view' each.id %}"> {{ each.id }}</a></td>
+                                    <td>{{ each.date_issued }}</td>
+                                    <td>{{ each.date_required }}</td>
+                                    <td>{{ each.total_amount }}</td>
+                                    <td>{% if each.status == 'Waiting' and x == 'Employee' %}
+                                        <a href="{% url 'sales:confirm-client-po' each.id %}">{{ each.status }}</a>
+                                        {% else %}
+                                        {{ each.status }}</td>
+                                        {% endif %}
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                            <td>
+                                <p>There are no Purchase Orders to display</p>
+                            </td>
+                            {% endif %}
+                        </tbody>
+                         <tfoot>
+                            <tr>
+                                <th colspan="5">
+                                    <a href="{% url 'sales:po-list-view' %}">See more</a>
+                                </th>
+                            </tr>
+                         </tfoot>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="ui segment">
+
+                <h4 class="ui dividing header">Sales Comparison</h4>
+                <div id="POComparisson"></div>
+
+            </div>
         </div>
     </div>
+        <div class="ui segment">
+            <h4 class="ui dividing header">Rush Orders</h4>
+            <div class="ui three cards">
+                {% for rush_order in rush_order %}
+                        <div class="ui card">
+                            <div class="content center aligned">
+                                <div class="header">
+                                    <a href="{% url 'sales:rush_order_assessment' rush_order.id %}">{{ rush_order }}</a>
+                                </div>
+                                <div class="meta">
+                                    {{ rush_order.client }}
+                                </div>
+                            </div>
+                            <div class="content">
+                                <div class="row">
+                                    Items: {{ rush_order.products }}
+                                </div>
+                                <div class="row">
+                                    Total Amount: {{ rush_order.total_amount }}
+                                </div>
+                                <div class="row">
+                                    Date Issued: {{ rush_order.date_issued }}
+                                </div>
+                                <div class="row">
+                                    Date Required: {{ rush_order.date_required }}
+                                </div>
+                                <div>
+                                    Remarks: {{ rush_order.remarks }}
+                                </div>
+                            </div>
+                            <div class="content center aligned">
+                              <div class="ui two buttons">
+                                <div class="ui green button">Approve</div>
+                                <div class="ui red button">Decline</div>
+                              </div>
+                            </div>
+                        </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    <h3 class="ui dividing header">Production Dashboard</h3>
+    <div class="ui horizontal segments">
+
+    </div>
+
 </div>
+    <script>
 
-<h3 class="ui dividing header">Production Dashboard</h3>
-    <div class="ui horizontal segments">
-        <div class="ui segment">
-            <div style="height: 100px; width: 100%;"></div>
-        </div>
-    </div>
-<h3 class="ui dividing header">Inventory Dashboard</h3>
-    <div class="ui horizontal segments">
-        <div class="ui segment">
+        google.charts.load('current', {'packages':['corechart']});
 
-        </div>
-        <div class="ui segment">
+        //for sales2
+        google.charts.setOnLoadCallback(salesComparisonChart);
 
-        </div>
-    </div>
+        function salesComparisonChart() {
+            var POComparisson = google.visualization.arrayToDataTable([
+                ['{{month}}','{{thisYear}}', '{{lastYear}}'],
+                ['NOV', 200, 203],
+                ['OCT', 220, 213],
+                ['SEPT', 203, 204],
+                ['AUG', 200, 203],
+                ['JULY', 229, 221],
+            ]);
+
+            var options = {
+              curveType: 'function',
+              width: 600,
+              height: 300,
+              legend: { position: 'bottom' }
+            };
+
+            var chart2 = new google.visualization.LineChart(document.getElementById('POComparisson'));
+
+            chart2.draw(POComparisson, options);
+          }
+
+    </script>
+</div>
 
 {% endblock %}
