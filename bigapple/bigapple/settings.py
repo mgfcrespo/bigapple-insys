@@ -98,7 +98,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bigapple_db',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': '*Cherisse0816',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }

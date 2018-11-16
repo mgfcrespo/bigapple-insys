@@ -155,7 +155,7 @@ def po_list_view(request):
                #         client_po.append(every)
 
     context = {
-        'title' : "Client Purchase Order",
+        'title' : "Client Purchase Orders",
         'client_po' : client_po,
         'x' : x
     }
