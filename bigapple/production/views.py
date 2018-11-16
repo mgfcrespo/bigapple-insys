@@ -453,9 +453,9 @@ def add_extruder_schedule(request, id):
             print(form.balance)
             new_schedule = form.save()
             if new_schedule.final:
-                data.status = 'Under Cutting'
+                data.status = 'Under Printing'
                 data.save()
-            return redirect('production:job_order_details', id = id)
+        return redirect('production:job_order_details', id = id)
 
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Extruder')
 
@@ -484,8 +484,11 @@ def add_printing_schedule(request, id):
       data.status = 'Under Printing'
       data.save()
       if form.is_valid():
-        form.save()
-        return redirect('production:job_order_details', id = data.id)
+          new_schedule = form.save()
+          if new_schedule.final:
+            data.status = 'Under Cutting'
+            data.save()
+      return redirect('production:job_order_details', id = data.id)
 
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Printing')
     
@@ -515,8 +518,12 @@ def add_cutting_schedule(request, id):
       data.status = 'Under Cutting'
       data.save()
       if form.is_valid():
-        form.save()
-        return redirect('production:job_order_details', id = data.id)
+        new_schedule = form.save()
+        if new_schedule.final:
+            #TODO add condiion if item.laminate is true
+            data.status = 'Under Laminating'
+            data.save()
+      return redirect('production:job_order_details', id = data.id)
 
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Cutting')
     
@@ -545,8 +552,11 @@ def add_laminating_schedule(request, id):
         data.status = 'Under Laminating'
         data.save()
         if form.is_valid():
-            form.save()
-            return redirect('production:job_order_details', id=data.id)
+            new_schedule = form.save()
+            if new_schedule.final:
+                data.status = 'Ready for delivery'
+                data.save()
+        return redirect('production:job_order_details', id=data.id)
 
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Laminating')
 
