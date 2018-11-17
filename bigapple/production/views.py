@@ -393,7 +393,7 @@ def job_order_list(request):
     return render (request, 'production/job_order_list.html', context)
 
 def job_order_details(request, id):
-		
+
     data = JobOrder.objects.get(id=id)
     form = JODetailsForm(request.POST or None)
     extrusion = ExtruderSchedule.objects.filter(job_order=data.id).order_by('datetime_in')
@@ -416,7 +416,7 @@ def job_order_details(request, id):
       'extrusion': extrusion,
       'printing': printing,
       'cutting': cutting,
-        'laminating' : laminating
+      'laminating' : laminating
     }
     return render(request, 'production/job_order_details.html', context)
 

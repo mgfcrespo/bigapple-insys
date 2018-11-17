@@ -1,6 +1,5 @@
 {% extends 'sidebar.html' %}
 {% block content %}
-
 <div>
 <h3 class="ui dividing header">Sales Dashboard</h3>
 
@@ -24,8 +23,6 @@
 
 <h3 class="ui dividing header">Production Dashboard</h3>
 
-    {{ first5JO }}
-
 <h3 class="ui dividing header">Inventory Dashboard</h3>
     <div class="ui horizontal segments">
         <div class="ui segment">
@@ -33,11 +30,18 @@
             <div id="rawmaterialLevels"></div>
         </div>
         <div class="ui segment">
-            <h4 class="ui dividing header">{{LDPE}} Levels</h4>
+            <h4 class="ui dividing header"> Levels</h4>
             <div id="inventoryLevels"></div>
         </div>
     </div>
 </div>
+
+    {% for POs in POs %}
+        <h1>
+            {{POs}}
+        </h1>
+    {% endfor %}
+
 
 <script>
 
@@ -48,12 +52,10 @@
 
     function salesComparisonChart() {
         var POComparisson = google.visualization.arrayToDataTable([
-            ['{{month}}','{{thisYear}}', '{{lastYear}}'],
-            ['NOV', 200, 203],
-            ['OCT', 220, 213],
-            ['SEPT', 203, 204],
-            ['AUG', 200, 203],
-            ['JULY', 229, 221],
+            ['Month', '2018'],
+            {% for POs in POs %}
+                ['Month', parseInt('{{ POs }}')],
+            {% endfor %}
         ]);
 
         var options = {
@@ -99,11 +101,11 @@
     function rawmaterialLevels() {
       var data = google.visualization.arrayToDataTable([
         ["Raw Material Type", "Amount", { role: "style" } ],
-        ["LDPE", parseInt("{{LDPE}}"), "#97cfca"],
-        ["LLDPE", parseInt("{{ LLDPE }}"), "#619c17"],
-        ["HDPE", parseInt("{{ HDPE }}"), "#9c2f2f"],
-        ["PP", parseInt("{{ PP }}"), "#d7e374"],
-        ["PET", parseInt("{{ PET }}"),"#9c732c"]
+        ["LDPE", parseInt("{{LDPE.quantity}}"), "#97cfca"],
+        ["LLDPE", parseInt("{{ LLDPE.quantity }}"), "#619c17"],
+        ["HDPE", parseInt("{{ HDPE.quantity }}"), "#9c2f2f"],
+        ["PP", parseInt("{{ PP.quantity }}"), "#d7e374"],
+        ["PET", parseInt("{{ PET.quantity }}"),"#9c732c"]
       ]);
 
       var view = new google.visualization.DataView(data);

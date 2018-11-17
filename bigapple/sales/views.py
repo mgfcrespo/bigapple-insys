@@ -58,7 +58,7 @@ def supplier_list(request):
     supplier = Supplier.objects.all()
     context = {
         'title': 'Supplier List',
-        'supplier' : supplier 
+        'supplier': supplier
     }
     return render (request, 'sales/supplier_list.html', context)
 
