@@ -11,8 +11,16 @@
                 <tbody >
                     <tr>
                         <td class="ten wide"> 
-                            <label>Item</label>
-                            {{ form.inventory }}
+                            <label>Item:</label>
+                            {{ data.item }}
+                        </td>
+                        <td class="ten wide">
+                            <label>Item Type:</label>
+                            {{ data.item_type }}
+                        </td>
+                        <td class="ten wide">
+                            <label>Raw Material Type:</label>
+                            {{ data.rm_type }}
                         </td>
                         <td class="six wide">
                             <label style = "font-size: 18px;">Quantity: </label>
@@ -22,7 +30,7 @@
                     </tr>
                     <tr>
                         <td style = "border:0px;">
-                            <label>Count</label>
+                            <label>Count:</label>
                             {{ form.new_count }}
                         </td>
                     </tr>

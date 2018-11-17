@@ -12,7 +12,7 @@ urlpatterns = [
     path('inventory-item-delete/<int:id>/', views.inventory_item_delete, name='inventory_item_delete'),
     #supplier raw material
     #path('supplier-rawmat-add/', views.supplier_rawmat_add, name='supplier_rawmat_add'),
-    #path('supplier-details-list/<int:id>/', views.supplier_details_list, name='supplier_details_list'),
+    path('supplier-details-list/<int:id>/', views.supplier_details_list, name='supplier_details_list'),
     #path('supplier-rawmat-edit/<int:id>/', views.supplier_rawmat_edit, name='supplier_rawmat_edit'),
     #path('supplier-rawmat-delete/<int:id>/', views.supplier_rawmat_delete, name='supplier_rawmat_delete'),
     #material requisition

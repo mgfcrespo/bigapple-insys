@@ -6,8 +6,8 @@ from django.db.models import aggregates
 from django.contrib import messages
 
 from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, Employee
-from .models import MaterialRequisition
-from .forms import SupplierPOItemsForm, InventoryForm, SupplierPOForm
+from .models import MaterialRequisition, InventoryCount
+from .forms import SupplierPOItemsForm, InventoryForm, SupplierPOForm, InventoryCountForm
 from .forms import MaterialRequisitionForm
 from datetime import datetime, date
 
@@ -72,10 +72,7 @@ def inventory_item_delete(request, id):
 # Inventory Count 
 def inventory_count_form(request, id):
     data = Inventory.objects.get(id=id)
-    form = InventoryForm(request.POST)
-    
-    form.fields["inventory"].queryset = Inventory.objects.filter(id=data.id)
-    form.fields["inventory"].initial = data.id
+    form = InventoryCountForm(request.POST)
     
     if request.method == 'POST':
 
@@ -84,29 +81,34 @@ def inventory_count_form(request, id):
         current_employee = Employee.objects.get(id=employee_id)
 
         if form.is_valid():
-            data.quantity = request.POST.get('new_count')
-            data.person = current_employee
-            data.save()
+            #i = data
+            #item = i #item previously counted
+            #print(item)
+            #if item.exists():
+              #counted = i.latest('time')#get latest
+            new_form = form.save()
+            #new_form = new_form.pk
+            new_form.inventory = data
+            new_form.old_count = data.quantity
+            new_form.count_person = current_employee
+            new_form.save()
+            #form_instance = item #get current form
 
-            i = request.POST.get('inventory')
-            item = i #item previously counted
-            print(item)
-            if item.exists():
-                #counted = i.latest('time')#get latest
+            #form_instance.old_count = i.new_count
+            #form_instance.save()
+            #new_form.save()
+            #else:
+            #form.save()
+            count = InventoryCount.objects.get(id=form.pk)
+            count.inventory = data
+            count.old_count = data.quantity
+            count.count_person = current_employee
+            count.save()
 
-                new_form = form.save()
-                new_form = new_form.pk
-                form_instance = item #get current form
+        data.quantity = request.POST.get('new_count')
+        data.save()
 
-                form_instance.old_count = i.new_count
-                form_instance.save()
-            else:   
-                form.save()
-        
         return redirect('inventory:inventory_count_list', id = data.id)
-    
-    form.fields["inventory"].queryset = Inventory.objects.filter(id=data.id)
-    form.fields["inventory"].initial = data.id
 
     context = {
         'form' : form,
@@ -119,12 +121,12 @@ def inventory_count_form(request, id):
     return render(request, 'inventory/inventory_count_form.html', context)
 
 def inventory_count_list(request, id):
-    i = Inventory.objects.get(id=id)
+    item = Inventory.objects.get(id=id)
+    i = InventoryCount.objects.filter(inventory=item)
 
     context = {
-
-        'title': i.item
-
+        'i' : i,
+        'item' : item
     }
     return render (request, 'inventory/inventory_count_list.html', context)
 

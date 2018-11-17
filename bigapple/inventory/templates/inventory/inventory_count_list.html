@@ -2,26 +2,26 @@
 
   {% block content %}
 		<h2 class="ui header">Physical Count History </h2>
-		<h3 class="ui header">{{ title }}</h3>
+		<h3 class="ui header">{{ item.item }}</h3>
 		<table class="ui striped table">
         	<thead>
           	<tr class = "row">
                 <th class = "four wide">Date Counted</th>
-				<th class = "three wide">Time</th>
 				<th class = "six wide">Person</th>
-                <th class = "three wide">Count </th>
+                <th class = "three wide">Old Count</th>
+                <th class = "three wide">New Count</th>
           	</tr>
     		</thead>
     		<tbody>
-			{% if items %}
-				{% for items in items %}
+			{% if i %}
+                {% for x in i %}
     			<tr class = "row">
-					<td>{{ items.date_counted }}</td>
-					<td>{{ items.time }}</td>
-					<td>{{ items.person }}</td>
-                    <td>{{ items.new_count }}</td>
+					<td>{{ x.date_counted }}</td>
+					<td>{{ x.count_person }}</td>
+                    <td>{{ x.old_count }}</td>
+                    <td>{{ x.new_count }}</td>
     			</tr>
-				{% endfor %}
+                {% endfor %}
 			{% else %}
 			<td>
 				<p>There are no History Count to display</p>

@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm, ValidationError, Form, widgets
 from django.contrib.admin.widgets import AdminDateWidget
-from .models import Supplier, SupplierPO, SupplierPOItems, Inventory
+from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, InventoryCount
 from .models import MaterialRequisition
 from .models import Employee
 from datetime import date, datetime
@@ -28,7 +28,9 @@ class InventoryForm(forms.ModelForm):
         ('LLDPE', 'Linear low-density polyethylene'),
         ('HDPE', 'High-density polyethylene'),
         ('PP', 'Polypropylene'),
-        ('PET', 'Polyethylene terephthalate')
+        ('PET', 'Polyethylene terephthalate'),
+        ('Pelletized PE', 'Pelletized polyethylene '),
+        ('Pelletized HD', 'Pelletized high-density polyethylene'),
     )
 
     item = forms.CharField(max_length=300)
@@ -42,7 +44,7 @@ class InventoryForm(forms.ModelForm):
 
     class Meta:
         model = Inventory
-        fields = ( 'item', 'item_type', 'rm_type', 'description', 'quantity', 'price')
+        fields = ( 'item', 'item_type', 'rm_type', 'description', 'quantity', 'price', 'supplier')
 
     def __init__(self, *args, **kwargs):
         super(InventoryForm, self).__init__(*args, **kwargs)
@@ -55,6 +57,13 @@ class InventoryForm(forms.ModelForm):
         self.fields['supplier'].required = True
 
 
+class InventoryCountForm(ModelForm):
+
+    class Meta:
+        model = InventoryCount
+        fields = ('inventory', 'old_count', 'new_count', 'count_person')
+
+    new_count = forms.IntegerField()
 '''
 class SupplierRawMaterialsForm(ModelForm):
     ITEM_TYPES = (
@@ -81,12 +90,6 @@ class SupplierRawMaterialsForm(ModelForm):
     item_type = forms.CharField(max_length=200, label = 'item_type', widget = forms.Select(choices=ITEM_TYPES))
     rm_type = forms.CharField(max_length=200, label = 'rm_type', widget = forms.Select(choices=RM_TYPES))
     item = forms.CharField(max_length=200, label= 'item')
-
-class InventoryCountAsofForm(ModelForm):
-    class Meta:
-        model = InventoryCountAsof
-        fields = ( 'inventory', 'new_count')
-         inventory = forms.ModelChoiceField(queryset=Inventory.objects.all())
 
 '''
 class SupplierPOForm(ModelForm):

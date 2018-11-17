@@ -68,6 +68,7 @@ class JobOrder(models.Model):
         ('Under Cutting', 'Under Cutting'),
         ('Under Extrusion', 'Under Extrusion'),
         ('Under Printing', 'Under Printing'),
+        ('Under Laminating', 'Under Laminating'),
         ('Under Packaging', 'Under Packaging'),
         ('Ready for delivery', 'Ready for delivery'),
         ('Delivered', 'Delivered'),
