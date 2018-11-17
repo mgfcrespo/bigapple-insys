@@ -407,20 +407,18 @@ def create_client_po(request):
                 totalled_clientpo.total_amount = formset_item_total
                 totalled_clientpo.save()
 
-                # Create Invoice
-                invoice = SalesInvoice(client=current_client, client_po=form_instance, total_amount=formset_item_total, amount_due=0)
+                invoice = SalesInvoice(client=current_client, client_po=form_instance, total_amount=formset_item_total,
+                                       amount_due=0, date_issued=date.today())
                 invoice.save()
 
-                #TODO: Invoice should not be issued unless JO is complete
-
-                invoice = SalesInvoice.objects.get(id=invoice.pk)
-                invoice.amount_due = invoice.calculate_total_amount_computed
+                #invoice = invoice.pk
+                #invoice = SalesInvoice.objects.get(id=invoice)
+                invoice.amount_due = invoice.calculate_total_amount_computed()
                 invoice.save()
 
                 outstanding_balance = current_client.outstanding_balance
                 outstanding_balance += invoice.amount_due
                 current_client.save()
-
 
                 message = "PO successfully created"
 
@@ -432,7 +430,7 @@ def create_client_po(request):
 
 
         #TODO: change index.html. page should be redirected after successful submission
-        return render(request, 'accounts/user-page-view.html',
+        return render(request, 'accounts/client_page.html',
                               {'message': message}
                               )
     else:

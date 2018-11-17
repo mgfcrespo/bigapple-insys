@@ -55,7 +55,7 @@ def user_page_view(request):
         PP = Inventory.objects.filter(item_type='PP').annotate(Sum('quantity'))
         PET = Inventory.objects.filter(item_type='PET').annotate(Sum('quantity'))
 
-        status_waiting = JobOrder.objects.filter(status='Waiting')
+        status_waiting = JobOrder.objects.filter(status='Waiting').count()
         status_onqueue = JobOrder.objects.filter(status='On Queue').count()
         status_cutting = JobOrder.objects.filter(status='Under Cutting').count()
         status_extrusion = JobOrder.objects.filter(status='Under Extrusion').count()

@@ -34,17 +34,20 @@ class Inventory(models.Model):
     description = models.CharField(max_length=45, blank=True, null=True)
     quantity = models.IntegerField()
     price = models.FloatField()
-    old_count = models.IntegerField(blank=True, null=True)
-    new_count = models.IntegerField(blank=True, null=True)
-    date_counted = models.DateField(blank=True, null=True)
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
 
     class Meta:
-
         db_table = 'inventory_mgt_inventory'
 
     def __str__(self):
         return str(self.item)
+
+class InventoryCount(models.Model):
+    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
+    old_count = models.IntegerField(blank=True, null=True)
+    new_count = models.IntegerField(blank=True, null=True)
+    date_counted = models.DateField(blank=True, null=True)
+    count_person = models.ForeignKey(Employee, on_delete=models.CASCADE)
 
 class SupplierPO(models.Model):
     id = models.IntegerField(primary_key=True)

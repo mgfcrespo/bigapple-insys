@@ -435,6 +435,12 @@ def add_extruder_schedule(request, id):
     data = JobOrder.objects.get(id=id)
     e = ExtruderSchedule.objects.filter(job_order = id)
     e.job_order = id
+    items = ClientItem.objects.filter(job_order = id)
+    printed = False
+    for y in items:
+        if y.printed == 1:
+            printed == True
+            break
 
     form = ExtruderScheduleForm(request.POST)
 
@@ -453,8 +459,12 @@ def add_extruder_schedule(request, id):
             print(form.balance)
             new_schedule = form.save()
             if new_schedule.final:
-                data.status = 'Under Printing'
-                data.save()
+                if printed:
+                    data.status = 'Under Printing'
+                    data.save()
+                else:
+                    data.status = 'Under Cutting'
+                    data.save()
         return redirect('production:job_order_details', id = id)
 
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Extruder')
@@ -474,6 +484,12 @@ def add_printing_schedule(request, id):
     form = PrintingScheduleForm(request.POST)
     p = PrintingSchedule.objects.filter(job_order = data.id)
     p.job_order = id
+    items = ClientItem.objects.filter(job_order = id)
+    laminate = False
+    for x in items:
+        if x.laminate == 1:
+            laminate = True
+            break
 
     if p.count == 0:
         data.status = 'Under Printing'
@@ -486,8 +502,12 @@ def add_printing_schedule(request, id):
       if form.is_valid():
           new_schedule = form.save()
           if new_schedule.final:
-            data.status = 'Under Cutting'
-            data.save()
+              if laminate:
+                data.status = 'Under Laminating'
+                data.save()
+              else:
+                data.status = 'Under Cutting'
+                data.save()
       return redirect('production:job_order_details', id = data.id)
 
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Printing')
@@ -520,9 +540,9 @@ def add_cutting_schedule(request, id):
       if form.is_valid():
         new_schedule = form.save()
         if new_schedule.final:
-            #TODO add condiion if item.laminate is true
-            data.status = 'Under Laminating'
+            data.status = 'Under Packaging'
             data.save()
+
       return redirect('production:job_order_details', id = data.id)
 
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Cutting')
@@ -554,7 +574,7 @@ def add_laminating_schedule(request, id):
         if form.is_valid():
             new_schedule = form.save()
             if new_schedule.final:
-                data.status = 'Ready for delivery'
+                data.status = 'Under Cutting'
                 data.save()
         return redirect('production:job_order_details', id=data.id)
 

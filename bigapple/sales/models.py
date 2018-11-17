@@ -254,12 +254,12 @@ class SalesInvoice(models.Model):
     )
 
     id = models.IntegerField(primary_key=True)
-    date_issued = models.DateField()
+    date_issued = models.DateField(auto_now_add=True)
     date_due = models.DateField()
     total_amount = models.FloatField()
     total_amount_computed = models.FloatField(null=True, blank=True)
     amount_due = models.FloatField()
-    total_paid = models.FloatField()
+    total_paid = models.FloatField(null=True, blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     client_po = models.ForeignKey(JobOrder, on_delete=models.CASCADE)
     status = models.CharField('status', choices=STATUS, max_length=200, default="Open")
@@ -274,9 +274,13 @@ class SalesInvoice(models.Model):
         return str(po_number)
 
     def calculate_total_amount_computed(self):
-        total_discount = float(self.total_amount * self.client.discount)
-        total_net_vat = float(self.total_amount * self.client.net_vat)
-        total = float(self.total_amount + total_net_vat - total_discount)
+        if self.client.discount is None:
+            total_net_vat = self.total_amount * self.client.net_vat
+            total = float(self.total_amount + total_net_vat)
+        else:
+            total_discount = self.total_amount * self.client.discount
+            total_net_vat = self.total_amount * self.client.net_vat
+            total = float(self.total_amount + total_net_vat - total_discount)
         return total
 
     def calculate_days_passed(self):
@@ -295,7 +299,8 @@ class SalesInvoice(models.Model):
         else:
             add_days = 30
 
-        date_due = self.date_issued + timedelta(days=add_days)
+        d = timedelta(days=add_days)
+        date_due = self.date_issued + d
         return date_due
 
     def save(self, *args, **kwargs):
