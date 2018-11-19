@@ -12,8 +12,8 @@ class Inventory(models.Model):
         ('Raw Materials', 'Raw Materials'),
         ('Machine Parts', 'Machine Parts'),
         ('Ink', 'Ink'),
-        ('Cylinder', 'Cylinder')
-        ('Others', 'Others')
+        ('Cylinder', 'Cylinder'),
+        ('Others', 'Others'),
     )
 
     RM_TYPES = (
