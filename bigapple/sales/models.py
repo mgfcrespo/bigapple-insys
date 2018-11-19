@@ -265,6 +265,7 @@ class SalesInvoice(models.Model):
     amount_due = models.FloatField()
     total_paid = models.FloatField(null=True, blank=True)
     days_passed = models.IntegerField(null=True, blank=True)
+    days_overdue = models.IntegerField(null=True, blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     client_po = models.ForeignKey(JobOrder, on_delete=models.CASCADE)
     status = models.CharField('status', choices=STATUS, max_length=200, default="Open")
@@ -311,7 +312,9 @@ class SalesInvoice(models.Model):
     def calculate_days_overdue(self):
         sales_invoice = SalesInvoice.objects.get(client=self.client)
         overdue_sales_invoice = sales_invoice.get(SalesInvoice.status == 'Late')
-        issued_date = overdue_sales_invoice.date_issued
+        overdue_sales_invoice = overdue_sales_invoice.order_by('date_issued')
+        object = overdue_sales_invoice.first()
+        issued_date = object.date_issued
 
         return (issued_date - date.today()).days
 
@@ -324,6 +327,7 @@ class SalesInvoice(models.Model):
         if self.date_due is not None:
             self.date_due = self.calculate_date_due()
             self.days_passed = self.calculate_days_passed()
+            self.days_overdue = self.calculate_days_overdue()
             if self.days_passed < 0:
                 self.status == 'Late'
         super(SalesInvoice, self).save(*args, **kwargs)
