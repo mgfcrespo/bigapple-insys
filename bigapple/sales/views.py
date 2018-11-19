@@ -585,26 +585,51 @@ def employee_delete(request, id):
     return redirect('sales:employee_list')
 
 #FORECASTING
-def demand_forecast(request):
+def demand_list(request):
+    client = Client.objects.all()
+
+    context = {
+        'client' : client
+    }
+    return render(request, 'sales/client_demand_forecast.html', context)
+
+
+def demand_forecast(request, id):
+    client_po = JobOrder.objects.filter(client_id=id)
+    items = []
+    i = ClientItem.objects.all()
+    for every in i:
+        for each in client_po:
+            if every.client_po_id == each.client_po.id:
+                items.append(every)
     cursor = connection.cursor()
-    query = ''
+    query = 'SELECT po.date_issued, p.products FROM accounts_mgt_client c, production_mgt_joborder po, sales_mgt_clientitem poi, sales_product p WHERE' \
+            'p.id = poi.products_id AND poi.client_po_id = po.id AND po.client_id = '+id
 
     get_data = cursor.execute(query)
     df = DataFrame(get_data.fetchall())
     df.columns = get_data.keys()
+    forecast_decomposition = []
+    forecast_ses = []
+    forecast_hwes = []
+    forecast_moving_average = []
+    forecast_arima = []
 
-    forecast_decomposition = TimeSeriesForecasting.forecast_decomposition(df)
-    forecast_ses = TimeSeriesForecasting.forecast_ses(df)
-    forecast_hwes = TimeSeriesForecasting.forecast_hwes(df)
-    forecast_moving_average = TimeSeriesForecasting.forecast_moving_average(df)
-    forecast_arima = TimeSeriesForecasting.forecast_arima(df)
+    for x in items:
+        forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
+        forecast_ses.append(TimeSeriesForecasting.forecast_ses(df))
+        forecast_hwes.append(TimeSeriesForecasting.forecast_hwes(df))
+        forecast_moving_average.append(TimeSeriesForecasting.forecast_moving_average(df))
+        forecast_arima.append(TimeSeriesForecasting.forecast_arima(df))
 
     context = {
         'forecast_decomposition': forecast_decomposition,
         'forecast_ses': forecast_ses,
         'forecast_hwes': forecast_hwes,
         'forecast_moving_average': forecast_moving_average,
-        'forecast_arima': forecast_arima
+        'forecast_arima': forecast_arima,
+        'items' : items
     }
-    return render(request, 'sales/client_demand_forecast.html', context)
+
+    return render(request, 'sales/client_demand_forecast_details.html', context)
 
