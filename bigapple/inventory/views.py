@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory, inlineformset_factory
 from django.db.models import aggregates
+from django.db import connection
 from django.contrib import messages
 
 from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, Employee
@@ -10,6 +11,10 @@ from .models import MaterialRequisition, InventoryCount
 from .forms import SupplierPOItemsForm, InventoryForm, SupplierPOForm, InventoryCountForm
 from .forms import MaterialRequisitionForm
 from datetime import datetime, date
+
+from utilities import TimeSeriesForecasting
+import pandas as pd
+from pandas import DataFrame
 
 
 # Create your views here.
@@ -86,12 +91,9 @@ def inventory_count_form(request, id):
             #print(item)
             #if item.exists():
               #counted = i.latest('time')#get latest
-            new_form = form.save()
+            form.save()
+            form = form.pk
             #new_form = new_form.pk
-            new_form.inventory = data
-            new_form.old_count = data.quantity
-            new_form.count_person = current_employee
-            new_form.save()
             #form_instance = item #get current form
 
             #form_instance.old_count = i.new_count
@@ -99,7 +101,7 @@ def inventory_count_form(request, id):
             #new_form.save()
             #else:
             #form.save()
-            count = InventoryCount.objects.get(id=form.pk)
+            count = InventoryCount.objects.get(id=form)
             count.inventory = data
             count.old_count = data.quantity
             count.count_person = current_employee
@@ -533,3 +535,28 @@ def load_items(request):
     supplier_po = request.GET.get('supplier_po')
     items = Inventory.objects.filter(supplier_id=id).order_by('item')
     return render(request, 'inventory/dropdown_supplier_item.html', {'supplier_po' : supplier_po, 'items': items})
+
+#INVENTORY FORECASTING
+def inventory_forecast(request):
+    cursor = connection.cursor()
+    query = 'SELECT i.id, spoi.quantity, spo.date_issued FROM inventory_mgt_inventory i, inventory_mgt_supplierpo spo, inventory_mgt_supplierpoitems spoi where spoi.item_id = i.id and spoi.supplier_po_id = spo.id'
+
+    get_data = cursor.execute(query)
+    df = DataFrame(get_data.fetchall())
+    df.columns = get_data.keys()
+
+    forecast_decomposition = TimeSeriesForecasting.forecast_decomposition(df)
+    forecast_ses = TimeSeriesForecasting.forecast_ses(df)
+    forecast_hwes = TimeSeriesForecasting.forecast_hwes(df)
+    forecast_moving_average = TimeSeriesForecasting.forecast_moving_average(df)
+    forecast_arima = TimeSeriesForecasting.forecast_arima(df)
+
+
+    context = {
+        'forecast_decomposition' : forecast_decomposition,
+        'forecast_ses' : forecast_ses,
+        'forecast_hwes' : forecast_hwes,
+        'forecast_moving_average' : forecast_moving_average,
+        'forecast_arima' : forecast_arima
+    }
+    return render(request, 'inventory/inventory_forecast.html', context)

@@ -182,6 +182,7 @@ class ClientItem(models.Model):
     def __str__(self):
         return str(self.id)
 
+    #FIXME THIS SHIT TOO HIGH BRAH
     def calculate_price_per_piece(self):
         # Set Production Costs
         electricity = ProductionCost.objects.get(cost_type='Electricity')
@@ -196,13 +197,13 @@ class ClientItem(models.Model):
         material_weight = 0
         material_cost = 0
         if self.products == "HDPE":
-            material_weight = 68
+            material_weight = 0.68
             material_cost = ProductionCost.objects.get(cost_type="HDPE_Materials")
         elif self.products == "LDPE":
-            material_weight = 66
+            material_weight = 0.66
             material_cost = ProductionCost.objects.get(cost_type="LDPE_Materials")
         else:
-            material_weight = 66
+            material_weight = 0.66
             material_cost = ProductionCost.objects.get(cost_type="PP_Materials")
 
         # Get the tens of order quantity (Sets quantity standard qty if order is below MOQ)
@@ -216,16 +217,19 @@ class ClientItem(models.Model):
         if self.printed == True:
             printing_cost += (art_work.cost) + \
                              (art_labor.cost / order_qty) + (cylinder.cost / order_qty) + (ink.cost / order_qty)
+        else:
+            printing_cost = 0
 
         if self.laminate == True:
             lamination_cost += lamination.cost / order_qty
+        else:
+            lamination_cost = 0
 
         price_per_piece = float(0.0)
         # Calculate total per item
-        price_per_piece += (self.length * self.width * self.thickness * material_weight * \
-                            (material_cost.cost + (material_cost.cost * mark_up.cost) + (
-                                        material_cost.cost * electricity.cost)) \
-                            + order_qty + printing_cost + lamination_cost) / 1000
+        price_per_piece += ((self.length * self.width * self.thickness * material_weight) *
+                            (material_cost.cost + mark_up.cost) +
+                                (electricity.cost) + printing_cost + lamination_cost) / 1000
 
         return price_per_piece
 
@@ -254,12 +258,13 @@ class SalesInvoice(models.Model):
     )
 
     id = models.IntegerField(primary_key=True)
-    date_issued = models.DateField(auto_now_add=True)
-    date_due = models.DateField()
+    date_issued = models.DateField(null=True, blank=True)
+    date_due = models.DateField(null=True, blank=True)
     total_amount = models.FloatField()
     total_amount_computed = models.FloatField(null=True, blank=True)
     amount_due = models.FloatField()
     total_paid = models.FloatField(null=True, blank=True)
+    days_passed = models.IntegerField(null=True, blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     client_po = models.ForeignKey(JobOrder, on_delete=models.CASCADE)
     status = models.CharField('status', choices=STATUS, max_length=200, default="Open")
@@ -275,11 +280,11 @@ class SalesInvoice(models.Model):
 
     def calculate_total_amount_computed(self):
         if self.client.discount is None:
-            total_net_vat = self.total_amount * self.client.net_vat
+            total_net_vat = self.total_amount / (1 + self.client.net_vat/100)
             total = float(self.total_amount + total_net_vat)
         else:
-            total_discount = self.total_amount * self.client.discount
-            total_net_vat = self.total_amount * self.client.net_vat
+            total_discount = self.total_amount * (self.client.discount/100)
+            total_net_vat = self.total_amount / (1 + self.client.net_vat/100)
             total = float(self.total_amount + total_net_vat - total_discount)
         return total
 
@@ -303,14 +308,24 @@ class SalesInvoice(models.Model):
         date_due = self.date_issued + d
         return date_due
 
+    def calculate_days_overdue(self):
+        sales_invoice = SalesInvoice.objects.get(client=self.client)
+        overdue_sales_invoice = sales_invoice.get(SalesInvoice.status == 'Late')
+        issued_date = overdue_sales_invoice.date_issued
+
+        return (issued_date - date.today()).days
+
     def save(self, *args, **kwargs):
         client = self.client
         self.payment_terms = client.payment_terms
         self.discount = client.discount
         self.net_vat = client.net_vat
         self.total_amount_computed = self.calculate_total_amount_computed()
-        self.date_due = self.calculate_date_due()
-        self.days_passed = self.calculate_days_passed()
+        if self.date_due is not None:
+            self.date_due = self.calculate_date_due()
+            self.days_passed = self.calculate_days_passed()
+            if self.days_passed < 0:
+                self.status == 'Late'
         super(SalesInvoice, self).save(*args, **kwargs)
 
 

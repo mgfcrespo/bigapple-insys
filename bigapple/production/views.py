@@ -24,6 +24,7 @@ from ortools.constraint_solver import pywrapcp
 
 from datetime import timedelta as td
 from datetime import datetime as dt
+from datetime import date
 
 #from ortools.constraint_solver import pywrapcp
 import plotly
@@ -395,6 +396,7 @@ def job_order_list(request):
 def job_order_details(request, id):
 
     data = JobOrder.objects.get(id=id)
+    items = ClientItem.objects.filter(client_po=data)
     form = JODetailsForm(request.POST or None)
     extrusion = ExtruderSchedule.objects.filter(job_order=data.id).order_by('datetime_in')
     printing = PrintingSchedule.objects.filter(job_order=data.id).order_by('datetime_in')
@@ -416,7 +418,12 @@ def job_order_details(request, id):
       'extrusion': extrusion,
       'printing': printing,
       'cutting': cutting,
+<<<<<<< HEAD
       'laminating' : laminating
+=======
+        'laminating' : laminating,
+        'items' : items
+>>>>>>> c45f2056a04049b8f10b435cc65c034eaa400c17
     }
     return render(request, 'production/job_order_details.html', context)
 
@@ -454,7 +461,7 @@ def add_extruder_schedule(request, id):
         print(form)
         if form.is_valid():
             x = request.POST.get("weight_rolls")
-            y = Decimal(x)*Decimal(4.74) 
+            y = float(x)*float(4.74)
             form.balance = float(y)
             print(form.balance)
             new_schedule = form.save()
@@ -525,6 +532,8 @@ def add_cutting_schedule(request, id):
 		
     data = JobOrder.objects.get(id=id)
     form = CuttingScheduleForm(request.POST)
+    invoice = SalesInvoice.objects.get(client_po = data)
+    client = invoice.client
 
     c = CuttingSchedule.objects.filter(job_order = data.id)
     c.job_order = id
@@ -540,9 +549,14 @@ def add_cutting_schedule(request, id):
       if form.is_valid():
         new_schedule = form.save()
         if new_schedule.final:
-            data.status = 'Under Packaging'
+            data.status = 'Ready for delivery'
             data.save()
+            invoice.date_issued = date.today()
+            invoice.date_due = invoice.calculate_date_due()
+            invoice.save()
 
+            client.outstanding_balance += invoice.amount_due
+            client.save()
       return redirect('production:job_order_details', id = data.id)
 
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Cutting')

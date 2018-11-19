@@ -10,7 +10,6 @@
 			<th>Date Issued</th>
 			<th>Date Due</th>
 			<th>Total Amount</th>
-			<th>Amount Due</th>
 			<th>Status</th>
 		</tr>
 	</thead>
@@ -23,7 +22,6 @@
 			<td> {{ SalesInvoice.date_issued }} </td>
 			<td> {{ SalesInvoice.date_due }} </td>
 			<td> {{ SalesInvoice.total_amount_computed }} </td>
-			<td> {{ SalesInvoice.amount_due }} </td>
 
 		   {% if SalesInvoice.status ==  "Open" %}
 		   <td><i class="icon checkmark"></i>Open</td>

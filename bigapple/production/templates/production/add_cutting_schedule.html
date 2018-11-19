@@ -33,23 +33,15 @@
         <div class="two fields">
             <div class = "field">
                 <label>Date and Time In (DD-MM-YYYY HH:MM):</label>
-                <input type="datetime" name="datetime_in" value="{{ form.datetime_in }}">
+                {{ form.datetime_in }}
             </div>
             <div class = "field">
                 <label>Date and Time Out (DD-MM-YYYY HH:MM):</label>
-                <input type="datetime" name="datetime_out" value="{{ form.datetime_out }}">
+                {{ form.datetime_out }}
             </div>
         </div>
 
         <div class="six fields">
-            <div class="field">
-                <label>Weight Rolls:</label>
-                {{ form.weight_rolls }}
-            </div>
-            <div class="field">
-                <label>Core Weight:</label>
-                {{ form.core_weight }}
-            </div>
             <div class="field">
                 <label>Output Kilos:</label>
                 {{ form.output_kilos }}
