@@ -12,7 +12,7 @@ class Inventory(models.Model):
         ('Raw Materials', 'Raw Materials'),
         ('Machine Parts', 'Machine Parts'),
         ('Ink', 'Ink'),
-        ('Cylinder', 'Cylinder')
+        ('Cylinder', 'Cylinder'),
         ('Others', 'Others')
     )
 

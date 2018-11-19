@@ -34,4 +34,6 @@ urlpatterns = [
     path('supplierPO-list/', views.supplierPO_list, name='supplierPO_list'),
     path('supplierPO-details/<int:id>/', views.supplierPO_details, name='supplierPO_details'),
     path('ajax/load-items/', views.load_items, name='ajax_load_items'),
+    #Forecast
+    path('inventory-forecast/', views.inventory_forecast, name='inventory_forecast')
 ];
