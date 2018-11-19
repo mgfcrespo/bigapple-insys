@@ -9,6 +9,9 @@ from django.http import HttpResponse
 from django.db.models.functions import TruncMonth
 from datetime import datetime
 
+import array as arr
+
+
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
@@ -44,39 +47,20 @@ def user_page_view(request):
         id = user.id
         username = request.user.username
 
-        id = user.id
-        client = Client.objects.filter(accounts_id=id)
-        employee = Employee.objects.filter(accounts_id=id)
-        x = ''
-        if client:
-            client_po = JobOrder.objects.filter(client=Client.objects.get(accounts_id=id))
-            x = 'Client'
-        elif employee:
-            x = 'Employee'
-            if Employee.objects.get(accounts_id=id).position == "Sales Coordinator" or "General Manager":
-                client_po = JobOrder.objects.all()
-            # TODO: Sales Agent access level
-            elif employee.position == "Sales Agent":
-                customer = Client.objects.filter(sales_agent=employee)
-                po = JobOrder.objects.all()
-                client_po = []
-                # for each in customer:
-                #   for every in po:
-                #      if every.client == each:
-                #         client_po.append(every)
-
         Client_data = Client.objects.all()
         Supplier_data = Supplier.objects.all()
         JobOrder_data = JobOrder.objects.all()
 
         JobOrder_data5 = JobOrder.objects.order_by('-id')[:5]
-        rush_order = JobOrder.objects.filter(rush_order=True)[:5]
+        rush_order = JobOrder.objects.filter(rush_order=True).exclude(status='delivered')[:3]
 
         LDPE = Inventory.objects.filter(rm_type='LDPE')
         LLDPE = Inventory.objects.filter(rm_type='LLDPE')
         HDPE = Inventory.objects.filter(item_type='HDPE')
         PP = Inventory.objects.filter(item_type='PP')
         PET = Inventory.objects.filter(item_type='PET')
+        PE = Inventory.objects.filter(item_type='Pelletized PE')
+        HD = Inventory.objects.filter(item_type='Pelletized HD')
 
         status_waiting = JobOrder.objects.filter(status='Waiting').count()
         status_onqueue = JobOrder.objects.filter(status='On Queue').count()
@@ -95,18 +79,25 @@ def user_page_view(request):
 
         thisMonth = datetime.now().month
 
-        POs = JobOrder.objects.values('date_issued__year', 'date_issued__month').annotate(c=Count('id')).values('c')
+        POs = JobOrder.objects.filter(date_issued__month=thisMonth, date_issued__year=thisYear).annotate(count=Count('id'))
+        POs_lastYear = JobOrder.objects.filter(date_issued__month=thisMonth, date_issued__year=lastYear).annotate(count=Count('id'))
 
         context = {
-            'client_po': client_po,
+            'thisMonth': thisMonth,
+
+            'thisYear': thisYear,
+            'lastYear': lastYear,
 
             'POs': POs,
+            'POs_lastYear': POs_lastYear,
 
             'LDPE': LDPE,
             'LLDPE': LLDPE,
             'HDPE': HDPE,
             'PP': PP,
             'PET': PET,
+            'PE': PE,
+            'HD': HD,
 
             'status_waiting': status_waiting,
             'status_onqueue': status_onqueue,
