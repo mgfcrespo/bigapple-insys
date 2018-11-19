@@ -418,12 +418,7 @@ def job_order_details(request, id):
       'extrusion': extrusion,
       'printing': printing,
       'cutting': cutting,
-<<<<<<< HEAD
       'laminating' : laminating
-=======
-        'laminating' : laminating,
-        'items' : items
->>>>>>> c45f2056a04049b8f10b435cc65c034eaa400c17
     }
     return render(request, 'production/job_order_details.html', context)
 
