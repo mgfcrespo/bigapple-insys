@@ -26,12 +26,7 @@
                     {{ each.overdue_balance }}
                 </td>
                 <td>
-                    {% for every in sales_invoice %}
-                        {% if sales_invoice.client == each %}
-                        {{ every.calculate_days_overdue }}
-
-                        {% endif %}
-                    {% endfor %}
+                    {{ each.days_passed }}
                 </td>
                 <td>
                     {{ each.payment_terms }}

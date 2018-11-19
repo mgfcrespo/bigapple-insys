@@ -197,8 +197,6 @@ class CuttingSchedule(models.Model):
     job_order = models.ForeignKey(JobOrder, on_delete=models.CASCADE)
     datetime_in = models.DateTimeField()
     datetime_out = models.DateTimeField()
-    weight_rolls = models.FloatField()
-    core_weight = models.FloatField()
     output_kilos = models.FloatField()
     number_rolls = models.FloatField()
     starting_scrap = models.FloatField()

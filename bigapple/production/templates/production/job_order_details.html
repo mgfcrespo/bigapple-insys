@@ -13,7 +13,7 @@
                 <label for="">Date Due</label>
                 <span>{{ data.date_required }}</span>
             </div>
-            <div class="four fields">
+            <div class="five fields">
                 <div class = "field">
                     <label for="">Client PO</label>
                     <span>{{ data }}</span>
@@ -33,6 +33,12 @@
                 <div class = "field">
                     <label for="">Payment Terms</label>
                     <span>{{ data.client.payment_terms }}</span>
+                </div>
+                <div class = "field">
+                    <label for="">Items</label>
+                    <span>{% for x in items %}
+                        {{ x.quantity }} {{ x.products }}
+                    {% endfor %}</span>
                 </div>
             </div>
             <div class = "four fields">

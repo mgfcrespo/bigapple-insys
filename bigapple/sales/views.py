@@ -24,7 +24,9 @@ from django.contrib.auth.models import User
 from django import forms
 import sys
 from decimal import Decimal
-#from utilities import TimeSeriesForecasting, ganttChart
+from django.db import connection
+from pandas import DataFrame
+from utilities import TimeSeriesForecasting, ganttChart
 
 #Forecasting imports
 #import numpy as np
@@ -165,7 +167,8 @@ def po_list_view(request):
 def po_detail_view(request, pk):
     client_po = JobOrder.objects.get(pk=pk)
 
-    context = {'client_po': client_po}
+    context = {'client_po': client_po,
+               'pk' : pk}
 
     return render(request, 'sales/clientPO_detail.html', context)
 
@@ -183,10 +186,13 @@ def confirm_client_po(request, pk):
         inventory = Inventory.objects.get(rm_type=material)
         quantity = inventory.quantity
 
+        #TODO check for cylinder in matreq
         if quantity > 0:
             matreq = True
         else:
             matreq = False
+
+
 
     if request.method == "POST":
         clientpo.status = "On Queue"
@@ -194,7 +200,6 @@ def confirm_client_po(request, pk):
 
         for every in items:
             form = MaterialRequisitionForm(request.POST)
-
             form.client_item = every
             form.save()
 
@@ -217,7 +222,7 @@ def confirm_client_po(request, pk):
 
 #Invoice List/Detail View
 def invoice_list_view(request):
-    invoice = SalesInvoice.objects.all()
+    invoice = SalesInvoice.objects.filter(date_issued__isnull=False)
 
     if request.session['session_position'] == "Sales Coordinator":
         template = 'sales_coordinator_page_ui.html'
@@ -241,7 +246,7 @@ def invoice_detail_view(request, pk, *args, **kwargs):
 
     salesinvoice = SalesInvoice.objects.get(pk=pk)
     form = ClientPaymentForm()
-    payments = ClientPayment.objects.filter(invoice_issued=salesinvoice)
+    payments = ClientPayment.objects.filter(invoice=salesinvoice)
 
     try:
         salesinvoice = SalesInvoice.objects.get(pk=pk)
@@ -259,11 +264,12 @@ def invoice_detail_view(request, pk, *args, **kwargs):
 
         salesinvoice.save()
 
-        payments = ClientPayment.objects.filter(invoice_issued=salesinvoice)
+        payments = ClientPayment.objects.filter(invoice=salesinvoice)
 
         context = {'salesinvoice': salesinvoice,
                    'form' : form,
-                   'payments' : payments}
+                   'payments' : payments,
+                   'pk' : pk}
 
     except SalesInvoice.DoesNotExist:
         raise Http404("Sales Invoice does not exist")
@@ -277,13 +283,14 @@ def add_payment(request, pk, *args, **kwargs):
     if request.method == "POST":
             form = ClientPaymentForm(request.POST)
             form = form.save()
+            new_form = form.pk
 
             salesinvoice = SalesInvoice.objects.get(pk=pk)
             client = Client.objects.get(id = salesinvoice.client_id)
 
-            payment = ClientPayment.objects.get(id=form.pk)
+            payment = ClientPayment.objects.get(pk=new_form)
             payment.client = client
-            payment.invoice_issued = salesinvoice
+            payment.invoice = salesinvoice
 
             payment.old_balance = salesinvoice.amount_due
             salesinvoice.amount_due -= payment.payment
@@ -291,11 +298,12 @@ def add_payment(request, pk, *args, **kwargs):
             payment.new_balance = payment.old_balance - payment.payment
             salesinvoice.amount_due = payment.new_balance
 
+            client.outstanding_balance -= payment.payment
+
             salesinvoice.save()
             payment.save()
             client.save()
 
-            form = ClientPaymentForm()
     return form
 
 def payment_list_view(request):
@@ -342,7 +350,6 @@ def payment_detail_view(request, pk):
 def statement_of_accounts_list_view(request):
     client = Client.objects.all()
     sales_invoice = SalesInvoice.objects.all()
-
 
     context = {
         'client' : client,
@@ -408,17 +415,13 @@ def create_client_po(request):
                 totalled_clientpo.save()
 
                 invoice = SalesInvoice(client=current_client, client_po=form_instance, total_amount=formset_item_total,
-                                       amount_due=0, date_issued=date.today())
+                                       amount_due=0)
                 invoice.save()
 
                 #invoice = invoice.pk
                 #invoice = SalesInvoice.objects.get(id=invoice)
                 invoice.amount_due = invoice.calculate_total_amount_computed()
                 invoice.save()
-
-                outstanding_balance = current_client.outstanding_balance
-                outstanding_balance += invoice.amount_due
-                current_client.save()
 
                 message = "PO successfully created"
 
@@ -460,7 +463,12 @@ def rush_order_assessment(request, pk):
         rush_order.save()
 
     #credit status
-    credit_status = Client.objects.all().values_list('credit_status', flat=True)
+    if client.overdue_balance > 0:
+        client.credit_status = 0
+        credit_status = False
+    else:
+        client.credit_status = 1
+        credit_status = True
 
     #cost shit
     items = ClientItem.objects.filter(client_po = rush_order)
@@ -472,7 +480,7 @@ def rush_order_assessment(request, pk):
     for each in items:
         products.append(each.products)
         material.append(each.material_type)
-    #TODO: get each item's material requirement
+    #TODO: get each item's material requirement + CYLINDER
     inventory = Inventory.objects.get(rm_type=material)
     quantity = inventory.quantity
 
@@ -576,41 +584,27 @@ def employee_delete(request, id):
     data.delete()
     return redirect('sales:employee_list')
 
-'''
-#Forecasting view
-def call_forecasting(request):
-    ...
+#FORECASTING
+def demand_forecast(request):
+    cursor = connection.cursor()
+    query = ''
 
-#DATASET QUERY
-def query_dataset():
-# Importing data
-    df = pd.read_sql(ClientPO.objects.all())
-    # Printing head
-    df.head()
+    get_data = cursor.execute(query)
+    df = DataFrame(get_data.fetchall())
+    df.columns = get_data.keys()
 
+    forecast_decomposition = TimeSeriesForecasting.forecast_decomposition(df)
+    forecast_ses = TimeSeriesForecasting.forecast_ses(df)
+    forecast_hwes = TimeSeriesForecasting.forecast_hwes(df)
+    forecast_moving_average = TimeSeriesForecasting.forecast_moving_average(df)
+    forecast_arima = TimeSeriesForecasting.forecast_arima(df)
 
-#TIME SERIES FORECASTING
-# x = 'what is being forecasted' queryset
-#y = time queryset
-class Forecasting_Algo:
-    def __init__(self, train_x, train_y, test_x, test_y):
-        self.train_x = train_x
-        self.train_y = train_y
-        self.test_x = test_x
-        self.test_y = test_y
+    context = {
+        'forecast_decomposition': forecast_decomposition,
+        'forecast_ses': forecast_ses,
+        'forecast_hwes': forecast_hwes,
+        'forecast_moving_average': forecast_moving_average,
+        'forecast_arima': forecast_arima
+    }
+    return render(request, 'sales/client_demand_forecast.html', context)
 
-    def naive_method(self):
-        ...
-    def simple_average(self):
-        ...
-    def moving_average(self):
-        ...
-    def single_exponential_smoothing(self):
-        ...
-    def linear_trend_method(self):
-        ...
-    def seasonal_method(self):
-        ...
-    def ARIMA(self):
-        ...
-'''
