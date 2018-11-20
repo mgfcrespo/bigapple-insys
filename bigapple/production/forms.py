@@ -69,8 +69,8 @@ class PrintingScheduleForm(forms.ModelForm):
     class Meta:
         model = PrintingSchedule
         fields = ('job_order', 'machine', 'operator', 'number_rolls', 'weight_rolls', 'core_weight', 'output_kilos',
-                  'datetime_in', 'datetime_out', 'shift',
-                  'starting_scrap', 'printing_scrap', 'remarks', 'final',)
+        'datetime_in', 'datetime_out', 'shift',
+        'starting_scrap', 'printing_scrap', 'remarks', 'final',)
         widgets = {
             'datetime_in': DateTimeInput(),
             'datetime_out': DateTimeInput()
@@ -138,7 +138,7 @@ class LaminatingScheduleForm(forms.ModelForm):
     class Meta:
         model = LaminatingSchedule
         fields = ('job_order', 'machine', 'operator', 'datetime_in', 'datetime_out', 'shift', 'quantity',
-                  'starting_scrap', 'laminating_scrap', 'remarks', 'final')
+        'starting_scrap', 'laminating_scrap', 'remarks', 'final')
         widgets = {
             'datetime_in': DateTimeInput(),
             'datetime_out': DateTimeInput()

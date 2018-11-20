@@ -15,7 +15,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse, Http404
 from django.db.models import aggregates
 from production.models import JobOrder
-from .models import Supplier, ClientItem, Client, SalesInvoice, ClientPayment
+from .models import Supplier, ClientItem, Client, SalesInvoice, ClientPayment, ProductionCost
 from inventory.models import Inventory, Supplier, SupplierPO, SupplierPOItems
 from accounts.models import Employee
 from .forms import SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
@@ -26,7 +26,7 @@ import sys
 from decimal import Decimal
 from django.db import connection
 from pandas import DataFrame
-from utilities import TimeSeriesForecasting, ganttChart
+from utilities import TimeSeriesForecasting
 
 #Forecasting imports
 #import numpy as np
@@ -192,7 +192,28 @@ def confirm_client_po(request, pk):
     else:
         matreq = False
 
+    products = []
+    material = []
+    cylinder_count = 0
+    matreq = False
+    for each in items:
+        products.append(each.products)
+        material.append(each.products.material_type)
+        if each.printed:
+            cylinder_count += 1
 
+    for x in material:
+        try:
+            inventory = Inventory.objects.filter(rm_type=x)
+            for y in inventory:
+                if y.quantity > 1000:
+                    matreq = True
+                else:
+                    matreq = False
+                    break
+        except Inventory.DoesNotExist:
+            inventory = None
+            matreq = False
 
     if request.method == "POST":
         clientpo.status = "On Queue"
@@ -214,8 +235,8 @@ def confirm_client_po(request, pk):
         'clientpo': clientpo,
         'pk' : pk,
         'client' : client,
-        'price' : price,
-        'matreq' : matreq
+        'matreq' : matreq,
+        'cylinder_count' : cylinder_count
     }
 
     return render(request, 'sales/clientPO_confirm.html', context)
@@ -349,7 +370,7 @@ def payment_detail_view(request, pk):
 
 def statement_of_accounts_list_view(request):
     client = Client.objects.all()
-    sales_invoice = SalesInvoice.objects.all()
+    sales_invoice = SalesInvoice.objects.filter(date_issued__isnull=False)
 
     context = {
         'client' : client,
@@ -416,12 +437,11 @@ def create_client_po(request):
 
                 invoice = SalesInvoice(client=current_client, client_po=form_instance, total_amount=formset_item_total,
                                        amount_due=0)
+                invoice.amount_due = invoice.calculate_total_amount_computed()
                 invoice.save()
 
                 #invoice = invoice.pk
                 #invoice = SalesInvoice.objects.get(id=invoice)
-                invoice.amount_due = invoice.calculate_total_amount_computed()
-                invoice.save()
 
                 message = "PO successfully created"
 
@@ -459,7 +479,8 @@ def rush_order_assessment(request, pk):
     client = rush_order.client
 
     if request.POST.get('approve_btn'):
-        rush_order.status = 'Approved'
+        rush_order.status = 'On Queue'
+        rush_order.save()
     elif request.POST.get('deny_btn'):
         rush_order.save()
 
@@ -473,22 +494,43 @@ def rush_order_assessment(request, pk):
 
     #cost shit
     items = ClientItem.objects.filter(client_po = rush_order)
+    mark_up = ProductionCost.objects.get(cost_type='Mark_up')
+    electricity = ProductionCost.objects.get(cost_type='Electricity')
+
+    for every in items:
+        price = every.calculate_price_per_piece() * every.quantity
+        profit = 0
+        profit += (1000 * (
+            every.calculate_price_per_piece()) - electricity.cost - every.calculate_price_per_piece().printing_cost - \
+                   every.calculate_price_per_piece().laminating_cost - (
+                               every.length * every.width * every.thickness * every.calculate_price_per_piece().material_weight \
+                               * every.calculate_price_per_piece().material_cost.cost)) / (
+                              every.length * every.width * every.thickness * every.calculate_price_per_piece().material_weight)
+
     #profit =
 
     #matreq
     products = []
     material = []
+    cylinder_count = 0
+    matreq = False
     for each in items:
         products.append(each.products)
-        material.append(each.material_type)
-    #TODO: get each item's material requirement + CYLINDER
-    inventory = Inventory.objects.get(rm_type=material)
-    quantity = inventory.quantity
-
-    if quantity > 0:
-        matreq = True
-    else:
-        matreq = False
+        material.append(each.products.material_type)
+        if each.printed:
+            cylinder_count += 1
+    for x in material:
+        try:
+            inventory = Inventory.objects.filter(rm_type=x)
+            for y in inventory:
+                if y.quantity > 1000:
+                    matreq = True
+                else:
+                    matreq = False
+                    break
+        except Inventory.DoesNotExist:
+            inventory = None
+            matreq = False
 
     #simulated sched
 
@@ -496,6 +538,8 @@ def rush_order_assessment(request, pk):
         'rush_order' : rush_order,
         'credit_status' : credit_status,
         'matreq' : matreq,
+        'cylinder_count' : cylinder_count,
+        'profit': profit
         #'simulated_sched' : simulated_sched
     }
 

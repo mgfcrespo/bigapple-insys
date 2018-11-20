@@ -15,6 +15,9 @@ from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedul
 from sales.models import ClientItem, SalesInvoice
 from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm, LaminatingScheduleForm
 from django.db.models import Q
+from utilities import final_gantt
+from django.db import connection
+import pandas as pd
 
 #scheduling import
 # Import Python wrapper for or-tools constraint solver.
@@ -66,7 +69,6 @@ Level 2 Solution
 Input can accept deadlines.
 
   -Jobs must start after given release dates and be completed before given deadlines
-'''
 
 #TODO fix arrange_schedule() to take in 2 parameters (2 2D Lists) based from actual data. Also take note of machine and job count
 def arrange_schedule():
@@ -88,20 +90,18 @@ def arrange_schedule():
                       [2, 1, 4],
                       [4, 3]]
 
-  '''
-   This example means
-   Job n = [(m,p] where m = machine number; p = units of time
-   job 0 = [(0, 3), (1, 2), (2, 2)]
-   job 1 = [(0, 2), (2, 1), (1, 4)]
-   job 2 = [(1, 4), (2, 3)]
+#   This example means
+ #  Job n = [(m,p] where m = machine number; p = units of time
+  # job 0 = [(0, 3), (1, 2), (2, 2)]
+   #job 1 = [(0, 2), (2, 1), (1, 4)]
+   #job 2 = [(1, 4), (2, 3)]
    
-   note: each machine and processing time must have a corresponding array
-         The array machines contains the first entries of the pairs of numbers, while processing_times contains the second entries.
+   #note: each machine and processing time must have a corresponding array
+     #    The array machines contains the first entries of the pairs of numbers, while processing_times contains the second entries.
          
-    Issue: machines and processing times are the main input. For each phase in bigapple production, a task can only be done in certain machines.
-    A task production length must also be predefined.
-   '''
-
+    #Issue: machines and processing times are the main input. For each phase in bigapple production, a task can only be done in certain machines.
+    #A task production length must also be predefined.
+   
   # Computes horizon.
   horizon = 0
   for i in all_jobs:
@@ -118,10 +118,9 @@ def arrange_schedule():
                                                           False,
                                                           'Job_%i_%i' % (i, j))
 
-  '''
-  FixedDurationIntervalVar method creates all_tasks, an array containing the variables for the time interval of each task
-  where i = start time; j = end time
-  '''
+  #FixedDurationIntervalVar method creates all_tasks, an array containing the variables for the time interval of each task
+  #where i = start time; j = end time
+  
 
   # Creates sequence variables and add disjunctive constraints.
   all_sequences = []
@@ -137,32 +136,27 @@ def arrange_schedule():
     all_sequences.append(disj.SequenceVar())
     solver.Add(disj)
 
-    '''
-    DisjunctiveConstraints method creates the disjunctive constraints for the problem, and add them to the solver. 
-    These prevent tasks for the same machine from overlapping in time.
-    '''
-
+   # DisjunctiveConstraints method creates the disjunctive constraints for the problem, and add them to the solver. 
+  #  These prevent tasks for the same machine from overlapping in time.
+  
   # Add conjunctive contraints.
   for i in all_jobs:
     for j in range(0, len(machines[i]) - 1):
       solver.Add(all_tasks[(i, j + 1)].StartsAfterEnd(all_tasks[(i, j)]))
 
-    '''
-    The program then adds the conjunctive constraints, which prevent consecutive tasks for the same job from overlapping in time:
-    
-    For each job, this forces the start time of task j + 1 to occur later than the end time of task j.
-    '''
 
+#    The program then adds the conjunctive constraints, which prevent consecutive tasks for the same job from overlapping in time:
+    
+ #   For each job, this forces the start time of task j + 1 to occur later than the end time of task j.
+  
   # Set the objective.
   obj_var = solver.Max([all_tasks[(i, len(machines[i])-1)].EndExpr()
                         for i in all_jobs])
   objective_monitor = solver.Minimize(obj_var, 1)
 
-  '''
-  The expression all_tasks[(i, len(machines[i])-1)].EndExpr() returns the end time for the last task on machine i.
-  By definition, the length of a solution is the maximum of these end times over all all machines. The code above sets the objective for the problem to be this maximum value.
-  '''
-
+#  The expression all_tasks[(i, len(machines[i])-1)].EndExpr() returns the end time for the last task on machine i.
+ # By definition, the length of a solution is the maximum of these end times over all all machines. The code above sets the objective for the problem to be this maximum value.
+  
   # Create search phases.
   sequence_phase = solver.Phase([all_sequences[i] for i in all_machines],
                                 solver.SEQUENCE_DEFAULT)
@@ -171,15 +165,14 @@ def arrange_schedule():
                             solver.ASSIGN_MIN_VALUE)
   main_phase = solver.Compose([sequence_phase, vars_phase])
 
-  '''
-  Creates decision builders. Decision builders create the search tree and determines the order in which the solver searches solutions.
-  The following code creates the decision builder using the solver's Phase method. 
-  (The reason for the term "phase" is that in more complicated problems, the search can involve multiple phases, each of which employs different techniques for finding solutions.)
+
+  #Creates decision builders. Decision builders create the search tree and determines the order in which the solver searches solutions.
+  #The following code creates the decision builder using the solver's Phase method. 
+  #(The reason for the term "phase" is that in more complicated problems, the search can involve multiple phases, each of which employs different techniques for finding solutions.)
   
-  phases commonly has two parameters:
-  1.  Decision variables — the variables the solver uses to decide which node of the tree to visit next.
-  2.  Specifies how the solver chooses the next variable for the search.
-  '''
+  #phases commonly has two parameters:
+ # 1.  Decision variables — the variables the solver uses to decide which node of the tree to visit next.
+#  2.  Specifies how the solver chooses the next variable for the search.
 
   # Create the solution collector.
   collector = solver.LastSolutionCollector()
@@ -212,12 +205,11 @@ def arrange_schedule():
       collector.Add(t.StartExpr().Var())
       collector.Add(t.EndExpr().Var())
 
-    '''
-    Stores the the optimal schedule, including the begin and end times for each task, and the value of the objective function.
     
-    The solution collector stores the values of the start time and end time for each task as t.StartExpr() and t.EndExpr(), respectively
-    '''
-
+    #Stores the the optimal schedule, including the begin and end times for each task, and the value of the objective function.
+    
+    #The solution collector stores the values of the start time and end time for each task as t.StartExpr() and t.EndExpr(), respectively
+    
 
   # Solve the problem.
   disp_col_width = 10
@@ -256,12 +248,11 @@ def arrange_schedule():
 
         data_count += 1
 
-        '''
-        ^ this code calls the solver and prints out the optimal schedule length and task order
         
-        The optimal schedule is displayed for each machine, where Job_i_j represents the jth task for job i.
-        '''
-
+        #^ this code calls the solver and prints out the optimal schedule length and task order
+        
+        #The optimal schedule is displayed for each machine, where Job_i_j represents the jth task for job i.
+        
       #TIME SCHEDULES
       for j in range(0, seq_size):
         t = seq.Interval(sequence[j]);
@@ -333,11 +324,9 @@ def arrange_schedule():
     #GENERATE GANTT CHART
 
     df = gantt_chart_dict
-    '''
        [   dict(Task="Job A", Start='2009-01-01', Finish='2009-02-28'),
           dict(Task="Job B", Start='2009-03-05', Finish='2009-04-15'),
           dict(Task="Job C", Start='2009-02-20', Finish='2009-05-30') ]
-    '''
 
 
     title = str("Production Schedule as of " + str(dt.now().strftime('%b %d, %Y at %I:%M %p')))
@@ -356,7 +345,6 @@ def arrange_schedule():
 def production_schedule(request):
   div_next = arrange_schedule()
 
-  '''
   x = [-2, 0, 4, 6, 7]
   y = [q ** 2 - q + 3 for q in x]
   trace1 = go.Scatter(x=x, y=y, marker={'color': 'red', 'symbol': 104, 'size': 10},
@@ -366,7 +354,7 @@ def production_schedule(request):
   layout = go.Layout(title="Meine Daten", xaxis={'title': 'x1'}, yaxis={'title': 'x2'})
   figure = go.Figure(data=data, layout=layout)
   div = opy.plot(figure, auto_open=False, output_type='div')
-  '''
+  
 
   div = ""
 
@@ -375,6 +363,7 @@ def production_schedule(request):
 
   return render(request, 'production/production_schedule.html', context)
 
+'''
 def job_order_list(request):
     data = JobOrder.objects.exclude(status='Delivered')
 
@@ -662,3 +651,14 @@ def jo_approval(request, id):
         MaterialRequisition.objects.create(matreq = mr_id, item = "LLDPE", quantity = LLDPE)
 
     return redirect('production:job_order_details', id = jo_id.id)
+
+#SCHEDULING
+def production_schedule(request):
+    cursor = connection.cursor()
+    query = 'SELECT j.id, i.laminate, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id'
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
+    final_gantt.schedule(df)
+
+    context = {}
+    return render(request, 'production/production_schedule.html', context)

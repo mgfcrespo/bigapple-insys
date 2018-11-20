@@ -552,7 +552,6 @@ def inventory_forecast(request):
 
         cursor.execute(query)
         df = pd.read_sql(query, connection)
-        #df = DataFrame(cursor.fetchall())
         #df.columns = get_data.keys()
 
         forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))

@@ -1,10 +1,10 @@
-# from __future__ import print_function
-from plotly import __version__
-
 # Import Python wrapper for or-tools constraint solver.
 from ortools.constraint_solver import pywrapcp
 from plotly.offline import plot
 import plotly.figure_factory as ff
+import numpy as np
+import pandas as pd
+import datetime
 
 '''
 Job Shop example from 
@@ -13,39 +13,73 @@ with gantt chart
 '''
 
 
-# FIXME: create_gantt requires dates or times
-def draw_gantt_chart_div(df):
-    # Task     = Machine #
-    # Resource = Job #
-    # Start    = Time Interval X
-    # Finish   = Time Interval Y
+def get_start_time(current, interval):
+    dt = current + np.timedelta64(interval, 'h')
+    dt = np.datetime64(np.datetime_as_string(dt)[:16])
+    dt = str(dt)
+    lst = list(dt)
+    # Modifies string format
+    lst[lst.index('T')] = ' '
+    dt = "".join(lst)
+    return dt
+
+
+# Gets the finish time giving start time and duration (in minutes), returns finish time as string
+def get_finish_time(current, interval):
+    dt = current + np.timedelta64(interval, 'h')
+    dt = np.datetime64(np.datetime_as_string(dt)[:16])
+    dt = str(dt)
+    lst = list(dt)
+    # Modifies string format
+    lst[lst.index('T')] = ' '
+    dt = "".join(lst)
+    return dt
+
+
+def get_machine_type(i):
+    machine_dict = {0: 'Extruder', 1: 'Printer', 2: 'Laminator', 3: 'Cutter'}
+    return machine_dict.get(i)
+
+
+# Creates html file of plotly gantt chart
+def chart(df, filename):
     fig = ff.create_gantt(df, index_col='Resource', show_colorbar=True, group_tasks=True)
-    gantt_chart_div = plot(fig, output_type='div')
-    return gantt_chart_div
+    plot(fig, filename=filename)
+    print(fig)
 
 
-# FIXME: solve_jobshop should not call generate_gantt_chart_div inside itself(?)
-def solve_jobshop():
+# Solves the job shop problem using OR-tools constraint solver, returns a dictionary with the solution
+def schedule(df):
     # Create the solver.
     solver = pywrapcp.Solver('jobshop')
 
-    machines_count = 3
-    jobs_count = 3
+    machines_count = 4  # Extrude, Print, (Laminate), Cut
+    jobs_count = len(df.index)
     all_machines = range(0, machines_count)
     all_jobs = range(0, jobs_count)
-    # Define data.
-    machines = [[0, 1, 2],
-                [0, 2, 1],
-                [1, 2]]
 
-    processing_times = [[3, 2, 2],
-                        [2, 1, 4],
-                        [4, 3]]
-    # Computes horizon.
+    # Define data.
+    machines = []
+    for row in df['is_laminated']:
+        # Include Laminating machine
+        if row == 1:
+            machines.append([0, 1, 2, 3])
+        else:
+            machines.append([0, 1, 3])
+
+    processing_times = []
+    for row in df['is_laminated']:
+        if row == 1:
+            processing_times.append([2, 5, 1, 4])
+        else:
+            processing_times.append([2, 5, 4])
+
+    # Compute horizon.
     horizon = 0
     for i in all_jobs:
         horizon += sum(processing_times[i])
-    # Creates jobs.
+
+    # Create jobs.
     all_tasks = {}
     for i in all_jobs:
         for j in range(0, len(machines[i])):
@@ -55,10 +89,9 @@ def solve_jobshop():
                                                                 False,
                                                                 'Job %i_%i' % (i, j))
 
-    # Creates sequence variables and add disjunctive constraints.
+    # Create sequence variables and add disjunctive constraints.
     all_sequences = []
     for i in all_machines:
-
         machines_jobs = []
         for j in all_jobs:
             for k in range(0, len(machines[j])):
@@ -100,61 +133,68 @@ def solve_jobshop():
             collector.Add(t.EndExpr().Var())
 
     # Solve the problem.
-    df = []
-    task_list = []
+    # Arrays for plotly gantt chart
+    plot_df = []
+    machine_list = []
     start_list = []
     finish_list = []
     resource_list = []
+    description_list = []
+    current_time = np.datetime64(datetime.datetime.now())
     disp_col_width = 10
-    if solver.Solve(main_phase, [objective_monitor, collector]):
-        # print("\nOptimal Schedule Length:", collector.ObjectiveValue(0), "\n")
-        sol_line = ""
-        sol_line_tasks = ""
-        # print("Optimal Schedule", "\n")
 
+    if solver.Solve(main_phase, [objective_monitor, collector]):
         for i in all_machines:
             seq = all_sequences[i]
-            sol_line += "Machine " + str(i) + ": "
-            sol_line_tasks += "Machine " + str(i) + ": "
-            task_list.append("Machine " + str(i))  # Machine number
+            machine_list.append(get_machine_type(i))  # Add machine name
             sequence = collector.ForwardSequence(0, seq)
             seq_size = len(sequence)
 
             for j in range(0, seq_size):
                 t = seq.Interval(sequence[j]);
-                # Add spaces to output to align columns.
-                sol_line_tasks += t.Name() + " " * (disp_col_width - len(t.Name()))
                 temp_name = t.Name().split('_', 1)[0]
-                resource_list.append(temp_name)  # Job number
+                temp_name = temp_name[4:]  # get the job number
+                job_num = int(temp_name)
+                resource_list.append(str(df.ix[job_num, 'id']))  # Add resource (aka Job ID)
+                description_list.append(df.ix[job_num, 'material'])  # Add material used to description list
 
             for j in range(0, seq_size):
                 t = seq.Interval(sequence[j]);
-                sol_tmp = "[" + str(collector.Value(0, t.StartExpr().Var())) + ","
-                sol_tmp += str(collector.Value(0, t.EndExpr().Var())) + "] "
-                # FIXME: PLOTLY NEEDS START AND END AS TIME
-                start_list.append(str(collector.Value(0, t.StartExpr().Var()) + 2000))  # Start Time must be string!
-                finish_list.append(str(collector.Value(0, t.EndExpr().Var()) + 2000))  # Finish Time
-
-                # Add spaces to output to align columns.
-                sol_line += sol_tmp + " " * (disp_col_width - len(sol_tmp))
+                # Add start time
+                start_list.append(get_start_time(current_time, collector.Value(0, t.StartExpr().Var())))
+                # Add finish time
+                finish_list.append(get_finish_time(current_time, collector.Value(0, t.EndExpr().Var())))
 
             for j in range(0, seq_size):
-                temp_dict = {'Task': task_list[i],
+                temp_dict = {'Task': machine_list[i],
                              'Start': start_list.pop(0),
                              'Finish': finish_list.pop(0),
-                             'Resource': resource_list.pop(0)}
-                # temp_dict['Task'] = task_list[i]
-                # temp_dict['Start'] = start_list.pop(0)
-                # temp_dict['Finish'] = finish_list.pop(0)
-                # temp_dict['Resource'] = resource_list.pop(0)
-                df.append(temp_dict)
+                             'Resource': resource_list.pop(0),
+                             'Description': description_list.pop(0)
+                             }
+                plot_df.append(temp_dict)
 
-            sol_line += "\n"
-            sol_line_tasks += "\n"
+        generate_overview_gantt_chart(plot_df)
 
-        # print(sol_line_tasks)
-        # print("Time Intervals for Tasks\n")
-        # print(df)
 
-        # return df
-        draw_gantt_chart_div(df)
+# Generates gantt for all machine types
+def generate_overview_gantt_chart(df):
+    chart(df, 'overview_gantt_chart.html')
+
+
+# Generates gantt for specific machine types
+def generate_specific_gantt_chart(df, machine_type):
+    filename = machine_type + '_gantt_chart.html'
+    chart(df, filename)
+
+
+def main():
+    data = {'id': [100, 101, 102],
+            'is_laminated': [0, 1, 0],
+            'material': ['PP', 'PET', 'PP']}
+    df = pd.DataFrame(data, index=[0, 1, 2])
+    schedule(df)
+
+
+if __name__ == '__main__':
+    main()
