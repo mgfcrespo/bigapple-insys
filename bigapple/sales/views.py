@@ -1,32 +1,22 @@
-from django.contrib.auth.decorators import login_required
-from django.views.generic import DetailView, ListView, FormView
+from datetime import datetime
 
-from inventory.forms import MaterialRequisitionForm
-from .models import ClientItem, Product
-from django.shortcuts import render, redirect
-from .forms import ClientPOFormItems
-from django.urls import reverse_lazy
-from django.forms import formset_factory, inlineformset_factory
-from datetime import datetime, date
-from django.http import JsonResponse
-
-from django.views import generic
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse, Http404
-from django.db.models import aggregates
-from production.models import JobOrder
-from .models import Supplier, ClientItem, Client, SalesInvoice, ClientPayment, ProductionCost
-from inventory.models import Inventory, Supplier, SupplierPO, SupplierPOItems
-from accounts.models import Employee
-from .forms import SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
-from production.forms import ClientPOForm
-from django.contrib.auth.models import User
-from django import forms
-import sys
-from decimal import Decimal
 from django.db import connection
+from django.db.models import aggregates
+from django.forms import inlineformset_factory
+from django.shortcuts import redirect
+from django.shortcuts import render, HttpResponseRedirect, HttpResponse, Http404
 from pandas import DataFrame
-from utilities import TimeSeriesForecasting, ganttChart
+
+from accounts.models import Employee
+from inventory.forms import MaterialRequisitionForm
+from inventory.models import Inventory, Supplier, MaterialRequisition
+from production.forms import ClientPOForm
+from production.models import JobOrder
+from utilities import TimeSeriesForecasting
+from .forms import ClientPOFormItems
+from .forms import SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
+from .models import ClientItem, Client, SalesInvoice, ClientPayment, ProductionCost
+
 
 #Forecasting imports
 #import numpy as np
@@ -178,6 +168,7 @@ def confirm_client_po(request, pk):
     client = clientpo.client
     items = ClientItem.objects.filter(client_po = clientpo)
 
+    #matreq determinant
     products = []
     material = []
     cylinder_count = 0
@@ -202,19 +193,25 @@ def confirm_client_po(request, pk):
             matreq = False
 
 
-
+    #matreq form
     if request.method == "POST":
         clientpo.status = "On Queue"
         clientpo.save()
 
         for every in items:
-            form = MaterialRequisitionForm(request.POST)
-            form.client_item = every
-            form.save()
+            for x in material:
+                form = MaterialRequisitionForm(request.POST)
+                form.client_item = every
+                form.item = Inventory.objects.filter(rm_type=x).first()
+                form = form.save()
+                matreq = MaterialRequisition.objects.get(id = form.pk)
+                matreq.client_item = every
+                matreq.item = Inventory.objects.filter(rm_type=x).first()
+                matreq.save()
 
-            print(form)
-            if form.is_valid():
-                form.save()
+                print(form)
+                if form.is_valid():
+                    form.save()
 
         return redirect('sales:clientPO_list')
 
