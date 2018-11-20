@@ -1,41 +1,26 @@
 from __future__ import print_function
 
-from _pydecimal import Decimal
-
-from django.http import HttpResponse
-from django.shortcuts import render, redirect, reverse
-from django.contrib.auth.decorators import login_required
-from django.views.generic import DetailView, ListView, FormView
-
-from .forms import JODetailsForm
-from inventory.forms import MaterialRequisitionForm
-from inventory.forms import MaterialRequisition
-from .models import Machine, Employee
-from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
-from sales.models import ClientItem, SalesInvoice
-from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm, LaminatingScheduleForm
-from django.db.models import Q
-from utilities import final_gantt
-from django.db import connection
-import pandas as pd
-
-#scheduling import
-# Import Python wrapper for or-tools constraint solver.
-import ortools.constraint_solver
-from ortools.constraint_solver import pywrapcp
-
-
-from datetime import timedelta as td
-from datetime import datetime as dt
 from datetime import date
 
-#from ortools.constraint_solver import pywrapcp
-import plotly
-import plotly.offline as opy
-import plotly.plotly as py
-import plotly.figure_factory as ff
-import plotly.graph_objs as go
+import pandas as pd
+from django.db import connection
+from django.db.models import Q
+from django.shortcuts import render, redirect
 
+from inventory.forms import MaterialRequisition
+from inventory.forms import MaterialRequisitionForm
+from sales.models import ClientItem, SalesInvoice
+from utilities import final_gantt
+from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm, LaminatingScheduleForm
+from .forms import JODetailsForm
+from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
+from .models import Machine
+
+
+# scheduling import
+# Import Python wrapper for or-tools constraint solver.
+
+#from ortools.constraint_solver import pywrapcp
 
 
 # Create your views here.
@@ -657,10 +642,12 @@ def jo_approval(request, id):
 #SCHEDULING
 def production_schedule(request):
     cursor = connection.cursor()
-    query = 'SELECT j.id, i.laminate, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id'
+    query = 'SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id'
     cursor.execute(query)
     df = pd.read_sql(query, connection)
-    final_gantt.schedule(df)
+    gantt = final_gantt.generate_overview_gantt_chart(df)
 
-    context = {}
+    context = {
+        'gantt' : gantt
+    }
     return render(request, 'production/production_schedule.html', context)
