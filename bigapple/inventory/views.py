@@ -547,11 +547,13 @@ def inventory_forecast(request):
     forecast_moving_average = []
     forecast_arima = []
     for x in inventory:
-        query = 'SELECT i.id, spoi.quantity, spo.date_issued FROM inventory_mgt_inventory i, inventory_mgt_supplierpo spo, inventory_mgt_supplierpoitems spoi where spoi.item_id = '+x.id+' and spoi.supplier_po_id = spo.id'
+        query = 'SELECT i.id, spoi.quantity, spo.date_issued FROM inventory_mgt_inventory i, inventory_mgt_supplierpo spo, inventory_mgt_supplierpoitems spoi where spoi.item_id = '+str(x.id)+' and spoi.supplier_po_id = spo.id'
 
-        get_data = cursor.execute(query)
-        df = DataFrame(get_data.fetchall())
-        df.columns = get_data.keys()
+        cursor.execute(query)
+        df = pd.read_sql(query, connection)
+        #get_data = cursor.execute(query)
+        #df = DataFrame(get_data.fetchall())
+        #df.columns = get_data.keys()
 
         forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
         forecast_ses.append(TimeSeriesForecasting.forecast_ses(df))

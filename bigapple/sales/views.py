@@ -15,7 +15,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, reverse, HttpResponseRedirect, HttpResponse, Http404
 from django.db.models import aggregates
 from production.models import JobOrder
-from .models import Supplier, ClientItem, Client, SalesInvoice, ClientPayment
+from .models import Supplier, ClientItem, Client, SalesInvoice, ClientPayment, ProductionCost
 from inventory.models import Inventory, Supplier, SupplierPO, SupplierPOItems
 from accounts.models import Employee
 from .forms import SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
@@ -177,20 +177,26 @@ def confirm_client_po(request, pk):
     clientpo = JobOrder.objects.get(pk=pk)
     client = clientpo.client
     items = ClientItem.objects.filter(client_po = clientpo)
+    mark_up = ProductionCost.objects.get(cost_type='Mark_up')
+    electricity = ProductionCost.objects.get(cost_type='Electricity')
+
 
     for every in items:
         price = every.calculate_price_per_piece() * every.quantity
+        profit = (1000*(every.calculate_price_per_piece()) - electricity.cost - every.calculate_price_per_piece().printing_cost - \
+                 every.calculate_price_per_piece().laminating_cost - (every.length * every.width * every.thickness * every.calculate_price_per_piece().material_weight \
+                                                                      * every.calculate_price_per_piece().material_cost.cost))/(every.length * every.width * every.thickness * every.calculate_price_per_piece().material_weight)
         products = every.products
         material = products.material_type
 
-        inventory = Inventory.objects.get(rm_type=material)
-        quantity = inventory.quantity
+    inventory = Inventory.objects.get(rm_type=material)
+    quantity = inventory.quantity
 
-        #TODO check for cylinder in matreq
-        if quantity > 0:
-            matreq = True
-        else:
-            matreq = False
+    #TODO check for cylinder in matreq
+    if quantity > 0:
+        matreq = True
+    else:
+        matreq = False
 
 
 
@@ -215,7 +221,8 @@ def confirm_client_po(request, pk):
         'pk' : pk,
         'client' : client,
         'price' : price,
-        'matreq' : matreq
+        'matreq' : matreq,
+        'profit' : profit
     }
 
     return render(request, 'sales/clientPO_confirm.html', context)
@@ -349,7 +356,7 @@ def payment_detail_view(request, pk):
 
 def statement_of_accounts_list_view(request):
     client = Client.objects.all()
-    sales_invoice = SalesInvoice.objects.all()
+    sales_invoice = SalesInvoice.objects.filter(date_issued__isnull=False)
 
     context = {
         'client' : client,
@@ -416,12 +423,11 @@ def create_client_po(request):
 
                 invoice = SalesInvoice(client=current_client, client_po=form_instance, total_amount=formset_item_total,
                                        amount_due=0)
+                invoice.amount_due = invoice.calculate_total_amount_computed()
                 invoice.save()
 
                 #invoice = invoice.pk
                 #invoice = SalesInvoice.objects.get(id=invoice)
-                invoice.amount_due = invoice.calculate_total_amount_computed()
-                invoice.save()
 
                 message = "PO successfully created"
 
@@ -604,7 +610,7 @@ def demand_forecast(request, id):
                 items.append(every)
     cursor = connection.cursor()
     query = 'SELECT po.date_issued, p.products FROM accounts_mgt_client c, production_mgt_joborder po, sales_mgt_clientitem poi, sales_product p WHERE' \
-            'p.id = poi.products_id AND poi.client_po_id = po.id AND po.client_id = '+id
+            'p.id = poi.products_id AND poi.client_po_id = po.id AND po.client_id = '+str(id)
 
     get_data = cursor.execute(query)
     df = DataFrame(get_data.fetchall())

@@ -27,7 +27,7 @@
                 </td>
                 <td>
                     {% for every in sales_invoice %}
-                        {% if every.client = each %}
+                        {% if every.client == each %}
                         {{ every.days_overdue }}
                         {{ break }}
                         {% endif %}
