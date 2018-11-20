@@ -1,93 +1,116 @@
 {% extends 'sidebar.html' %}
 {% block content %}
-<h3 class="ui dividing header">{{ title }}</h3>
 
-<div id="basic-form" class="sixteen wide column">
-    <div class="row">
-        <div class="five wide column">
-            <h4 class="header1">Confirm Purchase Order</h4>
+<h3 class="ui dividing header">Confirm Purchase Order</h3>
+<h3 class="">{{clientpo}}</h3>
 
-            <div class="row">
-                <h3 class="ui header">{{clientpo}}</h3>
-		<table class="ui cell padded table">
-        	<thead>
-          	<tr>
-                <th>Material Type</th>
-                <th>Width (inches)</th>
-                <th>Length(inches)</th>
-                <th>Thickness(inches)</th>
-                <th>Color</th>
-                <th>Gusset</th>
-                <th>Quantity</th>
-                <th>Laminate</th>
-                <th>Printed</th>
-                <th>Price/pc</th>
-              <th>Item Price Sub-Total</th>
-          	</tr>
-    		</thead>
+    <table class="ui stripped table center aligned">
+        <thead>
+        <tr>
+            <th class="two wide">Material Type</th>
+            <th class="one wide">Width<br>(inches)</th>
+            <th class="one wide">Length<br>(inches)</th>
+            <th class="one wide">Thickness<br>(inches)</th>
+            <th class="one wide">Color</th>
+            <th class="one wide">Gusset</th>
+            <th class="one wide">Quantity</th>
+            <th class="one wide">Laminate</th>
+            <th class="one wide">Printed</th>
+            <th class="two wide">Price/pc</th>
+            <th class="two wide">Item Price Sub-Total</th>
+        </tr>
+        </thead>
 
-            <tbody>
+        <tbody>
+            {% for clientitem in clientpo.clientitem_set.all %}
+            <tr>
+                <td>{{ clientitem.products }}</td>
 
-                {% for clientitem in clientpo.clientitem_set.all %}
-                <tr>
-                    <td>{{ clientitem.products }}</td>
+                <td>{{ clientitem.width }}</td>
+                <td>{{ clientitem.length}}</td>
+                <td>{{ clientitem.thickness}}</td>
+                <td>{{ clientitem.color }}</td>
+                <td>{{ clientitem.gusset}}</td>
+                <td>{{ clientitem.quantity }}</td>
 
-                    <td>{{ clientitem.width }}</td>
-                    <td>{{ clientitem.length}}</td>
-                    <td>{{ clientitem.thickness}}</td>
-                    <td>{{ clientitem.color }}</td>
-                    <td>{{ clientitem.gusset}}</td>
-                    <td>{{ clientitem.quantity }}</td>
-
-                     {% if clientitem.laminate ==  True %}
-                   <td><i class="icon checkmark"></i></td>
-                   {% else %}
-                   <td ><i class="icon close"></i></td>
-                    {% endif %}
-
-                      {% if clientitem.printed ==  True %}
-                   <td><i class="icon checkmark"></i></td>
-                   {% else %}
-                   <td ><i class="icon close"></i></td>
-                    {% endif %}
-                    <td>{{ clientitem.item_price}}</td>
-
-                    <td>Item Price: {{clientitem.price_per_piece}}</td>
-                </tr>
-                {% endfor %}
-
-                <tr>Total: {{clientpo.total_amount}}</tr>
-
-			</tbody>
-            <br>
-    	</table>
-                {% if clientconstant.payment_terms < client.creditstatus.calculate_days_overdue %}
-                <h2> This client's credit status is {{ client.creditstatus.calculate_days_overdue }} days overdue. </h2>
-                {% else %}
-                <h2> This client's credit status is cleared. </h2>
+                 {% if clientitem.laminate ==  True %}
+               <td><i class="icon checkmark"></i></td>
+               {% else %}
+               <td ><i class="icon close"></i></td>
                 {% endif %}
 
-                <br>
+                  {% if clientitem.printed ==  True %}
+               <td><i class="icon checkmark"></i></td>
+               {% else %}
+               <td ><i class="icon close"></i></td>
+                {% endif %}
+                <td>{{ clientitem.item_price}}</td>
 
-                {% if matreq %}
-                <h2> The material requirements for this order are met by the inventory stock.</h2>
-                {% else %}
-                <h2> There are not enough materials in inventory stock to accommodate this order. </h2> #issue supplier PO?
-                    <div class="row">
-                        <div class="center">
-                            <form method="post">
-                                {% csrf_token %}
-                                <input type="submit" class="ui green basic button" value="Confirm" id="confirm_btn" name="confirm_btn">
-                            </form>
-                            <!-- <button id="confirm" type = "submit" class="ui green basic button"  style="width: 200px;">Confirm</button> -->
+                <td>Item Price: {{clientitem.price_per_piece}}</td>
+            </tr>
+            {% endfor %}
+            <tr>Total: {{clientpo.total_amount}}</tr>
+        </tbody>
+    </table>
 
-                        </div>
-                    </div>
+    {% if clientconstant.payment_terms < client.creditstatus.calculate_days_overdue %}
+        <div class="ui negative icon message">
+            <i class="times circle icon"></i>
+            <div class="content"><div class="header">
+                Pending status
+            </div>
+            <p>
+                This client's credit status is {{ client.creditstatus.calculate_days_overdue }} days overdue.
+            </p>
+            </div>
+        </div>
+    {% else %}
+        <div class="ui positive icon message">
+            <i class="check circle icon"></i>
+            <div class="content"><div class="header">
+                Cleared
+            </div>
+            <p>
+                This client's status is cleared.
+            </p>
+            </div>
+        </div>
+    {% endif %}
 
-           </div>
+    {% if matreq %}
+        <div class="ui positive icon message">
+            <i class="check circle icon"></i>
+            <div class="content">
+                <div class="header">
+                    Material requirements met
+                </div>
+                <p>
+                   The material requirements for this order are met by the inventory stock.
+                </p>
+            </div>
+        </div>
+    {% else %}
+        <div class="ui negative icon message">
+            <i class="times circle icon"></i>
+            <div class="content">
+                <div class="header">
+                    Material requirements not met
+                </div>
+                <p>
+                    There are not enough materials in inventory stock to accommodate this order.<br>
+                    Click <a href="{% url 'inventory:supplierPO_form' %}" style="color: red;">here</a> to replenish the inventory.
+                </p>
+            </div>
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="center">
+            <form method="post">
+                {% csrf_token %}
+                <input type="submit" class="ui green basic button" value="Confirm" id="confirm_btn" name="confirm_btn">
+            </form>
+            <!-- <button id="confirm" type = "submit" class="ui green basic button"  style="width: 200px;">Confirm</button> -->
         </div>
     </div>
-</div>
-
 
 {% endblock %}

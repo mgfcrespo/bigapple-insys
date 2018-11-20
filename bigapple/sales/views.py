@@ -183,14 +183,14 @@ def confirm_client_po(request, pk):
         products = every.products
         material = products.material_type
 
-        inventory = Inventory.objects.get(rm_type=material)
-        quantity = inventory.quantity
+    inventory = Inventory.objects.get(rm_type=material)
+    quantity = inventory.quantity
 
         #TODO check for cylinder in matreq
-        if quantity > 0:
-            matreq = True
-        else:
-            matreq = False
+    if quantity > 0:
+        matreq = True
+    else:
+        matreq = False
 
 
 
@@ -209,8 +209,8 @@ def confirm_client_po(request, pk):
 
         return redirect('sales:clientPO_list')
 
-
     context = {
+        'inventory': inventory,
         'clientpo': clientpo,
         'pk' : pk,
         'client' : client,
@@ -445,10 +445,11 @@ def create_client_po(request):
 
 #RUSH ORDER CRUD
 def rush_order_list(request):
-    rush_orders = JobOrder.objects.filter(rush_order = True)
+    rush_orders = JobOrder.objects.filter(rush_order = True).exclude(status="Delivered")
 
     context = {
         'rush_orders' : rush_orders,
+        'title': 'Rush Order List'
     }
 
     return render (request, 'sales/rush_order_list.html', context)
@@ -604,7 +605,7 @@ def demand_forecast(request, id):
                 items.append(every)
     cursor = connection.cursor()
     query = 'SELECT po.date_issued, p.products FROM accounts_mgt_client c, production_mgt_joborder po, sales_mgt_clientitem poi, sales_product p WHERE' \
-            'p.id = poi.products_id AND poi.client_po_id = po.id AND po.client_id = '+id
+            'p.id = poi.products_id AND poi.client_po_id = po.id AND po.client_id = '+str(id)
 
     get_data = cursor.execute(query)
     df = DataFrame(get_data.fetchall())
