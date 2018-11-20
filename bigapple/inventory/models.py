@@ -1,7 +1,6 @@
 from django.db import models
-from django.db.models import Sum, Avg
-from datetime import date, timezone
-from accounts.models import Employee 
+
+from accounts.models import Employee
 from sales.models import Supplier, ClientItem
 
 
@@ -93,13 +92,12 @@ class MaterialRequisition(models.Model):
 
     id = models.IntegerField(primary_key=True)
     datetime_issued = models.DateTimeField(auto_now_add=True)
-    shift = models.IntegerField()
+    shift = models.IntegerField(null=True, blank=True)
     item = models.ForeignKey(Inventory, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     client_item = models.ForeignKey(ClientItem, on_delete=models.CASCADE)
 
     class Meta:
-
         db_table = 'inventory_mgt_materialrequisition'
 
     def __str__(self):

@@ -1,10 +1,11 @@
 # Import Python wrapper for or-tools constraint solver.
-from ortools.constraint_solver import pywrapcp
-from plotly.offline import plot
-import plotly.figure_factory as ff
+import datetime
+
 import numpy as np
 import pandas as pd
-import datetime
+import plotly.figure_factory as ff
+from ortools.constraint_solver import pywrapcp
+from plotly.offline import plot
 
 '''
 Job Shop example from 
@@ -44,12 +45,12 @@ def get_machine_type(i):
 # Creates html file of plotly gantt chart
 def chart(df, filename):
     fig = ff.create_gantt(df, index_col='Resource', show_colorbar=True, group_tasks=True)
-    plot(fig, filename=filename)
+    plot(fig, filename=filename, output_type='div')
     print(fig)
 
 
 # Solves the job shop problem using OR-tools constraint solver, returns a dictionary with the solution
-def schedule(df):
+def schedule(df, filename):
     # Create the solver.
     solver = pywrapcp.Solver('jobshop')
 
@@ -60,19 +61,33 @@ def schedule(df):
 
     # Define data.
     machines = []
-    for row in df['is_laminated']:
-        # Include Laminating machine
-        if row == 1:
+    for i in range(0, len(df.index)):
+        # Include Printing and Laminating machine
+        if df.ix[i]['printed'] == 1 and df.ix[i]['laminate'] == 1:
             machines.append([0, 1, 2, 3])
-        else:
+        # Include only Printing
+        elif df.ix[i]['printed'] == 1:
             machines.append([0, 1, 3])
-
-    processing_times = []
-    for row in df['is_laminated']:
-        if row == 1:
-            processing_times.append([2, 5, 1, 4])
+        # Include only Laminating
+        elif df.ix[i]['laminate'] == 1:
+            machines.append([0, 2, 3])
         else:
+            machines.append([0, 3])
+
+    #TODO: Sinsinin ang processing times.
+    processing_times = []
+    for i in range(0, len(df.index)):
+        # Include Printing and Laminating machine
+        if df.ix[i]['printed'] == 1 and df.ix[i]['laminate'] == 1:
+            processing_times.append([2, 5, 1, 4])
+        # Include only Printing
+        elif df.ix[i]['printed'] == 1:
             processing_times.append([2, 5, 4])
+        # Include only Laminating
+        elif df.ix[i]['laminate'] == 1:
+            processing_times.append([2, 1, 4])
+        else:
+            processing_times.append([2, 4])
 
     # Compute horizon.
     horizon = 0
@@ -156,7 +171,7 @@ def schedule(df):
                 temp_name = temp_name[4:]  # get the job number
                 job_num = int(temp_name)
                 resource_list.append(str(df.ix[job_num, 'id']))  # Add resource (aka Job ID)
-                description_list.append(df.ix[job_num, 'material'])  # Add material used to description list
+                description_list.append(df.ix[job_num, 'material_type'])  # Add material used to description list
 
             for j in range(0, seq_size):
                 t = seq.Interval(sequence[j]);
@@ -174,12 +189,12 @@ def schedule(df):
                              }
                 plot_df.append(temp_dict)
 
-        generate_overview_gantt_chart(plot_df)
+        chart(plot_df, filename)
 
 
 # Generates gantt for all machine types
 def generate_overview_gantt_chart(df):
-    chart(df, 'overview_gantt_chart.html')
+    schedule(df, 'overview_gantt_chart.html')
 
 
 # Generates gantt for specific machine types
@@ -187,14 +202,13 @@ def generate_specific_gantt_chart(df, machine_type):
     filename = machine_type + '_gantt_chart.html'
     chart(df, filename)
 
-
 def main():
     data = {'id': [100, 101, 102],
-            'is_laminated': [0, 1, 0],
-            'material': ['PP', 'PET', 'PP']}
+            'laminate': [0, 1, 0],
+            'printed': [1, 1, 0],
+            'material_type': ['PP', 'PET', 'PP']}
     df = pd.DataFrame(data, index=[0, 1, 2])
-    schedule(df)
-
+    generate_overview_gantt_chart(df)
 
 if __name__ == '__main__':
     main()
