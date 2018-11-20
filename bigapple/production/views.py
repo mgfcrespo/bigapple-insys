@@ -19,6 +19,8 @@ from utilities import final_gantt
 from django.db import connection
 import pandas as pd
 
+from plotly.offline import plot
+
 #scheduling import
 # Import Python wrapper for or-tools constraint solver.
 import ortools.constraint_solver
@@ -660,5 +662,7 @@ def production_schedule(request):
     df = pd.read_sql(query, connection)
     final_gantt.schedule(df)
 
-    context = {}
+    context = {
+
+    }
     return render(request, 'production/production_schedule.html', context)
