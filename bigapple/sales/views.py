@@ -177,26 +177,29 @@ def confirm_client_po(request, pk):
     clientpo = JobOrder.objects.get(pk=pk)
     client = clientpo.client
     items = ClientItem.objects.filter(client_po = clientpo)
-    mark_up = ProductionCost.objects.get(cost_type='Mark_up')
-    electricity = ProductionCost.objects.get(cost_type='Electricity')
 
+    products = []
+    material = []
+    cylinder_count = 0
+    matreq = False
+    for each in items:
+        products.append(each.products)
+        material.append(each.products.material_type)
+        if each.printed:
+            cylinder_count += 1
 
-    for every in items:
-        price = every.calculate_price_per_piece() * every.quantity
-        profit = (1000*(every.calculate_price_per_piece()) - electricity.cost - every.calculate_price_per_piece().printing_cost - \
-                 every.calculate_price_per_piece().laminating_cost - (every.length * every.width * every.thickness * every.calculate_price_per_piece().material_weight \
-                                                                      * every.calculate_price_per_piece().material_cost.cost))/(every.length * every.width * every.thickness * every.calculate_price_per_piece().material_weight)
-        products = every.products
-        material = products.material_type
-
-    inventory = Inventory.objects.get(rm_type=material)
-    quantity = inventory.quantity
-
-    #TODO check for cylinder in matreq
-    if quantity > 0:
-        matreq = True
-    else:
-        matreq = False
+    for x in material:
+        try:
+            inventory = Inventory.objects.filter(rm_type=x)
+            for y in inventory:
+                if y.quantity > 1000:
+                    matreq = True
+                else:
+                    matreq = False
+                    break
+        except Inventory.DoesNotExist:
+            inventory = None
+            matreq = False
 
 
 
@@ -220,9 +223,8 @@ def confirm_client_po(request, pk):
         'clientpo': clientpo,
         'pk' : pk,
         'client' : client,
-        'price' : price,
         'matreq' : matreq,
-        'profit' : profit
+        'cylinder_count' : cylinder_count
     }
 
     return render(request, 'sales/clientPO_confirm.html', context)
@@ -464,7 +466,8 @@ def rush_order_assessment(request, pk):
     client = rush_order.client
 
     if request.POST.get('approve_btn'):
-        rush_order.status = 'Approved'
+        rush_order.status = 'On Queue'
+        rush_order.save()
     elif request.POST.get('deny_btn'):
         rush_order.save()
 
@@ -478,22 +481,43 @@ def rush_order_assessment(request, pk):
 
     #cost shit
     items = ClientItem.objects.filter(client_po = rush_order)
+    mark_up = ProductionCost.objects.get(cost_type='Mark_up')
+    electricity = ProductionCost.objects.get(cost_type='Electricity')
+
+    for every in items:
+        price = every.calculate_price_per_piece() * every.quantity
+        profit = 0
+        profit += (1000 * (
+            every.calculate_price_per_piece()) - electricity.cost - every.calculate_price_per_piece().printing_cost - \
+                   every.calculate_price_per_piece().laminating_cost - (
+                               every.length * every.width * every.thickness * every.calculate_price_per_piece().material_weight \
+                               * every.calculate_price_per_piece().material_cost.cost)) / (
+                              every.length * every.width * every.thickness * every.calculate_price_per_piece().material_weight)
+
     #profit =
 
     #matreq
     products = []
     material = []
+    cylinder_count = 0
+    matreq = False
     for each in items:
         products.append(each.products)
-        material.append(each.material_type)
-    #TODO: get each item's material requirement + CYLINDER
-    inventory = Inventory.objects.get(rm_type=material)
-    quantity = inventory.quantity
-
-    if quantity > 0:
-        matreq = True
-    else:
-        matreq = False
+        material.append(each.products.material_type)
+        if each.printed:
+            cylinder_count += 1
+    for x in material:
+        try:
+            inventory = Inventory.objects.filter(rm_type=x)
+            for y in inventory:
+                if y.quantity > 1000:
+                    matreq = True
+                else:
+                    matreq = False
+                    break
+        except Inventory.DoesNotExist:
+            inventory = None
+            matreq = False
 
     #simulated sched
 
@@ -501,6 +525,8 @@ def rush_order_assessment(request, pk):
         'rush_order' : rush_order,
         'credit_status' : credit_status,
         'matreq' : matreq,
+        'cylinder_count' : cylinder_count,
+        'profit': profit
         #'simulated_sched' : simulated_sched
     }
 
