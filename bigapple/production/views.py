@@ -375,10 +375,8 @@ def production_schedule(request):
 
   return render(request, 'production/production_schedule.html', context)
 
-
-
 def job_order_list(request):
-    data = JobOrder.objects.filter(~Q(status='Ready for delivery'))
+    data = JobOrder.objects.exclude(status='Delivered')
 
     if request.session['session_position'] == "General Manager":
         template = 'general_manager_page_ui.html'
