@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="44100258-e655-4ddd-99f4-1a8c04b20571" name="Default" comment="" />
+    <list default="true" id="44100258-e655-4ddd-99f4-1a8c04b20571" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -61,11 +63,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="648" column="21" selection-start-line="648" selection-start-column="21" selection-end-line="648" selection-end-column="21" />
+            <state relative-caret-position="188">
+              <caret line="528" lean-forward="true" selection-start-line="528" selection-end-line="528" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
               </folding>
@@ -73,7 +75,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="models.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bigapple/production/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="184">
+              <caret line="644" column="11" lean-forward="true" selection-start-line="644" selection-start-column="11" selection-end-line="644" selection-end-column="11" />
+              <folding>
+                <element signature="e#0#37#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bigapple/sales/models.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="269">
@@ -81,15 +95,6 @@
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="final_gantt.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bigapple/utilities/final_gantt.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3145">
-              <caret line="191" column="32" selection-start-line="189" selection-start-column="16" selection-end-line="191" selection-end-column="32" />
             </state>
           </provider>
         </entry>
@@ -109,8 +114,11 @@
       <file leaf-file-name="TimeSeriesForecasting.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bigapple/utilities/TimeSeriesForecasting.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="32" column="39" lean-forward="true" selection-start-line="32" selection-start-column="39" selection-end-line="32" selection-end-column="39" />
+            <state relative-caret-position="272">
+              <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
+              <folding>
+                <element signature="e#129#144#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -118,8 +126,8 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bigapple/inventory/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="9095">
-              <caret line="551" column="29" selection-start-line="551" selection-start-column="29" selection-end-line="551" selection-end-column="29" />
+            <state relative-caret-position="255">
+              <caret line="568" column="16" lean-forward="true" selection-start-line="568" selection-start-column="16" selection-end-line="568" selection-end-column="16" />
               <folding>
                 <element signature="e#0#58#0" expanded="true" />
               </folding>
@@ -139,8 +147,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>values_list</find>
-      <find>pandas</find>
       <find>pd</find>
       <find>clientpayment</find>
       <find>db_con</find>
@@ -169,6 +175,8 @@
       <find>add_ex</find>
       <find>laminating_</find>
       <find>payment_det</find>
+      <find>confirm_cli</find>
+      <find>rush_order</find>
     </findStrings>
     <dirStrings>
       <dir>C:\Users\decqua\PycharmProjects\baipismis\bigapple</dir>
@@ -180,8 +188,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/bigapple/production/templates/production/production_details.html" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/templates/sales_coordinator_page_ui.html" />
         <option value="$PROJECT_DIR$/bigapple/accounts/templates/general_manager_page_ui.html" />
         <option value="$PROJECT_DIR$/bigapple/accounts/templates/line_leader_page_ui.html" />
         <option value="$PROJECT_DIR$/bigapple/accounts/templates/production_manager_page_ui.html" />
@@ -197,7 +203,6 @@
         <option value="$PROJECT_DIR$/bigapple/accounts/templates/accounts/client_page.html" />
         <option value="$PROJECT_DIR$/bigapple/inventory/templates/inventory/materials_requisition_form.html" />
         <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/rush_order_assessment.html" />
-        <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_confirm.html" />
         <option value="$PROJECT_DIR$/bigapple/bigapple/models.py" />
         <option value="$PROJECT_DIR$/bigapple/sales/admin.py" />
         <option value="$PROJECT_DIR$/bigapple/production/admin.py" />
@@ -222,15 +227,18 @@
         <option value="$PROJECT_DIR$/bigapple/inventory/forms.py" />
         <option value="$PROJECT_DIR$/bigapple/inventory/templates/inventory/inventory_item_add.html" />
         <option value="$PROJECT_DIR$/bigapple/inventory/templates/inventory/inventory_item_edit.html" />
-        <option value="$PROJECT_DIR$/bigapple/sales/views.py" />
-        <option value="$PROJECT_DIR$/bigapple/sales/views.py" />
         <option value="$PROJECT_DIR$/bigapple/production/templates/production/add_extruder_schedule.html" />
         <option value="$PROJECT_DIR$/bigapple/production/templates/production/add_laminating_schedule.html" />
-        <option value="$PROJECT_DIR$/bigapple/production/views.py" />
         <option value="$PROJECT_DIR$/bigapple/production/urls.py" />
         <option value="$PROJECT_DIR$/bigapple/sales/models.py" />
         <option value="$PROJECT_DIR$/bigapple/sales/models.py" />
         <option value="$PROJECT_DIR$/bigapple/bigapple/settings.py" />
+        <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_confirm.html" />
+        <option value="$PROJECT_DIR$/bigapple/utilities/final_gantt.py" />
+        <option value="$PROJECT_DIR$/bigapple/production/views.py" />
+        <option value="$PROJECT_DIR$/bigapple/production/templates/production/production_schedule.html" />
+        <option value="$PROJECT_DIR$/bigapple/sales/views.py" />
+        <option value="$PROJECT_DIR$/bigapple/sales/views.py" />
       </list>
     </option>
   </component>
@@ -246,7 +254,7 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="21" />
+    <option name="x" value="20" />
     <option name="y" value="255" />
     <option name="width" value="1280" />
     <option name="height" value="780" />
@@ -657,12 +665,25 @@
       <option name="project" value="LOCAL" />
       <updated>1542783785122</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="commit">
+      <created>1542783912341</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1542783912341</updated>
+    </task>
+    <task id="LOCAL-00038" summary="commit">
+      <created>1542786976843</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1542786976843</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4940476" visible="true" weight="0.18880208" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -753,30 +774,6 @@
     <option name="UPDATE_GROUP_BY_PACKAGES" value="true" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2414">
-          <caret line="155" column="13" selection-start-line="155" selection-start-column="13" selection-end-line="155" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="31" column="7" selection-start-line="31" selection-start-column="7" selection-end-line="31" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/production/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2890">
-          <caret line="175" column="99" selection-start-line="175" selection-start-column="99" selection-end-line="175" selection-end-column="99" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/inventory/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2601">
@@ -873,13 +870,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/utilities/TimeSeriesForecasting.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="32" column="39" lean-forward="true" selection-start-line="32" selection-start-column="39" selection-end-line="32" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/bigapple/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -973,6 +963,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="442">
           <caret line="89" column="32" lean-forward="true" selection-start-line="89" selection-end-line="90" />
+          <folding>
+            <element signature="e#1#25#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -999,16 +992,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="561">
           <caret line="33" column="70" selection-start-line="33" selection-start-column="70" selection-end-line="33" selection-end-column="70" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/inventory/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9095">
-          <caret line="551" column="29" selection-start-line="551" selection-start-column="29" selection-end-line="551" selection-end-column="29" />
-          <folding>
-            <element signature="e#0#58#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1071,26 +1054,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/production/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="528" lean-forward="true" selection-start-line="528" selection-end-line="528" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="648" column="21" selection-start-line="648" selection-start-column="21" selection-end-line="648" selection-end-column="21" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/bigapple/settings.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="235">
@@ -1100,8 +1063,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_confirm.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-938">
-          <caret line="18" column="30" lean-forward="true" selection-start-line="18" selection-start-column="30" selection-end-line="18" selection-end-column="30" />
+        <state relative-caret-position="99">
+          <caret line="73" column="26" lean-forward="true" selection-start-line="73" selection-start-column="26" selection-end-line="73" selection-end-column="26" />
         </state>
       </provider>
     </entry>
@@ -1111,6 +1074,66 @@
           <caret line="201" column="37" lean-forward="true" selection-start-line="201" selection-start-column="37" selection-end-line="201" selection-end-column="37" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/inventory/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="568" column="16" lean-forward="true" selection-start-line="568" selection-start-column="16" selection-end-line="568" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#58#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/utilities/TimeSeriesForecasting.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
+          <folding>
+            <element signature="e#129#144#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/utilities/ganttChart.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/production/templates/production/production_schedule.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="6" lean-forward="true" selection-start-line="17" selection-start-column="6" selection-end-line="17" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/production/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="644" column="11" lean-forward="true" selection-start-line="644" selection-start-column="11" selection-end-line="644" selection-end-column="11" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/utilities/final_gantt.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="47" column="18" lean-forward="true" selection-start-line="47" selection-start-column="18" selection-end-line="47" selection-end-column="18" />
+          <folding>
+            <element signature="e#56#71#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="528" lean-forward="true" selection-start-line="528" selection-end-line="528" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
           </folding>
         </state>
       </provider>
