@@ -642,6 +642,7 @@ def jo_approval(request, id):
 #SCHEDULING
 def production_schedule(request):
     cursor = connection.cursor()
+    #TODO: Add condition making the query only include jobs that are NOT finished are NOT waiting.
     query = 'SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id'
     cursor.execute(query)
     df = pd.read_sql(query, connection)

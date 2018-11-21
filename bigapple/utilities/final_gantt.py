@@ -74,6 +74,7 @@ def schedule(df, filename):
         else:
             machines.append([0, 3])
 
+    #TODO: Sinsinin ang processing times.
     processing_times = []
     for i in range(0, len(df.index)):
         # Include Printing and Laminating machine

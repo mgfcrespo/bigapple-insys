@@ -252,7 +252,6 @@ def invoice_detail_view(request, pk, *args, **kwargs):
 
     salesinvoice = SalesInvoice.objects.get(pk=pk)
     form = ClientPaymentForm()
-    payments = ClientPayment.objects.filter(invoice=salesinvoice)
 
     try:
         salesinvoice = SalesInvoice.objects.get(pk=pk)
@@ -484,6 +483,7 @@ def rush_order_assessment(request, pk):
     for every in items:
         price = every.calculate_price_per_piece() * every.quantity
         profit = 0
+        #FIXME printing, laminating, mat weight, mat cost
         profit += (1000 * (
             every.calculate_price_per_piece()) - electricity.cost - every.calculate_price_per_piece().printing_cost - \
                    every.calculate_price_per_piece().laminating_cost - (
@@ -491,7 +491,6 @@ def rush_order_assessment(request, pk):
                                * every.calculate_price_per_piece().material_cost.cost)) / (
                               every.length * every.width * every.thickness * every.calculate_price_per_piece().material_weight)
 
-    #profit =
 
     #matreq
     products = []
@@ -516,6 +515,7 @@ def rush_order_assessment(request, pk):
             inventory = None
             matreq = False
 
+    #TODO: Insert current job to generic schedule and show if other JOs will meet date_due
     #simulated sched
 
     context = {
