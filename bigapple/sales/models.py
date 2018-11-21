@@ -197,13 +197,13 @@ class ClientItem(models.Model):
         material_weight = 0
         material_cost = 0
         if self.products == "HDPE":
-            material_weight = 0.68
+            material_weight = 0.068
             material_cost = ProductionCost.objects.get(cost_type="HDPE_Materials")
         elif self.products == "LDPE":
-            material_weight = 0.66
+            material_weight = 0.066
             material_cost = ProductionCost.objects.get(cost_type="LDPE_Materials")
         else:
-            material_weight = 0.66
+            material_weight = 0.066
             material_cost = ProductionCost.objects.get(cost_type="PP_Materials")
 
         # Get the tens of order quantity (Sets quantity standard qty if order is below MOQ)
