@@ -30,22 +30,22 @@
                     </td>
                     <td>{{ data.status }}</td>
                     <td class="center aligned">
-                        {% if data.status == 'On Queue' %}
+                        {% if data.status == 'Waiting' %}
                             <a class="ui small blue button" href="{% url 'production:add_extruder_schedule' data.id %}">Extrusion</a>
                             <a class="ui small yellow button" style="pointer-events: none" href="{% url 'production:add_printing_schedule' data.id %}">Printing</a>
                             <a class="ui small green button" style="pointer-events: none" href="{% url 'production:add_cutting_schedule' data.id %}">Cutting</a>
                             <a class="ui small red button" style="pointer-events: none" href="{% url 'production:add_laminating_schedule' data.id %}">Laminating</a>
-                        {% elif data.status == 'Under Printing'%}
+                        {% elif data.status == 'On Queue'%}
                             <a class="ui small blue button" style="pointer-events: none" href="{% url 'production:add_extruder_schedule' data.id %}">Extrusion</a>
                             <a class="ui small yellow button" href="{% url 'production:add_printing_schedule' data.id %}">Printing</a>
                             <a class="ui small green button" style="pointer-events: none" href="{% url 'production:add_cutting_schedule' data.id %}">Cutting</a>
                             <a class="ui small red button" style="pointer-events: none" href="{% url 'production:add_laminating_schedule' data.id %}">Laminating</a>
-                        {% elif data.status == 'Under Cutting' %}
+                        {% elif data.status == 'Under Printing' %}
                             <a class="ui small blue button" style="pointer-events: none" href="{% url 'production:add_extruder_schedule' data.id %}">Extrusion</a>
                             <a class="ui small yellow button" style="pointer-events: none" href="{% url 'production:add_printing_schedule' data.id %}">Printing</a>
                             <a class="ui small green button" href="{% url 'production:add_cutting_schedule' data.id %}">Cutting</a>
                             <a class="ui small red button" style="pointer-events: none" href="{% url 'production:add_laminating_schedule' data.id %}">Laminating</a>
-                        {% elif data.status == 'Under Laminating' %}
+                        {% elif data.status == 'Under Cutting' %}
                             <a class="ui small blue button" style="pointer-events: none" href="{% url 'production:add_extruder_schedule' data.id %}">Extrusion</a>
                             <a class="ui small yellow button" style="pointer-events: none" href="{% url 'production:add_printing_schedule' data.id %}">Printing</a>
                             <a class="ui small green button" style="pointer-events: none" href="{% url 'production:add_cutting_schedule' data.id %}">Cutting</a>
