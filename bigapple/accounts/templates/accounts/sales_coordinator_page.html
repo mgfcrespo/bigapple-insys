@@ -81,9 +81,9 @@
 
 
             var POComparison = google.visualization.arrayToDataTable([
-                ['Year', 'Count', { role: 'style' }],
-                ["{{lastYear}} / {{thisMonth}}", parseInt('{{POs_lastYear.count}}'), 'Green'],
-                ["{{thisYear}} / {{thisMonth}}", parseInt('{{POs.count}}'), 'Yellow']
+                ['Year', '{{lastMonth}}', "{{thisMonth}}"],
+                ['{{lastYear}}', parseInt('{{POs_lastMonthLastYear.count}}'), parseInt('{{POs_lastYear.count}}')],
+                ['{{thisYear}}', parseInt('{{POs_lastMonth.count}}'), parseInt('{{POs.count}}')]
             ]);
 
             var options = {
