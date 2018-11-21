@@ -5,18 +5,18 @@ from django.db.models import aggregates
 from django.forms import inlineformset_factory
 from django.shortcuts import redirect
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse, Http404
+from pandas import DataFrame
 
 from accounts.models import Employee
 from inventory.forms import MaterialRequisitionForm
 from inventory.models import Inventory, Supplier, MaterialRequisition
 from production.forms import ClientPOForm
-from django.db import connection
-from pandas import DataFrame
 from production.models import JobOrder
 from utilities import TimeSeriesForecasting
 from .forms import ClientPOFormItems
 from .forms import SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
 from .models import ClientItem, Client, SalesInvoice, ClientPayment, ProductionCost
+import pandas as pd
 
 #Forecasting imports
 #import numpy as np
@@ -50,7 +50,7 @@ def supplier_list(request):
     supplier = Supplier.objects.all()
     context = {
         'title': 'Supplier List',
-        'supplier': supplier
+        'supplier' : supplier 
     }
     return render (request, 'sales/supplier_list.html', context)
 
@@ -168,6 +168,7 @@ def confirm_client_po(request, pk):
     client = clientpo.client
     items = ClientItem.objects.filter(client_po = clientpo)
 
+    #matreq determinant
     products = []
     material = []
     cylinder_count = 0
@@ -191,6 +192,8 @@ def confirm_client_po(request, pk):
             inventory = None
             matreq = False
 
+
+    #matreq form
     if request.method == "POST":
         clientpo.status = "On Queue"
         clientpo.save()
@@ -212,8 +215,8 @@ def confirm_client_po(request, pk):
 
         return redirect('sales:clientPO_list')
 
+
     context = {
-        'inventory': inventory,
         'clientpo': clientpo,
         'pk' : pk,
         'client' : client,
@@ -249,7 +252,6 @@ def invoice_detail_view(request, pk, *args, **kwargs):
 
     salesinvoice = SalesInvoice.objects.get(pk=pk)
     form = ClientPaymentForm()
-    payments = ClientPayment.objects.filter(invoice=salesinvoice)
 
     try:
         salesinvoice = SalesInvoice.objects.get(pk=pk)
@@ -447,11 +449,10 @@ def create_client_po(request):
 
 #RUSH ORDER CRUD
 def rush_order_list(request):
-    rush_orders = JobOrder.objects.filter(rush_order = True).exclude(status="Delivered")
+    rush_orders = JobOrder.objects.filter(rush_order = True)
 
     context = {
         'rush_orders' : rush_orders,
-        'title': 'Rush Order List'
     }
 
     return render (request, 'sales/rush_order_list.html', context)
@@ -482,6 +483,7 @@ def rush_order_assessment(request, pk):
     for every in items:
         price = every.calculate_price_per_piece() * every.quantity
         profit = 0
+        #FIXME printing, laminating, mat weight, mat cost
         profit += (1000 * (
             every.calculate_price_per_piece()) - electricity.cost - every.calculate_price_per_piece().printing_cost - \
                    every.calculate_price_per_piece().laminating_cost - (
@@ -489,7 +491,6 @@ def rush_order_assessment(request, pk):
                                * every.calculate_price_per_piece().material_cost.cost)) / (
                               every.length * every.width * every.thickness * every.calculate_price_per_piece().material_weight)
 
-    #profit =
 
     #matreq
     products = []
@@ -514,6 +515,7 @@ def rush_order_assessment(request, pk):
             inventory = None
             matreq = False
 
+    #TODO: Insert current job to generic schedule and show if other JOs will meet date_due
     #simulated sched
 
     context = {
@@ -630,24 +632,22 @@ def demand_forecast(request, id):
             if every.client_po_id == each.client_po.id:
                 items.append(every)
     cursor = connection.cursor()
-    query = 'SELECT po.date_issued, p.products FROM accounts_mgt_client c, production_mgt_joborder po, sales_mgt_clientitem poi, sales_product p WHERE' \
+    query = 'SELECT po.date_issued, poi.quantity FROM accounts_mgt_client c, production_mgt_joborder po, sales_mgt_clientitem poi, sales_product p WHERE ' \
             'p.id = poi.products_id AND poi.client_po_id = po.id AND po.client_id = '+str(id)
 
-    get_data = cursor.execute(query)
-    df = DataFrame(get_data.fetchall())
-    df.columns = get_data.keys()
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
     forecast_decomposition = []
     forecast_ses = []
     forecast_hwes = []
     forecast_moving_average = []
     forecast_arima = []
 
-    for x in items:
-        forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
-        forecast_ses.append(TimeSeriesForecasting.forecast_ses(df))
-        forecast_hwes.append(TimeSeriesForecasting.forecast_hwes(df))
-        forecast_moving_average.append(TimeSeriesForecasting.forecast_moving_average(df))
-        forecast_arima.append(TimeSeriesForecasting.forecast_arima(df))
+    forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
+    forecast_ses.append(TimeSeriesForecasting.forecast_ses(df))
+    forecast_hwes.append(TimeSeriesForecasting.forecast_hwes(df))
+    forecast_moving_average.append(TimeSeriesForecasting.forecast_moving_average(df))
+    forecast_arima.append(TimeSeriesForecasting.forecast_arima(df))
 
     context = {
         'forecast_decomposition': forecast_decomposition,
@@ -659,4 +659,3 @@ def demand_forecast(request, id):
     }
 
     return render(request, 'sales/client_demand_forecast_details.html', context)
-

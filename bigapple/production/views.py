@@ -11,15 +11,14 @@ from inventory.forms import MaterialRequisition
 from inventory.forms import MaterialRequisitionForm
 from sales.models import ClientItem, SalesInvoice
 from utilities import final_gantt
-from django.db import connection
-import pandas as pd
-
 from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm, LaminatingScheduleForm
 from .forms import JODetailsForm
 from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
 from .models import Machine
-
 from plotly.offline import plot
+from plotly.graph_objs import Scatter
+
+
 
 # scheduling import
 # Import Python wrapper for or-tools constraint solver.
@@ -353,8 +352,9 @@ def production_schedule(request):
   return render(request, 'production/production_schedule.html', context)
 
 '''
+
 def job_order_list(request):
-    data = JobOrder.objects.exclude(status='Delivered')
+    data = JobOrder.objects.exclude(status='Waiting').exclude(status='Ready for Delivery').exclude(status='Delivered')
 
     if request.session['session_position'] == "General Manager":
         template = 'general_manager_page_ui.html'
@@ -370,7 +370,7 @@ def job_order_list(request):
     return render (request, 'production/job_order_list.html', context)
 
 def job_order_details(request, id):
-
+		
     data = JobOrder.objects.get(id=id)
     items = ClientItem.objects.filter(client_po=data)
     form = JODetailsForm(request.POST or None)
@@ -394,15 +394,16 @@ def job_order_details(request, id):
       'extrusion': extrusion,
       'printing': printing,
       'cutting': cutting,
-      'laminating' : laminating
+        'laminating' : laminating,
+        'items' : items
     }
     return render(request, 'production/job_order_details.html', context)
 
 def finished_job_order_list_view(request):
-    object_list = JobOrder.objects.filter(status = 'Ready for delivery')
+    object_list = JobOrder.objects.filter(status='Delivered')
 
     context = {
-        'object_list' : object_list
+        'object_list': object_list
     }
 
     return render(request, 'production/finished_job_order_list.html', context)
@@ -644,13 +645,10 @@ def jo_approval(request, id):
 #SCHEDULING
 def production_schedule(request):
     cursor = connection.cursor()
-    query = 'SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j,' \
-            'sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id'
+    #TODO: Add condition making the query only include jobs that are NOT finished are NOT waiting.
+    query = 'SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id'
     cursor.execute(query)
     df = pd.read_sql(query, connection)
-    gantt = final_gantt.generate_overview_gantt_chart(df)
+    final_gantt.generate_overview_gantt_chart(df)
 
-    context = {
-        'gantt': gantt
-    }
-    return render(request, 'production/production_schedule.html', context)
+    return render(request, 'production/production_schedule.html')
