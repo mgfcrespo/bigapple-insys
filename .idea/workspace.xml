@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="44100258-e655-4ddd-99f4-1a8c04b20571" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="44100258-e655-4ddd-99f4-1a8c04b20571" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -66,8 +64,8 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="188">
-              <caret line="528" lean-forward="true" selection-start-line="528" selection-end-line="528" />
+            <state relative-caret-position="205">
+              <caret line="529" column="33" lean-forward="true" selection-start-line="529" selection-start-column="33" selection-end-line="529" selection-end-column="33" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
               </folding>
@@ -679,11 +677,26 @@
       <option name="project" value="LOCAL" />
       <updated>1542786976843</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="commit">
+      <created>1542786997399</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1542786997399</updated>
+    </task>
+    <task id="LOCAL-00040" summary="commit">
+      <created>1542787036716</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1542787036716</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4940476" visible="true" weight="0.18880208" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -1130,8 +1143,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="188">
-          <caret line="528" lean-forward="true" selection-start-line="528" selection-end-line="528" />
+        <state relative-caret-position="205">
+          <caret line="529" column="33" lean-forward="true" selection-start-line="529" selection-start-column="33" selection-end-line="529" selection-end-column="33" />
           <folding>
             <element signature="e#0#29#0" expanded="true" />
           </folding>
