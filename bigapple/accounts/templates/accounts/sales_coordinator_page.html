@@ -11,7 +11,7 @@
             </div>
             <div class="ui segment">
                 <h4 class="ui dividing header">Sales Comparison</h4>
-                <div id="POComparisson"></div>
+                <div id="POComparison"></div>
 
             </div>
         </div>
@@ -72,7 +72,7 @@
 
     <script>
 
-        google.charts.load('current', {'packages':['corechart']});
+        google.charts.load('current', {'packages':['corechart', 'bar']});
 
         //for sales2
         google.charts.setOnLoadCallback(salesComparisonChart);
@@ -80,23 +80,21 @@
         function salesComparisonChart() {
 
 
-            var POComparisson = google.visualization.arrayToDataTable([
-                ['Year', '{{thisYear}}', '{{lastYear}}'],
-                {% for POs in POs %}
-                    ["Year",parseInt('{{POs.count}}'), parseInt('{{POs_lastYear.count}}')],
-                {% endfor %}
+            var POComparison = google.visualization.arrayToDataTable([
+                ['Year', 'Count', { role: 'style' }],
+                ["{{lastYear}} / {{thisMonth}}", parseInt('{{POs_lastYear.count}}'), 'Green'],
+                ["{{thisYear}} / {{thisMonth}}", parseInt('{{POs.count}}'), 'Yellow']
             ]);
 
             var options = {
-              curveType: 'function',
               width: 400,
               height: 300,
-              legend: { position: 'bottom' }
+              legend: { position: 'none' }
             };
 
-            var chart2 = new google.visualization.LineChart(document.getElementById('POComparisson'));
+            var chart2 = new google.charts.Bar(document.getElementById('POComparison'));
 
-            chart2.draw(POComparisson, options);
+            chart2.draw(POComparison, options);
           }
 
         //for PO ratio
