@@ -201,19 +201,23 @@ def confirm_client_po(request, pk):
         for every in items:
             for x in material:
                 form = MaterialRequisitionForm(request.POST)
-                form.client_item = every
-                form.item = Inventory.objects.filter(rm_type=x).first()
-                form = form.save()
-                matreq = MaterialRequisition.objects.get(id = form.pk)
-                matreq.client_item = every
-                matreq.item = Inventory.objects.filter(rm_type=x).first()
-                matreq.save()
+                if form.is_valid():
+                    new_form = form.save(commit=False)
+                    new_form.client_item = every
+                    new_form.item = Inventory.objects.filter(rm_type=x).first()
+                    new_form.quantity = every.quantity
+                    new_form.save()
+
+                    #matreq = MaterialRequisition.objects.get(id = new_form.pk)
+                    #matreq.client_item = every
+                    #matreq.item = Inventory.objects.filter(rm_type=x).first()
+                    #matreq.save()
 
                 print(form)
                 if form.is_valid():
                     form.save()
 
-        return redirect('sales:clientPO_list')
+        return redirect('sales:po-list-view')
 
 
     context = {
@@ -377,8 +381,8 @@ def create_client_po(request):
         client_id = request.session['session_userid']
         current_client = Client.objects.get(id=client_id)
         form.client = current_client
+        form.sales_agent = current_client.sales_agent
         form.save()
-
         '''
         #check if client has overdue balance
         credit_status = ClientCreditStatus.objects.get(client_id = current_client)
@@ -483,13 +487,12 @@ def rush_order_assessment(request, pk):
     for every in items:
         price = every.calculate_price_per_piece() * every.quantity
         profit = 0
-        #FIXME printing, laminating, mat weight, mat cost
+
         profit += (1000 * (
-            every.calculate_price_per_piece()) - electricity.cost - every.calculate_price_per_piece().printing_cost - \
-                   every.calculate_price_per_piece().laminating_cost - (
-                               every.length * every.width * every.thickness * every.calculate_price_per_piece().material_weight \
-                               * every.calculate_price_per_piece().material_cost.cost)) / (
-                              every.length * every.width * every.thickness * every.calculate_price_per_piece().material_weight)
+            every.calculate_price_per_piece()) - electricity.cost - (1600 / every.quantity) - \
+                   (300/every.quantity) - (
+                               every.length * every.width * every.thickness * 10 )) / (
+                              every.length * every.width * every.thickness * 10)
 
 
     #matreq
@@ -638,19 +641,19 @@ def demand_forecast(request, id):
     cursor.execute(query)
     df = pd.read_sql(query, connection)
     forecast_decomposition = []
-    forecast_ses = []
+    forecast_ses = TimeSeriesForecasting.forecast_ses(df)
     forecast_hwes = []
     forecast_moving_average = []
     forecast_arima = []
 
-    forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
-    forecast_ses.append(TimeSeriesForecasting.forecast_ses(df))
-    forecast_hwes.append(TimeSeriesForecasting.forecast_hwes(df))
-    forecast_moving_average.append(TimeSeriesForecasting.forecast_moving_average(df))
-    forecast_arima.append(TimeSeriesForecasting.forecast_arima(df))
+    #forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
+    #forecast_ses.append(TimeSeriesForecasting.forecast_ses(df))
+    #forecast_hwes.append(TimeSeriesForecasting.forecast_hwes(df))
+    #forecast_moving_average.append(TimeSeriesForecasting.forecast_moving_average(df))
+    #forecast_arima.append(TimeSeriesForecasting.forecast_arima(df))
 
     context = {
-        'forecast_decomposition': forecast_decomposition,
+        #'forecast_decomposition': forecast_decomposition,
         'forecast_ses': forecast_ses,
         'forecast_hwes': forecast_hwes,
         'forecast_moving_average': forecast_moving_average,

@@ -19,25 +19,16 @@
                     <td> 
                         <a href="{% url 'inventory:materials_requisition_details' mr.id %}">{{ mr }}</a>
                     </td>
-                    <td>{{ mr.date_issued }}</td>
-					{% if mr.status == 'approved' %}
-						<td class="positive">
-							<i class="icon checkmark">Approved</i>
-						</td>
-					{% else %}
+                    <td>{{ mr.datetime_issued }}</td>
 						<td class = "warning">
-							<i class = "hourglass half icon">Waiting</i>
+							<i class = "hourglass half icon">Pending</i>
 						</td>
-					{% endif%}
 				</tr>
 				{% endfor %}
 			{% else %}
 
 				<td>No Material Requisitions to show!</td>
 
-			<td>
-				<p>There are no Material Requisitions to display</p>
-			</td>
 
 			{% endif %}
 			</tbody>
