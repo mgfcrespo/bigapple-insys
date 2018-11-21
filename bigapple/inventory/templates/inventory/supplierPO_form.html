@@ -1,13 +1,21 @@
 {% extends 'sidebar.html' %}
 {% block content %}
 
-<h3 class="ui dividing header">{{ title }}</h3>
+<h3 class="ui dividing header">Supplier Purchase Order</h3>
 
     <div class="ui container">
         <form id="myForm" method="post" enctype="multipart/form-data" novalidate>
 
                 {% csrf_token %}
                 {% include 'inventory/template_form.html' %}
+
+                <div class="two fields">
+                    <div class="field">
+                        <label>Delivery Date</label>
+                        {{ form.delivery_date}}
+                    </div>
+                </div>
+
                 {% include 'inventory/template_formset.html' %}
 
             {{formset.management_form}}

@@ -19,7 +19,7 @@ from .forms import JODetailsForm
 from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
 from .models import Machine
 
-from plotly.offline import plot, get_plotlyjs
+from plotly.offline import plot
 
 # scheduling import
 # Import Python wrapper for or-tools constraint solver.
@@ -644,14 +644,13 @@ def jo_approval(request, id):
 #SCHEDULING
 def production_schedule(request):
     cursor = connection.cursor()
-    query = 'SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id'
+    query = 'SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j,' \
+            'sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id'
     cursor.execute(query)
     df = pd.read_sql(query, connection)
     gantt = final_gantt.generate_overview_gantt_chart(df)
 
-    div1 = plot(gantt, output_type='div', include_plotlyjs=False)
-
     context = {
-        'gantt' : gantt
+        'gantt': gantt
     }
     return render(request, 'production/production_schedule.html', context)

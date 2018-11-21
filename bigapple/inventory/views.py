@@ -508,16 +508,13 @@ def supplierPO_form_test(request):
     #   'form': form,
     # }
     
-    return render (request, 'inventory/supplierPO_form.html',
-                              {'formset':supplierpo_item_formset(),
-                               'form': SupplierPOForm}
-                              )
+    return render(request, 'inventory/supplierPO_form.html', {'formset':supplierpo_item_formset(), 'form': SupplierPOForm})
 
 def supplierPO_list(request):
     mr = SupplierPO.objects.all()
     context = {
-        'title' :'Supplier PO List',
-        'mr' : mr
+        'title':'Supplier PO List',
+        'mr': mr
     }
     return render (request, 'inventory/supplierPO_list.html', context)
 

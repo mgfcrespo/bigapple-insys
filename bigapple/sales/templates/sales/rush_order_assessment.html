@@ -1,12 +1,38 @@
 {% extends "sidebar.html" %}
 {% block content %}
 
-<body>
 
-    #CBA
-    #Simulated Sched
+<div class="ui segment">
 
-</body>
+    <div class="">
+            <h4>
+                Credit Status
+            </h4>
+            <p>
+                {{ credit_status }}
+            </p>
+            <br>
+            <h4>
+                Profit
+            </h4>
+            <p>
+                {{ profit }}
+            </p>
+            <br>
+            <h4>
+                Materials Requirement
+            </h4>
+            <p>
+                {{ matreq }}
+            </p>
+            <br>
+            <div>
+                Production Schedule
+            </div>
+
+    </div>
+
+</div>
 
                             <form method="post">
                             <input type="submit" class="ui green basic button" value="Approve" name="approve_btn">

@@ -107,7 +107,12 @@
         <div class="center">
             <form method="post">
                 {% csrf_token %}
-                <input type="submit" class="ui green basic button" value="Confirm" id="confirm_btn" name="confirm_btn">
+
+                {% if matreq %}
+                    <input type="submit" class="ui green basic button" value="Confirm" id="confirm_btn" name="confirm_btn">
+                {% else %}
+                    <div class="ui warning message">Replenish inventory before proceeding. </div>
+                {% endif %}
             </form>
             <!-- <button id="confirm" type = "submit" class="ui green basic button"  style="width: 200px;">Confirm</button> -->
         </div>
