@@ -52,7 +52,7 @@ def user_page_view(request):
         JobOrder_data = JobOrder.objects.all()
 
         JobOrder_data5 = JobOrder.objects.order_by('-id')[:5]
-        rush_order = JobOrder.objects.filter(rush_order=True).exclude(status='delivered')[:3]
+        rush_order = JobOrder.objects.filter(rush_order=True).order_by('date_required').exclude(status='delivered')[:3]
 
         LDPE = Inventory.objects.filter(rm_type='LDPE')
         LLDPE = Inventory.objects.filter(rm_type='LLDPE')

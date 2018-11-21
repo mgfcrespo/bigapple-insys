@@ -111,7 +111,10 @@
                 {% if matreq %}
                     <input type="submit" class="ui green basic button" value="Confirm" id="confirm_btn" name="confirm_btn">
                 {% else %}
-                    <div class="ui warning message">Replenish inventory before proceeding. </div>
+                    <div class="ui warning icon message">
+                        <i class="exclamation circle icon"></i>
+                        Replenish inventory before proceeding.
+                    </div>
                 {% endif %}
             </form>
             <!-- <button id="confirm" type = "submit" class="ui green basic button"  style="width: 200px;">Confirm</button> -->
