@@ -1,162 +1,162 @@
 {% extends 'sidebar.html' %}
 {% block content %}
-
 <div>
-<h3 class="ui dividing header">Sales Dashboard</h3>
+    <h3 class="ui dividing header">Sales Dashboard</h3>
+    <div>
+        <div class="ui horizontal segments">
+            <div class="ui segment">
+                <h4 class="ui dividing header">Purchase Order Status </h4>
+                <div id="salesRatio"></div>
 
-<div>
-    <div class="ui horizontal segments">
-        <div class="ui segment">
+            </div>
+            <div class="ui segment">
+                <h4 class="ui dividing header">Sales Comparison</h4>
+                <div id="POComparison"></div>
 
-            <h4 class="ui dividing header">Purchase Order Status </h4>
-            <div id="salesRatio"></div>
-
+            </div>
         </div>
-
-        <div class="ui segment">
-
-            <h4 class="ui dividing header">Sales Comparison</h4>
-            <div id="POComparisson"></div>
-
+        <div class="ui horizontal segments">
+            <div class="ui segment">
+                <h4 class="ui dividing header">Rush Orders</h4>
+                <div class="ui three cards">
+                    {% for rush_order in rush_order %}
+                            <div class="ui card">
+                                <div class="content center aligned">
+                                    <div class="header">
+                                        <a href="{% url 'sales:rush_order_assessment' rush_order.id %}">{{ rush_order }}</a>
+                                    </div>
+                                    <div class="meta">
+                                        {{ rush_order.client }}
+                                    </div>
+                                </div>
+                                <div class="content">
+                                    <div class="row">
+                                        Items: {{ rush_order.items }}
+                                    </div>
+                                    <div class="row">
+                                        Total Amount: {{ rush_order.total_amount }}
+                                    </div>
+                                    <div class="row">
+                                        Date Issued: {{ rush_order.date_issued }}
+                                    </div>
+                                    <div class="row">
+                                        Date Required: {{ rush_order.date_required }}
+                                    </div>
+                                    <div>
+                                        Remarks: {{ rush_order.remarks }}
+                                    </div>
+                                </div>
+                                <div class="content center aligned">
+                                  <div class="ui two buttons">
+                                    <a class="ui green button" href="{% url 'sales:rush_order_assessment' rush_order.id %}">Approve</a>
+                                    <div class="ui red button">Decline</div>
+                                  </div>
+                                </div>
+                            </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<h3 class="ui dividing header">Production Dashboard</h3>
+    <h3 class="ui dividing header">Production Dashboard</h3>
 
-    {{ first5JO }}
-
-<h3 class="ui dividing header">Inventory Dashboard</h3>
-    <div class="ui horizontal segments">
-        <div class="ui segment">
-            <h4 class="ui dividing header">Raw Material Levels</h4>
-            <div id="rawmaterialLevels"></div>
-        </div>
-        <div class="ui segment">
-            <h4 class="ui dividing header">{{LDPE}} Levels</h4>
-            <div id="inventoryLevels"></div>
+    <h3 class="ui dividing header">Inventory Dashboard</h3>
+        <div class="ui horizontal segments">
+            <div class="ui segment">
+                <h4 class="ui dividing header">Raw Material Levels</h4>
+                <div id="rawmaterialLevels"></div>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
+    <script>
 
-    google.charts.load('current', {'packages':['corechart']});
+        google.charts.load('current', {'packages':['corechart', 'bar']});
 
-    //for sales2
-    google.charts.setOnLoadCallback(salesComparisonChart);
+        //for sales2
+        google.charts.setOnLoadCallback(salesComparisonChart);
 
-    function salesComparisonChart() {
-        var POComparisson = google.visualization.arrayToDataTable([
-            ['{{month}}','{{thisYear}}', '{{lastYear}}'],
-            ['NOV', 200, 203],
-            ['OCT', 220, 213],
-            ['SEPT', 203, 204],
-            ['AUG', 200, 203],
-            ['JULY', 229, 221],
-        ]);
+        function salesComparisonChart() {
 
-        var options = {
-          curveType: 'function',
-          width: 600,
-          height: 300,
-          legend: { position: 'bottom' }
-        };
 
-        var chart2 = new google.visualization.LineChart(document.getElementById('POComparisson'));
+            var POComparison = google.visualization.arrayToDataTable([
+                ['Year', '{{lastMonth}}', "{{thisMonth}}"],
+                ['{{lastYear}}', parseInt('{{POs_lastMonthLastYear.count}}'), parseInt('{{POs_lastYear.count}}')],
+                ['{{thisYear}}', parseInt('{{POs_lastMonth.count}}'), parseInt('{{POs.count}}')]
+            ]);
 
-        chart2.draw(POComparisson, options);
+            var options = {
+              width: 400,
+              height: 300,
+              legend: { position: 'none' }
+            };
+
+            var chart2 = new google.charts.Bar(document.getElementById('POComparison'));
+
+            chart2.draw(POComparison, options);
+          }
+
+        //for PO ratio
+            google.charts.setOnLoadCallback(drawChart);
+
+            function drawChart() {
+            var Sales1 = google.visualization.arrayToDataTable([
+              ['Status', 'Amount'],
+              ['Waiting', parseInt("{{ status_waiting }}")],
+              ['On Queue', parseInt("{{ status_onqueue }}")],
+              ['Extrusion', parseInt("{{ status_extrusion }}")],
+              ['Printing', parseInt("{{ status_printing }}")],
+              ['Cutting', parseInt("{{ status_cutting }}")],
+              ['Packaging', parseInt("{{ status_packaging }}")],
+              ['Ready for Delivery', parseInt("{{ status_ready }}")],
+            ]);
+
+            var options = {
+              title: 'PO Status',
+              width: 500,
+              height: 300,
+              pieHole: .3,
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('salesRatio'));
+            chart.draw(Sales1, options);
+          }
+
+        // for raw material levels
+        google.charts.setOnLoadCallback(rawmaterialLevels);
+        function rawmaterialLevels() {
+          var data = google.visualization.arrayToDataTable([
+            ["Raw Material Type", "Amount", { role: "style" } ],
+            ["LDPE", parseInt("{{LDPE.quantity}}"), "#97cfca"],
+            ["LLDPE", parseInt("{{ LLDPE.quantity }}"), "#619c17"],
+            ["HDPE", parseInt("{{ HDPE.quantity }}"), "#9c2f2f"],
+            ["PP", parseInt("{{ PP.quantity }}"), "#d7e374"],
+            ["PET", parseInt("{{ PET.quantity }}"),"#9c732c"],
+            ["PE", parseInt("{{ PE.quantity }}"),"#249c3f"],
+            ["HD", parseInt("{{ HD.quantity }}"),"#34919c"]
+          ]);
+
+          var view = new google.visualization.DataView(data);
+          view.setColumns([0, 1,
+                           { calc: "stringify",
+                             sourceColumn: 1,
+                             type: "string",
+                             role: "annotation" },
+                           2]);
+
+          var options = {
+            hAxis:{format: 'short'},
+            width: 1000,
+            height: 300,
+            bar: {groupWidth: "90%"},
+            legend: { position: "none" },
+          };
+          var chart = new google.visualization.BarChart(document.getElementById("rawmaterialLevels"));
+          chart.draw(view, options);
       }
 
-    //for PO ratio
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-        var Sales1 = google.visualization.arrayToDataTable([
-          ['Status', 'Amount'],
-          ['Waiting', parseInt("{{ status_waiting }}")],
-          ['On Queue', parseInt("{{ status_onqueue }}")],
-          ['Extrusion', parseInt("{{ status_extrusion }}")],
-          ['Printing', parseInt("{{ status_printing }}")],
-          ['Cutting', parseInt("{{ status_cutting }}")],
-          ['Packaging', parseInt("{{ status_packaging }}")],
-          ['Ready for Delivery', parseInt("{{ status_ready }}")],
-        ]);
-
-        var options = {
-          title: 'PO Status',
-          width: 500,
-          height: 300,
-          pieHole: .3,
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('salesRatio'));
-        chart.draw(Sales1, options);
-      }
-
-    // for raw material levels
-    google.charts.setOnLoadCallback(rawmaterialLevels);
-    function rawmaterialLevels() {
-      var data = google.visualization.arrayToDataTable([
-        ["Raw Material Type", "Amount", { role: "style" } ],
-        ["LDPE", parseInt("{{LDPE}}"), "#97cfca"],
-        ["LLDPE", parseInt("{{ LLDPE }}"), "#619c17"],
-        ["HDPE", parseInt("{{ HDPE }}"), "#9c2f2f"],
-        ["PP", parseInt("{{ PP }}"), "#d7e374"],
-        ["PET", parseInt("{{ PET }}"),"#9c732c"]
-      ]);
-
-      var view = new google.visualization.DataView(data);
-      view.setColumns([0, 1,
-                       { calc: "stringify",
-                         sourceColumn: 1,
-                         type: "string",
-                         role: "annotation" },
-                       2]);
-
-      var options = {
-        hAxis:{format: 'short'},
-        width: 500,
-        height: 300,
-        bar: {groupWidth: "90%"},
-        legend: { position: "none" },
-      };
-      var chart = new google.visualization.BarChart(document.getElementById("rawmaterialLevels"));
-      chart.draw(view, options);
-  }
-
-    // for inventory levels
-    google.charts.setOnLoadCallback(inventoryLevels);
-    function inventoryLevels() {
-      var data = google.visualization.arrayToDataTable([
-        ["Inventory Type", "Amount", { role: "style" } ],
-        ["Raw Materials",parseInt(""), "grey"],
-        ["Machine Parts", parseInt("{{ LLDPE }}"), "grey"],
-        ["Ink", parseInt("{{ HDPE }}"), "grey"],
-        ["Others", parseInt("{{ PP }}"), "grey"],
-      ]);
-
-      var view = new google.visualization.DataView(data);
-      view.setColumns([0, 1,
-                       { calc: "stringify",
-                         sourceColumn: 1,
-                         type: "string",
-                         role: "annotation" },
-                       2]);
-
-      var options = {
-        hAxis:{format: 'short'},
-        width: 500,
-        height: 300,
-        bar: {groupWidth: "90%"},
-        legend: { position: "none" },
-      };
-      var chart = new google.visualization.BarChart(document.getElementById("inventoryLevels"));
-      chart.draw(view, options);
-  }
-
-
-</script>
-    </div>
+    </script>
+</div>
 
 {% endblock %}

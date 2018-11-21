@@ -2,9 +2,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.sessions.models import Session
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from django.template import loader
 from django.http import HttpResponse
+
+from django.db.models.functions import TruncMonth
+from datetime import datetime
+
+import array as arr
+
 
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
@@ -38,22 +44,23 @@ def register(request):
 def user_page_view(request):
 
         user = request.user
+        id = user.id
         username = request.user.username
 
         Client_data = Client.objects.all()
         Supplier_data = Supplier.objects.all()
-
         JobOrder_data = JobOrder.objects.all()
 
         JobOrder_data5 = JobOrder.objects.order_by('-id')[:5]
+        rush_order = JobOrder.objects.filter(rush_order=True).order_by('date_required').exclude(status='delivered')[:3]
 
-        rush_order = JobOrder.objects.filter(rush_order=True)[:5]
-
-        LDPE = Inventory.objects.filter(rm_type='LDPE').aggregate(Sum('quantity'))
-        LLDPE = Inventory.objects.filter(rm_type='LLDPE').annotate(Sum('quantity'))
-        HDPE = Inventory.objects.filter(item_type='HDPE').annotate(Sum('quantity'))
-        PP = Inventory.objects.filter(item_type='PP').annotate(Sum('quantity'))
-        PET = Inventory.objects.filter(item_type='PET').annotate(Sum('quantity'))
+        LDPE = Inventory.objects.filter(rm_type='LDPE')
+        LLDPE = Inventory.objects.filter(rm_type='LLDPE')
+        HDPE = Inventory.objects.filter(item_type='HDPE')
+        PP = Inventory.objects.filter(item_type='PP')
+        PET = Inventory.objects.filter(item_type='PET')
+        PE = Inventory.objects.filter(item_type='Pelletized PE')
+        HD = Inventory.objects.filter(item_type='Pelletized HD')
 
         status_waiting = JobOrder.objects.filter(status='Waiting').count()
         status_onqueue = JobOrder.objects.filter(status='On Queue').count()
@@ -65,14 +72,35 @@ def user_page_view(request):
         status_delivered = JobOrder.objects.filter(status='Delivered').count()
         status_cancelled = JobOrder.objects.filter(status='Cancelled').count()
 
+        thisYear = datetime.now().year
+        lastYear = datetime.now().year-1
+
+        thisMonth = datetime.now().month
+
+        POs = JobOrder.objects.filter(date_issued__month=thisMonth, date_issued__year=thisYear).annotate(count=Count('id'))
+        POs_lastMonth = JobOrder.objects.filter(date_issued__month=thisMonth-1, date_issued__year=thisYear).annotate(count=Count('id'))
+
+        POs_lastYear = JobOrder.objects.filter(date_issued__month=thisMonth, date_issued__year=lastYear).annotate(count=Count('id'))
+        POs_lastMonthlastYear = JobOrder.objects.filter(date_issued__month=thisMonth-1, date_issued__year=lastYear).annotate(count=Count('id'))
+
         context = {
-            'rush_order': rush_order,
+            'POs_lastMonth': POs_lastMonth,
+            'thisMonth': thisMonth,
+
+            'thisYear': thisYear,
+            'lastYear': lastYear,
+
+            'POs': POs,
+            'POs_lastYear': POs_lastYear,
+            'POs_lastMonthlastYear':POs_lastMonthlastYear,
 
             'LDPE': LDPE,
             'LLDPE': LLDPE,
             'HDPE': HDPE,
             'PP': PP,
             'PET': PET,
+            'PE': PE,
+            'HD': HD,
 
             'status_waiting': status_waiting,
             'status_onqueue': status_onqueue,
@@ -87,8 +115,8 @@ def user_page_view(request):
             'Client_data': Client_data,
             'Supplier_data': Supplier_data,
             'JobOrder_data': JobOrder_data,
-
             'JobOrder_data5': JobOrder_data5,
+            'rush_order': rush_order,
             }
 
         request.session['session_username'] = username

@@ -1,10 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'sidebar.html' %}
+{% block content %}
 
-</body>
-</html>
+<div class="ui segment">
+    <div class="ui two column very relaxed grid">
+        <div class="column">
+
+            <div class="ui placeholder segment">
+                {{inventory}}
+            </div>
+
+        </div>
+        <div class="column">
+
+            <div>
+                <div class="ui top attached tabular menu">
+                    <a class="active item" data-tab="first">Time Series Decomposition</a>
+                    <a class="item" data-tab="second">Simple Exponential Smoothing</a>
+                    <a class="item" data-tab="third">Holt Winters Exponential Smoothing</a>
+                    <a class="active item" data-tab="fourth">Moving Average</a>
+                    <a class="item" data-tab="fifth">ARIMA</a>
+                </div>
+                <div class="ui bottom attached active tab segment" data-tab="first">
+                    {{forecast_decomposition}}
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="second">
+                    {{forecast_ses}}
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="third">
+                    {{forecast_hwes}}
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="fourth">
+                    {{forecast_moving_average}}
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="fifth">
+                    {{forecast_arima}}
+                </div>
+            </div>
+
+        </div>
+        <div class="ui vertical divider"></div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+<div class="ui bottom attached tab segment" data-tab="third">
+    {{inventory}}
+</div>

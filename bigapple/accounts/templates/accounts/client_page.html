@@ -2,50 +2,51 @@
 {% block content %}
 
 <h3 class="ui dividing header">Your Purchase Orders</h3>
-
 <div>
     <div class="ui horizontal segments">
         <div class="ui segment">
 
-            <table class="ui striped table center aligned">
-                <thead>
-                <tr>
-                  <th>Purchase Order ID</th>
-                  <th>Date Issued</th>
-                  <th>Date Required</th>
-                  <th>Total Amount</th>
-                  <th>Status</th>
-                </tr>
-                </thead>
-                <tbody>
+		<table class="ui striped table center aligned">
+        	<thead>
+          	<tr>
+          	  <th>Purchase Order ID</th>
+              <th>Date Issued</th>
+              <th>Date Required</th>
+              <th>Total Amount</th>
+			  <th>Status</th>
+          	</tr>
+    		</thead>
+    		<tbody>
 
-                {% if client_po %}
-                    {% for client_po_list in ClientPO %}
-                        <tr>
-                            <td><a href="{% url 'sales:po-detail-view' ClientPO.id %}">{{ClientPO}}</a></td>
-                            <td>{{ client_po_list.date_issued }}</td>
-                            <td>{{ client_po_list.date_required }}</td>
-                            <td>{{ client_po_list.total_amount }}</td>
-                            <td>
-                                {{ client_po_list.status }}</td>
-
-                        </tr>
-                    {% endfor %}
-                {% else %}
-                <td>
-                    <p>There are no Purchase Orders to display</p>
-                </td>
-
-                {% endif %}
-
-
-            </tbody>
-        </table>
-
-        </div>
-        <div class="ui segment">
+			{% if client_po %}
+				{% for each in client_po %}
+    				<tr>
+    					<td><a href="{% url 'sales:po-detail-view' each.id %}"> {{ each.id }}</a></td>
+    					<td>{{ each.date_issued }}</td>
+    					<td>{{ each.date_required }}</td>
+    					<td>{{ each.total_amount }}</td>
+						<td>{% if each.status == 'Waiting' and x == 'Employee' %}
+							<a href="{% url 'sales:confirm-client-po' each.id %}">{{ each.status }}</a>
+							{% else %}
+							{{ each.status }}</td>
+							{% endif %}
+						</tr>
+					{% endfor %}
+				{% else %}
+				<td>
+					<p>There are no Purchase Orders to display</p>
+				</td>
+				{% endif %}
+			</tbody>
+		</table>
 
         </div>
     </div>
+
+    <h3 class="ui dividing header">Forecast</h3>
+    <div class="ui segment">
+
+    </div>
+
 </div>
 {% endblock %}

@@ -8,8 +8,10 @@ from datetimepicker.widgets import DateTimePicker
 
 from .models import ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule, Machine, Employee, JobOrder
 
+
 class DateInput(forms.DateInput):
     input_type = 'date'
+
 
 class ClientPOForm(ModelForm):
     class Meta:
@@ -24,6 +26,7 @@ class ClientPOForm(ModelForm):
             self.fields['date_required'].required = True
             self.fields['date_required'].label = "Date Required"
 
+
 class ExtruderScheduleForm(forms.ModelForm):
     SHIFTS = (
         (1, 1),
@@ -31,29 +34,29 @@ class ExtruderScheduleForm(forms.ModelForm):
         (3, 3)
     )
 
-
-
     class Meta:
         model = ExtruderSchedule
         fields = ('job_order', 'machine', 'operator', 'weight_rolls', 'datetime_in', 'datetime_out', 'shift',
-        'core_weight', 'output_kilos', 'number_rolls', 'starting_scrap', 'extruder_scrap','remarks','final',)
+                  'core_weight', 'output_kilos', 'number_rolls', 'starting_scrap', 'extruder_scrap', 'remarks',
+                  'final',)
         widgets = {
-             'datetime_in': DateTimeInput(),
-             'datetime_out': DateTimeInput(),
-         }
+            'datetime_in': DateTimeInput(),
+            'datetime_out': DateTimeInput(),
+        }
 
     final = forms.BooleanField(initial=False, required=False)
-    shift = forms.IntegerField(widget = forms.Select(choices=SHIFTS))
+    shift = forms.IntegerField(widget=forms.Select(choices=SHIFTS))
     operator = forms.ModelChoiceField(queryset=Employee.objects.filter(position="Extruder"))
     datetime_in = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
     datetime_out = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
-    remarks = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))
+    remarks = forms.CharField(widget=forms.Textarea(attrs={'rows': '3'}))
     machine = forms.ModelChoiceField(queryset=Machine.objects.all())
-    
+
     def __init__(self, *args, **kwargs):
         super(ExtruderScheduleForm, self).__init__(*args, **kwargs)
         self.fields['remarks'].required = False
-        self.fields['job_order'].queryset = JobOrder.objects.all()
+        self.fields['job_order'].queryset = JobOrder.objects.exclude(status='Delivered')
+
 
 class PrintingScheduleForm(forms.ModelForm):
     SHIFTS = (
@@ -77,13 +80,14 @@ class PrintingScheduleForm(forms.ModelForm):
     operator = forms.ModelChoiceField(queryset=Employee.objects.filter(position="Printing"))
     datetime_in = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
     datetime_out = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
-    remarks = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))
+    remarks = forms.CharField(widget=forms.Textarea(attrs={'rows': '3'}))
     machine = forms.ModelChoiceField(queryset=Machine.objects.all())
 
     def __init__(self, *args, **kwargs):
         super(PrintingScheduleForm, self).__init__(*args, **kwargs)
         self.fields['remarks'].required = False
-        self.fields['job_order'].queryset = JobOrder.objects.all()
+        self.fields['job_order'].queryset = JobOrder.objects.exclude(status='Delivered')
+
 
 class CuttingScheduleForm(forms.ModelForm):
     SHIFTS = (
@@ -100,11 +104,10 @@ class CuttingScheduleForm(forms.ModelForm):
 
     final = forms.BooleanField(initial=False, required=False)
 
-
     class Meta:
         model = CuttingSchedule
         fields = ('job_order', 'machine', 'operator', 'line', 'datetime_in', 'datetime_out', 'shift',
-        'quantity', 'output_kilos', 'number_rolls', 'starting_scrap', 'cutting_scrap', 'remarks', 'final',)
+                  'quantity', 'output_kilos', 'number_rolls', 'starting_scrap', 'cutting_scrap', 'remarks', 'final',)
         widgets = {
             'datetime_in': DateTimeInput(),
             'datetime_out': DateTimeInput()
@@ -114,14 +117,15 @@ class CuttingScheduleForm(forms.ModelForm):
     operator = forms.ModelChoiceField(queryset=Employee.objects.filter(position="Cutting"))
     datetime_in = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
     datetime_out = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
-    line = forms.CharField(max_length=200, label = 'line', widget = forms.Select(choices=LINE))
-    remarks = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))
+    line = forms.CharField(max_length=200, label='line', widget=forms.Select(choices=LINE))
+    remarks = forms.CharField(widget=forms.Textarea(attrs={'rows': '3'}))
     machine = forms.ModelChoiceField(queryset=Machine.objects.all())
 
     def __init__(self, *args, **kwargs):
         super(CuttingScheduleForm, self).__init__(*args, **kwargs)
         self.fields['remarks'].required = False
-        self.fields['job_order'].queryset = JobOrder.objects.all()
+        self.fields['job_order'].queryset = JobOrder.objects.exclude(status='Delivered')
+
 
 class LaminatingScheduleForm(forms.ModelForm):
     SHIFTS = (
@@ -144,14 +148,15 @@ class LaminatingScheduleForm(forms.ModelForm):
     operator = forms.ModelChoiceField(queryset=Employee.objects.filter(position="Cutting"))
     datetime_in = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
     datetime_out = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
-    remarks = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))
+    remarks = forms.CharField(widget=forms.Textarea(attrs={'rows': '3'}))
     machine = forms.ModelChoiceField(queryset=Machine.objects.all())
 
     def __init__(self, *args, **kwargs):
         super(LaminatingScheduleForm, self).__init__(*args, **kwargs)
         self.fields['remarks'].required = False
-        self.fields['job_order'].queryset = JobOrder.objects.all()
-	
+        self.fields['job_order'].queryset = JobOrder.objects.exclude(status='Delivered')
+
+
 class JODetailsForm(forms.ModelForm):
     STATUS = (
         ('Waiting', 'Waiting'),
@@ -164,9 +169,9 @@ class JODetailsForm(forms.ModelForm):
         ('Delivered', 'Delivered'),
         ('Cancelled', 'Cancelled')
     )
-    
+
     class Meta:
         model = JobOrder
         fields = ('remarks', 'status')
 
-    remarks = forms.CharField(widget = forms.Textarea(attrs={'rows':'3'}))
+    remarks = forms.CharField(widget=forms.Textarea(attrs={'rows': '3'}))

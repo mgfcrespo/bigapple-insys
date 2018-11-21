@@ -1,24 +1,9 @@
 {% extends 'sidebar.html' %}
 
 {% block content %}
-<head>
-    <meta charset="UTF-8">
-    <title>Production Schedule</title>
-</head>
-<body>
-{% if graph %}
-<div style="width:600;height:500">
-{{ graph|safe }}
-</div>
-{% endif %}
 
-{% if graph_next %}
-<div style="width:600;height:500">
-{{ graph_next|safe }}
-</div>
-{% endif %}
 
-</body>
-</html>
+    {{gantt|safe}}
+
 
 {% endblock %}

@@ -1,8 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="44100258-e655-4ddd-99f4-1a8c04b20571" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="44100258-e655-4ddd-99f4-1a8c04b20571" name="Default" comment="Merge branch 'View-Branch' of https://github.com/replicantdeca/bigapple-insys&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;bigapple/accounts/migrations/0001_initial.py&#10;#&#9;bigapple/inventory/urls.py&#10;#&#9;bigapple/inventory/views.py&#10;#&#9;bigapple/production/views.py&#10;#&#9;bigapple/sales/templates/sales/clientPO_confirm.html&#10;#&#9;bigapple/sales/views.py&#10;#&#9;bigapple/utilities/TimeSeriesForecasting.py">
+      <change afterPath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/client_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/bigapple-insys.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/bigapple-insys.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/.idea/bigapple.iml" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/.idea/bigapple.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/migrations/0002_auto_20181111_1923.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/general_manager_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/general_manager_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_agent_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_agent_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_coordinator_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/accounts/sales_coordinator_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/global_base_ui.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/global_base_ui.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/templates/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/templates/sidebar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/accounts/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/inventory/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/inventory/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/migrations/0002_auto_20181111_1923.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/migrations/0003_auto_20181113_1425.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/migrations/0004_materialrequisition_datetime_issued.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/migrations/0005_inventory_count_person.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/migrations/0006_auto_20181116_1838.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/migrations/0007_auto_20181120_2049.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/migrations/0008_auto_20181120_2237.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/migrations/0009_auto_20181121_1731.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/inventory/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/inventory_count_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/inventory_count_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/inventory_forecast.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/inventory_forecast.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/inventory_item_add.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/inventory_item_add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/materials_requisition_details.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/materials_requisition_details.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/materials_requisition_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/materials_requisition_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/purchase_requisition_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/purchase_requisition_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/supplierPO_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/supplierPO_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/template_formset.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/inventory/templates/inventory/template_formset.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/inventory/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/inventory/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/production/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/production/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/migrations/0002_auto_20181111_1923.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/migrations/0003_auto_20181111_1959.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/migrations/0004_auto_20181111_2222.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/migrations/0005_joborder_date_issued.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/migrations/0006_auto_20181111_2227.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/migrations/0007_auto_20181112_0230.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/migrations/0008_auto_20181113_1626.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/migrations/0009_auto_20181114_2122.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/migrations/0010_auto_20181116_1805.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/migrations/0011_auto_20181118_0032.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/templates/production/add_QA_schedule.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/production/templates/production/add_QA_schedule.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/templates/production/add_cutting_schedule.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/production/templates/production/add_cutting_schedule.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/templates/production/add_extruder_schedule.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/production/templates/production/add_extruder_schedule.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/templates/production/add_laminating_schedule.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/production/templates/production/add_laminating_schedule.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/templates/production/add_printing_schedule.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/production/templates/production/add_printing_schedule.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/templates/production/job_order_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/production/templates/production/job_order_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/production/templates/production/production_schedule.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/production/templates/production/production_schedule.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0002_auto_20181111_1923.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0003_auto_20181111_1924.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0004_auto_20181111_1959.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0005_auto_20181112_0230.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0006_auto_20181116_2217.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0007_auto_20181117_2011.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0008_auto_20181117_2350.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0009_remove_salesinvoice_date_made.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0010_salesinvoice_days_passed.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0011_auto_20181118_0044.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/migrations/0012_salesinvoice_days_overdue.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_confirm.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_confirm.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/templates/sales/finished_JO_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/templates/sales/finished_JO_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/templates/sales/rush_order_assessment.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/templates/sales/rush_order_assessment.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/templates/sales/rush_order_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/templates/sales/rush_order_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/templates/sales/template_formset.html" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/templates/sales/template_formset.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/sales/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/bigapple/sales/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bigapple/utilities/ganttChart.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -63,26 +136,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bigapple/production/views.py">
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/bigapple/sales/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="333">
-              <caret line="648" column="27" selection-start-line="648" selection-start-column="27" selection-end-line="648" selection-end-column="27" />
+            <state relative-caret-position="1734">
+              <caret line="201" column="37" selection-start-line="201" selection-start-column="37" selection-end-line="201" selection-end-column="37" />
               <folding>
-                <element signature="e#0#37#0" expanded="true" />
+                <element signature="e#0#28#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bigapple/sales/models.py">
+        <entry file="file://$PROJECT_DIR$/bigapple/production/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-955">
-              <caret line="201" column="37" lean-forward="true" selection-start-line="201" selection-start-column="37" selection-end-line="201" selection-end-column="37" />
-              <folding>
-                <element signature="e#0#28#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="1020">
+              <caret line="116" column="33" lean-forward="true" selection-start-line="116" selection-start-column="33" selection-end-line="116" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -90,8 +160,8 @@
       <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bigapple/inventory/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="102" column="22" lean-forward="true" selection-start-line="102" selection-start-column="22" selection-end-line="102" selection-end-column="22" />
+            <state relative-caret-position="248">
+              <caret line="103" lean-forward="true" selection-start-line="103" selection-end-line="103" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
@@ -99,11 +169,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bigapple/inventory/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="555" column="23" selection-start-line="555" selection-start-column="23" selection-end-line="555" selection-end-column="23" />
+            <state relative-caret-position="300">
+              <caret line="52" column="39" lean-forward="true" selection-start-line="52" selection-start-column="39" selection-end-line="52" selection-end-column="39" />
               <folding>
                 <element signature="e#0#58#0" expanded="true" />
               </folding>
@@ -111,59 +181,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="inventory_count_form.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bigapple/inventory/templates/inventory/inventory_count_form.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="663">
-              <caret line="39" column="70" lean-forward="true" selection-start-line="39" selection-start-column="70" selection-end-line="39" selection-end-column="70" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="forms.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bigapple/inventory/forms.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="66" column="3" lean-forward="true" selection-start-line="66" selection-start-column="3" selection-end-line="66" selection-end-column="3" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="forms.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bigapple/production/forms.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="85" column="66" lean-forward="true" selection-start-line="85" selection-start-column="66" selection-end-line="85" selection-end-column="66" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TimeSeriesForecasting.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bigapple/utilities/TimeSeriesForecasting.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="561">
-              <caret line="33" column="21" lean-forward="true" selection-start-line="33" selection-start-column="21" selection-end-line="33" selection-end-column="21" />
-              <folding>
-                <element signature="e#129#144#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="client_demand_forecast_details.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/client_demand_forecast_details.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="10" selection-start-line="10" selection-end-line="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="558" column="58" lean-forward="true" selection-start-line="558" selection-start-column="58" selection-end-line="558" selection-end-column="58" />
+            <state relative-caret-position="306">
+              <caret line="387" column="22" lean-forward="true" selection-start-line="387" selection-start-column="22" selection-end-line="387" selection-end-column="22" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
               </folding>
@@ -183,11 +205,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>pd</find>
-      <find>clientpayment</find>
-      <find>db_con</find>
-      <find>session</find>
-      <find>add_client</find>
       <find>calculate_days_overd</find>
       <find>statement</find>
       <find>calculate_days</find>
@@ -204,7 +221,6 @@
       <find>joborder</find>
       <find>client_pay</find>
       <find>payment_list</find>
-      <find>confirm_</find>
       <find>inventory_item</find>
       <find>rush</find>
       <find>rush_or</find>
@@ -213,6 +229,12 @@
       <find>payment_det</find>
       <find>confirm_cli</find>
       <find>rush_order</find>
+      <find>confirm_</find>
+      <find>session_user</find>
+      <find>create_</find>
+      <find>matreq</find>
+      <find>inventory_item_list</find>
+      <find>materials_re</find>
     </findStrings>
     <dirStrings>
       <dir>C:\Users\decqua\PycharmProjects\baipismis\bigapple</dir>
@@ -224,8 +246,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/bigapple/accounts/templates/general_manager_page_ui.html" />
-        <option value="$PROJECT_DIR$/bigapple/accounts/templates/line_leader_page_ui.html" />
         <option value="$PROJECT_DIR$/bigapple/accounts/templates/production_manager_page_ui.html" />
         <option value="$PROJECT_DIR$/bigapple/accounts/templates/global_base_ui.html" />
         <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/sales_invoice_details.html" />
@@ -244,12 +264,10 @@
         <option value="$PROJECT_DIR$/bigapple/production/admin.py" />
         <option value="$PROJECT_DIR$/bigapple/inventory/admin.py" />
         <option value="$PROJECT_DIR$/bigapple/accounts/admin.py" />
-        <option value="$PROJECT_DIR$/bigapple/inventory/views.py" />
         <option value="$PROJECT_DIR$/bigapple/bigapple/__init__.py" />
         <option value="$PROJECT_DIR$/bigapple/inventory/urls.py" />
         <option value="$PROJECT_DIR$/bigapple/accounts/models.py" />
         <option value="$PROJECT_DIR$/bigapple/accounts/views.py" />
-        <option value="$PROJECT_DIR$/bigapple/inventory/models.py" />
         <option value="$PROJECT_DIR$/bigapple/sales/forms.py" />
         <option value="$PROJECT_DIR$/bigapple/sales/forms.py" />
         <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html" />
@@ -260,7 +278,6 @@
         <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_detail.html" />
         <option value="$PROJECT_DIR$/bigapple/sales/urls.py" />
         <option value="$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_list.html" />
-        <option value="$PROJECT_DIR$/bigapple/inventory/forms.py" />
         <option value="$PROJECT_DIR$/bigapple/inventory/templates/inventory/inventory_item_add.html" />
         <option value="$PROJECT_DIR$/bigapple/inventory/templates/inventory/inventory_item_edit.html" />
         <option value="$PROJECT_DIR$/bigapple/production/templates/production/add_extruder_schedule.html" />
@@ -273,8 +290,13 @@
         <option value="$PROJECT_DIR$/bigapple/utilities/final_gantt.py" />
         <option value="$PROJECT_DIR$/bigapple/production/views.py" />
         <option value="$PROJECT_DIR$/bigapple/production/templates/production/production_schedule.html" />
+        <option value="$PROJECT_DIR$/bigapple/inventory/forms.py" />
+        <option value="$PROJECT_DIR$/bigapple/inventory/models.py" />
         <option value="$PROJECT_DIR$/bigapple/sales/views.py" />
         <option value="$PROJECT_DIR$/bigapple/sales/views.py" />
+        <option value="$PROJECT_DIR$/bigapple/inventory/templates/inventory/materials_requisition_list.html" />
+        <option value="$PROJECT_DIR$/bigapple/inventory/templates/inventory/materials_requisition_details.html" />
+        <option value="$PROJECT_DIR$/bigapple/inventory/views.py" />
       </list>
     </option>
   </component>
@@ -303,6 +325,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -319,7 +342,7 @@
               <item name="baipismis" type="b2602c69:ProjectViewProjectNode" />
               <item name="baipismis" type="462c0819:PsiDirectoryNode" />
               <item name="bigapple" type="462c0819:PsiDirectoryNode" />
-              <item name="bigapple" type="462c0819:PsiDirectoryNode" />
+              <item name="accounts" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="baipismis" type="b2602c69:ProjectViewProjectNode" />
@@ -394,7 +417,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -427,7 +449,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Unknown.clientPO_form.html902648801">
+  <component name="RunManager" selected="Unknown.clientPO_form.html336374816">
     <configuration name="clientPO_form.html" type="JavascriptDebugType" factoryName="JavaScript Debug" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/bigapple-insys/sales/templates/sales/clientPO_form.html">
       <method v="2" />
     </configuration>
@@ -740,38 +762,26 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="right" id="R Packages" order="4" />
       <window_info anchor="right" id="R Graphics" order="3" />
-      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.51497394" side_tool="true" weight="0.21655172" />
-      <window_info anchor="bottom" id="Version Control" order="10" sideWeight="0.48502603" visible="true" weight="0.21655172" />
+      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50716144" side_tool="true" visible="true" weight="0.21655172" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32944608" />
+      <window_info anchor="bottom" id="Version Control" order="10" sideWeight="0.49283853" visible="true" weight="0.21655172" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.32944608" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49934897" weight="0.6096552" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.49596122" weight="0.25931033" />
-      <window_info id="Favorites" order="2" sideWeight="0.50595236" side_tool="true" weight="0.28109854" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="bottom" id="Version Control" order="10" sideWeight="0.4934896" visible="true" weight="0.21655172" />
+      <window_info id="Favorites" order="2" sideWeight="0.50595236" side_tool="true" weight="0.28109854" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="12" show_stripe_button="false" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4940476" visible="true" weight="0.18880208" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="R Graphics" order="3" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32944608" />
-      <window_info anchor="right" id="R Packages" order="4" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" id="Database" order="5" />
       <window_info anchor="bottom" id="Messages" order="8" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50651044" side_tool="true" visible="true" weight="0.21655172" />
       <window_info anchor="bottom" id="Database Changes" order="13" show_stripe_button="false" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info id="Favorites" order="2" sideWeight="0.50595236" side_tool="true" weight="0.28109854" />
       <window_info anchor="right" id="SciView" order="6" />
       <window_info active="true" anchor="bottom" id="Find" order="1" visible="true" weight="0.32827586" />
-      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.49596122" weight="0.25931033" />
-      <window_info anchor="bottom" id="Python Console" order="7" weight="0.32944608" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -819,74 +829,12 @@
     <MESSAGE value="updated models and forms" />
     <MESSAGE value="new database commit" />
     <MESSAGE value="updated models" />
-    <MESSAGE value="deca's commit" />
     <MESSAGE value="commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="commit" />
+    <MESSAGE value="deca's commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="deca's commit" />
     <option name="UPDATE_GROUP_BY_PACKAGES" value="true" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="568" column="32" lean-forward="true" selection-start-line="568" selection-start-column="32" selection-end-line="568" selection-end-column="32" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/inventory/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2601">
-          <caret line="158" column="105" selection-start-line="158" selection-start-column="105" selection-end-line="158" selection-end-column="105" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7055">
-          <caret line="448" column="38" lean-forward="true" selection-start-line="448" selection-start-column="38" selection-end-line="448" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="11" column="71" selection-start-line="11" selection-start-column="71" selection-end-line="11" selection-end-column="71" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/production/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1530">
-          <caret line="97" column="5" selection-start-line="97" selection-start-column="5" selection-end-line="97" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2414">
-          <caret line="155" column="13" selection-start-line="155" selection-start-column="13" selection-end-line="155" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="31" column="7" selection-start-line="31" selection-start-column="7" selection-end-line="31" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/production/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2890">
-          <caret line="175" column="99" selection-start-line="175" selection-start-column="99" selection-end-line="175" selection-end-column="99" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/inventory/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2601">
@@ -952,13 +900,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/accounts/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1387">
-          <caret line="88" column="38" selection-start-line="88" selection-start-column="38" selection-end-line="88" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/statement_of_accounts.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
@@ -985,13 +926,6 @@
         <state relative-caret-position="-255" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="15" column="62" lean-forward="true" selection-start-line="15" selection-start-column="62" selection-end-line="15" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_detail.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="935">
@@ -1010,20 +944,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="265">
           <caret line="27" column="20" lean-forward="true" selection-start-line="27" selection-start-column="20" selection-end-line="27" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="50" lean-forward="true" selection-start-line="6" selection-start-column="50" selection-end-line="6" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="89" column="32" lean-forward="true" selection-start-line="89" selection-end-line="90" />
         </state>
       </provider>
     </entry>
@@ -1053,13 +973,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/inventory/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="66" column="3" lean-forward="true" selection-start-line="66" selection-start-column="3" selection-end-line="66" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/client_payment_list.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
@@ -1081,34 +994,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/production/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="66" column="33" lean-forward="true" selection-start-line="66" selection-start-column="33" selection-end-line="66" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/production/forms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="85" column="66" lean-forward="true" selection-start-line="85" selection-start-column="66" selection-end-line="85" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/production/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="15" column="75" lean-forward="true" selection-start-line="15" selection-start-column="75" selection-end-line="15" selection-end-column="75" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/inventory/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="102" column="22" lean-forward="true" selection-start-line="102" selection-start-column="22" selection-end-line="102" selection-end-column="22" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1123,26 +1012,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="99">
           <caret line="73" column="26" lean-forward="true" selection-start-line="73" selection-start-column="26" selection-end-line="73" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/sales/models.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-955">
-          <caret line="201" column="37" lean-forward="true" selection-start-line="201" selection-start-column="37" selection-end-line="201" selection-end-column="37" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bigapple/inventory/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="555" column="23" selection-start-line="555" selection-start-column="23" selection-end-line="555" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#58#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1180,12 +1049,145 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/inventory/templates/inventory/inventory_count_form.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="629">
+          <caret line="37" column="14" lean-forward="true" selection-start-line="37" selection-start-column="14" selection-end-line="37" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/inventory/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="133" column="19" selection-start-line="133" selection-start-column="19" selection-end-line="133" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/client_demand_forecast_details.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1734">
+          <caret line="201" column="37" selection-start-line="201" selection-start-column="37" selection-end-line="201" selection-end-column="37" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/accounts/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="164">
+          <caret line="149" column="41" selection-start-line="149" selection-start-column="29" selection-end-line="149" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/production/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="25" column="14" lean-forward="true" selection-start-line="25" selection-start-column="14" selection-end-line="25" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/template_form.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#style#0;n#table#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/templates/sales/clientPO_form.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-799">
+          <caret line="10" column="13" lean-forward="true" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/forms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="29" column="35" lean-forward="true" selection-start-line="29" selection-start-column="35" selection-end-line="29" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/production/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1020">
+          <caret line="116" column="33" lean-forward="true" selection-start-line="116" selection-start-column="33" selection-end-line="116" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/sales/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="10" column="71" lean-forward="true" selection-start-line="10" selection-start-column="71" selection-end-line="10" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/bigapple/sales/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="558" column="58" lean-forward="true" selection-start-line="558" selection-start-column="58" selection-end-line="558" selection-end-column="58" />
+        <state relative-caret-position="306">
+          <caret line="387" column="22" lean-forward="true" selection-start-line="387" selection-start-column="22" selection-end-line="387" selection-end-column="22" />
           <folding>
             <element signature="e#0#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/inventory/templates/inventory/materials_requisition_list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="30" lean-forward="true" selection-start-line="30" selection-end-line="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/inventory/templates/inventory/purchase_requisition_details.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/inventory/templates/inventory/materials_requisition_form.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-126">
+          <caret line="12" column="25" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/inventory/templates/inventory/inventory_item_list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="23" column="43" lean-forward="true" selection-start-line="23" selection-start-column="43" selection-end-line="23" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/inventory/templates/inventory/materials_requisition_details.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-41">
+          <caret line="38" column="147" selection-start-line="38" selection-start-column="147" selection-end-line="38" selection-end-column="147" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/inventory/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="248">
+          <caret line="103" lean-forward="true" selection-start-line="103" selection-end-line="103" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bigapple/inventory/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="52" column="39" lean-forward="true" selection-start-line="52" selection-start-column="39" selection-end-line="52" selection-end-column="39" />
+          <folding>
+            <element signature="e#0#58#0" expanded="true" />
           </folding>
         </state>
       </provider>

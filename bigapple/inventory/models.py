@@ -12,7 +12,7 @@ class Inventory(models.Model):
         ('Machine Parts', 'Machine Parts'),
         ('Ink', 'Ink'),
         ('Cylinder', 'Cylinder'),
-        ('Others', 'Others'),
+        ('Others', 'Others')
     )
 
     RM_TYPES = (

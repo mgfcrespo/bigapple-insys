@@ -2,44 +2,44 @@
 
 {% block content %}
 <h3 class="ui dividing header">{{ title }}</h3>
-    <div class = "ui container">
-        <form class="ui form" action = "#" method="POST" role="form">
-            <h2 class="ui dividing header">{{ title }}</h2>
-            {% csrf_token %}
+<div>
+    <form class="ui form" action = "#" method="POST" role="form">
+        {% csrf_token %}
+        <div class="three fields">
             <div class="field">
                 <label>Item</label>
                 {{ form.item }}
             </div>
-            <div class="fields">
-                <div class="field">
-                    <label>Item Type</label>
-                    {{ form.item_type }}
-                </div>
-                <div class="field">
-                    <label>Material Type (for Raw Materials)</label>
-                    {{ form.rm_type }}
-                </div>
-                <div class="field">
-                    <label>Quantity</label>
-                    {{ form.quantity }}
-                </div>
-                <div class="field">
-                <label>Price per unit</label>
-                {{ form.price }}
-            </div>
-                <div class="field">
-                <label>Supplier</label>
-                {{ form.supplier }}
+            <div class="field">
+                <label>Item Type</label>
+                {{ form.item_type }}
             </div>
             <div class="field">
-                <label>Description</label>
-                {{ form.description }}
+                <label>Material Type (for Raw Materials)</label>
+                {{ form.rm_type }}
             </div>
-            </div>
-
-
-            <button class="medium ui basic green button" style="width: 100px" type="submit">Submit</button>
+        </div>
+        <div class="three fields">
+        <div class="field">
+            <label>Quantity</label>
+            {{ form.quantity }}
+        </div>
+            <div class="field">
+            <label>Price per unit</label>
+            {{ form.price }}
+        </div>
+            <div class="field">
+            <label>Supplier</label>
+            {{ form.supplier }}
+        </div>
+        </div>
+        <div class="field">
+            <label>Description</label>
+            {{ form.description }}
+        </div>
+            <button class="medium ui green button" style="width: 100px" type="submit">Submit</button>
+            <button class="medium ui yellow button" style="width: 100px" type="reset">Clear</button>
         </form>
-    </div>
+</div>
 
 {% endblock %}
