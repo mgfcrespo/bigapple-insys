@@ -16,7 +16,7 @@ from utilities import TimeSeriesForecasting
 from .forms import ClientPOFormItems
 from .forms import SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
 from .models import ClientItem, Client, SalesInvoice, ClientPayment, ProductionCost
-
+import pandas as pd
 
 #Forecasting imports
 #import numpy as np
@@ -632,24 +632,22 @@ def demand_forecast(request, id):
             if every.client_po_id == each.client_po.id:
                 items.append(every)
     cursor = connection.cursor()
-    query = 'SELECT po.date_issued, p.products FROM accounts_mgt_client c, production_mgt_joborder po, sales_mgt_clientitem poi, sales_product p WHERE' \
+    query = 'SELECT po.date_issued, poi.quantity FROM accounts_mgt_client c, production_mgt_joborder po, sales_mgt_clientitem poi, sales_product p WHERE ' \
             'p.id = poi.products_id AND poi.client_po_id = po.id AND po.client_id = '+str(id)
 
-    get_data = cursor.execute(query)
-    df = DataFrame(get_data.fetchall())
-    df.columns = get_data.keys()
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
     forecast_decomposition = []
     forecast_ses = []
     forecast_hwes = []
     forecast_moving_average = []
     forecast_arima = []
 
-    for x in items:
-        forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
-        forecast_ses.append(TimeSeriesForecasting.forecast_ses(df))
-        forecast_hwes.append(TimeSeriesForecasting.forecast_hwes(df))
-        forecast_moving_average.append(TimeSeriesForecasting.forecast_moving_average(df))
-        forecast_arima.append(TimeSeriesForecasting.forecast_arima(df))
+    forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
+    forecast_ses.append(TimeSeriesForecasting.forecast_ses(df))
+    forecast_hwes.append(TimeSeriesForecasting.forecast_hwes(df))
+    forecast_moving_average.append(TimeSeriesForecasting.forecast_moving_average(df))
+    forecast_arima.append(TimeSeriesForecasting.forecast_arima(df))
 
     context = {
         'forecast_decomposition': forecast_decomposition,

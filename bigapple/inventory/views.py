@@ -537,29 +537,37 @@ def load_items(request):
     return render(request, 'inventory/dropdown_supplier_item.html', {'supplier_po' : supplier_po, 'items': items})
 
 #INVENTORY FORECASTING
-def inventory_forecast(request):
+def inventory_forecast_list(request):
 
     inventory = Inventory.objects.all()
+
+    context = {
+        'inventory' : inventory
+    }
+
+    return render(request, 'inventory/inventory_forecast.html', context)
+
+def inventory_forecast_details(request, id):
     cursor = connection.cursor()
     forecast_decomposition = []
     forecast_ses = []
     forecast_hwes = []
     forecast_moving_average = []
     forecast_arima = []
-    for x in inventory:
-        query = 'SELECT i.id, spoi.quantity, spo.date_issued FROM inventory_mgt_inventory i, inventory_mgt_supplierpo spo, inventory_mgt_supplierpoitems spoi where spoi.item_id = '+str(x.id)+' and spoi.supplier_po_id = spo.id'
 
-        cursor.execute(query)
-        df = pd.read_sql(query, connection)
-        #get_data = cursor.execute(query)
-        #df = DataFrame(get_data.fetchall())
-        #df.columns = get_data.keys()
+    query = 'SELECT spo.date_issued, spoi.quantity FROM inventory_mgt_inventory i, inventory_mgt_supplierpo spo, inventory_mgt_supplierpoitems spoi where spoi.item_id = ' + str(id) + ' and spoi.supplier_po_id = spo.id'
 
-        forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
-        forecast_ses.append(TimeSeriesForecasting.forecast_ses(df))
-        forecast_hwes.append(TimeSeriesForecasting.forecast_hwes(df))
-        forecast_moving_average.append(TimeSeriesForecasting.forecast_moving_average(df))
-        forecast_arima.append(TimeSeriesForecasting.forecast_arima(df))
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
+        # get_data = cursor.execute(query)
+        # df = DataFrame(get_data.fetchall())
+        # df.columns = get_data.keys()
+
+    forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
+    forecast_ses.append(TimeSeriesForecasting.forecast_ses(df))
+    forecast_hwes.append(TimeSeriesForecasting.forecast_hwes(df))
+    forecast_moving_average.append(TimeSeriesForecasting.forecast_moving_average(df))
+    forecast_arima.append(TimeSeriesForecasting.forecast_arima(df))
 
     context = {
         'forecast_decomposition': forecast_decomposition,
@@ -567,7 +575,7 @@ def inventory_forecast(request):
         'forecast_hwes': forecast_hwes,
         'forecast_moving_average': forecast_moving_average,
         'forecast_arima': forecast_arima,
-        'inventory' : inventory
     }
 
-    return render(request, 'inventory/inventory_forecast.html', context)
+    return render(request, 'inventory/inventory_forecast_details.html', context)
+
