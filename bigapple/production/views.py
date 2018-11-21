@@ -15,6 +15,9 @@ from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleFo
 from .forms import JODetailsForm
 from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
 from .models import Machine
+from plotly.offline import plot
+from plotly.graph_objs import Scatter
+
 
 
 # scheduling import
@@ -646,9 +649,6 @@ def production_schedule(request):
     query = 'SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id'
     cursor.execute(query)
     df = pd.read_sql(query, connection)
-    gantt = final_gantt.generate_overview_gantt_chart(df)
+    final_gantt.generate_overview_gantt_chart(df)
 
-    context = {
-        'gantt' : gantt
-    }
-    return render(request, 'production/production_schedule.html', context)
+    return render(request, 'production/production_schedule.html')
