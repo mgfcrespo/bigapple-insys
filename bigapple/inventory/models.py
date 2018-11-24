@@ -89,6 +89,10 @@ class SupplierPOItems(models.Model):
         return str(self.supplier_po) +' : ' + str(self.item)
 
 class MaterialRequisition(models.Model):
+    STATUS = (
+        ('Retrieved', 'Retrieved'),
+        ('Pending', 'Pending'),
+    )
 
     id = models.IntegerField(primary_key=True)
     datetime_issued = models.DateTimeField(auto_now_add=True)
@@ -96,6 +100,7 @@ class MaterialRequisition(models.Model):
     item = models.ForeignKey(Inventory, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     client_item = models.ForeignKey(ClientItem, on_delete=models.CASCADE)
+    status = models.CharField(choices=STATUS, max_length=200, null=True, blank=True)
 
     class Meta:
         db_table = 'inventory_mgt_materialrequisition'

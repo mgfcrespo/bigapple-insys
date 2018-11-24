@@ -4,27 +4,26 @@
 - time series decomposition
 BY MONTH, PROJECT 1 MONTH AHEAD
 """
-import datetime
-import warnings
-
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
+import numpy as np
+import datetime
+import matplotlib.pyplot as plt
 import statsmodels.api as sm
-from statsmodels.tsa.api import ExponentialSmoothing, SimpleExpSmoothing
-
+from statsmodels.tsa.api import ExponentialSmoothing, SimpleExpSmoothing, Holt
+import warnings
 warnings.filterwarnings("ignore")
 
 # create dataframe with relevant columns
 # aggregate at monthly/level
 # forecast functions takes df with date and qty column
 
+
 def aggregate_by_day(df):
     # TODO: CONVERT DATE FORMAT TO DATETIME FORMAT
     for i in range(0, len(df.index)):
-        df.iloc[i][0] = datetime.datetime.strptime(str(df.iloc[i][0]), "%Y-%m-%d")
+        df.iloc[i][0] = datetime.datetime.strptime(df.iloc[i][0], "%Y-%m-%d")
 
-    df.Timestamp = pd.to_datetime(df[df.columns[0]], format="%d-%m-%Y %H:%M")
+    df.Timestamp = pd.to_datetime(df[df.columns[0]], format='%d-%m-%Y %H:%M')
     df.index = df.Timestamp
     df = df.resample('D').mean()
     return df
@@ -139,5 +138,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-

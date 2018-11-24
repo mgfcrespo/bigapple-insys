@@ -44,10 +44,9 @@ def get_machine_type(i):
 
 # Creates html file of plotly gantt chart
 def chart(df, filename):
-    fig = ff.create_gantt(df, index_col='Resource', show_colorbar=True, group_tasks=True)
-    plot(fig, filename=filename, output_type='div')
-    print(fig)
-
+    fig = ff.create_gantt(df, index_col='Resource', show_colorbar=True, group_tasks=True, showgrid_x=True, showgrid_y=True)
+    # plot(fig, filename=filename, include_plotlyjs=False, output_type='div')
+    return plot(fig, filename=filename, include_plotlyjs=False, output_type='div')
 
 # Solves the job shop problem using OR-tools constraint solver, returns a dictionary with the solution
 def schedule(df, filename):
@@ -179,7 +178,7 @@ def schedule(df, filename):
                 start_list.append(get_start_time(current_time, collector.Value(0, t.StartExpr().Var())))
                 # Add finish time
                 finish_list.append(get_finish_time(current_time, collector.Value(0, t.EndExpr().Var())))
-
+            # print(resource_list)
             for j in range(0, seq_size):
                 temp_dict = {'Task': machine_list[i],
                              'Start': start_list.pop(0),
@@ -189,12 +188,12 @@ def schedule(df, filename):
                              }
                 plot_df.append(temp_dict)
 
-        chart(plot_df, filename)
+        return chart(plot_df, filename)
 
 
 # Generates gantt for all machine types
 def generate_overview_gantt_chart(df):
-    schedule(df, 'overview_gantt_chart.html')
+    return schedule(df, 'overview_gantt_chart.html')
 
 
 # Generates gantt for specific machine types

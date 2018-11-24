@@ -225,7 +225,8 @@ def supplier_rawmat_delete(request, id):
 '''
 # Material Requisition
 def materials_requisition_list(request):
-    mr = MaterialRequisition.objects.all()
+    mr = MaterialRequisition.objects.filter(status='Pending')
+
     context = {
         'title' :'Material Requisition List',
         'mr' : mr
@@ -257,7 +258,7 @@ def materials_requisition_details(request, id):
         'style' : style
     }
     return render(request, 'inventory/materials_requisition_details.html', context)
-'''
+
 def materials_requisition_approval(request, id):
     if request.session['session_position'] == "General Manager":
         template = 'general_manager_page_ui.html'
@@ -267,42 +268,24 @@ def materials_requisition_approval(request, id):
         template = 'line_leader_page_ui.html'
 
     mr = MaterialRequisition.objects.get(id=id) #get id of matreq
-    mri = MaterialRequisitionItems.objects.filter(matreq=mr) #get all items in matreq
     count = 0
-    #TODO Model is changed
     if request.POST:
-        for data in mri:
-            i = Inventory.objects.filter(item = data.item)# get Inventory Items 
-            for x in i:
-                print("MR items:",data.id, data.brand.item, data.quantity)
-                print("Inventory items:", x.id, x.item, x.quantity)
+        i = Inventory.objects.get(item = mr.item)# get Inventory Items
+        i.quantity -= mr.quantity
+        i.save()
 
-                if x.quantity >= data.quantity:
-                    count = count+1
+        mr.datetime_issued = datetime.now()
+        mr.status = "Retrieved"
+        mr.save()
 
-    print("MR items:", mri.count())
-    print("# of approved: ",count)
-
-    if mri.count() == count:
-        for data in mri:
-            i = Inventory.objects.filter(item = data.item) # get Inventory Items 
-            for x in i:
-                if x.quantity >= data.quantity:
-                    x.quantity = (x.quantity - data.quantity)
-                    mr.approval = True
-                    mr.status = "approved"
-                    mr.save()
-                    x.save()
-                    print(x.quantity)
-
-        messages.success(request, 'Material Requisitio has been approved!')
+        messages.success(request, 'Materials have been retrieved.')
 
     else:
         messages.warning(request, 'Insufficient Inventory!')
         return redirect('inventory:materials_requisition_details', id = mr.id)
     
     return redirect('inventory:materials_requisition_details', id = mr.id)
-
+'''
 def materials_requisition_form(request):
     # note:instance should be an object
     matreq_item_formset = inlineformset_factory(MaterialRequisition, MaterialRequisitionItems,
