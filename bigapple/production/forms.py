@@ -97,9 +97,9 @@ class CuttingScheduleForm(forms.ModelForm):
     )
 
     LINE = (
-        ('Line 1', 'Line 1'),
-        ('Line 2', 'Line 2'),
-        ('Line 3', 'Line 3')
+        (1, 'Line 1'),
+        (2, 'Line 2'),
+        (3, 'Line 3')
     )
 
     final = forms.BooleanField(initial=False, required=False)
@@ -117,6 +117,7 @@ class CuttingScheduleForm(forms.ModelForm):
     operator = forms.ModelChoiceField(queryset=Employee.objects.filter(position="Cutting"))
     datetime_in = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
     datetime_out = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
+    quantity = forms.IntegerField()
     line = forms.CharField(max_length=200, label='line', widget=forms.Select(choices=LINE))
     remarks = forms.CharField(widget=forms.Textarea(attrs={'rows': '3'}))
     machine = forms.ModelChoiceField(queryset=Machine.objects.all())

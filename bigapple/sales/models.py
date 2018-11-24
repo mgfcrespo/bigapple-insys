@@ -197,13 +197,13 @@ class ClientItem(models.Model):
         material_weight = 0
         material_cost = 0
         if self.products == "HDPE":
-            material_weight = 0.068
+            material_weight = 0.68
             material_cost = ProductionCost.objects.get(cost_type="HDPE_Materials")
         elif self.products == "LDPE":
-            material_weight = 0.066
+            material_weight = 0.66
             material_cost = ProductionCost.objects.get(cost_type="LDPE_Materials")
         else:
-            material_weight = 0.066
+            material_weight = 0.66
             material_cost = ProductionCost.objects.get(cost_type="PP_Materials")
 
         # Get the tens of order quantity (Sets quantity standard qty if order is below MOQ)
@@ -310,13 +310,22 @@ class SalesInvoice(models.Model):
         return date_due
 
     def calculate_days_overdue(self):
-        sales_invoice = SalesInvoice.objects.get(client=self.client)
-        overdue_sales_invoice = sales_invoice.get(SalesInvoice.status == 'Late')
-        overdue_sales_invoice = overdue_sales_invoice.order_by('date_issued')
+        sales_invoice = SalesInvoice.objects.filter(client=self.client)
+        overdue_sales_invoice = []
+        for x in sales_invoice:
+            if x.status == "Late":
+                overdue_sales_invoice.append(x)
+
+        overdue_sales_invoice = sales_invoice.order_by('date_issued')
         object = overdue_sales_invoice.first()
         issued_date = object.date_issued
 
-        return (issued_date - date.today()).days
+        if issued_date is not None:
+            diff = date.today() - issued_date
+
+            return diff.days
+        else:
+            return 0
 
     def save(self, *args, **kwargs):
         client = self.client
@@ -324,12 +333,17 @@ class SalesInvoice(models.Model):
         self.discount = client.discount
         self.net_vat = client.net_vat
         self.total_amount_computed = self.calculate_total_amount_computed()
-        if self.date_due is not None:
+        if self.date_due and self.date_issued is not None:
             self.date_due = self.calculate_date_due()
             self.days_passed = self.calculate_days_passed()
             self.days_overdue = self.calculate_days_overdue()
             if self.days_passed < 0:
                 self.status == 'Late'
+        else:
+            self.date_due = None
+            self.days_passed = None
+            self.days_overdue = None
+            self.date_issued = None
         super(SalesInvoice, self).save(*args, **kwargs)
 
 
@@ -382,8 +396,8 @@ class ClientPayment(models.Model):
     id = models.IntegerField(primary_key=True)
     payment = models.FloatField()
     payment_date = models.DateField()
-    old_balance = models.FloatField()
-    new_balance = models.FloatField()
+    old_balance = models.FloatField(null=True, blank=True)
+    new_balance = models.FloatField(null=True, blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE)
 
@@ -392,6 +406,11 @@ class ClientPayment(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+    def save(self, *args, **kwargs):
+        self.old_balance = self.invoice.amount_due
+        self.new_balance = self.old_balance - self.payment
+        super(ClientPayment, self).save(*args, **kwargs)
 
 
 class Supplier(models.Model):

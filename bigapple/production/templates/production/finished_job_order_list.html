@@ -1,17 +1,16 @@
 
 {% extends 'sidebar.html' %}
 {% block content %}
-
-<h3 class="ui dividing header">{{ title }}</h3>
+<html>
+<h3 class="ui dividing header">Finished Job Order Report</h3>
 
     <table class="ui celled padded table">
         <thead>
             <tr>
                 <th>Purchase Order ID</th>
-                <th>PO Number</th>
                 <th>Client</th>
-                <th>Items</th>
                 <th>Sales Invoice Issued</th>
+                <th>Dispatch Status</th>
 
             </tr>
         </thead>
@@ -19,14 +18,25 @@
             {% if object_list %}
                 {% for JobOrder in object_list %}
                 <tr>
-                    <td><a href="{% url 'sales:JO_details' JobOrder.id %}">{{ JobOrder }}</a></td>
-                    <td>{{ JobOrder.client_po }}</td>
-                    <td>{{ JobOrder.client_po.client }}</td>
-                    <td>{% for item in JobOrder.client_po.clientitems %}
-                    {{ item }}
+                    <td><a href="{% url 'production:job_order_details' JobOrder.id %}">{{ JobOrder.id }}</a></td>
+                    <td>{{ JobOrder.client }}</td>
+                    <td>{% for y in invoice %}
+                            {% if y.client_po_id == JobOrder.id %}
+                            <a href="{% url 'sales:sales_invoice_details' y.id %}">SI # {{ y.id }}</a> </td>
+                            {% endif %}
                         {% endfor %}
+                    <td>
+                        {% if JobOrder.status == "Ready for delivery" %}
+        <form method="post">
+                {% csrf_token %}
+
+                    <input type="submit" class="ui green basic button" value="Confirm Dispatch" id="confirm_btn" name="confirm_btn">
+
+            </form>
+                        {% else %}
+                        Already delivered
+                    {% endif %}
                     </td>
-                    <td> {{ JobOrder.client_po.SalesInvoice }} </td> #modify
                 </tr>
                 {% endfor %}
             {% else %}
@@ -35,7 +45,9 @@
             </td>
 			{% endif %}
 
+
         </tbody>
     </table>
 
 {% endblock %}
+</html>

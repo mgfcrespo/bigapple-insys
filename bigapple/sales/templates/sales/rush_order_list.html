@@ -9,8 +9,7 @@
                 <th>Purchase Order ID</th>
                 <th>Date Issued</th>
                 <th>Date Required</th>
-                <th>Lead Time</th>
-                <th>Items</th>
+                <th>Days Left to Accomplish</th>
             </tr>
         </thead>
         <tbody>
@@ -31,10 +30,6 @@
                 </td>
                 <td>
                     {{ rush_order.calculate_leadtime }}
-                </td>
-
-                <td>
-                    {{ rush_order.items }}
                 </td>
             </tr>
             {% endif %}

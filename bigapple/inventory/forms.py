@@ -115,7 +115,7 @@ class SupplierPOItemsForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SupplierPOItemsForm, self).__init__(*args, **kwargs)
-        self.fields['item'].queryset = Inventory.objects.none()
+        self.fields['item'].queryset = Inventory.objects.all()
 
         # if 'supplier_po.supplier' in self.data:
         #     try:

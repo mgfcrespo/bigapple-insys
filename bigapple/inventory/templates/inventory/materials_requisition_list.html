@@ -20,9 +20,20 @@
                         <a href="{% url 'inventory:materials_requisition_details' mr.id %}">{{ mr }}</a>
                     </td>
                     <td>{{ mr.datetime_issued }}</td>
-						<td class = "warning">
+					{% if mr.status == "Pending" %}
+					<td class = "warning">
 							<i class = "hourglass half icon">Pending</i>
-						</td>
+                    <br>
+							 <form method="post">
+                {% csrf_token %}
+
+                    <input type="submit" class="ui green basic button" value="Retrieve from Warehouse" id="confirm_btn" name="confirm_btn">
+
+            </form></td>
+						{% else %}
+                    <td>Retrieved</td>
+						{%endif%}
+
 				</tr>
 				{% endfor %}
 			{% else %}

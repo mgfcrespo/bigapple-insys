@@ -12,7 +12,7 @@ from inventory.forms import MaterialRequisitionForm
 from inventory.models import Inventory, Supplier, MaterialRequisition
 from production.forms import ClientPOForm
 from production.models import JobOrder
-from utilities import TimeSeriesForecasting
+from utilities import TimeSeriesForecasting, final_gantt
 from .forms import ClientPOFormItems
 from .forms import SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
 from .models import ClientItem, Client, SalesInvoice, ClientPayment, ProductionCost
@@ -201,8 +201,9 @@ def confirm_client_po(request, pk):
         for every in items:
             for x in material:
                 form = MaterialRequisitionForm(request.POST)
+
                 if form.is_valid():
-                    new_form = form.save(commit=False)
+                    new_form = form.save()
                     new_form.client_item = every
                     new_form.item = Inventory.objects.filter(rm_type=x).first()
                     new_form.quantity = every.quantity
@@ -214,8 +215,6 @@ def confirm_client_po(request, pk):
                     #matreq.save()
 
                 print(form)
-                if form.is_valid():
-                    form.save()
 
         return redirect('sales:po-list-view')
 
@@ -232,6 +231,7 @@ def confirm_client_po(request, pk):
 
 #Invoice List/Detail View
 def invoice_list_view(request):
+
     invoice = SalesInvoice.objects.filter(date_issued__isnull=False)
 
     if request.session['session_position'] == "Sales Coordinator":
@@ -289,17 +289,24 @@ def invoice_detail_view(request, pk, *args, **kwargs):
 def add_payment(request, pk, *args, **kwargs):
     form = ClientPaymentForm()
 
+    salesinvoice = SalesInvoice.objects.get(pk=pk)
+    client = Client.objects.get(id=salesinvoice.client_id)
+
     if request.method == "POST":
-            form = ClientPaymentForm(request.POST)
+        form = ClientPaymentForm(request.POST)
+
+        if form.is_valid():
             form = form.save()
             new_form = form.pk
 
-            salesinvoice = SalesInvoice.objects.get(pk=pk)
-            client = Client.objects.get(id = salesinvoice.client_id)
 
             payment = ClientPayment.objects.get(pk=new_form)
             payment.client = client
             payment.invoice = salesinvoice
+
+            form.client = client
+            form.invoice = salesinvoice
+            form.save()
 
             payment.old_balance = salesinvoice.amount_due
             salesinvoice.amount_due -= payment.payment
@@ -453,7 +460,7 @@ def create_client_po(request):
 
 #RUSH ORDER CRUD
 def rush_order_list(request):
-    rush_orders = JobOrder.objects.filter(rush_order = True)
+    rush_orders = JobOrder.objects.filter(rush_order = True).filter(status='Waiting')
 
     context = {
         'rush_orders' : rush_orders,
@@ -469,6 +476,7 @@ def rush_order_assessment(request, pk):
         rush_order.status = 'On Queue'
         rush_order.save()
     elif request.POST.get('deny_btn'):
+        rush_order.rush_order = 0
         rush_order.save()
 
     #credit status
@@ -489,23 +497,27 @@ def rush_order_assessment(request, pk):
         profit = 0
 
         profit += (1000 * (
-            every.calculate_price_per_piece()) - electricity.cost - (1600 / every.quantity) - \
+            every.calculate_price_per_piece()) - electricity.cost - (1600/every.quantity) - \
                    (300/every.quantity) - (
                                every.length * every.width * every.thickness * 10 )) / (
-                              every.length * every.width * every.thickness * 10)
+                              every.length * every.width * every.thickness * 10 )
 
 
     #matreq
     products = []
     material = []
     cylinder_count = 0
+    mat = None
+    i = None
     matreq = False
     for each in items:
         products.append(each.products)
         material.append(each.products.material_type)
+        i = each
         if each.printed:
             cylinder_count += 1
     for x in material:
+        mat = x
         try:
             inventory = Inventory.objects.filter(rm_type=x)
             for y in inventory:
@@ -520,14 +532,23 @@ def rush_order_assessment(request, pk):
 
     #TODO: Insert current job to generic schedule and show if other JOs will meet date_due
     #simulated sched
+    cursor = connection.cursor()
+    # TODO: Add condition making the query only include jobs that are NOT finished are NOT waiting.
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
+    df2 = pd.DataFrame([[pk, i.laminate, i.printed, mat]])
+    df.append(df2, ignore_index=True)
+    simulated_sched = final_gantt.generate_overview_gantt_chart(df)
 
     context = {
+        'client': client,
         'rush_order' : rush_order,
         'credit_status' : credit_status,
         'matreq' : matreq,
         'cylinder_count' : cylinder_count,
-        'profit': profit
-        #'simulated_sched' : simulated_sched
+        'profit': profit,
+        'simulated_sched' : simulated_sched
     }
 
     return render(request, 'sales/rush_order_assessment.html', context)

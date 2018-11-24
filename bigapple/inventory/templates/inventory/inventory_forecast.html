@@ -5,22 +5,105 @@
     <div class="ui container">
         <div class="ui grid two columns">
             <div class="column">
+                <h1 class="ui dividing header" style="padding-bottom: 7px;">Inventory Forecast</h1>
+                <div class="ui segment">
 
+                    <table class="ui striped table center aligned">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Item
+                                </th>
+                                <th>
+                                    RM Type
+                                </th>
+                                <th>
+                                    Quantity
+                                </th>
+                            </tr>
+                        </thead>
+                            {% for inventory in inventory %}
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {{i}}
+                                    </td>
+                                    <td>
+                                        {{i.rm_type}}
+                                    </td>
+                                    <td>
+                                        {{i.quantity}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                            {% endfor %}
+                    </table>
+
+                </div>
             </div>
             <div class="column">
                 <div>
                     <div class="ui very compact secondary menu">
-                        <a class="active item" data-tab="first">Time Series Decomposition</a>
-                        <a class="item" data-tab="second">Simple Exponential Smoothing</a>
-                        <a class="item" data-tab="third">Holt Winters Exponential Smoothing</a>
-                        <a class="item" data-tab="fourth">Moving Average</a>
-                        <a class="item" data-tab="fifth">ARIMA</a>
+                        <a class="active item" data-tooltip="Decomposition"data-tab="first" data-position="bottom center">Decomp</a>
+                        <a class="item" data-tooltip="Simple Exponential Smoothing" data-tab="second" data-position="bottom center">SES</a>
+                        <a class="item" data-tooltip="Holt Winters Exponential Smoothing" data-tab="third" data-position="bottom center">HWES</a>
+                        <a class="item" data-tooltip="Moving Average" data-tab="fourth" data-position="bottom center">Moving Average</a>
+                        <a class="item" data-tooltip="ARIMA" data-tab="fifth" data-position="bottom center">ARIMA</a>
                     </div>
                     <div class="ui active tab segment" data-tab="first">
-                        4
+
+                        <table class="ui striped table center aligned">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Date
+                                    </th>
+                                    <th>
+                                        Quantity
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for forecast_decomposition in forecast_decomposition %}
+                                <tr>
+                                    <td>
+
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+
                     </div>
                     <div class="ui tab segment" data-tab="second">
-                        5
+                        <table class="ui striped table center aligned">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Date
+                                    </th>
+                                    <th>
+                                        Quantity
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for forecast_ses in forecast_ses %}
+                                <tr>
+                                    <td>
+                                        {{forecast_ses}}
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
                     </div>
                     <div class="ui tab segment" data-tab="third">
                         6
@@ -33,6 +116,8 @@
                     </div>
                 </div>
             </div>
+
+
         </div>
     </div>
 

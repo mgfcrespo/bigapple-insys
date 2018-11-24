@@ -53,14 +53,14 @@
         </tbody>
     </table>
 
-    {% if clientconstant.payment_terms < client.creditstatus.calculate_days_overdue %}
+    {% if creditstatus == true %}
         <div class="ui negative icon message">
             <i class="times circle icon"></i>
             <div class="content"><div class="header">
                 Pending status
             </div>
             <p>
-                This client's credit status is {{ client.creditstatus.calculate_days_overdue }} days overdue.
+                This client's credit status is overdue.
             </p>
             </div>
         </div>
@@ -76,7 +76,6 @@
             </div>
         </div>
     {% endif %}
-
     {% if matreq %}
         <div class="ui positive icon message">
             <i class="check circle icon"></i>
@@ -120,5 +119,6 @@
             <!-- <button id="confirm" type = "submit" class="ui green basic button"  style="width: 200px;">Confirm</button> -->
         </div>
     </div>
+
 
 {% endblock %}
