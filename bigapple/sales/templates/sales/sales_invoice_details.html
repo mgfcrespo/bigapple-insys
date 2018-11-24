@@ -1,7 +1,7 @@
 {% extends 'sidebar.html' %}
 {% block content %}
 
-<h3 class="ui dividing header">Invoice for Purchase Order #{{pk}}</h3>
+<h3 class="ui dividing header">Invoice for {{ salesinvoice.client_po}}</h3>
 
 <table class="ui celled padded table">
         	<thead>
@@ -42,10 +42,6 @@
             <tr>
                 <th>Payment Terms</th>
                  <td> {{salesinvoice.payment_terms}}</td>
-          	</tr>
-            <tr>
-                <th>Days Passed</th>
-                 <td> {{salesinvoice.days_passed}}</td>
           	</tr>
             <tr>
                 <th>Total Paid</th>

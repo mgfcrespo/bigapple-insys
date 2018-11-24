@@ -64,6 +64,9 @@ class InventoryCountForm(ModelForm):
         fields = ('inventory', 'old_count', 'new_count', 'count_person')
 
     new_count = forms.IntegerField()
+
+    def __init__(self, *args, **kwargs):
+        super(InventoryCountForm, self).__init__(*args, **kwargs)
 '''
 class SupplierRawMaterialsForm(ModelForm):
     ITEM_TYPES = (
@@ -112,7 +115,7 @@ class SupplierPOItemsForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SupplierPOItemsForm, self).__init__(*args, **kwargs)
-        self.fields['item'].queryset = Inventory.objects.none()
+        self.fields['item'].queryset = Inventory.objects.all()
 
         # if 'supplier_po.supplier' in self.data:
         #     try:
@@ -129,6 +132,9 @@ class MaterialRequisitionForm(forms.ModelForm):
     class Meta:
         model = MaterialRequisition
         fields = ()
+
+    def __init__(self, *args, **kwargs):
+        super(MaterialRequisitionForm, self).__init__(*args, **kwargs)
 
 '''
 class PurchaseRequisitionForm(forms.ModelForm):

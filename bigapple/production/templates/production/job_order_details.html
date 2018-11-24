@@ -1,17 +1,28 @@
 {% extends 'sidebar.html' %}
 
 {% block content %}
-<h3 class="ui dividing header">{{ title }}</h3>
-<div class = "ui grid">
+<h3 class="ui dividing header">Job Order Details</h3>
     <div class="six wide tablet sixteen wide computer column">
         <form id = "myForm" class="ui form segment" action = "" method="POST" role="form">
             {% csrf_token %}
             <h2 class="ui header">JO #: {{ title }}</h2>
-            <div class = "field">
-                <label for="">Date Issued</label>
-                <span>{{ data.date_issued }}</span>
-                <label for="">Date Due</label>
-                <span>{{ data.date_required }}</span>
+            <div class = "four fields">
+                <div class="field">
+                    <label for="">Date Issued</label>
+                    <span>{{ data.date_issued }}</span>
+                </div>
+                <div class="field">
+                    <label>Date Due</label>
+                    <span>{{ data.date_required }}</span>
+                </div>
+                <div class = "field">
+                    <label for="">Total Amount</label>
+                    <span>{{ data.total_amount }}</span>
+                </div>
+                <div class = "field">
+                    <label for="">Status</label>
+                    <span id = "status">{{ data.status }}</span>
+                </div>
             </div>
             <div class="five fields">
                 <div class = "field">
@@ -41,36 +52,35 @@
                     {% endfor %}</span>
                 </div>
             </div>
-            <div class = "four fields">
-                    <div class = "field">
-                        <label for="">Total Amount</label>
-                        <span>{{ data.total_amount }}</span>
-                    </div>
-                    <div class = "field">
-                        <label for="">Status</label>
-                        <span id = "status">{{ data.status }}</span>
-                    </div>
-            </div>
             <div class="field">
                 <label for="">Remarks</label>
                 <span>{{ form.remarks }}</span>
             </div>
-            
+
             <button class="ui green basic button" type="submit">Edit</button>
         </form>
     </div>
-</div>
 
 <div class="ui top attached tabular menu">
-    <a class="active item" data-tab="first">Extrustion</a>
-    <a class="item" data-tab="second">Printing</a>
-    <a class="item" data-tab="third">Cutting</a>
+    <a class="active item" data-tab="first">Extrusion</a>
+       {% if x.printed == 1 and x.laminate == 1%}
+        <a class="item" data-tab="second">Printing</a>
+        <a class="item" data-tab="third">Laminating</a>
+
+        {% elif x.printed == 1 %}
+        <a class="item" data-tab="second">Printing</a>
+        {% elif x.laminate == 1 %}
+        <a class="item" data-tab="third">Laminating</a>
+        {% else %}
+        {% endif %}
+    <a class="item" data-tab="fourth">Cutting</a>
 </div>
+
 <div class="ui bottom attached active tab segment" data-tab="first">
      <!--Extrusion Schedule-->
     <div class="ui container" style = "font-size: 12px;">
         <h4 class="ui block inverted header">Extrusion Schedule</h4>
-        <table class="ui celled table">
+        <table class="ui striped table">
             <thead>
                 <th>Machine</th>
                 <th>Datetime In</th>
@@ -110,7 +120,7 @@
     <!--Printing Schedule-->
     <div class="ui container" style = "font-size: 12px;">
         <h4 class="ui block inverted header">Printing Schedule</h4>
-        <table class="ui celled table">
+        <table class="ui striped table">
             <thead>
                 <th>Machine</th>
                 <th>Datetime In</th>
@@ -137,10 +147,40 @@
     </div>
 </div>
 <div class="ui bottom attached tab segment" data-tab="third">
-    <!--Printing Schedule-->
+    <!--Laminating Schedule-->
+    <div class="ui container" style = "font-size: 12px;">
+        <h4 class="ui block inverted header">Laminating Schedule</h4>
+        <table class="ui striped table">
+            <thead>
+                <th>Machine</th>
+                <th>Datetime In</th>
+                <th>Datetime Out</th>
+                <th>Quantity</th>
+                <th>Starting Scrap</th>
+                <th>Laminating Scrap</th>
+                <th>Remarks</th>
+            </thead>
+            <tbody>
+                {% for l in laminating %}
+                <tr>
+                    <td>{{ l.machine }}</td>
+                    <td>{{ l.datetime_in }}</td>
+                    <td>{{ l.datetime_out }}</td>
+                    <td>{{ l.quantity }}</td>
+                    <td>{{ l.starting_scrap }}</td>
+                    <td>{{ l.laminating_scrap }}</td>
+                    <td>{{ l.remarks }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="ui bottom attached tab segment" data-tab="fourth">
+    <!--Cutting Schedule-->
     <div class="ui container" style = "font-size: 12px;">
         <h4 class="ui block inverted header">Cutting Schedule</h4>
-        <table class="ui celled table">
+        <table class="ui striped table">
             <thead>
                 <th>Machine</th>
                 <th>Datetime In</th>
@@ -172,7 +212,6 @@
         </table>
     </div>
 </div>
-
 
 <a href="{% url 'production:job_order_list' %}">Back</a>
 {% endblock %}

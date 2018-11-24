@@ -1,7 +1,23 @@
 {% extends 'sidebar.html' %}
 
-{% block content %}
+    {% block content %}
 
-    {{ gantt }}
+<div class="ui center aligned grid">
+    <div>
+        <h3 class="ui dividing header"> Overall Production Schedule</h3>
 
-{% endblock %}
+        <div class="ui center aligned">
+            <div class="ui buttons">
+                <a class="ui teal button" href="{% url 'production:extruder_machine_schedule' %}">Extruder Machine Schedule</a>
+                <a class="ui teal button" href="{% url 'production:printing_machine_schedule' %}">Printing Machine Schedule</a>
+                <a class="ui teal  button" href="{% url 'production:laminating_machine_schedule' %}">Laminating Machine Schedule</a>
+                <a class="ui teal button" href="{% url 'production:cutting_machine_schedule' %}">Cutting Machine Schedule</a>
+            </div>
+        </div>
+
+        <div style="height: 100%; width: 200%">
+            {{final_gantt|safe}}
+        </div>
+    </div>
+</div>
+    {% endblock %}

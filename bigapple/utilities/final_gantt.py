@@ -1,11 +1,11 @@
 # Import Python wrapper for or-tools constraint solver.
-import datetime
-
-import numpy as np
-import pandas as pd
-import plotly.figure_factory as ff
 from ortools.constraint_solver import pywrapcp
 from plotly.offline import plot
+# import plotly.offline
+import plotly.figure_factory as ff
+import numpy as np
+import pandas as pd
+import datetime
 
 '''
 Job Shop example from 
@@ -38,20 +38,25 @@ def get_finish_time(current, interval):
 
 
 def get_machine_type(i):
-    machine_dict = {0: 'Extruder', 1: 'Printer', 2: 'Laminator', 3: 'Cutter'}
+    machine_dict = {0: 'Extruder', 1: 'Printing', 2: 'Laminating', 3: 'Cutting'}
     return machine_dict.get(i)
 
 
+def get_processing_time(machine_type):
+    processing_time_dict = {'Extruder': 2, 'Printing': 5, 'Laminating': 1, 'Cutting': 4}
+    return processing_time_dict.get(machine_type)
+
+
 # Creates html file of plotly gantt chart
-def chart(df, filename):
-    fig = ff.create_gantt(df, index_col='Resource', show_colorbar=True, group_tasks=True)
-    plot(fig, filename=filename, output_type='div')
-    print(fig)
+def chart(task_list, filename):
+    fig = ff.create_gantt(task_list, index_col='Resource', show_colorbar=True, group_tasks=True, showgrid_y=True, showgrid_x=True)
+    # plot(fig, filename=filename)
+    return plot(fig, filename=filename, include_plotlyjs=False, output_type='div')
+    # print(fig)
 
 
 # Solves the job shop problem using OR-tools constraint solver, returns a dictionary with the solution
 def schedule(df, filename):
-    # Create the solver.
     solver = pywrapcp.Solver('jobshop')
 
     machines_count = 4  # Extrude, Print, (Laminate), Cut
@@ -74,7 +79,6 @@ def schedule(df, filename):
         else:
             machines.append([0, 3])
 
-    #TODO: Sinsinin ang processing times.
     processing_times = []
     for i in range(0, len(df.index)):
         # Include Printing and Laminating machine
@@ -149,14 +153,13 @@ def schedule(df, filename):
 
     # Solve the problem.
     # Arrays for plotly gantt chart
-    plot_df = []
+    plot_list = []
     machine_list = []
     start_list = []
     finish_list = []
     resource_list = []
     description_list = []
     current_time = np.datetime64(datetime.datetime.now())
-    disp_col_width = 10
 
     if solver.Solve(main_phase, [objective_monitor, collector]):
         for i in all_machines:
@@ -187,20 +190,49 @@ def schedule(df, filename):
                              'Resource': resource_list.pop(0),
                              'Description': description_list.pop(0)
                              }
-                plot_df.append(temp_dict)
+                plot_list.append(temp_dict)
 
-        chart(plot_df, filename)
+        if filename == 'specific':
+            return plot_list
+
+        else:
+            # print(plot_list)
+            return chart(plot_list, filename)
 
 
 # Generates gantt for all machine types
 def generate_overview_gantt_chart(df):
-    schedule(df, 'overview_gantt_chart.html')
+    return schedule(df, '/production_schedule.html')
 
 
 # Generates gantt for specific machine types
-def generate_specific_gantt_chart(df, machine_type):
+def generate_specific_gantt_chart(df, machines, machine_type):
     filename = machine_type + '_gantt_chart.html'
-    chart(df, filename)
+    task_list = schedule(df, 'specific')
+    plot_list = []
+    count = 0
+
+    # Loop through array find elements where Task == machine_type
+    for i in range(0, len(task_list)):
+        # reset count when all machines have been allocated
+        if count == len(machines):
+            count = 0
+
+        # make a new dict
+        if (task_list[i])['Task'] == machine_type:
+            curr_task = (task_list[i])
+            temp_dict = {'Task': machine_type + str(machines[count]),
+                         'Start': curr_task['Start'],
+                         'Finish': curr_task['Finish'],
+                         'Resource': curr_task['Resource'],
+                         'Description': curr_task['Description']
+                         }
+            plot_list.append(temp_dict)
+
+            count += 1
+
+    return chart(plot_list, filename)
+
 
 def main():
     data = {'id': [100, 101, 102],
@@ -208,7 +240,10 @@ def main():
             'printed': [1, 1, 0],
             'material_type': ['PP', 'PET', 'PP']}
     df = pd.DataFrame(data, index=[0, 1, 2])
-    generate_overview_gantt_chart(df)
+
+    # generate_overview_gantt_chart(df)
+    generate_specific_gantt_chart(df, ['000', '001'], machine_type='Extruder')
+
 
 if __name__ == '__main__':
     main()

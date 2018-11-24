@@ -52,7 +52,7 @@ def user_page_view(request):
         JobOrder_data = JobOrder.objects.all()
 
         JobOrder_data5 = JobOrder.objects.order_by('-id')[:5]
-        rush_order = JobOrder.objects.filter(rush_order=True).exclude(status='delivered')[:3]
+        rush_order = JobOrder.objects.filter(rush_order=True).order_by('date_required').exclude(status='delivered')[:3]
 
         LDPE = Inventory.objects.filter(rm_type='LDPE')
         LLDPE = Inventory.objects.filter(rm_type='LLDPE')
@@ -72,17 +72,19 @@ def user_page_view(request):
         status_delivered = JobOrder.objects.filter(status='Delivered').count()
         status_cancelled = JobOrder.objects.filter(status='Cancelled').count()
 
-        dateToday = datetime.now()
-
         thisYear = datetime.now().year
         lastYear = datetime.now().year-1
 
         thisMonth = datetime.now().month
 
         POs = JobOrder.objects.filter(date_issued__month=thisMonth, date_issued__year=thisYear).annotate(count=Count('id'))
+        POs_lastMonth = JobOrder.objects.filter(date_issued__month=thisMonth-1, date_issued__year=thisYear).annotate(count=Count('id'))
+
         POs_lastYear = JobOrder.objects.filter(date_issued__month=thisMonth, date_issued__year=lastYear).annotate(count=Count('id'))
+        POs_lastMonthlastYear = JobOrder.objects.filter(date_issued__month=thisMonth-1, date_issued__year=lastYear).annotate(count=Count('id'))
 
         context = {
+            'POs_lastMonth': POs_lastMonth,
             'thisMonth': thisMonth,
 
             'thisYear': thisYear,
@@ -90,6 +92,7 @@ def user_page_view(request):
 
             'POs': POs,
             'POs_lastYear': POs_lastYear,
+            'POs_lastMonthlastYear':POs_lastMonthlastYear,
 
             'LDPE': LDPE,
             'LLDPE': LLDPE,

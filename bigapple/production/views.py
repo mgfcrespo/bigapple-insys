@@ -11,15 +11,12 @@ from inventory.forms import MaterialRequisition
 from inventory.forms import MaterialRequisitionForm
 from sales.models import ClientItem, SalesInvoice
 from utilities import final_gantt
-from django.db import connection
-import pandas as pd
-
 from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm, LaminatingScheduleForm
 from .forms import JODetailsForm
 from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
 from .models import Machine
-
 from plotly.offline import plot
+from plotly.graph_objs import Scatter
 
 # scheduling import
 # Import Python wrapper for or-tools constraint solver.
@@ -353,8 +350,10 @@ def production_schedule(request):
   return render(request, 'production/production_schedule.html', context)
 
 '''
+
 def job_order_list(request):
-    data = JobOrder.objects.exclude(status='Delivered')
+    data = JobOrder.objects.exclude(status='Waiting').exclude(status='Ready for Delivery').exclude(status='Delivered')
+    items = ClientItem.objects.filter(client_po=data)
 
     if request.session['session_position'] == "General Manager":
         template = 'general_manager_page_ui.html'
@@ -363,6 +362,7 @@ def job_order_list(request):
     else:
         template = 'line_leader_page_ui.html'
     context = {
+        'items': items,
         'title': 'Job Order List',
         'data' : data,
         'template' : template
@@ -370,7 +370,7 @@ def job_order_list(request):
     return render (request, 'production/job_order_list.html', context)
 
 def job_order_details(request, id):
-
+		
     data = JobOrder.objects.get(id=id)
     items = ClientItem.objects.filter(client_po=data)
     form = JODetailsForm(request.POST or None)
@@ -394,15 +394,23 @@ def job_order_details(request, id):
       'extrusion': extrusion,
       'printing': printing,
       'cutting': cutting,
-      'laminating' : laminating
+      'laminating' : laminating,
+      'items' : items
     }
     return render(request, 'production/job_order_details.html', context)
 
 def finished_job_order_list_view(request):
-    object_list = JobOrder.objects.filter(status = 'Ready for delivery')
+    object_list = JobOrder.objects.filter(status='Ready for delivery' or 'Delivered')
+    invoice = SalesInvoice.objects.all()
+
+    for x in object_list:
+        if request.method == "POST":
+            x.status = "Delivered"
+            x.save()
 
     context = {
-        'object_list' : object_list
+        'object_list': object_list,
+        'invoice' : invoice
     }
 
     return render(request, 'production/finished_job_order_list.html', context)
@@ -420,11 +428,11 @@ def add_extruder_schedule(request, id):
             printed == True
             break
 
-    form = ExtruderScheduleForm(request.POST)
-
     if e.count == 0:
         data.status = 'Under Extrusion'
         data.save()
+
+    form = ExtruderScheduleForm(request.POST)
 
     if request.method == 'POST':
         data.status = 'Under Extrusion'
@@ -492,19 +500,18 @@ def add_printing_schedule(request, id):
     
     context = {
       'data': data,
-      'title' : data.job_order,
-      'form': form
+      'form': form,
+        'id': id
     }
     
     return render (request, 'production/add_printing_schedule.html', context)
 
 # CUTTING
 def add_cutting_schedule(request, id):
-		
     data = JobOrder.objects.get(id=id)
     form = CuttingScheduleForm(request.POST)
     invoice = SalesInvoice.objects.get(client_po = data)
-    client = invoice.client
+    client = data.client
 
     c = CuttingSchedule.objects.filter(job_order = data.id)
     c.job_order = id
@@ -526,16 +533,16 @@ def add_cutting_schedule(request, id):
             invoice.date_due = invoice.calculate_date_due()
             invoice.save()
 
-            client.outstanding_balance += invoice.amount_due
+            client.outstanding_balance += invoice.total_amount_computed
             client.save()
-      return redirect('production:job_order_details', id = data.id)
+        return redirect('production:job_order_details', id = data.id)
 
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Cutting')
     
     context = {
       'data': data,
-      'title' : data.job_order,
-      'form': form
+      'form': form,
+        'id' : id
     }
     
     return render (request, 'production/add_cutting_schedule.html', context)
@@ -567,8 +574,8 @@ def add_laminating_schedule(request, id):
 
     context = {
         'data': data,
-        'title': data.job_order,
-        'form': form
+        'form': form,
+        'id' : id
     }
 
     return render(request, 'production/add_laminating_schedule.html', context)
@@ -644,13 +651,74 @@ def jo_approval(request, id):
 #SCHEDULING
 def production_schedule(request):
     cursor = connection.cursor()
-    query = 'SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j,' \
-            'sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id'
+    #TODO: Add condition making the query only include jobs that are NOT finished are NOT waiting.
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
     cursor.execute(query)
     df = pd.read_sql(query, connection)
-    gantt = final_gantt.generate_overview_gantt_chart(df)
+    final_gantt.generate_overview_gantt_chart(df)
 
     context = {
-        'gantt': gantt
+        'final_gantt': final_gantt.generate_overview_gantt_chart(df)
     }
+
     return render(request, 'production/production_schedule.html', context)
+
+def extruder_machine_schedule(request):
+    cursor = connection.cursor()
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
+    machines = Machine.objects.filter(machine_type='Extruder').values('machine_id')
+
+    extruder_gantt = final_gantt.generate_specific_gantt_chart(df, machines, machine_type='Extruder')
+
+    context = {
+        'extruder_gantt': extruder_gantt
+    }
+
+    return render(request, 'production/extruder_machine_schedule.html', context)
+
+def printing_machine_schedule(request):
+    cursor = connection.cursor()
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
+    machines = Machine.objects.filter(machine_type='Printing').values('machine_id')
+
+    printing_gantt = final_gantt.generate_specific_gantt_chart(df, machines, machine_type='Printing')
+
+    context = {
+        'printing_gantt': printing_gantt
+    }
+
+    return render(request, 'production/printing_machine_schedule.html', context)
+
+def laminating_machine_schedule(request):
+    cursor = connection.cursor()
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
+    machines = Machine.objects.filter(machine_type='Laminating').values('machine_id')
+
+    laminating_gantt = final_gantt.generate_specific_gantt_chart(df, machines, machine_type='Laminating')
+
+    context = {
+        'laminating_gantt': laminating_gantt
+    }
+
+    return render(request, 'production/laminating_machine_schedule.html', context)
+
+def cutting_machine_schedule(request):
+    cursor = connection.cursor()
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
+    machines = Machine.objects.filter(machine_type='Cutting').values('machine_id')
+
+    cutting_gantt = final_gantt.generate_specific_gantt_chart(df, machines, machine_type='Cutting')
+
+    context = {
+        'cutting_gantt': cutting_gantt
+    }
+
+    return render(request, 'production/cutting_machine_schedule.html', context)

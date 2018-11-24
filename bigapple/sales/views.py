@@ -5,18 +5,18 @@ from django.db.models import aggregates
 from django.forms import inlineformset_factory
 from django.shortcuts import redirect
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse, Http404
+from pandas import DataFrame
 
 from accounts.models import Employee
 from inventory.forms import MaterialRequisitionForm
 from inventory.models import Inventory, Supplier, MaterialRequisition
 from production.forms import ClientPOForm
-from django.db import connection
-from pandas import DataFrame
 from production.models import JobOrder
-from utilities import TimeSeriesForecasting
+from utilities import TimeSeriesForecasting, final_gantt
 from .forms import ClientPOFormItems
 from .forms import SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
 from .models import ClientItem, Client, SalesInvoice, ClientPayment, ProductionCost
+import pandas as pd
 
 #Forecasting imports
 #import numpy as np
@@ -50,7 +50,7 @@ def supplier_list(request):
     supplier = Supplier.objects.all()
     context = {
         'title': 'Supplier List',
-        'supplier': supplier
+        'supplier' : supplier 
     }
     return render (request, 'sales/supplier_list.html', context)
 
@@ -168,6 +168,7 @@ def confirm_client_po(request, pk):
     client = clientpo.client
     items = ClientItem.objects.filter(client_po = clientpo)
 
+    #matreq determinant
     products = []
     material = []
     cylinder_count = 0
@@ -191,6 +192,8 @@ def confirm_client_po(request, pk):
             inventory = None
             matreq = False
 
+
+    #matreq form
     if request.method == "POST":
         clientpo.status = "On Queue"
         clientpo.save()
@@ -198,22 +201,25 @@ def confirm_client_po(request, pk):
         for every in items:
             for x in material:
                 form = MaterialRequisitionForm(request.POST)
-                form.client_item = every
-                form.item = Inventory.objects.filter(rm_type=x).first()
-                form = form.save()
-                matreq = MaterialRequisition.objects.get(id = form.pk)
-                matreq.client_item = every
-                matreq.item = Inventory.objects.filter(rm_type=x).first()
-                matreq.save()
+
+                if form.is_valid():
+                    new_form = form.save()
+                    new_form.client_item = every
+                    new_form.item = Inventory.objects.filter(rm_type=x).first()
+                    new_form.quantity = every.quantity
+                    new_form.save()
+
+                    #matreq = MaterialRequisition.objects.get(id = new_form.pk)
+                    #matreq.client_item = every
+                    #matreq.item = Inventory.objects.filter(rm_type=x).first()
+                    #matreq.save()
 
                 print(form)
-                if form.is_valid():
-                    form.save()
 
-        return redirect('sales:clientPO_list')
+        return redirect('sales:po-list-view')
+
 
     context = {
-        'inventory': inventory,
         'clientpo': clientpo,
         'pk' : pk,
         'client' : client,
@@ -225,6 +231,7 @@ def confirm_client_po(request, pk):
 
 #Invoice List/Detail View
 def invoice_list_view(request):
+
     invoice = SalesInvoice.objects.filter(date_issued__isnull=False)
 
     if request.session['session_position'] == "Sales Coordinator":
@@ -249,7 +256,6 @@ def invoice_detail_view(request, pk, *args, **kwargs):
 
     salesinvoice = SalesInvoice.objects.get(pk=pk)
     form = ClientPaymentForm()
-    payments = ClientPayment.objects.filter(invoice=salesinvoice)
 
     try:
         salesinvoice = SalesInvoice.objects.get(pk=pk)
@@ -283,17 +289,24 @@ def invoice_detail_view(request, pk, *args, **kwargs):
 def add_payment(request, pk, *args, **kwargs):
     form = ClientPaymentForm()
 
+    salesinvoice = SalesInvoice.objects.get(pk=pk)
+    client = Client.objects.get(id=salesinvoice.client_id)
+
     if request.method == "POST":
-            form = ClientPaymentForm(request.POST)
+        form = ClientPaymentForm(request.POST)
+
+        if form.is_valid():
             form = form.save()
             new_form = form.pk
 
-            salesinvoice = SalesInvoice.objects.get(pk=pk)
-            client = Client.objects.get(id = salesinvoice.client_id)
 
             payment = ClientPayment.objects.get(pk=new_form)
             payment.client = client
             payment.invoice = salesinvoice
+
+            form.client = client
+            form.invoice = salesinvoice
+            form.save()
 
             payment.old_balance = salesinvoice.amount_due
             salesinvoice.amount_due -= payment.payment
@@ -375,8 +388,8 @@ def create_client_po(request):
         client_id = request.session['session_userid']
         current_client = Client.objects.get(id=client_id)
         form.client = current_client
+        form.sales_agent = current_client.sales_agent
         form.save()
-
         '''
         #check if client has overdue balance
         credit_status = ClientCreditStatus.objects.get(client_id = current_client)
@@ -447,11 +460,10 @@ def create_client_po(request):
 
 #RUSH ORDER CRUD
 def rush_order_list(request):
-    rush_orders = JobOrder.objects.filter(rush_order = True).exclude(status="Delivered")
+    rush_orders = JobOrder.objects.filter(rush_order = True).filter(status='Waiting')
 
     context = {
         'rush_orders' : rush_orders,
-        'title': 'Rush Order List'
     }
 
     return render (request, 'sales/rush_order_list.html', context)
@@ -464,6 +476,7 @@ def rush_order_assessment(request, pk):
         rush_order.status = 'On Queue'
         rush_order.save()
     elif request.POST.get('deny_btn'):
+        rush_order.rush_order = 0
         rush_order.save()
 
     #credit status
@@ -482,26 +495,29 @@ def rush_order_assessment(request, pk):
     for every in items:
         price = every.calculate_price_per_piece() * every.quantity
         profit = 0
-        profit += (1000 * (
-            every.calculate_price_per_piece()) - electricity.cost - every.calculate_price_per_piece().printing_cost - \
-                   every.calculate_price_per_piece().laminating_cost - (
-                               every.length * every.width * every.thickness * every.calculate_price_per_piece().material_weight \
-                               * every.calculate_price_per_piece().material_cost.cost)) / (
-                              every.length * every.width * every.thickness * every.calculate_price_per_piece().material_weight)
 
-    #profit =
+        profit += (1000 * (
+            every.calculate_price_per_piece()) - electricity.cost - (1600/every.quantity) - \
+                   (300/every.quantity) - (
+                               every.length * every.width * every.thickness * 10 )) / (
+                              every.length * every.width * every.thickness * 10 )
+
 
     #matreq
     products = []
     material = []
     cylinder_count = 0
+    mat = None
+    i = None
     matreq = False
     for each in items:
         products.append(each.products)
         material.append(each.products.material_type)
+        i = each
         if each.printed:
             cylinder_count += 1
     for x in material:
+        mat = x
         try:
             inventory = Inventory.objects.filter(rm_type=x)
             for y in inventory:
@@ -514,15 +530,25 @@ def rush_order_assessment(request, pk):
             inventory = None
             matreq = False
 
+    #TODO: Insert current job to generic schedule and show if other JOs will meet date_due
     #simulated sched
+    cursor = connection.cursor()
+    # TODO: Add condition making the query only include jobs that are NOT finished are NOT waiting.
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
+    df2 = pd.DataFrame([[pk, i.laminate, i.printed, mat]])
+    df.append(df2, ignore_index=True)
+    simulated_sched = final_gantt.generate_overview_gantt_chart(df)
 
     context = {
+        'client': client,
         'rush_order' : rush_order,
         'credit_status' : credit_status,
         'matreq' : matreq,
         'cylinder_count' : cylinder_count,
-        'profit': profit
-        #'simulated_sched' : simulated_sched
+        'profit': profit,
+        'simulated_sched' : simulated_sched
     }
 
     return render(request, 'sales/rush_order_assessment.html', context)
@@ -630,27 +656,25 @@ def demand_forecast(request, id):
             if every.client_po_id == each.client_po.id:
                 items.append(every)
     cursor = connection.cursor()
-    query = 'SELECT po.date_issued, p.products FROM accounts_mgt_client c, production_mgt_joborder po, sales_mgt_clientitem poi, sales_product p WHERE' \
+    query = 'SELECT po.date_issued, poi.quantity FROM accounts_mgt_client c, production_mgt_joborder po, sales_mgt_clientitem poi, sales_product p WHERE ' \
             'p.id = poi.products_id AND poi.client_po_id = po.id AND po.client_id = '+str(id)
 
-    get_data = cursor.execute(query)
-    df = DataFrame(get_data.fetchall())
-    df.columns = get_data.keys()
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
     forecast_decomposition = []
-    forecast_ses = []
+    forecast_ses = TimeSeriesForecasting.forecast_ses(df)
     forecast_hwes = []
     forecast_moving_average = []
     forecast_arima = []
 
-    for x in items:
-        forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
-        forecast_ses.append(TimeSeriesForecasting.forecast_ses(df))
-        forecast_hwes.append(TimeSeriesForecasting.forecast_hwes(df))
-        forecast_moving_average.append(TimeSeriesForecasting.forecast_moving_average(df))
-        forecast_arima.append(TimeSeriesForecasting.forecast_arima(df))
+    #forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
+    #forecast_ses.append(TimeSeriesForecasting.forecast_ses(df))
+    #forecast_hwes.append(TimeSeriesForecasting.forecast_hwes(df))
+    #forecast_moving_average.append(TimeSeriesForecasting.forecast_moving_average(df))
+    #forecast_arima.append(TimeSeriesForecasting.forecast_arima(df))
 
     context = {
-        'forecast_decomposition': forecast_decomposition,
+        #'forecast_decomposition': forecast_decomposition,
         'forecast_ses': forecast_ses,
         'forecast_hwes': forecast_hwes,
         'forecast_moving_average': forecast_moving_average,
@@ -659,4 +683,3 @@ def demand_forecast(request, id):
     }
 
     return render(request, 'sales/client_demand_forecast_details.html', context)
-

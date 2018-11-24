@@ -12,9 +12,9 @@
         Review Purchase Orders
     </a>
 
-    <a href="{% url 'sales:client_payment_list' %}" class="item">
+    <a href="{% url 'sales:sales_invoice_list' %}" class="item">
         <i class="file alternate icon"></i>
-        Account Balance
+        Your Sales Invoices
     </a>
 </div>
 
@@ -74,10 +74,6 @@
                         <i class="money bill alternate outline icon"></i>
                         Sales Invoices
                     </a>
-                    <a href="{% url 'sales:client_payment_list' %}" class="item">
-                        <i class="credit card outline icon"></i>
-                        Client Payments
-                    </a>
                     <a href="{% url 'sales:statement_of_accounts' %}" class="item">
                         <i class="file alternate icon"></i>
                         Statement of Accounts
@@ -105,19 +101,7 @@
                 </a>
                 <a href="{% url 'production:finished_job_order_list' %}" class="item">
                     <i class="check icon"></i>
-                    Finished Job Orders
-                </a>
-                <a href="" class="item">
-                    <i class="cogs icon"></i>
-                    Machine Schedule
-                </a>
-                <a href="" class="item">
-                    <i class="male icon"></i>
-                    Employee Schedule
-                </a>
-                <a href="" class="item">
-                    <i class="box icon"></i>
-                    Materials Schedule
+                    Finished Job Order Report
                 </a>
             </div>
         </div>
@@ -185,10 +169,6 @@
                     <i class="money bill alternate outline icon"></i>
                     Sales Invoices
                 </a>
-                <a href="{% url 'sales:client_payment_list' %}" class="item">
-                    <i class="credit card outline icon"></i>
-                    Client Payments
-                </a>
                 <a href="{% url 'sales:statement_of_accounts' %}" class="item">
                     <i class="file alternate icon"></i>
                     Statement of Accounts
@@ -215,7 +195,7 @@
                 </a>
                 <a href="{% url 'production:finished_job_order_list' %}" class="item">
                     <i class="check icon"></i>
-                    Finished Job Orders
+                    Finished Job Order Report
                 </a>
             </div>
         </div>
@@ -229,7 +209,7 @@
                 <i class="warehouse icon"></i>
                 Raw Materials Inventory
             </a>
-            <a href="" class="item">
+            <a href="{% url 'inventory:inventory_forecast' %}" class="item">
                 <i class="chart line icon"></i>
                 Inventory Forecast
             </a>
@@ -288,18 +268,6 @@
         <i class="calendar alternate outline icon"></i>
         Production Schedule
     </a>
-    <a href="" class="item">
-        <i class="cogs icon"></i>
-        Machine Schedule
-    </a>
-    <a href="" class="item">
-        <i class="box icon"></i>
-        Materials Schedule
-    </a>
-    <a href="" class="item">
-        <i class="calendar icon"></i>
-        Worker Schedule
-    </a>
     <a href="{% url 'production:job_order_list' %}" class="item">
         <i class="edit outline icon"></i>
         Job Orders
@@ -346,10 +314,6 @@
 
 <!-- Credit And Collection Personnel -->
 <div id= "credit_collection_sidebar" style="display: none;">
-    <a href="{% url 'sales:client_payment_list' %}" class="item">
-        <i class="credit card outline icon"></i>
-        Client Payments
-    </a>
     <a href="{% url 'sales:sales_invoice_list' %}" class="item">
         <i class="money bill alternate outline icon"></i>
         Sales Invoices

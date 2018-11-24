@@ -10,11 +10,11 @@ from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, Employee
 from .models import MaterialRequisition, InventoryCount
 from .forms import SupplierPOItemsForm, InventoryForm, SupplierPOForm, InventoryCountForm
 from .forms import MaterialRequisitionForm
+from sales.models import ClientItem
 from datetime import datetime, date
 
 from utilities import TimeSeriesForecasting
 import pandas as pd
-
 from pandas import DataFrame
 
 
@@ -85,6 +85,9 @@ def inventory_count_form(request, id):
         #Get session user id
         employee_id = request.session['session_userid']
         current_employee = Employee.objects.get(id=employee_id)
+        form.count_person = current_employee
+        form.old_count = data.quantity
+        form.inventory = data
 
         if form.is_valid():
             #i = data
@@ -227,6 +230,17 @@ def supplier_rawmat_delete(request, id):
 # Material Requisition
 def materials_requisition_list(request):
     mr = MaterialRequisition.objects.all()
+
+    for x in mr:
+        if request.method == "POST":
+            x.status = "Retrieved"
+            x.save()
+            i = Inventory.objects.get(item=x.item)  # get Inventory Items
+            i.quantity -= x.quantity
+            i.save()
+
+            messages.success(request, 'Materials have been retrieved.')
+
     context = {
         'title' :'Material Requisition List',
         'mr' : mr
@@ -234,31 +248,19 @@ def materials_requisition_list(request):
     return render (request, 'inventory/materials_requisition_list.html', context)
 
 def materials_requisition_details(request, id):
-    count = 0
     mr = MaterialRequisition.objects.get(id=id) #get MR
+    item = mr.client_item
 
     style = "ui teal message"
-
-    for data in mr:
-        i = Inventory.objects.filter(item = data.item)# get Inventory Items 
-        for x in i:
-            if x.quantity >= data.quantity:
-                count = count+1
-    
-    if mr.count() == count:
-        style = "ui green message"
-    else:
-        style = "ui red message"
-
-    mr = MaterialRequisition.objects.get(id=id)
 
     context = {
         'mr' : mr,
         'title' : mr,
-        'style' : style
+        'style' : style,
+        'item' : item
     }
     return render(request, 'inventory/materials_requisition_details.html', context)
-'''
+
 def materials_requisition_approval(request, id):
     if request.session['session_position'] == "General Manager":
         template = 'general_manager_page_ui.html'
@@ -268,42 +270,24 @@ def materials_requisition_approval(request, id):
         template = 'line_leader_page_ui.html'
 
     mr = MaterialRequisition.objects.get(id=id) #get id of matreq
-    mri = MaterialRequisitionItems.objects.filter(matreq=mr) #get all items in matreq
     count = 0
-    #TODO Model is changed
     if request.POST:
-        for data in mri:
-            i = Inventory.objects.filter(item = data.item)# get Inventory Items 
-            for x in i:
-                print("MR items:",data.id, data.brand.item, data.quantity)
-                print("Inventory items:", x.id, x.item, x.quantity)
+        i = Inventory.objects.get(item = mr.item)# get Inventory Items
+        i.quantity -= mr.quantity
+        i.save()
 
-                if x.quantity >= data.quantity:
-                    count = count+1
+        mr.datetime_issued = datetime.now()
+        mr.status = "Retrieved"
+        mr.save()
 
-    print("MR items:", mri.count())
-    print("# of approved: ",count)
-
-    if mri.count() == count:
-        for data in mri:
-            i = Inventory.objects.filter(item = data.item) # get Inventory Items 
-            for x in i:
-                if x.quantity >= data.quantity:
-                    x.quantity = (x.quantity - data.quantity)
-                    mr.approval = True
-                    mr.status = "approved"
-                    mr.save()
-                    x.save()
-                    print(x.quantity)
-
-        messages.success(request, 'Material Requisitio has been approved!')
+        messages.success(request, 'Materials have been retrieved.')
 
     else:
         messages.warning(request, 'Insufficient Inventory!')
         return redirect('inventory:materials_requisition_details', id = mr.id)
     
     return redirect('inventory:materials_requisition_details', id = mr.id)
-
+'''
 def materials_requisition_form(request):
     # note:instance should be an object
     matreq_item_formset = inlineformset_factory(MaterialRequisition, MaterialRequisitionItems,
@@ -447,6 +431,7 @@ def supplierPO_form(request):
 
     if request.method == "POST":
         form = SupplierPOForm(request.POST)
+
         #Set ClientPO.client from session user
         #form.fields['client'].initial = Client.objects.get(id = request.session['session_userid'])
         message = ""
@@ -465,14 +450,15 @@ def supplierPO_form(request):
                     form.save()
 
                 formset_items = SupplierPOItems.objects.filter(id = new_form)
-                formset_items_rm = Inventory.objects.filter(id = id)
-                formset_items.price = formset_items_rm.price 
+                #formset_items_rm = Inventory.objects.filter(id = id)
+                #formset_items.price = formset_items_rm.price
 
                 formset_item_total = formset_items.aggregate(sum=aggregates.Sum('total_price'))['sum'] or 0
 
                 totalled_supplierpo = SupplierPO.objects.get(id=new_form)
-                totalled_supplierpo.total_amount = formset_item_total
+                totalled_supplierpo.total_amount = float(formset_item_total)
                 totalled_supplierpo.save()
+
                 message = "PO successfully created"
 
             else:
@@ -482,8 +468,7 @@ def supplierPO_form(request):
             message = "Form is not valid"
 
 
-        #todo change index.html. page should be redirected after successful submission
-        return render(request, 'index.html',
+        return render(request, 'inventory/supplierPO_list.html',
                               {'message': message}
                               )
     else:
@@ -508,13 +493,16 @@ def supplierPO_form_test(request):
     #   'form': form,
     # }
     
-    return render(request, 'inventory/supplierPO_form.html', {'formset':supplierpo_item_formset(), 'form': SupplierPOForm})
+    return render (request, 'inventory/supplierPO_form.html',
+                              {'formset':supplierpo_item_formset(),
+                               'form': SupplierPOForm}
+                              )
 
 def supplierPO_list(request):
     mr = SupplierPO.objects.all()
     context = {
-        'title':'Supplier PO List',
-        'mr': mr
+        'title' :'Supplier PO List',
+        'mr' : mr
     }
     return render (request, 'inventory/supplierPO_list.html', context)
 
@@ -534,36 +522,41 @@ def load_items(request):
     items = Inventory.objects.filter(supplier_id=id).order_by('item')
     return render(request, 'inventory/dropdown_supplier_item.html', {'supplier_po' : supplier_po, 'items': items})
 
-#INVENTORY FORECASTING
+
 def inventory_forecast(request):
 
-    inventory = Inventory.objects.all()
+    i = Inventory.objects.all().order_by('supplier')
     cursor = connection.cursor()
-    forecast_decomposition = []
+    #forecast_decomposition = []
     forecast_ses = []
     forecast_hwes = []
     forecast_moving_average = []
     forecast_arima = []
-    for x in inventory:
-        query = 'SELECT i.id, spoi.quantity, spo.date_issued FROM inventory_mgt_inventory i, inventory_mgt_supplierpo spo, inventory_mgt_supplierpoitems spoi where spoi.item_id = '+str(x.id)+' and spoi.supplier_po_id = spo.id'
+
+
+    for x in i :
+        query = 'SELECT spo.date_issued, spoi.quantity FROM inventory_mgt_inventory i, inventory_mgt_supplierpo spo, ' \
+                'inventory_mgt_supplierpoitems spoi where spoi.item_id = ' + str(x.id) + \
+                ' and spoi.supplier_po_id = spo.id'
 
         cursor.execute(query)
         df = pd.read_sql(query, connection)
-        #df.columns = get_data.keys()
+        # get_data = cursor.execute(query)
+        # df = DataFrame(get_data.fetchall())
+        # df.columns = get_data.keys()
 
-        forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
+        #forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
         forecast_ses.append(TimeSeriesForecasting.forecast_ses(df))
         forecast_hwes.append(TimeSeriesForecasting.forecast_hwes(df))
         forecast_moving_average.append(TimeSeriesForecasting.forecast_moving_average(df))
         forecast_arima.append(TimeSeriesForecasting.forecast_arima(df))
 
     context = {
-        'forecast_decomposition': forecast_decomposition,
+        'i': i,
+        #'forecast_decomposition': forecast_decomposition,
         'forecast_ses': forecast_ses,
         'forecast_hwes': forecast_hwes,
         'forecast_moving_average': forecast_moving_average,
         'forecast_arima': forecast_arima,
-        'inventory' : inventory
     }
-
     return render(request, 'inventory/inventory_forecast.html', context)

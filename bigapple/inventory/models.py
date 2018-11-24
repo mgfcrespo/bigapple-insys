@@ -51,19 +51,21 @@ class InventoryCount(models.Model):
 
 class SupplierPO(models.Model):
     id = models.IntegerField(primary_key=True)
-    total_amount = models.FloatField()
-    date_issued = models.DateField()
+    total_amount = models.FloatField(null=True, blank=True)
+    date_issued = models.DateField(auto_now_add=True)
     delivery_date = models.DateField()
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
 
     class Meta:
-
         db_table = 'inventory_mgt_supplierpo'
 
     def __str__(self):
         lead_zero = str(self.id).zfill(5)
         supplier_po = '#%s' % (lead_zero)
         return supplier_po
+
+    def save(self, *args, **kwargs):
+        super(SupplierPO, self).save(*args, **kwargs)
 
 class SupplierPOItems(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -89,6 +91,10 @@ class SupplierPOItems(models.Model):
         return str(self.supplier_po) +' : ' + str(self.item)
 
 class MaterialRequisition(models.Model):
+    STATUS = (
+        ('Retrieved', 'Retrieved'),
+        ('Pending', 'Pending'),
+    )
 
     id = models.IntegerField(primary_key=True)
     datetime_issued = models.DateTimeField(auto_now_add=True)
@@ -96,6 +102,7 @@ class MaterialRequisition(models.Model):
     item = models.ForeignKey(Inventory, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     client_item = models.ForeignKey(ClientItem, on_delete=models.CASCADE)
+    status = models.CharField(default='Pending', choices=STATUS, max_length=200, null=True, blank=True)
 
     class Meta:
         db_table = 'inventory_mgt_materialrequisition'

@@ -21,7 +21,7 @@ warnings.filterwarnings("ignore")
 def aggregate_by_day(df):
     # TODO: CONVERT DATE FORMAT TO DATETIME FORMAT
     for i in range(0, len(df.index)):
-        df.iloc[i][0] = datetime.datetime.strptime(df.iloc[i][0], "%Y-%m-%d")
+        df.iloc[i][0] = datetime.datetime.strptime(str(df.iloc[i][0]), "%Y-%m-%d")
 
     df.Timestamp = pd.to_datetime(df[df.columns[0]], format='%d-%m-%Y %H:%M')
     df.index = df.Timestamp

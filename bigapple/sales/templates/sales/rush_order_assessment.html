@@ -1,45 +1,84 @@
 {% extends "sidebar.html" %}
 {% block content %}
 
+<h3 class="ui dividing header">Rush Order Assessment</h3>
+    <table class="ui stripped table center aligned">
+        <thead>
+        <tr>
+            <th class="one wide"> Purchase Order # </th>
+            <th class="two wide">Estimated Profit</th>
+            <th class="three wide"></th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ rush_order.id }}</td>
+                <td>{{ profit }}</td>
+                <td>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="ui buttons">
 
-<div class="ui segment">
-
-    <div class="">
-            <h4>
-                Credit Status
-            </h4>
-            <p>
-                {{ credit_status }}
-            </p>
-            <br>
-            <h4>
-                Profit
-            </h4>
-            <p>
-                {{ profit }}
-            </p>
-            <br>
-            <h4>
-                Materials Requirement
-            </h4>
-            <p>
-                {{ matreq }}
-            </p>
-            <br>
-            <div>
-                Production Schedule
+                            <input type="submit" class="ui green button" style="width:100px;" value="Approve" name="approve_btn">
+                            <input type="submit" class="ui red button" style="width:100px;" value="Deny" name="deny_btn">
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    {% if creditstatus == true %}
+        <div class="ui negative icon message">
+            <i class="times circle icon"></i>
+            <div class="content"><div class="header">
+                Pending status
             </div>
+            <p>
+                This client's credit status is overdue.
+            </p>
+            </div>
+        </div>
+    {% else %}
+        <div class="ui positive icon message">
+            <i class="check circle icon"></i>
+            <div class="content"><div class="header">
+                Cleared
+            </div>
+            <p>
+                This client's status is cleared.
+            </p>
+            </div>
+        </div>
+    {% endif %}
+    {% if matreq %}
+        <div class="ui positive icon message">
+            <i class="check circle icon"></i>
+            <div class="content">
+                <div class="header">
+                    Material requirements met
+                </div>
+                <p>
+                   The material requirements for this order are met by the inventory stock.
+                </p>
+            </div>
+        </div>
+    {% else %}
+        <div class="ui negative icon message">
+            <i class="times circle icon"></i>
+            <div class="content">
+                <div class="header">
+                    Material requirements not met
+                </div>
+                <p>
+                    There are not enough materials in inventory stock to accommodate this order.<br>
+                    Click <a href="{% url 'inventory:supplierPO_form' %}" style="color: red;">here</a> to replenish the inventory.
+                </p>
+            </div>
+        </div>
+    {% endif %}
 
-    </div>
+<div style="height: 100%; width: 200%">
+            {{simulated_sched|safe}}
+        </div>
 
-</div>
-
-                            <form method="post">
-                            <input type="submit" class="ui green basic button" value="Approve" name="approve_btn">
-                            </form>
-
-<br>
-                            <form method="post">
-                            <input type="submit" class="ui red basic button" value="Deny" name="deny_btn">
-                            </form>
 {% endblock %}

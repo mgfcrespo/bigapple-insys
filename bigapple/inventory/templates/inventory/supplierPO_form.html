@@ -1,27 +1,45 @@
 {% extends 'sidebar.html' %}
 {% block content %}
-
 <h3 class="ui dividing header">Supplier Purchase Order</h3>
 
-    <div class="ui container">
-        <form id="myForm" method="post" enctype="multipart/form-data" novalidate>
+<form id="myForm" class="ui form" action="{% url 'inventory:supplierPO_form' %}" method="post" enctype="multipart/form-data">
 
-                {% csrf_token %}
-                {% include 'inventory/template_form.html' %}
+<div>
 
-                <div class="two fields">
-                    <div class="field">
-                        <label>Delivery Date</label>
-                        {{ form.delivery_date}}
-                    </div>
-                </div>
 
-                {% include 'inventory/template_formset.html' %}
+    {% csrf_token %}
+    {% include 'inventory/template_form.html' %}
+</div>
+<table class = "ui striped table center aligned">
+    <thead>
+    <tr>
+        <th class="four wide">Item</th>
+        <th class="two wide">Quantity</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for form in formset %}
 
-            {{formset.management_form}}
-            <button type="submit" class ="btn btn-success">Submit</button>
-        </form>
-    </div>
+        <tr id="{{ form.prefix }}-row" class="formset_class">
+            {% if form.instance.pk %}
+                {{ form.DELETE }}
+            {% endif %}
+            <td>{{form.item}}</td>
+            <td>{{form.quantity}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="2">
+            </th>
+        </tr>
+    </tfoot>
+</table>
+
+
+<button type="submit" class="ui small green button" onclick="return confirm('Are you sure?')">Submit</button>
+</form>
 
 {% endblock %}
 

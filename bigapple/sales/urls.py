@@ -14,7 +14,7 @@ urlpatterns = [
 			#sales_invoice urls
 			path('sales-invoice-list/', views.invoice_list_view, name='sales_invoice_list'),
 			path('sales-invoice-details/<int:pk>/', views.invoice_detail_view, name='sales_invoice_details'),
-			path('sales-invoice-details/<int:pk>', views.invoice_detail_view, name='add_payment_form'),
+			path('sales-invoice-details/<int:pk>/', views.invoice_detail_view, name='add_payment_form'),
 			path('sales-statement-of-accounts/', views.statement_of_accounts_list_view, name='statement_of_accounts'),
 
 			#client credit urls
@@ -41,4 +41,8 @@ urlpatterns = [
 			path('employee-list/', views.employee_list, name='employee_list'),
 			path('employee-edit/<int:id>/', views.employee_edit, name='employee_edit'),
 			path('employee-delete/<int:id>/', views.employee_delete, name='employee_delete'),
+
+			#demand forecast
+			path('client-demand-forecast/', views.demand_list, name='demand_list'),
+			path('client-demand-forecast/<int:id>/', views.demand_forecast, name='demand_forecast_details'),
 ];

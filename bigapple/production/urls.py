@@ -10,9 +10,15 @@ urlpatterns = [
         #Job Order
         path('job-order-list/', views.job_order_list, name='job_order_list'),
         path('job-order-details/<int:id>', views.job_order_details, name='job_order_details'),
-        path('finished-job-order-list', views.finished_job_order_list_view, name='finished_job_order_list'),
+        path('finished-job-order-list/', views.finished_job_order_list_view, name='finished_job_order_list'),
         path('add-extruder-schedule/<int:id>', views.add_extruder_schedule, name='add_extruder_schedule'),
         path('add-printing-schedule/<int:id>', views.add_printing_schedule, name='add_printing_schedule'),
         path('add-cutting-schedule/<int:id>', views.add_cutting_schedule, name='add_cutting_schedule'),
         path('add-laminating-schedule/<int:id>', views.add_laminating_schedule, name='add_laminating_schedule'),
+
+        path('extruder-machine-schedule/', views.extruder_machine_schedule, name='extruder_machine_schedule'),
+        path('printing-machine-schedule/', views.printing_machine_schedule, name='printing_machine_schedule'),
+        path('laminating-machine-schedule/', views.laminating_machine_schedule, name='laminating_machine_schedule'),
+        path('cutting-machine-schedule/', views.cutting_machine_schedule, name='cutting_machine_schedule'),
+
 ];
