@@ -40,7 +40,6 @@ class Employee(models.Model):
 
 
     class Meta:
-
         db_table = 'accounts_mgt_employee'
 
     @property
@@ -77,8 +76,8 @@ class Client(models.Model):
     accounts = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
     class Meta:
-
         db_table = 'accounts_mgt_client'
+
     @property
     def full_name(self):
         "Returns the person's full name."
@@ -93,7 +92,6 @@ class AgentClientRel(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
 
     class Meta:
-
         db_table = 'accounts_mgt_agentclientrel'
 
 

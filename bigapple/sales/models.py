@@ -114,7 +114,6 @@ class Product(models.Model):
     prod_price = models.FloatField()
     constant = models.FloatField()
     description = models.CharField('description', max_length=200)
-    pass
 
     def __str__(self):
         return str(self.products)
@@ -125,6 +124,9 @@ class Product(models.Model):
         else:
             self.constant = 30
         super(Product, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'sales_mgt_product'
 
 
 class ProductionCost(models.Model):
@@ -243,12 +245,6 @@ class ClientItem(models.Model):
             self.price_per_piece = Decimal(0.0)
         super(ClientItem, self).save(*args, **kwargs)
 
-        '''
-    def calculate_materials_requirement(self):
-        
-        '''
-
-
 class SalesInvoice(models.Model):
     STATUS = (
         ('Open', 'Open'),
@@ -322,7 +318,6 @@ class SalesInvoice(models.Model):
 
         if issued_date is not None:
             diff = date.today() - issued_date
-
             return diff.days
         else:
             return 0

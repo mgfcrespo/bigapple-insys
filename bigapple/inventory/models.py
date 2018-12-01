@@ -49,6 +49,12 @@ class InventoryCount(models.Model):
     date_counted = models.DateField(blank=True, null=True)
     count_person = models.ForeignKey(Employee, on_delete=models.CASCADE)
 
+    class Meta:
+        db_table = 'inventory_mgt_inventorycount'
+
+    def __str__(self):
+        return str(self.inventory)
+
 class SupplierPO(models.Model):
     id = models.IntegerField(primary_key=True)
     total_amount = models.FloatField(null=True, blank=True)
@@ -76,7 +82,6 @@ class SupplierPOItems(models.Model):
     item = models.ForeignKey(Inventory, on_delete=models.CASCADE)
 
     class Meta:
-
         db_table = 'inventory_mgt_supplierpoitems'
 
     def calculate_total_price(self): 

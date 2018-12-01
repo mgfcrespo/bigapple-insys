@@ -19,47 +19,22 @@ class Machine(models.Model):
         ('Laminating', 'Laminating')
     )
 
+    MACHINE_STATE = (
+        ('OK', 'OK'),
+        ('Defective', 'Defective'),
+        ('Under Maintenance', 'Under Maintenance')
+
+    )
+
     machine_type = models.CharField('machine_type', choices=MACHINE_TYPE, max_length=200, default='not specified')
     machine_id = models.IntegerField(primary_key=True)
-    state = models.CharField(max_length=45)
+    state = models.CharField('machine_type', choices=MACHINE_STATE, max_length=200, default='not specified')
 
     class Meta:
         db_table = 'production_mgt_machine'
 
     def __str__(self):
         return str(self.machine_id)
-
-    '''
-    def machine_name(self):
-        return str(self.machine_type + " Machine #" + self.machine_number)
-    '''
-
-'''
-class MachineState(models.Model):
-    machine = models.ForeignKey(Machine, on_delete=models.CASCADE, related_name='machine')
-    state = models.IntegerField('state', default=0)
-
-'''
-# class WorkerSchedule(models.Model):
-#     worker = models.ForeignKey(Employee, on_delete=models.CASCADE)
-#     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
-#     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-#     working_date = models.DateTimeField('working_date', auto_now_add=True, blank=True)
-#
-#     def __str__(self):
-#         return self.worker.full_name
-#
-# class MachineSchedule(models.Model):
-#     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
-#     job_task = models.CharField('job_task', max_length=200, default='none', blank=True)
-#     client_po = models.ForeignKey(ClientPO, on_delete=models.CASCADE, null=True)
-#     shift = models.CharField('shift', choices=SHIFTS, max_length=200, default='not specified')
-#     working_date = models.DateField('working_date', auto_now_add=True, blank=True)
-
-
-#    def __str__(self):
-#        return self.machine.machine_type +' M'+ str(self.machine.machine_number) +' : ' + str(self.client_po)
-
 
 class JobOrder(models.Model):
     STATUS = (
