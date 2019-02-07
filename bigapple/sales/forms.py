@@ -11,7 +11,7 @@ from accounts.models import Client, Employee
 class DateInput(forms.DateInput):
     input_type = 'date'
 
-class ClientPOFormItems(ModelForm):
+class ClientPOFormItems(forms.ModelForm):
     client_po = forms.CharField(label='')
     laminate = forms.BooleanField(initial=True, required=False)
     printed = forms.BooleanField(initial=True, required=False)
@@ -55,7 +55,7 @@ class ClientPOForm2(ModelForm):
             self.fields['other_info'].required = False
             self.fields['other_info'].label = "Other Info"
 '''
-class ClientPaymentForm(ModelForm):
+class ClientPaymentForm(forms.ModelForm):
     class Meta:
         model = ClientPayment
         fields = ('payment', 'payment_date')

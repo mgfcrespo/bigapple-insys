@@ -103,7 +103,6 @@ class MachineSchedule(models.Model):
 '''
 
 class ExtruderSchedule(models.Model):
-    index = models.IntegerField(primary_key=True)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
     shift = models.IntegerField(blank=True, null=True)
@@ -134,7 +133,6 @@ class ExtruderSchedule(models.Model):
         super(ExtruderSchedule, self).save(*args, **kwargs)
 
 class PrintingSchedule(models.Model):
-    index = models.IntegerField(primary_key=True)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
     shift = models.IntegerField(blank=True, null=True)
@@ -165,7 +163,6 @@ class PrintingSchedule(models.Model):
         return str(self.time_out) + ' : ' + str(self.day_out)
 
 class CuttingSchedule(models.Model):
-    index = models.IntegerField(primary_key=True)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
     shift = models.IntegerField(blank=True, null=True)
@@ -183,7 +180,6 @@ class CuttingSchedule(models.Model):
     #item = models.ForeignKey(ClientItem, on_delete=models.CASCADE)
 
     class Meta:
-
         db_table = 'production_mgt_cuttingschedule'
 
     def __str__(self):
@@ -197,7 +193,6 @@ class CuttingSchedule(models.Model):
         return str(self.time_out) + ' : ' + str(self.day_out)
 
 class LaminatingSchedule(models.Model):
-    index = models.IntegerField(primary_key=True)
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE)
     operator = models.ForeignKey(Employee, on_delete=models.CASCADE)
     shift = models.IntegerField(blank=True, null=True)
@@ -212,5 +207,4 @@ class LaminatingSchedule(models.Model):
     #item = models.ForeignKey(ClientItem, on_delete=models.CASCADE)
 
     class Meta:
-
         db_table = 'production_mgt_laminatingschedule'

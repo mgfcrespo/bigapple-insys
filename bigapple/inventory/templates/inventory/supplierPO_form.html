@@ -2,7 +2,7 @@
 {% block content %}
 <h3 class="ui dividing header">Supplier Purchase Order</h3>
 
-<form id="myForm" class="ui form" action="{% url 'inventory:supplierPO_form' %}" method="post" enctype="multipart/form-data">
+<form id="myForm" class="ui form" action="{% url 'inventory:supplierPO_form' %}" method="POST" enctype="multipart/form-data">
 
 <div>
 
@@ -36,6 +36,8 @@
         </tr>
     </tfoot>
 </table>
+
+            {{formset.management_form}}
 
 
 <button type="submit" class="ui small green button" onclick="return confirm('Are you sure?')">Submit</button>

@@ -108,7 +108,6 @@ class Product(models.Model):
         ('PET', 'Polyethylene terephthalate')
     )
 
-    id = models.IntegerField(primary_key=True)
     material_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, null=True, blank=True)
     products = models.CharField('products', max_length=300)
     prod_price = models.FloatField()
@@ -162,7 +161,6 @@ class ClientItem(models.Model):
         ('Bottom Seal Single', 'Bottom Seal Single'),
     )
 
-    id = models.IntegerField(primary_key=True)
     laminate = models.IntegerField()
     printed = models.IntegerField()
     width = models.FloatField()
@@ -236,13 +234,13 @@ class ClientItem(models.Model):
         return price_per_piece
 
     def save(self, *args, **kwargs):
-        if self.products is not None:
-            price_per_piece = self.calculate_price_per_piece()
-            self.price_per_piece = price_per_piece
-            self.item_price = price_per_piece * self.quantity
-        else:
-            self.item_price = Decimal(0.0)
-            self.price_per_piece = Decimal(0.0)
+        #if self.products is not None:
+        price_per_piece = self.calculate_price_per_piece()
+        self.price_per_piece = price_per_piece
+        self.item_price = price_per_piece * self.quantity
+        #else:
+        #    self.item_price = Decimal(0.0)
+        #    self.price_per_piece = Decimal(0.0)
         super(ClientItem, self).save(*args, **kwargs)
 
 class SalesInvoice(models.Model):
@@ -253,7 +251,6 @@ class SalesInvoice(models.Model):
         ('Cancelled', 'Cancelled'),
     )
 
-    id = models.IntegerField(primary_key=True)
     date_issued = models.DateField(null=True, blank=True)
     date_due = models.DateField(null=True, blank=True)
     total_amount = models.FloatField()
@@ -388,7 +385,6 @@ class ClientCreditStatus(models.Model):
 
 
 class ClientPayment(models.Model):
-    id = models.IntegerField(primary_key=True)
     payment = models.FloatField()
     payment_date = models.DateField()
     old_balance = models.FloatField(null=True, blank=True)
@@ -409,7 +405,6 @@ class ClientPayment(models.Model):
 
 
 class Supplier(models.Model):
-    id = models.IntegerField(primary_key=True)
     company_name = models.CharField(max_length=45)
     first_name = models.CharField(max_length=45)
     last_name = models.CharField(max_length=45)

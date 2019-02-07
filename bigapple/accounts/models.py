@@ -25,7 +25,6 @@ class Employee(models.Model):
 
     )
 
-    id = models.IntegerField(primary_key=True)
     first_name = models.CharField(max_length=45)
     last_name = models.CharField(max_length=45)
     address = models.CharField(max_length=45)
@@ -57,7 +56,6 @@ class Employee(models.Model):
 '''
 
 class Client(models.Model):
-    id = models.IntegerField(primary_key=True)
     first_name = models.CharField(max_length=45)
     last_name = models.CharField(max_length=45)
     company = models.CharField(max_length=45)
@@ -87,7 +85,6 @@ class Client(models.Model):
         return self.full_name
 
 class AgentClientRel(models.Model):
-    index = models.IntegerField(primary_key=True)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
 

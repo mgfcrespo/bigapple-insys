@@ -79,24 +79,23 @@ def inventory_item_delete(request, id):
 def inventory_count_form(request, id):
     data = Inventory.objects.get(id=id)
     form = InventoryCountForm(request.POST)
-    
-    if request.method == 'POST':
 
-        #Get session user id
+    if request.method == 'POST':
         employee_id = request.session['session_userid']
         current_employee = Employee.objects.get(id=employee_id)
-        form.count_person = current_employee
-        form.old_count = data.quantity
-        form.inventory = data
-
         if form.is_valid():
             #i = data
             #item = i #item previously counted
             #print(item)
             #if item.exists():
               #counted = i.latest('time')#get latest
-            form.save()
-            form = form.pk
+            new_form = form.save(commit=False)
+            new_form.count_person = current_employee
+            new_form.old_count = data.quantity
+            new_form.inventory = data
+            new_form.date_counted = date.today()
+            new_form.save()
+            form_id = new_form.pk
             #new_form = new_form.pk
             #form_instance = item #get current form
 
@@ -105,11 +104,12 @@ def inventory_count_form(request, id):
             #new_form.save()
             #else:
             #form.save()
-            count = InventoryCount.objects.get(id=form)
-            count.inventory = data
-            count.old_count = data.quantity
-            count.count_person = current_employee
-            count.save()
+            #count = InventoryCount.objects.get(id=form_id)
+            #count.inventory = data
+            #count.old_count = data.quantity
+            #count.new_count = request.POST.get('new_count')
+            #count.count_person = current_employee
+            #count.save()
 
         data.quantity = request.POST.get('new_count')
         data.save()
@@ -424,14 +424,11 @@ def purchase_requisition_form(request):
 '''
 
 # Supplier PO
-
 def supplierPO_form(request):
-  #note:instance should be an object
     supplierpo_item_formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm, extra=1, can_delete=True)
 
+    form = SupplierPOForm(request.POST)
     if request.method == "POST":
-        form = SupplierPOForm(request.POST)
-
         #Set ClientPO.client from session user
         #form.fields['client'].initial = Client.objects.get(id = request.session['session_userid'])
         message = ""
@@ -456,7 +453,7 @@ def supplierPO_form(request):
                 formset_item_total = formset_items.aggregate(sum=aggregates.Sum('total_price'))['sum'] or 0
 
                 totalled_supplierpo = SupplierPO.objects.get(id=new_form)
-                totalled_supplierpo.total_amount = float(formset_item_total)
+                totalled_supplierpo.total_amount = formset_item_total
                 totalled_supplierpo.save()
 
                 message = "PO successfully created"
@@ -469,11 +466,12 @@ def supplierPO_form(request):
 
 
         return render(request, 'inventory/supplierPO_list.html',
-                              {'message': message}
+                              {'message': message, 'formset': supplierpo_item_formset,
+                               'form': SupplierPOForm}
                               )
     else:
         return render(request, 'inventory/supplierPO_form.html',
-                              {'formset':supplierpo_item_formset(),
+                              {'formset': supplierpo_item_formset,
                                'form': SupplierPOForm}
                               )
 

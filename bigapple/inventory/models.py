@@ -29,7 +29,6 @@ class Inventory(models.Model):
     item_type = models.CharField('item_type', choices=ITEM_TYPES, max_length=200, default='Not specified', null=True, blank=True)
     rm_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, default='Not specified', null=True,
                                blank=True)
-    id = models.IntegerField(primary_key=True)
     item = models.CharField(max_length=45)
     description = models.CharField(max_length=45, blank=True, null=True)
     quantity = models.IntegerField()
@@ -56,7 +55,6 @@ class InventoryCount(models.Model):
         return str(self.inventory)
 
 class SupplierPO(models.Model):
-    id = models.IntegerField(primary_key=True)
     total_amount = models.FloatField(null=True, blank=True)
     date_issued = models.DateField(auto_now_add=True)
     delivery_date = models.DateField()
@@ -74,7 +72,6 @@ class SupplierPO(models.Model):
         super(SupplierPO, self).save(*args, **kwargs)
 
 class SupplierPOItems(models.Model):
-    id = models.IntegerField(primary_key=True)
     price = models.FloatField()
     quantity = models.FloatField()
     total_price = models.FloatField()
@@ -84,11 +81,14 @@ class SupplierPOItems(models.Model):
     class Meta:
         db_table = 'inventory_mgt_supplierpoitems'
 
-    def calculate_total_price(self): 
-        total = (self.price * self.quantity)
+    def calculate_total_price(self):
+        item = self.item
+        total = (item.price * self.quantity)
         return total
 
     def save(self, *args, **kwargs):
+        item = self.item
+        self.price = item.price
         self.total_price = self.calculate_total_price()
         super(SupplierPOItems, self).save(*args, **kwargs)
 
@@ -101,7 +101,6 @@ class MaterialRequisition(models.Model):
         ('Pending', 'Pending'),
     )
 
-    id = models.IntegerField(primary_key=True)
     datetime_issued = models.DateTimeField(auto_now_add=True)
     shift = models.IntegerField(null=True, blank=True)
     item = models.ForeignKey(Inventory, on_delete=models.CASCADE)

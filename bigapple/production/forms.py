@@ -13,7 +13,7 @@ class DateInput(forms.DateInput):
     input_type = 'date'
 
 
-class ClientPOForm(ModelForm):
+class ClientPOForm(forms.ModelForm):
     class Meta:
         model = JobOrder
         fields = ('date_required',)

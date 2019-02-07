@@ -142,7 +142,7 @@ def user_page_view(request):
                 return render(request, 'accounts/production_manager_page.html', context)
             elif employee.position == 'Line Leader':
                 return render(request, 'accounts/line_leader_page.html', context)
-        else:
+        elif hasattr(request.user, 'client'):
             client_id = user.client.id
             client = Client.objects.get(id=client_id)
             request.session['session_position'] = 'Client'

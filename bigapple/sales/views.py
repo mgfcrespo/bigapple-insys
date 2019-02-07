@@ -176,7 +176,7 @@ def confirm_client_po(request, pk):
     for each in items:
         products.append(each.products)
         material.append(each.products.material_type)
-        if each.printed:
+        if each.printed == 1:
             cylinder_count += 1
 
     for x in material:
@@ -194,7 +194,7 @@ def confirm_client_po(request, pk):
 
 
     #matreq form
-    if request.method == "POST":
+    if request.method == "POST" and matreq:
         clientpo.status = "On Queue"
         clientpo.save()
 
@@ -256,15 +256,14 @@ def invoice_detail_view(request, pk, *args, **kwargs):
 
     salesinvoice = SalesInvoice.objects.get(pk=pk)
     form = ClientPaymentForm()
+    payments = ClientPayment.objects.filter(invoice_issued=salesinvoice)
 
     try:
-        salesinvoice = SalesInvoice.objects.get(pk=pk)
-
         client = Client.objects.get(id=salesinvoice.client_id)
         client.save()
         salesinvoice.save()
 
-        form = add_payment(request, pk, *args, **kwargs)
+        form = add_payment(request, pk)
 
         if salesinvoice.amount_due <= 0 and salesinvoice.status != "Cancelled":
             salesinvoice.status = "Closed"
@@ -286,39 +285,38 @@ def invoice_detail_view(request, pk, *args, **kwargs):
     return render(request, 'sales/sales_invoice_details.html', context)
 
 
-def add_payment(request, pk, *args, **kwargs):
-    form = ClientPaymentForm()
-
+def add_payment(request, pk):
     salesinvoice = SalesInvoice.objects.get(pk=pk)
     client = Client.objects.get(id=salesinvoice.client_id)
+    form = ClientPaymentForm(request.POST)
 
     if request.method == "POST":
-        form = ClientPaymentForm(request.POST)
-
         if form.is_valid():
-            form = form.save()
+            form = form.save(commit=False)
             new_form = form.pk
 
-
-            payment = ClientPayment.objects.get(pk=new_form)
+            payment = ClientPayment.objects.get(id=new_form)
             payment.client = client
             payment.invoice = salesinvoice
+            payment.save()
 
             form.client = client
             form.invoice = salesinvoice
+            form.old_balance = salesinvoice.amount_due
+            form.new_balance = payment.old_balance - payment.payment
             form.save()
 
-            payment.old_balance = salesinvoice.amount_due
-            salesinvoice.amount_due -= payment.payment
-            salesinvoice.total_paid += payment.payment
-            payment.new_balance = payment.old_balance - payment.payment
-            salesinvoice.amount_due = payment.new_balance
+        payment.old_balance = salesinvoice.amount_due
+        salesinvoice.amount_due -= payment.payment
+        salesinvoice.total_paid += payment.payment
+        payment.new_balance = payment.old_balance - payment.payment
+        salesinvoice.amount_due = payment.new_balance
 
-            client.outstanding_balance -= payment.payment
+        client.outstanding_balance -= payment.payment
 
-            salesinvoice.save()
-            payment.save()
-            client.save()
+        salesinvoice.save()
+        payment.save()
+        client.save()
 
     return form
 
@@ -381,39 +379,19 @@ def create_client_po(request):
     clientpo_item_formset = inlineformset_factory(JobOrder, ClientItem, form=ClientPOFormItems, extra=1, can_delete=True)
 
     if request.method == "POST":
-
         form = ClientPOForm(request.POST)
-
-        #Get session user id
-        client_id = request.session['session_userid']
-        current_client = Client.objects.get(id=client_id)
-        form.client = current_client
-        form.sales_agent = current_client.sales_agent
-        form.save()
-        '''
-        #check if client has overdue balance
-        credit_status = ClientCreditStatus.objects.get(client_id = current_client)
-        if (credit_status.outstanding_balance < 0):
-            credit_status = 1
-        '''
-
         message = ""
         print(form)
         if form.is_valid():
             #Save PO form then use newly saved ClientPO as instance for ClientPOItems
-            new_form = form.save()
-            new_form = new_form.pk
-            form_instance = JobOrder.objects.get(id=new_form)
-
+            new_form = form.save(commit=False)
             #Set ClientPO.client from session user
-            form_instance.client = current_client
-            form_instance.save()
-
-            #TODO: Invoice should no be saved if PO is disapproved
-
-            #Create JO object with ClientPO as a field
-            #jo = JobOrder(client_po = form_instance)
-            #jo.save()
+            client_id = request.session['session_userid']
+            current_client = Client.objects.get(id=client_id)
+            new_form.client = current_client
+            new_form.save()
+            form_id = new_form.pk
+            form_instance = JobOrder.objects.get(id=form_id)
 
             #Use PO form instance for PO items
             formset = clientpo_item_formset(request.POST, instance=form_instance)
@@ -422,11 +400,10 @@ def create_client_po(request):
                 for form in formset:
                     form.save()
 
-                formset_items = ClientItem.objects.filter(client_po_id = new_form)
+                formset_items = ClientItem.objects.filter(client_po_id = form_id)
                 formset_item_total = formset_items.aggregate(sum=aggregates.Sum('item_price'))['sum'] or 0
 
-                totalled_clientpo = JobOrder.objects.get(id=new_form)
-                totalled_clientpo.client = current_client
+                totalled_clientpo = form_instance
                 totalled_clientpo.total_amount = formset_item_total
                 totalled_clientpo.save()
 
@@ -439,6 +416,9 @@ def create_client_po(request):
                 #invoice = SalesInvoice.objects.get(id=invoice)
 
                 message = "PO successfully created"
+
+                new_form.total_amount = formset_item_total
+                new_form.save()
 
             else:
                 message += "Formset error"

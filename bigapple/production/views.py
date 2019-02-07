@@ -651,8 +651,7 @@ def jo_approval(request, id):
 #SCHEDULING
 def production_schedule(request):
     cursor = connection.cursor()
-    #TODO: Add condition making the query only include jobs that are NOT finished are NOT waiting.
-    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
     cursor.execute(query)
     df = pd.read_sql(query, connection)
     final_gantt.generate_overview_gantt_chart(df)
@@ -665,7 +664,7 @@ def production_schedule(request):
 
 def extruder_machine_schedule(request):
     cursor = connection.cursor()
-    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
     cursor.execute(query)
     df = pd.read_sql(query, connection)
     machines = Machine.objects.filter(machine_type='Extruder').values('machine_id')
@@ -680,7 +679,7 @@ def extruder_machine_schedule(request):
 
 def printing_machine_schedule(request):
     cursor = connection.cursor()
-    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
     cursor.execute(query)
     df = pd.read_sql(query, connection)
     machines = Machine.objects.filter(machine_type='Printing').values('machine_id')
@@ -695,7 +694,7 @@ def printing_machine_schedule(request):
 
 def laminating_machine_schedule(request):
     cursor = connection.cursor()
-    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
     cursor.execute(query)
     df = pd.read_sql(query, connection)
     machines = Machine.objects.filter(machine_type='Laminating').values('machine_id')
@@ -710,7 +709,7 @@ def laminating_machine_schedule(request):
 
 def cutting_machine_schedule(request):
     cursor = connection.cursor()
-    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
     cursor.execute(query)
     df = pd.read_sql(query, connection)
     machines = Machine.objects.filter(machine_type='Cutting').values('machine_id')

@@ -46,27 +46,27 @@ class InventoryForm(forms.ModelForm):
         model = Inventory
         fields = ( 'item', 'item_type', 'rm_type', 'description', 'quantity', 'price', 'supplier')
 
-    def __init__(self, *args, **kwargs):
-        super(InventoryForm, self).__init__(*args, **kwargs)
-        self.fields['item'].required = True
-        self.fields['item_type'].required = True
-        self.fields['rm_type'].required = True
-        self.fields['description'].required = False
-        self.fields['quantity'].required = True
-        self.fields['price'].required = True
-        self.fields['supplier'].required = True
+        def __init__(self, *args, **kwargs):
+            super(InventoryForm, self).__init__(*args, **kwargs)
+            self.fields['item'].required = True
+            self.fields['item_type'].required = True
+            self.fields['rm_type'].required = True
+            self.fields['description'].required = False
+            self.fields['quantity'].required = True
+            self.fields['price'].required = True
+            self.fields['supplier'].required = True
 
 
 class InventoryCountForm(ModelForm):
 
     class Meta:
         model = InventoryCount
-        fields = ('inventory', 'old_count', 'new_count', 'count_person')
+        fields = ('new_count',)
 
-    new_count = forms.IntegerField()
+        new_count = forms.IntegerField()
 
-    def __init__(self, *args, **kwargs):
-        super(InventoryCountForm, self).__init__(*args, **kwargs)
+        def __init__(self, *args, **kwargs):
+            super(InventoryCountForm, self).__init__(*args, **kwargs)
 '''
 class SupplierRawMaterialsForm(ModelForm):
     ITEM_TYPES = (
@@ -113,9 +113,9 @@ class SupplierPOItemsForm(ModelForm):
 
         inventory = forms.ModelChoiceField(queryset=Inventory.objects.all())
 
-    def __init__(self, *args, **kwargs):
-        super(SupplierPOItemsForm, self).__init__(*args, **kwargs)
-        self.fields['item'].queryset = Inventory.objects.all()
+        def __init__(self, *args, **kwargs):
+            super(SupplierPOItemsForm, self).__init__(*args, **kwargs)
+            self.fields['item'].queryset = Inventory.objects.all()
 
         # if 'supplier_po.supplier' in self.data:
         #     try:
@@ -133,8 +133,8 @@ class MaterialRequisitionForm(forms.ModelForm):
         model = MaterialRequisition
         fields = ()
 
-    def __init__(self, *args, **kwargs):
-        super(MaterialRequisitionForm, self).__init__(*args, **kwargs)
+        def __init__(self, *args, **kwargs):
+            super(MaterialRequisitionForm, self).__init__(*args, **kwargs)
 
 '''
 class PurchaseRequisitionForm(forms.ModelForm):
