@@ -1,6 +1,7 @@
 
 from django import forms
 from django.forms import ModelForm, ValidationError, Form, widgets
+from django.forms import inlineformset_factory
 from production.models import JobOrder
 from decimal import Decimal
 from django.contrib.admin.widgets import AdminDateWidget

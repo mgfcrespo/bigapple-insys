@@ -27,7 +27,7 @@
             </tr>
             </thead>
             <tbody>
-                {% for form in formset %}
+                {% for form in formset.forms %}
                 <tr id="{{ form.prefix }}-row" class="formset_class">
                     {% if form.instance.pk %} {{ form.DELETE }}{% endif %}
                     <td>{{form.products}}</td>
@@ -72,14 +72,26 @@
 -->
 
 {% endblock %} {% block script %}
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     $(function() {
         $('#myForm .formset_class').formset({
             prefix: '{{ formset.prefix }}'
         });
     })
 
-</script>
+</script> -->
+
+<script>
+        $( document ).ready(function() {
+            $(function() {
+                $('#myForm .formset_class').formset({
+                    prefix: '{{ formset.prefix }}'
+                });
+            })
+        });
+    </script>
+
+{% endblock %}
 
 <!--
 <script type="text/javascript">
@@ -104,7 +116,6 @@ $("input[name*='-quantity']").each(function(){
 total_price += parseInt($(this).val());
  $("#Total").val(total_price);
 });
-{%endblock %}
 </script>
 
 <script type="text/javascript">

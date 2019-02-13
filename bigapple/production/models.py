@@ -57,7 +57,7 @@ class JobOrder(models.Model):
     date_issued = models.DateField('date_issued', auto_now_add=True)
     date_required = models.DateField()
     client = models.ForeignKey(Client, on_delete= models.CASCADE)
-    total_amount = models.FloatField()
+    total_amount = models.FloatField(null=True, blank=True)
 
     class Meta:
 

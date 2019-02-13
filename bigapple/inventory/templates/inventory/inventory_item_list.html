@@ -14,15 +14,15 @@
 		</thead>
 		<tbody>
 			{% if items %}
-			{% for items in items %}
+			{% for stuff in items %}
 			<tr class = "row">
 				<td>
 					<a href="{% url 'inventory:inventory_count_list' items.id %}">{{ items.item }}</a>
 				</td>
-				<td>{{ items.item_type }}</td>
-				<td>{{ items.quantity }}</td>
+				<td>{{ stuff.item_type }}</td>
+				<td>{{ stuff.quantity }}</td>
                 {% for every in issued_to_production %}
-                    {% if every.item == items %}
+                    {% if every.item == stuff %}
 				<td>{{ every.quantity }}</td>
                     {% endif %}
                 {% endfor %}

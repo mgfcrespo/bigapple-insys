@@ -234,13 +234,13 @@ class ClientItem(models.Model):
         return price_per_piece
 
     def save(self, *args, **kwargs):
-        #if self.products is not None:
-        price_per_piece = self.calculate_price_per_piece()
-        self.price_per_piece = price_per_piece
-        self.item_price = price_per_piece * self.quantity
-        #else:
-        #    self.item_price = Decimal(0.0)
-        #    self.price_per_piece = Decimal(0.0)
+        if self.products is not None:
+            price_per_piece = self.calculate_price_per_piece()
+            self.price_per_piece = price_per_piece
+            self.item_price = price_per_piece * self.quantity
+        else:
+            self.item_price = Decimal(0.0)
+            self.price_per_piece = Decimal(0.0)
         super(ClientItem, self).save(*args, **kwargs)
 
 class SalesInvoice(models.Model):

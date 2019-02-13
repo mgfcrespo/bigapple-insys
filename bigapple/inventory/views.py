@@ -43,6 +43,7 @@ def inventory_item_add(request):
 def inventory_item_list(request):
 
     items = Inventory.objects.all()
+    #FIXME: get quantities issued today
     issued_to_production = MaterialRequisition.objects.filter(datetime_issued = date.today())
 
     context = {
@@ -426,7 +427,6 @@ def purchase_requisition_form(request):
 # Supplier PO
 def supplierPO_form(request):
     supplierpo_item_formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm, extra=1, can_delete=True)
-
     form = SupplierPOForm(request.POST)
     if request.method == "POST":
         #Set ClientPO.client from session user
@@ -446,15 +446,14 @@ def supplierPO_form(request):
                 for form in formset:
                     form.save()
 
-                formset_items = SupplierPOItems.objects.filter(id = new_form)
+                formset_items = SupplierPOItems.objects.filter(supplier_po_id = new_form)
                 #formset_items_rm = Inventory.objects.filter(id = id)
                 #formset_items.price = formset_items_rm.price
 
-                formset_item_total = formset_items.aggregate(sum=aggregates.Sum('total_price'))['sum'] or 0
-
-                totalled_supplierpo = SupplierPO.objects.get(id=new_form)
-                totalled_supplierpo.total_amount = formset_item_total
-                totalled_supplierpo.save()
+                formset_item_total = formset_items.aggregate(sum=aggregates.Sum('total_price'))['sum'] or 0.00
+                #totalled_supplierpo = SupplierPO.objects.get(id=new_form)
+                form_instance.total_amount = formset_item_total
+                form_instance.save()
 
                 message = "PO successfully created"
 
@@ -465,7 +464,7 @@ def supplierPO_form(request):
             message = "Form is not valid"
 
 
-        return render(request, 'inventory/supplierPO_list.html',
+        return render(request, 'inventory/supplierPO_form.html',
                               {'message': message, 'formset': supplierpo_item_formset,
                                'form': SupplierPOForm}
                               )
@@ -474,7 +473,6 @@ def supplierPO_form(request):
                               {'formset': supplierpo_item_formset,
                                'form': SupplierPOForm}
                               )
-
 def supplierPO_form_test(request):
     supplierpo_item_formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm, extra=1, can_delete=True)
     # data = JobOrder.objects.get(id=id)

@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.db import connection
-from django.db.models import aggregates
+from django.db.models import aggregates, Sum
 from django.forms import inlineformset_factory
 from django.shortcuts import redirect
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse, Http404
@@ -180,15 +180,15 @@ def confirm_client_po(request, pk):
             cylinder_count += 1
 
     for x in material:
-        try:
-            inventory = Inventory.objects.filter(rm_type=x)
+        inventory = Inventory.objects.filter(rm_type=x)
+        if inventory.exists():
             for y in inventory:
                 if y.quantity > 1000:
                     matreq = True
                 else:
                     matreq = False
                     break
-        except Inventory.DoesNotExist:
+        else:
             inventory = None
             matreq = False
 
@@ -203,10 +203,10 @@ def confirm_client_po(request, pk):
                 form = MaterialRequisitionForm(request.POST)
 
                 if form.is_valid():
-                    new_form = form.save()
+                    new_form = form.save(commit=False)
                     new_form.client_item = every
                     new_form.item = Inventory.objects.filter(rm_type=x).first()
-                    new_form.quantity = every.quantity
+                    new_form.quantity = every.quantity #TODO: Ensure quantity (raw mat to product ratio)
                     new_form.save()
 
                     #matreq = MaterialRequisition.objects.get(id = new_form.pk)
@@ -256,7 +256,7 @@ def invoice_detail_view(request, pk, *args, **kwargs):
 
     salesinvoice = SalesInvoice.objects.get(pk=pk)
     form = ClientPaymentForm()
-    payments = ClientPayment.objects.filter(invoice_issued=salesinvoice)
+    payments = ClientPayment.objects.filter(invoice_id=salesinvoice.id)
 
     try:
         client = Client.objects.get(id=salesinvoice.client_id)
@@ -293,18 +293,17 @@ def add_payment(request, pk):
     if request.method == "POST":
         if form.is_valid():
             form = form.save(commit=False)
-            new_form = form.pk
-
-            payment = ClientPayment.objects.get(id=new_form)
-            payment.client = client
-            payment.invoice = salesinvoice
-            payment.save()
-
             form.client = client
             form.invoice = salesinvoice
             form.old_balance = salesinvoice.amount_due
-            form.new_balance = payment.old_balance - payment.payment
+            form.new_balance = form.old_balance - form.payment
             form.save()
+            new_form = form.pk
+
+        payment = ClientPayment.objects.get(id=new_form)
+        payment.client = client
+        payment.invoice = salesinvoice
+        payment.save()
 
         payment.old_balance = salesinvoice.amount_due
         salesinvoice.amount_due -= payment.payment
@@ -377,9 +376,8 @@ def statement_of_accounts_list_view(request):
 def create_client_po(request):
     #note: instance should be an object
     clientpo_item_formset = inlineformset_factory(JobOrder, ClientItem, form=ClientPOFormItems, extra=1, can_delete=True)
-
+    form = ClientPOForm(request.POST)
     if request.method == "POST":
-        form = ClientPOForm(request.POST)
         message = ""
         print(form)
         if form.is_valid():
@@ -389,23 +387,22 @@ def create_client_po(request):
             client_id = request.session['session_userid']
             current_client = Client.objects.get(id=client_id)
             new_form.client = current_client
-            new_form.save()
+            new_form = form.save()
             form_id = new_form.pk
             form_instance = JobOrder.objects.get(id=form_id)
 
             #Use PO form instance for PO items
             formset = clientpo_item_formset(request.POST, instance=form_instance)
-            #print(formset)
+            print(formset)
             if formset.is_valid():
                 for form in formset:
                     form.save()
-
                 formset_items = ClientItem.objects.filter(client_po_id = form_id)
                 formset_item_total = formset_items.aggregate(sum=aggregates.Sum('item_price'))['sum'] or 0
 
-                totalled_clientpo = form_instance
-                totalled_clientpo.total_amount = formset_item_total
-                totalled_clientpo.save()
+                #totalled_clientpo = JobOrder.objects.get(id=form_id)
+                form_instance.total_amount = formset_item_total
+                form_instance.save()
 
                 invoice = SalesInvoice(client=current_client, client_po=form_instance, total_amount=formset_item_total,
                                        amount_due=0)
@@ -416,9 +413,7 @@ def create_client_po(request):
                 #invoice = SalesInvoice.objects.get(id=invoice)
 
                 message = "PO successfully created"
-
-                new_form.total_amount = formset_item_total
-                new_form.save()
+                return redirect('sales:po-list-view')
 
             else:
                 message += "Formset error"
@@ -426,8 +421,6 @@ def create_client_po(request):
         else:
             message = "Form is not valid"
 
-
-        #TODO: change index.html. page should be redirected after successful submission
         return render(request, 'accounts/client_page.html',
                               {'message': message}
                               )
@@ -461,11 +454,11 @@ def rush_order_assessment(request, pk):
 
     #credit status
     if client.overdue_balance > 0:
-        client.credit_status = 0
-        credit_status = False
-    else:
         client.credit_status = 1
         credit_status = True
+    else:
+        client.credit_status = 0
+        credit_status = False
 
     #cost shit
     items = ClientItem.objects.filter(client_po = rush_order)
@@ -513,8 +506,7 @@ def rush_order_assessment(request, pk):
     #TODO: Insert current job to generic schedule and show if other JOs will meet date_due
     #simulated sched
     cursor = connection.cursor()
-    # TODO: Add condition making the query only include jobs that are NOT finished are NOT waiting.
-    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
     cursor.execute(query)
     df = pd.read_sql(query, connection)
     df2 = pd.DataFrame([[pk, i.laminate, i.printed, mat]])

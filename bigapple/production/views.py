@@ -441,7 +441,7 @@ def add_extruder_schedule(request, id):
         if form.is_valid():
             x = request.POST.get("weight_rolls")
             y = float(x)*float(4.74)
-            form.balance = float(y)
+            form.balance = y
             print(form.balance)
             new_schedule = form.save()
             if new_schedule.final:
