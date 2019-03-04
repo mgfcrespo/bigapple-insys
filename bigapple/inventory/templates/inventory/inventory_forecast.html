@@ -1,126 +1,31 @@
 {% extends 'sidebar.html' %}
 {% block content %}
 
-<div class="">
-    <div class="ui container">
-        <div class="ui grid two columns">
-            <div class="column">
-                <h1 class="ui dividing header" style="padding-bottom: 7px;">Inventory Forecast</h1>
-                <div class="ui segment">
-
-                    <table class="ui striped table center aligned">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Item
-                                </th>
-                                <th>
-                                    RM Type
-                                </th>
-                                <th>
-                                    Quantity
-                                </th>
-                            </tr>
-                        </thead>
-                            {% for inventory in inventory %}
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        {{i}}
-                                    </td>
-                                    <td>
-                                        {{i.rm_type}}
-                                    </td>
-                                    <td>
-                                        {{i.quantity}}
-                                    </td>
-                                </tr>
-                            </tbody>
-                            {% endfor %}
-                    </table>
-
-                </div>
-            </div>
-            <div class="column">
-                <div>
-                    <div class="ui very compact secondary menu">
-                        <a class="active item" data-tooltip="Decomposition"data-tab="first" data-position="bottom center">Decomp</a>
-                        <a class="item" data-tooltip="Simple Exponential Smoothing" data-tab="second" data-position="bottom center">SES</a>
-                        <a class="item" data-tooltip="Holt Winters Exponential Smoothing" data-tab="third" data-position="bottom center">HWES</a>
-                        <a class="item" data-tooltip="Moving Average" data-tab="fourth" data-position="bottom center">Moving Average</a>
-                        <a class="item" data-tooltip="ARIMA" data-tab="fifth" data-position="bottom center">ARIMA</a>
-                    </div>
-                    <div class="ui active tab segment" data-tab="first">
-
-                        <table class="ui striped table center aligned">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Date
-                                    </th>
-                                    <th>
-                                        Quantity
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for forecast_decomposition in forecast_decomposition %}
-                                <tr>
-                                    <td>
-
-                                    </td>
-                                    <td>
-
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+<h3 class="ui dividing header">Inventory Forecast</h3>
 
 
-                    </div>
-                    <div class="ui tab segment" data-tab="second">
-                        <table class="ui striped table center aligned">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Date
-                                    </th>
-                                    <th>
-                                        Quantity
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for forecast_ses in forecast_ses %}
-                                <tr>
-                                    <td>
-                                        {{forecast_ses}}
-                                    </td>
-                                    <td>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-
-                    </div>
-                    <div class="ui tab segment" data-tab="third">
-                        6
-                    </div>
-                    <div class="ui tab segment" data-tab="fourth">
-                        4
-                    </div>
-                    <div class="ui tab segment" data-tab="fifth">
-                        5
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
-    </div>
-
-</div>
-
+<table class="ui striped center aligned table">
+    <thead>
+        <th>Item</th>
+        <th>Item Type</th>
+        <th>Quantity</th>
+    </thead>
+    <tbody>
+        {% if i %}
+        {% for i in i %}
+        <tr>
+            <td><a href="{% url 'inventory:inventory_forecast_details' i.pk %}">{{i.item}}</a></td>
+            <td>{{i.item_type}}</td>
+            <td>{{i.quantity}}</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="3">
+                There are no forecasts.
+            </td>
+        {% endif %}
+        </tr>
+    </tbody>
+</table>
 {% endblock %}

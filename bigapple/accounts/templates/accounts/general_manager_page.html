@@ -18,21 +18,18 @@
         <div class="ui horizontal segments">
             <div class="ui segment">
                 <h4 class="ui dividing header">Rush Orders</h4>
-                <div class="ui three cards">
+                <div class="ui two cards">
                     {% for rush_order in rush_order %}
                             <div class="ui card">
                                 <div class="content center aligned">
                                     <div class="header">
-                                        <a href="{% url 'sales:rush_order_assessment' rush_order.id %}">{{ rush_order }}</a>
+                                        <h3>{{ rush_order }}</h3>
                                     </div>
                                     <div class="meta">
                                         {{ rush_order.client }}
                                     </div>
                                 </div>
                                 <div class="content">
-                                    <div class="row">
-                                        Items: {{ rush_order.items }}
-                                    </div>
                                     <div class="row">
                                         Total Amount: {{ rush_order.total_amount }}
                                     </div>
@@ -47,19 +44,26 @@
                                     </div>
                                 </div>
                                 <div class="content center aligned">
-                                  <div class="ui two buttons">
-                                    <a class="ui green button" href="{% url 'sales:rush_order_assessment' rush_order.id %}">Approve</a>
-                                    <div class="ui red button">Decline</div>
-                                  </div>
+                                    <a class="ui yellow button" href="{% url 'sales:rush_order_assessment' rush_order.id %}">View Assessment</a>
                                 </div>
                             </div>
                     {% endfor %}
                 </div>
             </div>
+            <div class="ui segment">
+                <h4 class="ui dividing header">Sales Invoices</h4>
+                <table>
+
+                </table>
+            </div>
         </div>
     </div>
 
     <h3 class="ui dividing header">Production Dashboard</h3>
+
+        <div class="ui segment" style="height: 100%; width: 100%">
+            {{gantt|safe}}
+        </div>
 
     <h3 class="ui dividing header">Inventory Dashboard</h3>
         <div class="ui horizontal segments">
@@ -128,13 +132,13 @@
         function rawmaterialLevels() {
           var data = google.visualization.arrayToDataTable([
             ["Raw Material Type", "Amount", { role: "style" } ],
-            ["LDPE", parseInt("{{LDPE.quantity}}"), "#97cfca"],
-            ["LLDPE", parseInt("{{ LLDPE.quantity }}"), "#619c17"],
-            ["HDPE", parseInt("{{ HDPE.quantity }}"), "#9c2f2f"],
-            ["PP", parseInt("{{ PP.quantity }}"), "#d7e374"],
-            ["PET", parseInt("{{ PET.quantity }}"),"#9c732c"],
-            ["PE", parseInt("{{ PE.quantity }}"),"#249c3f"],
-            ["HD", parseInt("{{ HD.quantity }}"),"#34919c"]
+            ["LDPE", parseInt("{{ LDPE }}"), "#97cfca"],
+            ["LLDPE", parseInt("{{ LLDPE }}"), "#619c17"],
+            ["HDPE", parseInt("{{ HDPE }}"), "#9c2f2f"],
+            ["PP", parseInt("{{ PP }}"), "#d7e374"],
+            ["PET", parseInt("{{ PET }}"),"#9c732c"],
+            ["PE", parseInt("{{ PE }}"),"#249c3f"],
+            ["HD", parseInt("{{ HD }}"),"#34919c"]
           ]);
 
           var view = new google.visualization.DataView(data);
@@ -155,7 +159,6 @@
           var chart = new google.visualization.BarChart(document.getElementById("rawmaterialLevels"));
           chart.draw(view, options);
       }
-
     </script>
 </div>
 

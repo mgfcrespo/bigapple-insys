@@ -56,6 +56,7 @@ class JobOrder(models.Model):
     rush_order = models.IntegerField()
     date_issued = models.DateField('date_issued', auto_now_add=True)
     date_required = models.DateField()
+    date_delivered = models.DateField(null=True, blank=True)
     client = models.ForeignKey(Client, on_delete= models.CASCADE)
     total_amount = models.FloatField(null=True, blank=True)
 
@@ -115,7 +116,7 @@ class ExtruderSchedule(models.Model):
     number_rolls = models.FloatField()
     starting_scrap = models.FloatField()
     extruder_scrap = models.FloatField()
-    balance = models.FloatField
+    balance = models.FloatField()
     remarks = models.CharField(max_length=45, blank=True, null=True)
     final = models.BooleanField(blank=True, null=True)
     #item = models.ForeignKey(ClientItem, on_delete=models.CASCADE)

@@ -19,13 +19,23 @@ warnings.filterwarnings("ignore")
 
 
 def aggregate_by_day(df):
-    # TODO: CONVERT DATE FORMAT TO DATETIME FORMAT
-    for i in range(0, len(df.index)):
-        df.iloc[i][0] = datetime.datetime.strptime(str(df.iloc[i][0]), "%Y-%m-%d")
-
-    df.Timestamp = pd.to_datetime(df[df.columns[0]], format='%d-%m-%Y %H:%M')
-    df.index = df.Timestamp
+    # 1) Convert to datetime, int
+    df['date_issued'] = pd.to_datetime(df.date_issued, format='%Y-%m-%d')
+    df['quantity'] = df['quantity'].astype(int)
+    # 2) Set index
+    df.set_index('date_issued', inplace=True)
+    # 3) Rename 'quantity' column to 'Count'
+    df.rename(columns={'quantity': 'Count'}, inplace=True)
+    # 4) Resample (Aggregate)
     df = df.resample('D').mean()
+    # 5) Resample (Fill)
+    # df = df.resample('D').ffill()  # fill with last known value
+    # df = df.resample('D').bfill()  # fill with next known value
+    df = df.fillna(0)
+    print('aggregate_by_day:')
+    print(df)
+    # print(df.isnull().values.any())
+
     return df
 
 
@@ -40,13 +50,16 @@ def create_split(df):
 def forecast_decomposition(df):
     train = aggregate_by_day(df)
     sm.tsa.seasonal_decompose(train.Count).plot()
-    plt.show()
+    # plt.show()
 #     TODO: use plotly.plot_mpl(fig) to display matplotlib figs in html
 
 
-def forecast_ses(df):
+def forecast_ses(og_df):
+    df = og_df.copy()
     train = aggregate_by_day(df)
     test = train.copy()
+    print('train df before create split')
+    print(train)
     test = test.reindex(create_split(train))
     y_hat_avg = test.copy()
     fit2 = SimpleExpSmoothing(np.asarray(train['Count'])).fit(smoothing_level=0.6, optimized=False)
@@ -55,7 +68,7 @@ def forecast_ses(df):
     plt.plot(train['Count'], label='Train')
     plt.plot(y_hat_avg['SES'], label='SES')
     plt.legend(loc='best')
-    plt.show()
+    # plt.show()
     # print(y_hat_avg['SES'].iloc[0])
     # get max y value and index (x)
     date_projected = str(y_hat_avg['SES'].idxmax())
@@ -64,7 +77,8 @@ def forecast_ses(df):
     return result
 
 
-def forecast_hwes(df):
+def forecast_hwes(og_df):
+    df = og_df.copy()
     train = aggregate_by_day(df)
     test = train.copy()
     test = test.reindex(create_split(train))
@@ -75,7 +89,7 @@ def forecast_hwes(df):
     plt.plot(train['Count'], label='Train')
     plt.plot(y_hat_avg['Holt_Winter'], label='Holt Winter')
     plt.legend(loc='best')
-    plt.show()
+    # plt.show()
     # get max y value and index (x)
     date_projected = str(y_hat_avg['Holt_Winter'].idxmax())
     qty_projected = str(int(y_hat_avg.loc[y_hat_avg['Holt_Winter'].idxmax(), 'Holt_Winter']))
@@ -83,18 +97,19 @@ def forecast_hwes(df):
     return result
 
 
-def forecast_moving_average(df):
+def forecast_moving_average(og_df):
+    df = og_df.copy()
     train = aggregate_by_day(df)
     test = train.copy()
     test = test.reindex(create_split(train))
     y_hat_avg = test.copy()
     # gets the line showing moving average
-    y_hat_avg['moving_avg_forecast'] = train['Count'].rolling(60).mean().iloc[-1]
+    y_hat_avg['moving_avg_forecast'] = train['Count'].rolling(60, min_periods=1).mean().iloc[-1]
     plt.figure(figsize=(16, 8))
     plt.plot(train['Count'], label='Train')
     plt.plot(y_hat_avg['moving_avg_forecast'], label='Moving Average Forecast')
     plt.legend(loc='best')
-    plt.show()
+    # plt.show()
     # print(y_hat_avg['moving_avg_forecast'].iloc[0])
     # get max y value and index (x)
     date_projected = str(y_hat_avg['moving_avg_forecast'].idxmax())
@@ -103,7 +118,8 @@ def forecast_moving_average(df):
     return result
 
 
-def forecast_arima(df):
+def forecast_arima(og_df):
+    df = og_df.copy()
     train = aggregate_by_day(df)
     test = train.copy()
     test = test.reindex(create_split(train))
@@ -111,12 +127,12 @@ def forecast_arima(df):
     fit1 = sm.tsa.statespace.SARIMAX(train.Count, order=(2, 1, 4), seasonal_order=(0, 1, 1, 7)).fit()
     start_date = test.index[0]  # first date in test
     end_date = test.index[-1]  # last date in test
-    y_hat_avg['SARIMA'] = fit1.predict(start=start_date, end=end_date, dynamic=True)
+    y_hat_avg['SARIMA'] = fit1.predict(start=start_date, end=end_date, dynamic=False)
     plt.figure(figsize=(16, 8))
     plt.plot(train['Count'], label='Train')
     plt.plot(y_hat_avg['SARIMA'], label='SARIMA')
     plt.legend(loc='best')
-    plt.show()
+    # plt.show()
     # get max y value and index (x)
     date_projected = str(y_hat_avg['SARIMA'].idxmax())
     qty_projected = str(int(y_hat_avg.loc[y_hat_avg['SARIMA'].idxmax(), 'SARIMA']))
@@ -126,14 +142,21 @@ def forecast_arima(df):
 
 def main():
     # get sample data
-    df = pd.read_csv(r'C:\Users\Dante\Downloads\Train_SU63ISt-Copy.csv', nrows=10392)
-    df.drop(['ID'], axis=1, inplace=True)
+    raw_data = {'date_issued': ['2018-12-04', '2018-12-04', '2018-12-04', '2019-01-28'],
+                'quantity': ['1000', '2000', '10000', '12000']}
+    df = pd.DataFrame(raw_data, columns=['date_issued', 'quantity'])
+    # print(aggregate_by_day(df))
 
     # print(forecast_ses(df))
     # print(forecast_hwes(df))
-    print(forecast_moving_average(df))
+    # print(forecast_moving_average(df))
     # print(forecast_arima(df))
     # forecast_decomposition(df)
+
+    print(forecast_ses(df))
+    print(df)
+    print(forecast_hwes(df))
+    print(df)
 
 
 if __name__ == '__main__':

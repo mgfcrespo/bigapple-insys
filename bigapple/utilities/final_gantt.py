@@ -6,6 +6,11 @@ import plotly.figure_factory as ff
 import numpy as np
 import pandas as pd
 import datetime
+from django.db.models import Count
+from production.models import Machine, JobOrder
+from sales.models import ClientItem
+from accounts.models import Employee
+from django.db.models import Q
 
 '''
 Job Shop example from 
@@ -59,10 +64,12 @@ def chart(task_list, filename):
 def schedule(df, filename):
     solver = pywrapcp.Solver('jobshop')
 
-    machines_count = 4  # Extrude, Print, (Laminate), Cut
+    machines_count = Machine.objects.filter(state='OK').count() # Extrude, Print, (Laminate), Cut
+    workers_count = Employee.objects.filter(Q(position='Cutting') | Q(position='Extruder') | Q(position='Printing')).count()
     jobs_count = len(df.index)
     all_machines = range(0, machines_count)
     all_jobs = range(0, jobs_count)
+    all_workers = range(0, workers_count)
 
     # Define data.
     machines = []
@@ -82,21 +89,35 @@ def schedule(df, filename):
     processing_times = []
     for i in range(0, len(df.index)):
         # Include Printing and Laminating machine
+        # Standard lead time: Plain - 1-2 weeks; Printed - 2-4 weeks
+        # IN HOURS:
+            # Extruder = 4 days * 20 hours every 20000 pieces = 80hr/10000pcs
+            # Cutting = 3 days * 20 hours every 20000 pieces = 60hr/10000pcs
+            # Laminating = 3 days * 20 hours every 20000 pieces = 60hr/10000pcs
+            # Printing = 5 days * 20 hours  every 20000 pieces = 100hr/10000pcs
+        item = ClientItem.objects.get(client_po_id=df.ix[i]['id'])
+        quantity = item.quantity
+        extrusion_time = int((quantity * 80)/10000)
+        cutting_time = int((quantity * 60)/10000)
+        laminating_time = int((quantity * 60)/10000)
+        printing_time = int((quantity * 100)/10000)
+
         if df.ix[i]['printed'] == 1 and df.ix[i]['laminate'] == 1:
-            processing_times.append([2, 5, 1, 4])
+            processing_times.append([extrusion_time, printing_time, laminating_time, cutting_time]) # Extrude, Print, Laminate, Cut
         # Include only Printing
         elif df.ix[i]['printed'] == 1:
-            processing_times.append([2, 5, 4])
+            processing_times.append([extrusion_time, printing_time, cutting_time])
         # Include only Laminating
         elif df.ix[i]['laminate'] == 1:
-            processing_times.append([2, 1, 4])
+            processing_times.append([extrusion_time, laminating_time, cutting_time])
         else:
-            processing_times.append([2, 4])
+            processing_times.append([extrusion_time, cutting_time])
 
     # Compute horizon.
     horizon = 0
     for i in all_jobs:
         horizon += sum(processing_times[i])
+        horizon = int(horizon)
 
     # Create jobs.
     all_tasks = {}
@@ -106,7 +127,7 @@ def schedule(df, filename):
                                                                 horizon,
                                                                 processing_times[i][j],
                                                                 False,
-                                                                'Job %i_%i' % (i, j))
+                                                                'Job_%i_%i' % (i, j))
 
     # Create sequence variables and add disjunctive constraints.
     all_sequences = []
@@ -159,6 +180,7 @@ def schedule(df, filename):
     finish_list = []
     resource_list = []
     description_list = []
+    worker_list = []
     current_time = np.datetime64(datetime.datetime.now())
 
     if solver.Solve(main_phase, [objective_monitor, collector]):
@@ -170,11 +192,14 @@ def schedule(df, filename):
 
             for j in range(0, seq_size):
                 t = seq.Interval(sequence[j]);
-                temp_name = t.Name().split('_', 1)[0]
-                temp_name = temp_name[4:]  # get the job number
+                temp_name = t.Name().split('_')#, 1)[1]
+                temp_name_test = temp_name
+                temp_name = temp_name[1]  # get the job number
                 job_num = int(temp_name)
                 resource_list.append(str(df.ix[job_num, 'id']))  # Add resource (aka Job ID)
                 description_list.append(df.ix[job_num, 'material_type'])  # Add material used to description list
+                #TODO Worker list
+                #worker_list.append(df.ix[job_num, 'worker'])
 
             for j in range(0, seq_size):
                 t = seq.Interval(sequence[j]);

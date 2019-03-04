@@ -1,77 +1,113 @@
 {% extends 'sidebar.html' %}
 {% block content %}
-<div>
+
     <h3 class="ui dividing header">Sales Dashboard</h3>
-    <div>
-        <div class="ui horizontal segments">
-            <div class="ui segment">
-                <h4 class="ui dividing header">Purchase Order Status </h4>
-                <div id="salesRatio"></div>
-
-            </div>
-            <div class="ui segment">
-                <h4 class="ui dividing header">Sales Comparison</h4>
-                <div id="POComparison"></div>
-
-            </div>
+    <div class="ui horizontal segments">
+        <div class="ui segment">
+            <h4 class="ui dividing header">Purchase Order Status </h4>
+            <div id="salesRatio"></div>
         </div>
-        <div class="ui horizontal segments">
-            <div class="ui segment">
-                <h4 class="ui dividing header">Rush Orders</h4>
-                <div class="ui three cards">
-                    {% for rush_order in rush_order %}
-                            <div class="ui card">
-                                <div class="content center aligned">
-                                    <div class="header">
-                                        <a href="{% url 'sales:rush_order_assessment' rush_order.id %}">{{ rush_order }}</a>
-                                    </div>
-                                    <div class="meta">
-                                        {{ rush_order.client }}
-                                    </div>
-                                </div>
-                                <div class="content">
-                                    <div class="row">
-                                        Items: {{ rush_order.items }}
-                                    </div>
-                                    <div class="row">
-                                        Total Amount: {{ rush_order.total_amount }}
-                                    </div>
-                                    <div class="row">
-                                        Date Issued: {{ rush_order.date_issued }}
-                                    </div>
-                                    <div class="row">
-                                        Date Required: {{ rush_order.date_required }}
-                                    </div>
-                                    <div>
-                                        Remarks: {{ rush_order.remarks }}
-                                    </div>
-                                </div>
-                                <div class="content center aligned">
-                                  <div class="ui two buttons">
-                                    <a class="ui green button" href="{% url 'sales:rush_order_assessment' rush_order.id %}">Approve</a>
-                                    <div class="ui red button">Decline</div>
-                                  </div>
-                                </div>
-                            </div>
-                    {% endfor %}
-                </div>
-            </div>
+        <div class="ui segment">
+            <h4 class="ui dividing header">Sales Comparison</h4>
+            <div id="POComparison"></div>
         </div>
     </div>
+    <div class="ui horizontal segments">
+        <div class="ui segment">
+        <h4 class="ui dividing header">Client Purchase Orders </h4>
+            <table class="ui striped table center aligned">
+                <thead>
+                <tr>
+                  <th>Purchase Order ID</th>
+                  <th>Date Issued</th>
+                  <th>Date Required</th>
+                  <th>Total Amount</th>
+                  <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% if JobOrder_data5 %}
+                    {% for each in JobOrder_data5 %}
+                        <tr>
+                            <td><a href="{% url 'sales:po-detail-view' each.id %}"> {{ each.id }}</a></td>
+                            <td>{{ each.date_issued }}</td>
+                            <td>{{ each.date_required }}</td>
+                            <td>{{ each.total_amount }}</td>
+                            <td>{% if each.status == 'Waiting' and x == 'Employee' %}
+                                <a href="{% url 'sales:confirm-client-po' each.id %}">{{ each.status }}</a>
+                                {% else %}
+                                {{ each.status }}
+                            </td>
+                                {% endif %}
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <td>
+                        <p>There are no Purchase Orders to display</p>
+                    </td>
+                    {% endif %}
+                </tbody>
+                 <tfoot>
+                    <tr>
+                        <th colspan="5">
+                            <a href="{% url 'sales:po-list-view' %}">See more</a>
+                        </th>
+                    </tr>
+                 </tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="ui segment">
+            <h4 class="ui dividing header">Rush Orders</h4>
+            <div class="ui four cards">
+                {% for rush_order in rush_order %}
+                        <div class="ui card">
+                            <div class="content center aligned">
+                                <div class="header">
+                                    <a href="{% url 'sales:rush_order_assessment' rush_order.id %}">{{ rush_order }}</a>
+                                </div>
+                                <div class="meta">
+                                    {{ rush_order.client }}
+                                </div>
+                            </div>
+                            <div class="content">
+                                <div class="row">
+                                    Items: {{ rush_order.items }}
+                                </div>
+                                <div class="row">
+                                    Total Amount: {{ rush_order.total_amount }}
+                                </div>
+                                <div class="row">
+                                    Date Issued: {{ rush_order.date_issued }}
+                                </div>
+                                <div class="row">
+                                    Date Required: {{ rush_order.date_required }}
+                                </div>
+                                <div>
+                                    Remarks: {{ rush_order.remarks }}
+                                </div>
+                            </div>
+                            <div class="content center aligned">
+                              <div class="ui two buttons">
+                                <a class="ui positive button" href="{% url 'sales:rush_order_assessment' rush_order.id %}"><i class="check icon"></i></a>
+                                <div class="ui negative button"><i class="close icon"></i></div>
+                              </div>
+                            </div>
+                        </div>
+                {% endfor %}
+            </div>
+        </div>
 
     <h3 class="ui dividing header">Production Dashboard</h3>
 
-    <h3 class="ui dividing header">Inventory Dashboard</h3>
-        <div class="ui horizontal segments">
-            <div class="ui segment">
-                <h4 class="ui dividing header">Raw Material Levels</h4>
-                <div id="rawmaterialLevels"></div>
-            </div>
+    <div class="ui horizontal segments">
+        <div class="ui segment" style="height: 100%; width: 100%">
+            {{gantt|safe}}
         </div>
     </div>
 
     <script>
-
         google.charts.load('current', {'packages':['corechart', 'bar']});
 
         //for sales2
@@ -122,41 +158,8 @@
             var chart = new google.visualization.PieChart(document.getElementById('salesRatio'));
             chart.draw(Sales1, options);
           }
-
-        // for raw material levels
-        google.charts.setOnLoadCallback(rawmaterialLevels);
-        function rawmaterialLevels() {
-          var data = google.visualization.arrayToDataTable([
-            ["Raw Material Type", "Amount", { role: "style" } ],
-            ["LDPE", parseInt("{{LDPE.quantity}}"), "#97cfca"],
-            ["LLDPE", parseInt("{{ LLDPE.quantity }}"), "#619c17"],
-            ["HDPE", parseInt("{{ HDPE.quantity }}"), "#9c2f2f"],
-            ["PP", parseInt("{{ PP.quantity }}"), "#d7e374"],
-            ["PET", parseInt("{{ PET.quantity }}"),"#9c732c"],
-            ["PE", parseInt("{{ PE.quantity }}"),"#249c3f"],
-            ["HD", parseInt("{{ HD.quantity }}"),"#34919c"]
-          ]);
-
-          var view = new google.visualization.DataView(data);
-          view.setColumns([0, 1,
-                           { calc: "stringify",
-                             sourceColumn: 1,
-                             type: "string",
-                             role: "annotation" },
-                           2]);
-
-          var options = {
-            hAxis:{format: 'short'},
-            width: 1000,
-            height: 300,
-            bar: {groupWidth: "90%"},
-            legend: { position: "none" },
-          };
-          var chart = new google.visualization.BarChart(document.getElementById("rawmaterialLevels"));
-          chart.draw(view, options);
-      }
-
     </script>
+
 </div>
 
 {% endblock %}

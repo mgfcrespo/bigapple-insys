@@ -1,6 +1,9 @@
 {% extends 'sidebar.html' %}
 {% block content %}
 
+ {% csrf_token %}
+{% include 'inventory/template_form.html' %}
+
 <h3 class="ui dividing header">Confirm Purchase Order</h3>
 <h3 class="">{{clientpo}}</h3>
 
@@ -53,7 +56,7 @@
         </tbody>
     </table>
 
-    {% if creditstatus == true %}
+    {% if credit_status %}
         <div class="ui negative icon message">
             <i class="times circle icon"></i>
             <div class="content"><div class="header">
@@ -120,5 +123,26 @@
         </div>
     </div>
 
+{{formset.management_form}}
+
+{% block script %}
+
+    <script>
+        $( document ).ready(function() {
+            $(function() {
+                $('#myForm .formset_class').formset({
+                    prefix: '{{ formset.prefix }}'
+                });
+            })
+
+            $('#supplier').on('change', function() {
+                alert( this.value );
+
+            });
+
+        });
+    </script>
+
+{% endblock %}
 
 {% endblock %}

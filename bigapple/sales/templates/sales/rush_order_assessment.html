@@ -6,8 +6,8 @@
         <thead>
         <tr>
             <th class="one wide"> Purchase Order # </th>
-            <th class="two wide">Estimated Profit</th>
-            <th class="three wide"></th>
+            <th class="one wide">Estimated Profit</th>
+            <th class="one wide"></th>
         </tr>
         </thead>
         <tbody>
@@ -17,10 +17,9 @@
                 <td>
                     <form method="post">
                         {% csrf_token %}
-                        <div class="ui buttons">
-
-                            <input type="submit" class="ui green button" style="width:100px;" value="Approve" name="approve_btn">
-                            <input type="submit" class="ui red button" style="width:100px;" value="Deny" name="deny_btn">
+                        <div class="ui two buttons">
+                            <input type="submit" class="ui green button" value="Approve" name="approve_btn">
+                            <input type="submit" class="ui red button" value="Deny" name="deny_btn">
                         </div>
                     </form>
                 </td>
@@ -77,8 +76,8 @@
         </div>
     {% endif %}
 
-<div style="height: 100%; width: 200%">
-            {{simulated_sched|safe}}
-        </div>
+<div style="height: 100%; width: 100%">
+    {{simulated_sched|safe}}
+</div>
 
 {% endblock %}

@@ -2,67 +2,61 @@
 {% block content %}
 <h3 class="ui dividing header">{{ title }}</h3>
 
-        <form class="ui form" method="POST">
-            {% csrf_token %}
-            <div class = "two fields">
-                <div class="field">
-                    <label>First Name</label>
-                    {{ form.first_name }}
-                </div>
-                <div class="field">
-                    <label>Last Name</label>
-                    {{ form.last_name }}
-                </div>
-            </div>
-            <div class="field">
-              <label>Address</label>
-              {{ form.address }}
-            </div>
-            <div class = "four fields">
-                <div class="field">
-                    <label>Birth Date</label>
-                    {{ form.birth_date }}
-                </div>
-                <div class="field">
-                    <label>Position</label>
-                    {{ form.position }}
-                </div>
-            </div>
-            <div class = "two fields">
-                <div class="field">
-                    <label>Contact Nmber</label>
-                    {{ form.contact_number }}
-                </div>
-                <div class="field">
-                    <label>Email Address</label>
-                    {{ form.email }}
-                </div>
-            </div>
-           
-            <div class = "four fields">
-                <div class="field">
-                    <label>SSS</label>
-                    {{ form.sss }}
-                </div>
-                <div class="field">
-                    <label>Philhealth</label>
-                    {{ form.philhealth }}
-                </div>
-                <div class="field">
-                    <label>Pagibig</label>
-                    {{ form.pagibig }}
-                </div>
-                <div class="field">
-                    <label>Tin</label>
-                    {{ form.tin }}
-                </div>
-            </div>
+    <form class="ui form" method="POST">
+    {% csrf_token %}
+    <div class = "two fields">
+        <div class="field">
+            <label>First Name</label>
+            {{ form.first_name }}
+        </div>
+        <div class="field">
+            <label>Last Name</label>
+            {{ form.last_name }}
+        </div>
+    </div>
+    <div class="field">
+      <label>Address</label>
+      {{ form.address }}
+    </div>
+    <div class = "three fields">
+        <div class="field">
+            <label>Position</label>
+            {{ form.position }}
+        </div>
+        <div class="field">
+            <label>Contact Nmber</label>
+            {{ form.contact_number }}
+        </div>
+        <div class="field">
+            <label>Email Address</label>
+            {{ form.email }}
+        </div>
+    </div>
 
-            <div class="center">
-                <button class="ui green basic button" type="submit">{{ actiontype }}</button>
-                <button class="ui red basic button" type="reset">Clear</button>
-            </div>
+    <div class = "four fields">
+        <div class="field">
+            <label>SSS</label>
+            {{ form.sss }}
+        </div>
+        <div class="field">
+            <label>Philhealth</label>
+            {{ form.philhealth }}
+        </div>
+        <div class="field">
+            <label>Pagibig</label>
+            {{ form.pagibig }}
+        </div>
+        <div class="field">
+            <label>Tin</label>
+            {{ form.tin }}
+        </div>
+    </div>
 
-          </form>
+    <div class="center">
+        <button class="ui green basic button" type="submit">{{ actiontype }}</button>
+        <button class="ui red basic button" type="reset">Clear</button>
+    </div>
+
+    </form>
 
 {% endblock %}

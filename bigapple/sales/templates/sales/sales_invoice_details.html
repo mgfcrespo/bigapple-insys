@@ -38,7 +38,6 @@
               <th>Amount Due</th>
                  <td> {{salesinvoice.amount_due}}</td>
             </tr>
-
             <tr>
                 <th>Payment Terms</th>
                  <td> {{salesinvoice.payment_terms}}</td>
@@ -61,57 +60,56 @@
                     {% endif %}
             </tr>
     		</thead>
-
-
     	</table>
 
-<button class="ui button">
-	<a href="{% url 'sales:sales_invoice_list' %}">Back</a>
-</button>
+	<a class="ui small yellow button" href="{% url 'sales:sales_invoice_list' %}">Back</a>
 
-  <div class="ui horizontal divider">
-      Payments
-  </div>
-                    <form method="post" action="{% url 'sales:add_payment_form' salesinvoice.id %}">
-{% csrf_token %}
-{{ form }}
-<button type="submit" class="ui green basic button">Submit</button>
-</form>
+    <div id="payments" style="display: none;">
+        <div class="ui horizontal divider">
+            Payments
+        </div>
+        <form method="post" action="{% url 'sales:add_payment_form' salesinvoice.id %}">
+            {% csrf_token %}
+            {{ form }}
+                <button type="submit" class="ui green basic button">Submit</button>
+        </form>
 
+        <table class= "ui cell padded table" >
+            <thead>
+                <tr>
+                    <th>Payment Date</th>
+                    <th>Payment</th>
+                    <th>Balance before payment</th>
+                    <th>Balance after payment</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% if payments %}
+               {% for ClientPayment in payments %}
+                <tr>
+                    <td> {{ ClientPayment.payment_date }} </td>
+                    <td> {{ ClientPayment.payment }} </td>
+                    <td> {{ ClientPayment.old_balance }} </td>
+                    <td> {{ ClientPayment.new_balance }} </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+               <tr>
+                   <td>There are no payments to display.</td></tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
 
-                    <table class= "ui cell padded table" >
+    <script>
+        var position = '{{ request.session.session_position }}'.toString();
 
-                    <tbody >
-        	<thead>
-          	<tr>
-                <th>Payment Date</th>
-          	  	<th>Payment</th>
-                <th>Balance before payment</th>
-                <th>Balance after payment</th>
-          	</tr>
-    		</thead>
-                    <tbody>
-
-                    {% if payments %}
-				        {% for ClientPayment in payments %}
-                        <tr>
-                            <td> {{ ClientPayment.payment_date }} </td>
-                            <td> {{ ClientPayment.payment }} </td>
-                            <td> {{ ClientPayment.old_balance }} </td>
-    				        <td> {{ ClientPayment.new_balance }} </td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-			        <tr> <td>There are no payments to display.</td></tr>
-			        {% endif %}
-                    </tbody>
-                    </table>
-
+        if (position == "Client"){
+        }
+        else{
+            document.getElementById("payments").style.display = "inline";
+        }
+    </script>
 
 
 {% endblock %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>

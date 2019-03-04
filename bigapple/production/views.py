@@ -1,12 +1,14 @@
 from __future__ import print_function
 
-from datetime import date
+from datetime import date, datetime
 
 import pandas as pd
 from django.db import connection
 from django.db.models import Q
 from django.shortcuts import render, redirect
 
+from django import forms
+from django.forms import ModelForm, ValidationError, Form, widgets, DateTimeInput
 from inventory.forms import MaterialRequisition
 from inventory.forms import MaterialRequisitionForm
 from sales.models import ClientItem, SalesInvoice
@@ -400,12 +402,13 @@ def job_order_details(request, id):
     return render(request, 'production/job_order_details.html', context)
 
 def finished_job_order_list_view(request):
-    object_list = JobOrder.objects.filter(status='Ready for delivery' or 'Delivered')
+    object_list = JobOrder.objects.filter(Q(status='Ready for delivery') | Q(status='Delivered'))
     invoice = SalesInvoice.objects.all()
 
     for x in object_list:
         if request.method == "POST":
             x.status = "Delivered"
+            x.date_delivered = date.today()
             x.save()
 
     context = {
@@ -441,8 +444,9 @@ def add_extruder_schedule(request, id):
         if form.is_valid():
             x = request.POST.get("weight_rolls")
             y = float(x)*float(4.74)
-            form.balance = y
+            form.balance = float(y)
             print(form.balance)
+            form.id = id
             new_schedule = form.save()
             if new_schedule.final:
                 if printed:
@@ -453,7 +457,28 @@ def add_extruder_schedule(request, id):
                     data.save()
         return redirect('production:job_order_details', id = id)
 
+    SHIFTS = (
+        (1, 1),
+        (2, 2),
+        (3, 3)
+    )
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Extruder')
+    #TODO: CONTROL CHECKS FOR PRODUCTION SCHEDULE
+    #form.fields["datetime_in"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_in', widget=forms.DateTimeInput(attrs={'value': datetime.now()}))
+    #form.fields["datetime_out"]
+    #SHIFTS: 6am-2pm, 2pm-10pm, 10pm-6am
+    form.fields["shift"] = forms.IntegerField(widget=forms.Select(choices=SHIFTS),
+   #                                           if datetime.time(6, 0) <= datetime.time.now() >= datetime.time(14, 0): initial=1
+   #                                           elif datetime.time(14, 0) <= datetime.time.now() >= datetime.time(22, 0): initial=2
+   #                                           elif datetime.time(22, 0) <= datetime.time.now() >= datetime.time(6, 0): initial=3
+    )
+    form.fields["weight_rolls"]
+    form.fields["core_weight"]
+    form.fields["output_kilos"]
+    form.fields["number_rolls"]
+    form.fields["starting_scrap"]
+    form.fields["extruder_scrap"]
+
 
     context = {
       'data': data,

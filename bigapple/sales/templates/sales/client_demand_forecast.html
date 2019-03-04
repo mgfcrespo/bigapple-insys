@@ -1,13 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% includes "global_base_ui.html" %}
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'sidebar.html' %}
 
-#DASHBOARD FOR CLIENT DEMAND including TABLE showing each partner client and projected next order
+{% block content %}
 
-</body>
-</html>
+
+<h3 class="ui dividing header">Client Demand Forecast</h3>
+<table class="ui striped center aligned table">
+    <thead>
+        <th>Client</th>
+        <th>Company</th>
+        <th>Account Supervisor</th>
+        <th>Date Last Ordered</th>
+    </thead>
+    <tbody>
+        {% if client %}
+        {% for x in client %}
+        <tr>
+            <td><a href="{% url 'sales:demand_forecast_details' x.id%}">{{x.first_name}} {{x.last_name}}</a></td>
+            <td>{{x.company}}</td>
+            <td>{{x.sales_agent}}</td>
+            <td>
+
+            </td>
+            <td></td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td colspan="3">
+                There are no forecasts.
+            </td>
+        {% endif %}
+        </tr>
+    </tbody>
+</table>
+
+{% endblock %}

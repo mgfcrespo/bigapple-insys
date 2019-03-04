@@ -9,8 +9,9 @@ from django.http import HttpResponse
 from django.db.models.functions import TruncMonth
 from datetime import datetime
 
-import array as arr
-
+from production import views as production
+from django.db import connection
+import pandas as pd
 
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
@@ -20,7 +21,7 @@ from .models import Employee
 from .models import Client
 
 from accounts.forms import SignUpForm
-from sales.models import Supplier
+from sales.models import Supplier, SalesInvoice
 from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule
 from inventory.models import Inventory
 # Create your views here.
@@ -52,15 +53,15 @@ def user_page_view(request):
         JobOrder_data = JobOrder.objects.all()
 
         JobOrder_data5 = JobOrder.objects.order_by('-id')[:5]
-        rush_order = JobOrder.objects.filter(rush_order=True).order_by('date_required').exclude(status='delivered')[:3]
+        rush_order = JobOrder.objects.filter(status='Waiting').order_by('date_required').exclude(rush_order=False)[:4]
 
-        LDPE = Inventory.objects.filter(rm_type='LDPE')
-        LLDPE = Inventory.objects.filter(rm_type='LLDPE')
-        HDPE = Inventory.objects.filter(item_type='HDPE')
-        PP = Inventory.objects.filter(item_type='PP')
-        PET = Inventory.objects.filter(item_type='PET')
-        PE = Inventory.objects.filter(item_type='Pelletized PE')
-        HD = Inventory.objects.filter(item_type='Pelletized HD')
+        LDPE = Inventory.objects.filter(rm_type='LDPE').aggregate(Sum('quantity')).get('quantity__sum', 0)
+        LLDPE = Inventory.objects.filter(rm_type='LLDPE').aggregate(Sum('quantity')).get('quantity__sum', 0)
+        HDPE = Inventory.objects.filter(rm_type='HDPE').aggregate(Sum('quantity')).get('quantity__sum', 0)
+        PP = Inventory.objects.filter(rm_type='PP').aggregate(Sum('quantity')).get('quantity__sum', 0)
+        PET = Inventory.objects.filter(rm_type='PET').aggregate(Sum('quantity')).get('quantity__sum', 0)
+        PE = Inventory.objects.filter(rm_type='PE').aggregate(Sum('quantity')).get('quantity__sum', 0)
+        HD = Inventory.objects.filter(rm_type='HD').aggregate(Sum('quantity')).get('quantity__sum', 0)
 
         status_waiting = JobOrder.objects.filter(status='Waiting').count()
         status_onqueue = JobOrder.objects.filter(status='On Queue').count()
@@ -83,7 +84,38 @@ def user_page_view(request):
         POs_lastYear = JobOrder.objects.filter(date_issued__month=thisMonth, date_issued__year=lastYear).annotate(count=Count('id'))
         POs_lastMonthlastYear = JobOrder.objects.filter(date_issued__month=thisMonth-1, date_issued__year=lastYear).annotate(count=Count('id'))
 
+        cursor = connection.cursor()
+        query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status=" + "'Waiting'" + " and NOT j.status=" + "'Ready for delivery'" + " and NOT j.status =" + "'Delivered'"
+        cursor.execute(query)
+        df = pd.read_sql(query, connection)
+
+        gantt = production.final_gantt.generate_overview_gantt_chart(df=df)
+
+        client = Client.objects.filter(accounts_id=id)
+        employee = Employee.objects.filter(accounts_id=id)
+        if client:
+            client_po = JobOrder.objects.filter(client=Client.objects.get(accounts_id=id)).exclude(status='Delivered')[:5]
+            x = 'Client'
+        elif employee:
+            x = 'Employee'
+            if Employee.objects.get(accounts_id=id).position == "Sales Coordinator" or "General Manager":
+                client_po = JobOrder.objects.all().exclude(status='Delivered')[:5]
+            elif employee.position == "Sales Agent":
+                customer = Client.objects.filter(sales_agent=employee).exclude(status='Delivered')[:10]
+                po = JobOrder.objects.all()
+                client_po = []
+
+        invoice = SalesInvoice.objects.all()
+        for x in invoice:
+            x.save()
+        invoice = SalesInvoice.objects.filter(status='Late')[:10]
+
         context = {
+            'invoice': invoice,
+            'client_po': client_po,
+
+            'gantt': gantt,
+
             'POs_lastMonth': POs_lastMonth,
             'thisMonth': thisMonth,
 
@@ -117,7 +149,7 @@ def user_page_view(request):
             'JobOrder_data': JobOrder_data,
             'JobOrder_data5': JobOrder_data5,
             'rush_order': rush_order,
-            }
+        }
 
         request.session['session_username'] = username
         if hasattr(request.user, 'employee'):
@@ -148,7 +180,7 @@ def user_page_view(request):
             request.session['session_position'] = 'Client'
             request.session['session_fullname'] = client.full_name
             request.session['session_userid'] = client_id
-            return render(request, 'accounts/client_page.html')
+            return render(request, 'accounts/client_page.html', context)
 
 def logout_view(request):
     logout(request)

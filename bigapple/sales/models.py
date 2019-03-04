@@ -182,7 +182,6 @@ class ClientItem(models.Model):
     def __str__(self):
         return str(self.id)
 
-    #FIXME THIS SHIT TOO HIGH BRAH
     def calculate_price_per_piece(self):
         # Set Production Costs
         electricity = ProductionCost.objects.get(cost_type='Electricity')
@@ -272,6 +271,7 @@ class SalesInvoice(models.Model):
         po_number = self.client_po
         return str(po_number)
 
+    #TODO: CHECK EVERY LOGIN HOW MANY DAYS PASSED + IF OVERDUE
     def calculate_total_amount_computed(self):
         if self.client.discount is None:
             total_net_vat = self.total_amount / (1 + self.client.net_vat/100)
@@ -325,11 +325,11 @@ class SalesInvoice(models.Model):
         self.discount = client.discount
         self.net_vat = client.net_vat
         self.total_amount_computed = self.calculate_total_amount_computed()
-        if self.date_due and self.date_issued is not None:
+        if self.date_issued is not None:
             self.date_due = self.calculate_date_due()
             self.days_passed = self.calculate_days_passed()
             self.days_overdue = self.calculate_days_overdue()
-            if self.days_passed < 0:
+            if self.days_passed <= 0:
                 self.status == 'Late'
         else:
             self.date_due = None
@@ -398,10 +398,10 @@ class ClientPayment(models.Model):
     def __str__(self):
         return str(self.id)
 
-    def save(self, *args, **kwargs):
+    def save(self):
         self.old_balance = self.invoice.amount_due
         self.new_balance = self.old_balance - self.payment
-        super(ClientPayment, self).save(*args, **kwargs)
+        super(ClientPayment, self).save()
 
 
 class Supplier(models.Model):

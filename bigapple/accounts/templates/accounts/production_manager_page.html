@@ -1,336 +1,58 @@
 {% extends 'sidebar.html' %}
 {% block content %}
+<div>
+    <h3 class="ui dividing header">Production Dashboard</h3>
 
-<div class="ui relaxed grid">
+        <div class="ui segment" style="height: 100%; width: 100%">
+            {{gantt|safe}}
+        </div>
 
-    <div class="four wide column">
-        <div class="ui container">
-            <div class="segments" style="margin:10px;">
-                <div class="ui green segment" style="text-align: center">
-                    <h3>Extrusion</h3>
-                </div>
-                <div class="ui segment" style="text-align: center">
-                    <div class="ui grid">
-                        <div class="sixteen wide column">
-                            <div class="ui progress">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label">Company A</div>
-                            </div>
-                        </div>
-                        <div class="sixteen wide column">
-                            <div class="ui progress">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label">Company B</div>
-                            </div>
-                        </div>
-                        <div class="sixteen wide column">
-                            <div class="ui progress">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label">Company C</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="four wide column">
-        <div class="ui container">
-            <div class="segments" style="margin:10px;">
-                <div class="ui green segment" style="text-align: center">
-                    <h3>Cutting</h3>
-                </div>
-                <div class="ui segment" style="text-align: center">
-                    <div class="ui grid">
-                        <div class="sixteen wide column">
-                            <div class="ui progress">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label">Company D</div>
-                            </div>
-                        </div>
-                        <div class="sixteen wide column">
-                            <div class="ui progress">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label">Company E</div>
-                            </div>
-                        </div>
-                        <div class="sixteen wide column">
-                            <div class="ui progress">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label">Company F</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="four wide column">
-        <div class="ui container">
-            <div class="segments" style="margin:10px;">
-                <div class="ui green segment" style="text-align: center">
-                    <h3>Printing and Laminating</h3>
-                </div>
-                <div class="ui segment" style="text-align: center">
-                    <div class="ui grid">
-                        <div class="sixteen wide column">
-                            <div class="ui progress">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label">Company A</div>
-                            </div>
-                        </div>
-                        <div class="sixteen wide column">
-                            <div class="ui progress">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label">Company B</div>
-                            </div>
-                        </div>
-                        <div class="sixteen wide column">
-                            <div class="ui progress">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label">Company C</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="four wide column">
-        <div class="ui container">
-            <div class="segments" style="margin:10px;">
-                <div class="ui green segment" style="text-align: center">
-                    <h3>Packing and Q/A</h3>
-                </div>
-                <div class="ui segment" style="text-align: center">
-                    <div class="ui grid">
-                        <div class="sixteen wide column">
-                            <div class="ui progress">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label">Company A</div>
-                            </div>
-                        </div>
-                        <div class="sixteen wide column">
-                            <div class="ui progress">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label">Company B</div>
-                            </div>
-                        </div>
-                        <div class="sixteen wide column">
-                            <div class="ui progress">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label">Company C</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <h3 class="ui dividing header">Inventory Dashboard</h3>
+        <div class="ui horizontal segments">
+            <div class="ui segment">
+                <h4 class="ui dividing header">Raw Material Levels</h4>
+                <div id="rawmaterialLevels"></div>
             </div>
         </div>
     </div>
 
-    <div class="eight wide column">
-        <div class=" row ui container">
-            <div class="segments" style="margin:10px;">
-                <div class="ui green segment" style="text-align: center">
-                    <h3>
-                        Rush Orders:
-                    </h3>
-                    <table class="ui celled table center aligned">
-                        <thead>
-                            <tr>
-                                <th>Company</th>
-                                <th>JO Number</th>
-                                <th>Items</th>
-                                <th>Due Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    Company A
-                                </td>
-                                <td>
-                                    12345667890
-                                </td>
-                                <td>
-                                    - 100,000 Pcs. PET Bottle<br> - 100,000 Pcs. Sando bags SML
-                                </td>
-                                <td>
-                                    DD/MM/YYYY
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    Company B
-                                </td>
-                                <td>
-                                    0987654321
-                                </td>
-                                <td>
-                                    - 200,000 Pcs. PET Bottle<br> - 100,000 Pcs. Sando bags SML
-                                </td>
-                                <td>
-                                    DD/MM/YYYY
-                                </td>
-                            </tr>
+    <script>
 
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class=" row ui container">
-            <div class="segments" style="margin:10px;">
-                <div class="ui green segment" style="text-align: center">
-                    <h3>Job Order Status:</h3>
+        google.charts.load('current', {'packages':['corechart', 'bar']});
 
-                </div>
-            </div>
-        </div>
-        <div class=" row ui container">
-            <div class="segments" style="margin:10px;">
-                <div class="ui green segment" style="text-align: center">
-                    <h3>Inventory Status:</h3>
-                    <div class="row">
-                        <div class="sixteen wide column">
-                            <div class="ui progress">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label">Item A</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="sixteen wide column">
-                            <div class="ui progress">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label">Item B</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="sixteen wide column">
-                            <div class="ui progress">
-                                <div class="bar">
-                                    <div class="progress"></div>
-                                </div>
-                                <div class="label">Item C</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        // for raw material levels
+        google.charts.setOnLoadCallback(rawmaterialLevels);
+        function rawmaterialLevels() {
+          var data = google.visualization.arrayToDataTable([
+            ["Raw Material Type", "Amount", { role: "style" } ],
+            ["LDPE", parseInt("{{ LDPE }}"), "#97cfca"],
+            ["LLDPE", parseInt("{{ LLDPE }}"), "#619c17"],
+            ["HDPE", parseInt("{{ HDPE }}"), "#9c2f2f"],
+            ["PP", parseInt("{{ PP }}"), "#d7e374"],
+            ["PET", parseInt("{{ PET }}"),"#9c732c"],
+            ["PE", parseInt("{{ PE }}"),"#249c3f"],
+            ["HD", parseInt("{{ HD }}"),"#34919c"]
+          ]);
 
-    </div>
-    <div class="eight wide column">
-        <div class="ui container">
-            <div class="segments" style="margin:10px;">
-                <div class="ui green segment" style="text-align: center">
-                    <h3>Gantt Chart:</h3>
+          var view = new google.visualization.DataView(data);
+          view.setColumns([0, 1,
+                           { calc: "stringify",
+                             sourceColumn: 1,
+                             type: "string",
+                             role: "annotation" },
+                           2]);
 
-                    <div class="container">
-                        <div class="gantt-target"></div>
-                    </div>
-                    <script>
-                        var tasks = [{
-                                start: '2018-10-01',
-                                end: '2018-10-08',
-                                name: 'Redesign website',
-                                id: "Task 0",
-                                progress: 20
-                            },
-                            {
-                                start: '2018-10-03',
-                                end: '2018-10-06',
-                                name: 'Write new content',
-                                id: "Task 1",
-                                progress: 5,
-                                dependencies: 'Task 0'
-                            },
-                            {
-                                start: '2018-10-04',
-                                end: '2018-10-08',
-                                name: 'Apply new styles',
-                                id: "Task 2",
-                                progress: 10,
-                                dependencies: 'Task 1'
-                            },
-                            {
-                                start: '2018-10-08',
-                                end: '2018-10-09',
-                                name: 'Review',
-                                id: "Task 3",
-                                progress: 5,
-                                dependencies: 'Task 2'
-                            },
-                            {
-                                start: '2018-10-08',
-                                end: '2018-10-10',
-                                name: 'Deploy',
-                                id: "Task 4",
-                                progress: 0,
-                                dependencies: 'Task 2'
-                            },
-                            {
-                                start: '2018-10-11',
-                                end: '2018-10-11',
-                                name: 'Go Live!',
-                                id: "Task 5",
-                                progress: 0,
-                                dependencies: 'Task 4',
-                                custom_class: 'bar-milestone'
-                            },
-                        ]
-                        var gantt_chart = new Gantt(".gantt-target", tasks, {
-                            on_click: function(task) {
-                                console.log(task);
-                            },
-                            on_date_change: function(task, start, end) {
-                                console.log(task, start, end);
-                            },
-                            on_progress_change: function(task, progress) {
-                                console.log(task, progress);
-                            },
-                            on_view_change: function(mode) {
-                                console.log(mode);
-                            }
-                        });
-                        console.log(gantt_chart);
+          var options = {
+            hAxis:{format: 'short'},
+            width: 1000,
+            height: 300,
+            bar: {groupWidth: "90%"},
+            legend: { position: "none" },
+          };
+          var chart = new google.visualization.BarChart(document.getElementById("rawmaterialLevels"));
+          chart.draw(view, options);
+      }
+    </script>
+</div>
 
-                    </script>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    {% endblock %}
+{% endblock %}

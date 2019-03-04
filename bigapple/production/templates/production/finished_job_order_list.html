@@ -4,13 +4,14 @@
 <html>
 <h3 class="ui dividing header">Finished Job Order Report</h3>
 
-    <table class="ui celled padded table">
+    <table class = "ui striped table center aligned">
         <thead>
             <tr>
                 <th>Purchase Order ID</th>
                 <th>Client</th>
                 <th>Sales Invoice Issued</th>
                 <th>Dispatch Status</th>
+                <th>Date Delivered</th>
 
             </tr>
         </thead>
@@ -37,6 +38,15 @@
                         Already delivered
                     {% endif %}
                     </td>
+                    <td>
+                        {% if JobOrder.date_delivered is not None %}
+                        {{ JobOrder.date_delivered }}
+                        {% else %}
+                        N/A
+                        {% endif %}
+
+                    </td>
+
                 </tr>
                 {% endfor %}
             {% else %}

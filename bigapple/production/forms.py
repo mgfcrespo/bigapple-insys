@@ -16,7 +16,7 @@ class DateInput(forms.DateInput):
 class ClientPOForm(forms.ModelForm):
     class Meta:
         model = JobOrder
-        fields = ('date_required',)
+        fields = ('date_required', 'remarks')
         widgets = {
             'date_required': DateInput(),
         }
@@ -44,19 +44,14 @@ class ExtruderScheduleForm(forms.ModelForm):
             'datetime_out': DateTimeInput(),
         }
 
+
     final = forms.BooleanField(initial=False, required=False)
-    shift = forms.IntegerField(widget=forms.Select(choices=SHIFTS))
     operator = forms.ModelChoiceField(queryset=Employee.objects.filter(position="Extruder"))
-    datetime_in = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
-    datetime_out = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
-    remarks = forms.CharField(widget=forms.Textarea(attrs={'rows': '3'}))
-    machine = forms.ModelChoiceField(queryset=Machine.objects.all())
 
     def __init__(self, *args, **kwargs):
         super(ExtruderScheduleForm, self).__init__(*args, **kwargs)
         self.fields['remarks'].required = False
         self.fields['job_order'].queryset = JobOrder.objects.exclude(status='Delivered')
-
 
 class PrintingScheduleForm(forms.ModelForm):
     SHIFTS = (
@@ -81,7 +76,6 @@ class PrintingScheduleForm(forms.ModelForm):
     datetime_in = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
     datetime_out = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
     remarks = forms.CharField(widget=forms.Textarea(attrs={'rows': '3'}))
-    machine = forms.ModelChoiceField(queryset=Machine.objects.all())
 
     def __init__(self, *args, **kwargs):
         super(PrintingScheduleForm, self).__init__(*args, **kwargs)
@@ -120,7 +114,6 @@ class CuttingScheduleForm(forms.ModelForm):
     quantity = forms.IntegerField()
     line = forms.CharField(max_length=200, label='line', widget=forms.Select(choices=LINE))
     remarks = forms.CharField(widget=forms.Textarea(attrs={'rows': '3'}))
-    machine = forms.ModelChoiceField(queryset=Machine.objects.all())
 
     def __init__(self, *args, **kwargs):
         super(CuttingScheduleForm, self).__init__(*args, **kwargs)
@@ -150,7 +143,6 @@ class LaminatingScheduleForm(forms.ModelForm):
     datetime_in = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
     datetime_out = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
     remarks = forms.CharField(widget=forms.Textarea(attrs={'rows': '3'}))
-    machine = forms.ModelChoiceField(queryset=Machine.objects.all())
 
     def __init__(self, *args, **kwargs):
         super(LaminatingScheduleForm, self).__init__(*args, **kwargs)

@@ -3,9 +3,10 @@
 {% block content %}
 <h3 class="ui dividing header">{{ title }}</h3>
 
-    <table class="ui stripped table">
+    <table class="ui stripped center aligned table">
         <thead>
         <tr>
+            <th>Employee ID</th>
             <th>Person</th>
             <th>Address</th>
             <th>Email</th>
@@ -18,19 +19,12 @@
         {% if data %}
             {% for data in data  %}
             <tr>
+                <td><a href="{% url 'sales:employee_details' data.id %}">{{ data.id }}</a></td>
                 <td>{{ data.full_name }}</td>
                 <td>{{ data.address }}</td>
                 <td>{{ data.email }}</td>
                 <td>{{ data.contact_number }}</td>
                 <td>{{ data.position }}</td>
-                <td>
-                    <a style = "padding: 5px;"  href="{% url 'sales:employee_edit' data.id %}">
-                        <i class="yellow edit icon"></i>
-                    </a>
-                    <a onclick="return confirm('Are you sure?')" style = "padding: 5px;" href="{% url 'sales:employee_delete' data.id %}" >
-						<i class="red trash icon"></i>
-					</a>
-                </td>
             </tr>
             {% endfor %}
         {% else %}

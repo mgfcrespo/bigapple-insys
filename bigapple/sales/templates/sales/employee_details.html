@@ -1,0 +1,113 @@
+{% extends 'sidebar.html' %}
+{% block content %}
+<div class="">
+
+    <h3 class="ui dividing header">{{ title }}</h3>
+        <div class="ui form">
+            <div class="ui three column grid">
+                <div class="column">
+                    <div class="field">
+                        <label>ID Number</label>
+                        {{ data.id }}
+                    </div>
+                    <div class="field">
+                        <label>First Name</label>
+                        {{ data.first_name }}
+                    </div>
+                    <div class="field">
+                        <label>Last Name</label>
+                        {{ data.last_name }}
+                    </div>
+                    <div class="field">
+                        <label>Position</label>
+                        {{ data.position }}
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="field">
+                        <label>SSS</label>
+                        {{ data.sss }}
+                    </div>
+                    <div class="field">
+                        <label>Philhealth</label>
+                        {{ data.philhealth }}
+                    </div>
+                    <div class="field">
+                        <label>Pagibig</label>
+                        {{ data.pagibig }}
+                    </div>
+                    <div class="field">
+                        <label>Tin</label>
+                        {{ data.tin }}
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="field">
+                      <label>Address</label>
+                      {{ data.address }}
+                    </div>
+                    <div class="field">
+                        <label>Contact Nmber</label>
+                        {{ data.contact_number }}
+                    </div>
+                    <div class="field">
+                        <label>Email Address</label>
+                        {{ data.email }}
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 15px;" class="center">
+                <a class="ui mini yellow basic button" style="width: 100px;" href="{% url 'sales:employee_edit' data.id %}">Edit</a>
+                <a a onclick="return confirm('Are you sure?')" class="ui mini red basic button" href="{% url 'sales:employee_delete' data.id %}" style="width: 100px;">Delete</a>
+            </div>
+        </div>
+
+        <div id="worker_schedule" style="display: none;">
+        <div class="ui horizontal divider">Worker Schedule</div>
+
+        <table class="ui striped center aligned table">
+            <thead>
+                <th>
+                    Job Order Number
+                </th>
+                <th>
+                    Shift
+                </th>
+                <th>
+                    Role
+                </th>
+                <th>
+                    Machine Number
+                </th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                       <a href="">00000</a>
+                    </td>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        Extruder
+                    </td>
+                    <td>
+                        1
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+</div>
+
+    <script>
+        var data_position = '{{ data.position }}'.toString();
+
+        if (data_position == "Cutting" || data_position == "Extruder" || data_position == "Printing" || data_position == "Delivery" || data_position == "Line Leader" ){
+            document.getElementById("worker_schedule").style.display = "inline";
+        }
+        else{
+        }
+    </script>
+
+{% endblock %}

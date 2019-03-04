@@ -1,68 +1,103 @@
 {% extends 'sidebar.html' %}
 {% block content %}
 
-<div>
     <h3 class="ui dividing header">Sales Dashboard</h3>
-
-    <div>
-        <div class="ui horizontal segments">
-            <div class="ui segment">
-                <h4 class="ui dividing header">Client Purchase Orders </h4>
-                <div>
-                    <table class="ui striped table center aligned">
-                        <thead>
-                        <tr>
-                          <th>Purchase Order ID</th>
-                          <th>Date Issued</th>
-                          <th>Date Required</th>
-                          <th>Total Amount</th>
-                          <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        {% if JobOrder_data5 %}
-                            {% for each in JobOrder_data5 %}
-                                <tr>
-                                    <td><a href="{% url 'sales:po-detail-view' each.id %}"> {{ each.id }}</a></td>
-                                    <td>{{ each.date_issued }}</td>
-                                    <td>{{ each.date_required }}</td>
-                                    <td>{{ each.total_amount }}</td>
-                                    <td>{% if each.status == 'Waiting' and x == 'Employee' %}
-                                        <a href="{% url 'sales:confirm-client-po' each.id %}">{{ each.status }}</a>
-                                        {% else %}
-                                        {{ each.status }}</td>
-                                        {% endif %}
-                                </tr>
-                                {% endfor %}
-                            {% else %}
-                            <td>
-                                <p>There are no Purchase Orders to display</p>
-                            </td>
-                            {% endif %}
-                        </tbody>
-                         <tfoot>
-                            <tr>
-                                <th colspan="5">
-                                    <a href="{% url 'sales:po-list-view' %}">See more</a>
-                                </th>
-                            </tr>
-                         </tfoot>
-                    </table>
-                </div>
-
-            </div>
-            <div class="ui segment">
-                <h4 class="ui dividing header">Sales Comparison</h4>
-                <div id="POComparisson"></div>
-
-            </div>
-
+    <div class="ui horizontal segments">
+        <div class="ui segment">
+            <h4 class="ui dividing header">Purchase Order Status </h4>
+            <div id="salesRatio"></div>
+        </div>
+        <div class="ui segment">
+            <h4 class="ui dividing header">Sales Comparison</h4>
+            <div id="POComparison"></div>
         </div>
     </div>
+    <div class="ui horizontal segments">
         <div class="ui segment">
+        <h4 class="ui dividing header">Client Purchase Orders </h4>
+            <table class="ui striped table center aligned">
+                <thead>
+                <tr>
+                  <th>Purchase Order ID</th>
+                  <th>Date Issued</th>
+                  <th>Date Required</th>
+                  <th>Total Amount</th>
+                  <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% if JobOrder_data5 %}
+                    {% for each in JobOrder_data5 %}
+                        <tr>
+                            <td><a href="{% url 'sales:po-detail-view' each.id %}"> {{ each.id }}</a></td>
+                            <td>{{ each.date_issued }}</td>
+                            <td>{{ each.date_required }}</td>
+                            <td>{{ each.total_amount }}</td>
+                            <td>{% if each.status == 'Waiting' and x == 'Employee' %}
+                                <a href="{% url 'sales:confirm-client-po' each.id %}">{{ each.status }}</a>
+                                {% else %}
+                                {{ each.status }}
+                            </td>
+                                {% endif %}
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <td>
+                        <p>There are no Purchase Orders to display</p>
+                    </td>
+                    {% endif %}
+                </tbody>
+                 <tfoot>
+                    <tr>
+                        <th colspan="5">
+                            <a href="{% url 'sales:po-list-view' %}">See more</a>
+                        </th>
+                    </tr>
+                 </tfoot>
+            </table>
+        </div>
+        <div class="ui segment">
+    <h4 class="ui dividing header">Sales Invoices</h4>
+    <table class="ui striped table center aligned">
+        <thead>
+            <tr>
+                <th>Sales Invoice</th>
+                <th>Date Issued</th>
+                <th>Date Due</th>
+                <th>Total Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if invoice %}
+            {% for SalesInvoice in invoice  %}
+            <tr>
+                <td><a href="{% url 'sales:sales_invoice_details' SalesInvoice.id %}"> {{ SalesInvoice.id }} </a></td>
+                <td> {{ SalesInvoice.date_issued }} </td>
+                <td> {{ SalesInvoice.date_due }} </td>
+                <td> {{ SalesInvoice.total_amount_computed }} </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+        <td>
+            <p>There are no Invoices to display</p>
+        </td>
+        {% endif %}
+        </tbody>
+        <tfoot class="full-width">
+            <tr>
+                <th colspan="5">
+                    <a href="{%url 'sales:sales_invoice_list'%}">See more</a>
+                </th>
+            </tr>
+        </tfoot>
+
+    </table>
+</div>
+    </div>
+    <div class="ui segment">
             <h4 class="ui dividing header">Rush Orders</h4>
-            <div class="ui three cards">
+            <div class="ui four cards">
                 {% for rush_order in rush_order %}
                         <div class="ui card">
                             <div class="content center aligned">
@@ -75,7 +110,7 @@
                             </div>
                             <div class="content">
                                 <div class="row">
-                                    Items: {{ rush_order.products }}
+                                    Items: {{ rush_order.items }}
                                 </div>
                                 <div class="row">
                                     Total Amount: {{ rush_order.total_amount }}
@@ -92,8 +127,8 @@
                             </div>
                             <div class="content center aligned">
                               <div class="ui two buttons">
-                                <div class="ui green button">Approve</div>
-                                <div class="ui red button">Decline</div>
+                                <a class="ui positive button" href="{% url 'sales:rush_order_assessment' rush_order.id %}"><i class="check icon"></i></a>
+                                <div class="ui negative button"><i class="close icon"></i></div>
                               </div>
                             </div>
                         </div>
@@ -102,41 +137,66 @@
         </div>
 
     <h3 class="ui dividing header">Production Dashboard</h3>
-    <div class="ui horizontal segments">
 
+    <div class="ui horizontal segments">
+         <div class="ui segment" style="height: 100%; width: 100%">
+            {{gantt|safe}}
+        </div>
     </div>
 
-</div>
     <script>
-
-        google.charts.load('current', {'packages':['corechart']});
+        google.charts.load('current', {'packages':['corechart', 'bar']});
 
         //for sales2
         google.charts.setOnLoadCallback(salesComparisonChart);
 
         function salesComparisonChart() {
-            var POComparisson = google.visualization.arrayToDataTable([
-                ['{{month}}','{{thisYear}}', '{{lastYear}}'],
-                ['NOV', 200, 203],
-                ['OCT', 220, 213],
-                ['SEPT', 203, 204],
-                ['AUG', 200, 203],
-                ['JULY', 229, 221],
+
+
+            var POComparison = google.visualization.arrayToDataTable([
+                ['Year', '{{lastMonth}}', "{{thisMonth}}"],
+                ['{{lastYear}}', parseInt('{{POs_lastMonthLastYear.count}}'), parseInt('{{POs_lastYear.count}}')],
+                ['{{thisYear}}', parseInt('{{POs_lastMonth.count}}'), parseInt('{{POs.count}}')]
             ]);
 
             var options = {
-              curveType: 'function',
-              width: 600,
+              width: 400,
               height: 300,
-              legend: { position: 'bottom' }
+              legend: { position: 'none' }
             };
 
-            var chart2 = new google.visualization.LineChart(document.getElementById('POComparisson'));
+            var chart2 = new google.charts.Bar(document.getElementById('POComparison'));
 
-            chart2.draw(POComparisson, options);
+            chart2.draw(POComparison, options);
           }
 
+        //for PO ratio
+            google.charts.setOnLoadCallback(drawChart);
+
+            function drawChart() {
+            var Sales1 = google.visualization.arrayToDataTable([
+              ['Status', 'Amount'],
+              ['Waiting', parseInt("{{ status_waiting }}")],
+              ['On Queue', parseInt("{{ status_onqueue }}")],
+              ['Extrusion', parseInt("{{ status_extrusion }}")],
+              ['Printing', parseInt("{{ status_printing }}")],
+              ['Cutting', parseInt("{{ status_cutting }}")],
+              ['Packaging', parseInt("{{ status_packaging }}")],
+              ['Ready for Delivery', parseInt("{{ status_ready }}")],
+            ]);
+
+            var options = {
+              title: 'PO Status',
+              width: 500,
+              height: 300,
+              pieHole: .3,
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('salesRatio'));
+            chart.draw(Sales1, options);
+          }
     </script>
+
 </div>
 
 {% endblock %}

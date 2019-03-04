@@ -39,10 +39,11 @@ urlpatterns = [
 			#employee urls
 			path('employee-add/', views.employee_add, name='employee_add'),
 			path('employee-list/', views.employee_list, name='employee_list'),
+			path('employee-details/<int:id>/', views.employee_details, name='employee_details'),
 			path('employee-edit/<int:id>/', views.employee_edit, name='employee_edit'),
 			path('employee-delete/<int:id>/', views.employee_delete, name='employee_delete'),
 
 			#demand forecast
-			path('client-demand-forecast/', views.demand_list, name='demand_list'),
-			path('client-demand-forecast/<int:id>/', views.demand_forecast, name='demand_forecast_details'),
+			path('client-demand-forecast/', views.demand_forecast, name='demand_forecast'),
+			path('client-demand-forecast/<int:id>/', views.demand_forecast_details, name='demand_forecast_details'),
 ];
