@@ -14,7 +14,6 @@
         </thead>
         <tbody>
             {% for rush_order in rush_orders %}
-            {% if rush_order.calculate_leadtime > 0 %}
             <tr>
                 <td>
                     {{ rush_order.client }}
@@ -28,11 +27,16 @@
                 <td>
                     {{ rush_order.date_required }}
                 </td>
+                {% if rush_order.calculate_leadtime > 0 %}
                 <td>
                     {{ rush_order.calculate_leadtime }}
                 </td>
+                {% else %}
+                <td>
+                    PAST DATE REQUIRED
+                </td>
+                {% endif %}
             </tr>
-            {% endif %}
             {% endfor %}
         </tbody>
     </table>

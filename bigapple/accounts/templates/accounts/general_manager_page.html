@@ -18,41 +18,86 @@
         <div class="ui horizontal segments">
             <div class="ui segment">
                 <h4 class="ui dividing header">Rush Orders</h4>
+                {% if rush_order %}
                 <div class="ui two cards">
                     {% for rush_order in rush_order %}
-                            <div class="ui card">
-                                <div class="content center aligned">
-                                    <div class="header">
-                                        <h3>{{ rush_order }}</h3>
-                                    </div>
-                                    <div class="meta">
-                                        {{ rush_order.client }}
-                                    </div>
-                                </div>
-                                <div class="content">
-                                    <div class="row">
-                                        Total Amount: {{ rush_order.total_amount }}
-                                    </div>
-                                    <div class="row">
-                                        Date Issued: {{ rush_order.date_issued }}
-                                    </div>
-                                    <div class="row">
-                                        Date Required: {{ rush_order.date_required }}
-                                    </div>
-                                    <div>
-                                        Remarks: {{ rush_order.remarks }}
-                                    </div>
-                                </div>
-                                <div class="content center aligned">
-                                    <a class="ui yellow button" href="{% url 'sales:rush_order_assessment' rush_order.id %}">View Assessment</a>
-                                </div>
+                    <div class="ui card">
+                        <div class="content center aligned">
+                            <div class="header">
+                                <h3>{{ rush_order }}</h3>
                             </div>
-                    {% endfor %}
+                            <div class="meta">
+                                {{ rush_order.client }}
+                            </div>
+                        </div>
+                        <div class="content">
+                            <div class="row">
+                                Total Amount: {{ rush_order.total_amount }}
+                            </div>
+                            <div class="row">
+                                Date Issued: {{ rush_order.date_issued }}
+                            </div>
+                            <div class="row">
+                                Date Required: {{ rush_order.date_required }}
+                            </div>
+                            <div>
+                                Remarks: {{ rush_order.remarks }}
+                            </div>
+                        </div>
+                        <div class="content center aligned">
+                            <a class="ui yellow button" href="{% url 'sales:rush_order_assessment' rush_order.id %}">View Assessment</a>
+                        </div>
+                    </div>
+                {% endfor %}
                 </div>
+                {% else %}
+                <div class="ui positive icon message">
+                    <i class="check icon"></i>
+                    <div class="content">
+                        <div class="header">
+                            No rush orders!
+                        </div>
+                        <p>
+                            There are currently no pending rush orders.
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
             </div>
             <div class="ui segment">
                 <h4 class="ui dividing header">Sales Invoices</h4>
-                <table>
+                <table class="ui striped table center aligned">
+                    <thead>
+                        <tr>
+                            <th>Sales Invoice #</th>
+                            <th>Date Issued</th>
+                            <th>Date Due</th>
+                            <th>Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% if invoice %}
+                        {% for SalesInvoice in invoice  %}
+                        <tr>
+                            <td><a href="{% url 'sales:sales_invoice_details' SalesInvoice.id %}"> {{ SalesInvoice.id }} </a></td>
+                            <td> {{ SalesInvoice.date_issued }} </td>
+                            <td> {{ SalesInvoice.date_due }} </td>
+                            <td> {{ SalesInvoice.total_amount_computed }} </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <td>
+                        <p>There are no Invoices to display</p>
+                    </td>
+                    {% endif %}
+                    </tbody>
+                    <tfoot class="full-width">
+                        <tr>
+                            <th colspan="5">
+                                <a href="{%url 'sales:sales_invoice_list'%}">See more</a>
+                            </th>
+                        </tr>
+                    </tfoot>
 
                 </table>
             </div>

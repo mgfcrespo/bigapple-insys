@@ -8,6 +8,7 @@
 		  <th class="two wide">Purchase Order ID</th>
 		  <th class="two wide">Date Issued</th>
 		  <th class="two wide">Date Required</th>
+		  <th class="two wide">Rush Order</th>
 		  <th class="two wide">Total Amount</th>
 		  <th class="one wide">Status</th>
 		</tr>
@@ -19,6 +20,13 @@
 				<td><a href="{% url 'sales:po-detail-view' each.id %}"> {{ each.id }}</a></td>
 				<td>{{ each.date_issued }}</td>
 				<td>{{ each.date_required }}</td>
+				<td>
+                        {% if each.rush_order == 0 %}
+                            No
+                        {% else %}
+                            Yes
+                        {% endif %}
+                    </td>
 				<td>{{ each.total_amount }}</td>
 				<td>{% if each.status == 'Waiting' and x == 'Employee' %}
 					{% if each.rush_order == 0 %}

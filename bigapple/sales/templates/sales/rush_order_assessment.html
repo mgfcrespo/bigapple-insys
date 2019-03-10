@@ -18,8 +18,10 @@
                     <form method="post">
                         {% csrf_token %}
                         <div class="ui two buttons">
-                            <input type="submit" class="ui green button" value="Approve" name="approve_btn">
-                            <input type="submit" class="ui red button" value="Deny" name="deny_btn">
+
+                            <input type="submit" class="ui green button" value="Approve" id="approve_btn" name="approve_btn">
+                            <input type="submit" class="ui red button" value="Deny" id="deny_btn" name="deny_btn">
+
                         </div>
                     </form>
                 </td>

@@ -218,18 +218,7 @@ def confirm_client_po(request, pk):
                 break
 
     #matreq form
-    if request.method == "POST":
-        supplier = Supplier.objects.get(id=2)
-        delivery_date = date.today() + timedelta(days=7)
-        item = Inventory.objects.get(item='Generic Cylinder')
-        supplierpo_item_formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm, extra=1,
-                                                        can_delete=True)
-        form = SupplierPO(supplier=supplier, delivery_date=delivery_date, date_issued=date.today())
-        form.save()
-        form_item = SupplierPOItems(supplier_po = form, item=item, quantity=cylinder_count)
-        form_item.save()
-        form.total_amount = form_item.total_price
-        form.save()
+    if request.method == "POST" and 'confirm_btn' in request.POST:
 
         if matreq:
             clientpo.status = "On Queue"
@@ -250,9 +239,21 @@ def confirm_client_po(request, pk):
                         #matreq.item = Inventory.objects.filter(rm_type=x).first()
                         #matreq.save()
 
-                    print(form)
-
             if each.printed == 1:
+                supplier = Supplier.objects.get(id=2)
+                delivery_date = date.today() + timedelta(days=7)
+                item = Inventory.objects.get(item='Generic Cylinder')
+
+                supplierpo_item_formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm,
+                                                                extra=1,
+                                                                can_delete=True)
+                form = SupplierPO(supplier=supplier, delivery_date=delivery_date, date_issued=date.today())
+                form.save()
+                form_item = SupplierPOItems(supplier_po=form, item=item, quantity=cylinder_count)
+                form_item.save()
+                form.total_amount = form_item.total_price
+                form.save()
+
                 form2 = MaterialRequisitionForm(request.POST)
                 if form2.is_valid():
                         ink_form = form2.save(commit=False)
@@ -505,13 +506,7 @@ def rush_order_list(request):
 def rush_order_assessment(request, pk):
     rush_order = JobOrder.objects.get(pk=pk)
     client = rush_order.client
-
-    if request.POST.get('approve_btn'):
-        rush_order.status = 'On Queue'
-        rush_order.save()
-    elif request.POST.get('deny_btn'):
-        rush_order.rush_order = 0
-        rush_order.save()
+    items = ClientItem.objects.filter(client_po = rush_order)
 
     #credit status
     if client.overdue_balance > 0:
@@ -522,22 +517,20 @@ def rush_order_assessment(request, pk):
         credit_status = False
 
     #cost shit
-    items = ClientItem.objects.filter(client_po = rush_order)
     mark_up = ProductionCost.objects.get(cost_type='Mark_up')
+    mark_up = mark_up.cost
     electricity = ProductionCost.objects.get(cost_type='Electricity')
 
     for every in items:
         price = every.calculate_price_per_piece() * every.quantity
         profit = 0
 
-        profit += (10000 * (
+        profit += float(mark_up) * (10000 * (
             every.calculate_price_per_piece()) - electricity.cost - (1600/every.quantity) - \
                    (300/every.quantity) - (
                                every.length * every.width * every.thickness )) / (
                               every.length * every.width * every.thickness )
-
-
-    #matreq
+    #matreq determinant
     products = []
     material = []
     cylinder_count = 0
@@ -551,7 +544,7 @@ def rush_order_assessment(request, pk):
             inventory = Inventory.objects.filter(rm_type=x)
             if inventory.exists():
                 for y in inventory:
-                    if y.quantity > each.quantity / 1000:
+                    if y.quantity > each.quantity/1000:
                         matreq = True
                     else:
                         matreq = False
@@ -562,36 +555,27 @@ def rush_order_assessment(request, pk):
                 matreq = False
                 break
                 break
+        print('matreq first run:')
+        print(matreq)
+
         if each.printed == 1:
-            cylinder_count = int(each.quantity / 10000)
+            cylinder_count = int(each.quantity/10000)
             ink = Inventory.objects.filter(Q(item_type='Ink') & Q(item=each.color))
             if ink.exists():
                 color = str(each.color)
-                color_count = int(each.quantity / 2500)
+                color_count = int(each.quantity/2500)
                 matreq = True
             else:
                 matreq = False
                 break
                 break
+    print('matreq for second run:')
+    print(matreq)
 
-    # matreq form
+    #matreq form
     if request.method == "POST":
-        supplier = Supplier.objects.get(id=2)
-        delivery_date = date.today() + timedelta(days=7)
-        item = Inventory.objects.get(item='Generic Cylinder')
-        supplierpo_item_formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm, extra=1,
-                                                        can_delete=True)
-        form = SupplierPO(supplier=supplier, delivery_date=delivery_date, date_issued=date.today())
-        form.save()
-        form_item = SupplierPOItems(supplier_po=form, item=item, quantity=cylinder_count)
-        form_item.save()
-        form.total_amount = form_item.total_price
-        form.save()
-
         if matreq:
-            clientpo.status = "On Queue"
-            clientpo.save()
-
+            print('MATREQ TRUE')
             for every in items:
                 for x in material:
                     form1 = MaterialRequisitionForm(request.POST)
@@ -599,23 +583,38 @@ def rush_order_assessment(request, pk):
                         new_form = form1.save(commit=False)
                         new_form.client_item = every
                         new_form.item = Inventory.objects.filter(rm_type=x).first()
-                        new_form.quantity = every.quantity / 1000  # TODO: Ensure quantity (raw mat to product ratio)
+                        new_form.quantity = every.quantity/1000 #TODO: Ensure quantity (raw mat to product ratio)
                         new_form.save()
+                        print('MATREQ FORM SAVED')
 
-                        # matreq = MaterialRequisition.objects.get(id = new_form.pk)
-                        # matreq.client_item = every
-                        # matreq.item = Inventory.objects.filter(rm_type=x).first()
-                        # matreq.save()
+                        #matreq = MaterialRequisition.objects.get(id = new_form.pk)
+                        #matreq.client_item = every
+                        #matreq.item = Inventory.objects.filter(rm_type=x).first()
+                        #matreq.save()
 
-                    print(form)
+            if each.printed == 1:
+                supplier = Supplier.objects.get(id=2)
+                delivery_date = date.today() + timedelta(days=7)
+                item = Inventory.objects.get(item='Generic Cylinder')
 
-            form2 = MaterialRequisitionForm(request.POST)
-            if form2.is_valid():
-                ink_form = form2.save(commit=False)
-                ink_form.client_item = every
-                ink_form.item = Inventory.objects.get(item=color)
-                ink_form.quantity = color_count
-                ink_form.save()
+                supplierpo_item_formset = inlineformset_factory(SupplierPO, SupplierPOItems,
+                                                                form=SupplierPOItemsForm, extra=1,
+                                                                can_delete=True)
+                form = SupplierPO(supplier=supplier, delivery_date=delivery_date, date_issued=date.today())
+                form.save()
+                form_item = SupplierPOItems(supplier_po=form, item=item, quantity=cylinder_count)
+                form_item.save()
+                form.total_amount = form_item.total_price
+                form.save()
+
+                form2 = MaterialRequisitionForm(request.POST)
+                if form2.is_valid():
+                        ink_form = form2.save(commit=False)
+                        ink_form.client_item = every
+                        ink_form.item = Inventory.objects.get(item=color)
+                        ink_form.quantity = color_count
+                        ink_form.save()
+
 
     #TODO: Insert current job to generic schedule and show if other JOs will meet date_due
     #simulated sched
@@ -636,6 +635,19 @@ def rush_order_assessment(request, pk):
     print('df after append: ')
     print(df)
     simulated_sched = final_gantt.generate_overview_gantt_chart(df)
+
+    if 'approve_btn' in request.POST:
+        rush_order.status = 'On Queue'
+        rush_order.save()
+
+        return redirect('sales:rush_order_list')
+
+    elif 'deny_btn' in request.POST:
+        print('denied')
+        rush_order.rush_order = 0
+        rush_order.save()
+
+        return redirect('sales:rush_order_list')
 
     context = {
         'client': client,
@@ -776,10 +788,9 @@ def demand_forecast_details(request, id):
     for every in i:
         for each in client_po:
             if every.client_po_id == each.id:
-                items.append(every)
+                items.append(every.products_id)
 
     item = most_common(items)
-    p = item.products_id
     cursor = connection.cursor()
     forecast_ses = []
     forecast_hwes = []
@@ -787,7 +798,7 @@ def demand_forecast_details(request, id):
     forecast_arima = []
 
     query = 'SELECT po.date_issued, poi.quantity FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
-            'po.client_id = '+str(id)+' AND poi.client_po_id = po.id AND poi.products_id = '+str(p)
+            'po.client_id = '+str(id)+' AND poi.client_po_id = po.id AND poi.products_id = '+str(item)
 
     cursor.execute(query)
     df = pd.read_sql(query, connection)
@@ -802,8 +813,8 @@ def demand_forecast_details(request, id):
     forecast_hwes.extend(b)
     c = TimeSeriesForecasting.forecast_moving_average(df)
     forecast_moving_average.extend(c)
-    d = TimeSeriesForecasting.forecast_arima(df)
-    forecast_arima.extend(d)
+    #d = TimeSeriesForecasting.forecast_arima(df)
+    #forecast_arima.extend(d)
 
     context = {
         #'forecast_decomposition': forecast_decomposition,

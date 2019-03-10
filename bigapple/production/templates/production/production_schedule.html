@@ -12,6 +12,16 @@
         </div>
     </div>
 
+    <div>
+        <form method="post">
+            {% csrf_token %}
+        <input type="submit" class="ui yellow button" value="Save" id="save_btn" name="save_btn">
+        </form>
+        <span data-tooltip="Click this button to save the information" data-position="right center" data-inverted="" data-variation="mini">
+            <i class="yellow circular question mark icon"></i>
+        </span>
+    </div>
+
     <div style="height: 100%; width: 100%">
         {{final_gantt|safe}}
     </div>

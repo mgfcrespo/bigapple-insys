@@ -1,0 +1,185 @@
+{% extends 'sidebar.html' %}
+{% block content %}
+
+<h3 class="ui dividing header">Production Report</h3>
+{% if jo %}
+    {% for x in jo %}
+    <h4 class="ui dividing header">{{ x.id }} - {{ x.client.company }}</h4>
+    <div class="ui two column grid">
+        <div class="column">
+            <table class="ui structured striped table center aligned">
+                <thead>
+                    <tr>
+                        <th colspan="5">
+                            Ideal
+                            {% for i in ex %}
+
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Time In
+                        </th>
+                        <th>
+                            Time Out
+                        </th>
+                        <th>
+                            Operator
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ i.sked_mach }}
+                        </td>
+                        <td>
+                            {{ i.sked_in }}
+                        </td>
+                        <td>
+                            {{ i.sked_out }}
+                        </td>
+                        <td>
+                            {{ i.sked_op }}
+                        </td>
+                        <td>
+                            {% for j in item %}
+                                {% if j.client_po_id == x.id %}
+                                    {{ j.quantity }}
+                                    {{ break }}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+        <div class="column">
+            <table class="ui structured striped table center aligned">
+                <thead>
+                    <tr>
+                        <th colspan="5">
+                            Actual
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Time In
+                        </th>
+                        <th>
+                            Time Out
+                        </th>
+                        <th>
+                            Operator
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ i.machine }}
+                        </td>
+                        <td>
+                            {% if i.sked_in >= i.datetime_in %}
+                            <p style="color: red">
+                                {{ i.datetime_in }}
+                            </p>
+                            {% else %}
+                            <p style="color:green;">
+                                {{ i.datetime_in }}
+                            </p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if i.sked_out <= i.datetime_out %}
+                            <p style="color: red">
+                                {{ i.datetime_out }}
+                            </p>
+                            {% else %}
+                            <p style="color:green;">
+                                {{ i.datetime_out }}
+                            </p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ i.operator.last_name }}
+                        </td>
+                        <td>
+                            {% for k in item %}
+                                {% if k.client_po_id == x.id %}
+
+                                    {% if k.quantity < i.output_kilos %}
+                                    <p style="color: red">
+                                        {{ k.quantity }}
+                                    </p>
+                                    {% else %}
+                                    <p style="color:green;">
+                                        {{ k.quantity }}
+                                    </p>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <th></th>
+                    <th>
+                        {% if i.sked_in >= i.datetime_in %}
+                                <p style="color: red">behind schedule</p>
+                            {% else %}
+                                <p style="color: green">on time</p>
+                            {% endif %}
+                    </th>
+                    <th>
+                        {% if i.sked_out <= i.datetime_out %}
+                            <p style="color: red">behind schedule</p>
+                        {% else %}
+                            <p style="color: green">on time</p>
+                        {% endif %}
+                    </th>
+                    <th></th>
+                    <th>
+                        {% if x.quantity < x.ideal_quantity %}
+                        <p style="color: red">
+                            below the 10% margin
+                        </p>
+                        {% else %}
+                        <p style="color:green;">
+                            within the 10% margin
+                        </p>
+                        {% endif %}
+                    </th>
+                </tfoot>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="ui mini icon warning message">
+        <i class="exclamation triangle icon"></i>
+        <div class="content">
+            <p>
+                There are no reports generated.
+            </p>
+        </div>
+    </div>
+{% endif %}
+
+
+
+{% endblock %}

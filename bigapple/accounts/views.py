@@ -93,6 +93,7 @@ def user_page_view(request):
 
         client = Client.objects.filter(accounts_id=id)
         employee = Employee.objects.filter(accounts_id=id)
+        client_po = []
         if client:
             client_po = JobOrder.objects.filter(client=Client.objects.get(accounts_id=id)).exclude(status='Delivered')[:5]
             x = 'Client'

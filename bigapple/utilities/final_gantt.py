@@ -41,6 +41,9 @@ def get_finish_time(current, interval):
     dt = "".join(lst)
     return dt
 
+def get_worker(i):
+    worker_dict = {0: 'Extruder', 1: 'Printing', 2: 'Cutting'}
+    return worker_dict.get(i)
 
 def get_machine_type(i):
     machine_dict = {0: 'Extruder', 1: 'Printing', 2: 'Laminating', 3: 'Cutting'}
@@ -57,7 +60,7 @@ def chart(task_list, filename):
     fig = ff.create_gantt(task_list, index_col='Resource', show_colorbar=True, group_tasks=True, showgrid_y=True, showgrid_x=True)
     # plot(fig, filename=filename)
     return plot(fig, filename=filename, include_plotlyjs=False, output_type='div')
-    # print(fig)
+    #print(fig)
 
 
 # Solves the job shop problem using OR-tools constraint solver, returns a dictionary with the solution
@@ -91,16 +94,16 @@ def schedule(df, filename):
         # Include Printing and Laminating machine
         # Standard lead time: Plain - 1-2 weeks; Printed - 2-4 weeks
         # IN HOURS:
-            # Extruder = 4 days * 20 hours every 20000 pieces = 80hr/10000pcs
-            # Cutting = 3 days * 20 hours every 20000 pieces = 60hr/10000pcs
-            # Laminating = 3 days * 20 hours every 20000 pieces = 60hr/10000pcs
-            # Printing = 5 days * 20 hours  every 20000 pieces = 100hr/10000pcs
+            # Extruder = 4 days * 20 hours every 20000 pieces = 80hr/50000pcs
+            # Cutting = 3 days * 20 hours every 20000 pieces = 60hr/50000pcs
+            # Laminating = 3 days * 20 hours every 20000 pieces = 60hr/50000pcs
+            # Printing = 5 days * 20 hours  every 20000 pieces = 100hr/50000pcs
         item = ClientItem.objects.get(client_po_id=df.ix[i]['id'])
         quantity = item.quantity
-        extrusion_time = int((quantity * 80)/10000)
-        cutting_time = int((quantity * 60)/10000)
-        laminating_time = int((quantity * 60)/10000)
-        printing_time = int((quantity * 100)/10000)
+        extrusion_time = int((quantity * 80)/50000)
+        cutting_time = int((quantity * 60)/50000)
+        laminating_time = int((quantity * 60)/50000)
+        printing_time = int((quantity * 100)/50000)
 
         if df.ix[i]['printed'] == 1 and df.ix[i]['laminate'] == 1:
             processing_times.append([extrusion_time, printing_time, laminating_time, cutting_time]) # Extrude, Print, Laminate, Cut
@@ -145,6 +148,14 @@ def schedule(df, filename):
     for i in all_jobs:
         for j in range(0, len(machines[i]) - 1):
             solver.Add(all_tasks[(i, j + 1)].StartsAfterEnd(all_tasks[(i, j)]))
+
+    #TODO Consider date_required of job
+    '''
+    for job in all_jobs:
+        for task_id in range(0, len(jobs_count) - 1):
+            solver.Add(all_tasks[job, task_id +
+                                1].start >= all_tasks[job, task_id].end)
+    '''
 
     # Set the objective.
     obj_var = solver.Max([all_tasks[(i, len(machines[i])-1)].EndExpr()
@@ -198,8 +209,6 @@ def schedule(df, filename):
                 job_num = int(temp_name)
                 resource_list.append(str(df.ix[job_num, 'id']))  # Add resource (aka Job ID)
                 description_list.append(df.ix[job_num, 'material_type'])  # Add material used to description list
-                #TODO Worker list
-                #worker_list.append(df.ix[job_num, 'worker'])
 
             for j in range(0, seq_size):
                 t = seq.Interval(sequence[j]);
@@ -208,16 +217,30 @@ def schedule(df, filename):
                 # Add finish time
                 finish_list.append(get_finish_time(current_time, collector.Value(0, t.EndExpr().Var())))
 
+            #TODO Include worker in schedule
+            '''
+                        for j in range(0, seq_size):
+                            #t = seq.Interval(sequence[j]);
+                            worker_list.append(get_worker(j))
+            '''
+
             for j in range(0, seq_size):
                 temp_dict = {'Task': machine_list[i],
                              'Start': start_list.pop(0),
                              'Finish': finish_list.pop(0),
                              'Resource': resource_list.pop(0),
-                             'Description': description_list.pop(0)
+                             'Description': description_list.pop(0),
+                            # 'Worker' : worker_list.pop(0)
                              }
                 plot_list.append(temp_dict)
 
+        print('sched() plot_list:')
+        print(plot_list)
+
         if filename == 'specific':
+            return plot_list
+
+        elif filename == 'save':
             return plot_list
 
         else:
@@ -252,11 +275,18 @@ def generate_specific_gantt_chart(df, machines, machine_type):
                          'Resource': curr_task['Resource'],
                          'Description': curr_task['Description']
                          }
+            print(temp_dict)
             plot_list.append(temp_dict)
 
             count += 1
 
     return chart(plot_list, filename)
+
+def get_sched_data(df):
+    data = schedule(df, 'save')
+
+    return data
+
 
 
 def main():

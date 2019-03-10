@@ -21,4 +21,6 @@ urlpatterns = [
         path('laminating-machine-schedule/', views.laminating_machine_schedule, name='laminating_machine_schedule'),
         path('cutting-machine-schedule/', views.cutting_machine_schedule, name='cutting_machine_schedule'),
 
+        path('production-report/', views.production_report, name='production_report'),
+
 ];
