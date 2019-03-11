@@ -36,5 +36,5 @@ urlpatterns = [
     path('ajax/load-items/', views.load_items, name='ajax_load_items'),
     #inventory forecast
     path('inventory-forecast/', views.inventory_forecast, name='inventory_forecast'),
-    #path('inventory-forecast-details/<int:id>/', views.inventory_forecast_details, name='inventory_forecast_details'),
+    path('inventory-forecast-details/<int:pk>/', views.inventory_forecast_details, name='inventory_forecast_details'),
 ];

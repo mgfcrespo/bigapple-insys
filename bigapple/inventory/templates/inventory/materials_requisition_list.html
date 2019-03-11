@@ -14,20 +14,20 @@
 
 			{% if mr %}
 
-				{% for mr in mr %}
+				{% for x in mr %}
     			<tr class = "row">
                     <td> 
-                        <a href="{% url 'inventory:materials_requisition_details' mr.id %}">{{ mr }}</a>
+                        <a href="{% url 'inventory:materials_requisition_details' x.id %}">{{ x }}</a>
                     </td>
-                    <td>{{ mr.datetime_issued }}</td>
-					{% if mr.status == "Pending" %}
+                    <td>{{ x.datetime_issued }}</td>
+					{% if x.status == "Pending" %}
 					<td class = "warning">
 							<i class = "hourglass half icon">Pending</i>
                     <br>
 							 <form method="post">
                 {% csrf_token %}
 <br>
-                    <input type="submit" class="ui green basic button" value="Retrieve from Warehouse" id="confirm_btn" name="confirm_btn">
+                    <input type="submit" class="ui green basic button" value="Retrieve from Warehouse" id={{x.id}} name={{x.id}}>
 
             </form></td>
 						{% else %}
@@ -38,7 +38,7 @@
 				{% endfor %}
 			{% else %}
 
-				<td>No Material Requisitions to show!</td>
+				<td>No Material Requisitions to show.</td>
 
 
 			{% endif %}

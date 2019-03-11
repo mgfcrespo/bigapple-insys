@@ -18,87 +18,6 @@ from production.models import JobOrder
 from datetime import datetime, date
 from datetime import timedelta
 
-'''
-#TODO: set prod_price to material cost
-class Product(models.Model):
-    RM_TYPES = (
-        ('LLDPE', 'Linear low-density polyethylene'),
-        ('LDPE', 'Low-density polyethylene'),
-        ('HDPE', 'High-density polyethylene'),
-        ('PP', 'Polypropylene'),
-        ('PET', 'Polyethylene terephthalate')
-    )
-    
-    material_type = models.CharField('rm_type', choices=RM_TYPES, max_length=200, null=True, blank=True)
-    products = models.CharField('products', max_length=300)
-    prod_price = models.DecimalField('prod_price', decimal_places=2, max_digits=12, default=0)
-    constant = models.DecimalField('constant', decimal_places=2, max_digits=12, default=0)
-    description = models.CharField('description', max_length=200)
-
-    def __str__(self):
-        return str(self.products)
-
-    def save(self, *args, **kwargs):
-        if self.products == "HDPE":
-            self.constant = 31
-        else:
-            self.constant = 30
-        super(Product, self).save(*args, **kwargs)
-
-#TODO: Add Lamination as production cost
-class ProductionCost(models.Model):
-    cost_type = models.CharField('cost_type', max_length=200)
-    cost = models.DecimalField('cost', decimal_places=2, max_digits=12, default=0)
-
-    def __str__(self):
-        return str(self.cost_type)
-
-class ClientPO(models.Model):
-
-    STATUS =(
-        ('Waiting', 'Waiting'),
-        ('Approved', 'Approved'),
-        ('Under production', 'Under production'),
-        ('Ready for delivery', 'Ready for delivery'),
-        ('Cancelled', 'Cancelled'),
-        ('Disapproved', 'Disapproved')
-    )
-
-    date_issued = models.DateField('date_issued', auto_now_add=True)
-    date_required = models.DateField('date_required', blank=False)
-    other_info = models.TextField('other_info', max_length=250, blank=True)
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, related_name='clientpo_client')
-    total_amount = models.DecimalField('total_amount', default=0, decimal_places=2, max_digits=12)
-    status = models.CharField('status', choices=STATUS, default='Waiting', max_length=200)
-    rush_order = models.BooleanField('rush_order', default=False)
-
-    def __str__(self):
-        lead_zero = str(self.id).zfill(5)
-        po_number = 'PO #%s' % (lead_zero)
-        return str(po_number)
-
-
-    def calculate_leadtime(self):
-        date1 = date.today()
-        date2 = self.date_required
-        days = (date2 - date1).days
-        return days
-
-    def rush_order_determinant(self):
-        if self.calculate_leadtime() <= 12:
-            self.rush_order = True
-        else:
-            self.rush_order = False
-
-        return self.rush_order
-
-    def save(self, *args, **kwargs):
-        rush_order = self.rush_order_determinant()
-        self.rush_order = rush_order
-        super(ClientItem, self).save(*args, **kwargs)
-'''
-
-
 class Product(models.Model):
     RM_TYPES = (
         ('LLDPE', 'Linear low-density polyethylene'),
@@ -337,51 +256,6 @@ class SalesInvoice(models.Model):
             self.days_overdue = None
             self.date_issued = None
         super(SalesInvoice, self).save(*args, **kwargs)
-
-
-'''
-class ClientCreditStatus(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='clientcreditstatus_client')
-    status = models.BooleanField('status', default=False)
-    outstanding_balance = models.DecimalField('outstanding_balance', decimal_places=2, max_digits=12,
-                                              default=Decimal(0))  # accumulation of ClientPayment.balance
-    overdue_balance = models.DecimalField('overdue_balance', decimal_places=2, max_digits=12,
-                                          default=Decimal(0))  # sum of payments not made within payment terms
-    remarks = models.CharField('remarks', max_length=500)
-
-    def __str__(self):
-        return str('Credit Status: %s' % (self.client))
-
-    # TODO: get days overdue OF ANY SI NA OVERDUE
-    def calculate_days_overdue(self):
-        sales_invoice = SalesInvoice.objects.filter(client = self.client)
-        overdue_sales_invoice = sales_invoice.get(SalesInvoice.status == 'Late')
-
-        issued_date = overdue_sales_invoice.date_issued
-
-        return (issued_date - date.today()).days
-    
-
-    def calculate_payments_sum(self):
-        client_payment = ClientPayment.objects.filter(client_id = self.client)#filter by current client
-        if not client_payment:
-            total = 0
-        else:
-            total = client_payment.aggregate(sum=aggregates.Sum('balance'))['sum'] or 0
-        return total
-
-    
-    def calculate_invoice_sum(self):
-        client_invoice = SalesInvoice.objects.filter(cancelled = 0, client_id = self.client)
-        total = client_invoice.aggregate(sum=aggregates.Sum('total_amount'))['sum'] or 0
-        return total
-       
-
-    def save(self, *args, **kwargs):
-        self.outstanding_balance = self.calculate_invoice_sum() - self.calculate_payments_sum()
-        super(ClientCreditStatus, self).save(*args, **kwargs)
-    
- '''
 
 
 class ClientPayment(models.Model):

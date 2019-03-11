@@ -105,6 +105,7 @@ def finished_job_order_list_view(request):
 def add_extruder_schedule(request, id):
 		
     data = JobOrder.objects.get(id=id)
+    item = ClientItem.objects.get(client_po_id=id)
     e = ExtruderSchedule.objects.filter(job_order_id = id)
     e.job_order = id
     ideal = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first() #TODO Sinsinin
@@ -150,23 +151,27 @@ def add_extruder_schedule(request, id):
         (2, 2),
         (3, 3)
     )
+
+    number_rolls = float(item.quantity/10000)
+    weight_rolls = number_rolls*5
+    core_weight = weight_rolls/1.5
+    output_kilos = weight_rolls
+
+
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Extruder')
     #TODO: CONTROL CHECKS FOR PRODUCTION SCHEDULE
     form.fields["datetime_in"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_in', widget=forms.DateTimeInput(attrs={'value': ideal.sked_in}))
-    form.fields["datetime_out"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_in', widget=forms.DateTimeInput(attrs={'value': ideal.sked_out}))
+    form.fields["datetime_out"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_out', widget=forms.DateTimeInput(attrs={'value': ideal.sked_out}))
     #SHIFTS: 6am-2pm, 2pm-10pm, 10pm-6am
     form.fields["shift"] = forms.IntegerField(widget=forms.Select(choices=SHIFTS),
    #                                           if datetime.time(6, 0) <= datetime.time.now() >= datetime.time(14, 0): initial=1
    #                                           elif datetime.time(14, 0) <= datetime.time.now() >= datetime.time(22, 0): initial=2
    #                                           elif datetime.time(22, 0) <= datetime.time.now() >= datetime.time(6, 0): initial=3
     )
-    form.fields["weight_rolls"]
-    form.fields["core_weight"]
-    form.fields["output_kilos"]
-    form.fields["number_rolls"]
-    form.fields["starting_scrap"]
-    form.fields["extruder_scrap"]
-
+    form.fields["weight_rolls"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': weight_rolls}))
+    form.fields["core_weight"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': core_weight}))
+    form.fields["output_kilos"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': output_kilos}))
+    form.fields["number_rolls"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': number_rolls}))
 
     context = {
       'data': data,

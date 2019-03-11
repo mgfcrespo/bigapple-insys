@@ -198,22 +198,29 @@ def confirm_client_po(request, pk):
                         matreq = True
                     else:
                         matreq = False
+                        request.session['matreq_quantity'] = each.quantity/1000
+                        request.session['matreq_mat'] = x
                         break
                         break
             else:
                 inventory = None
                 matreq = False
+                request.session['matreq_quantity'] = each.quantity / 1000
+                request.session['matreq_mat'] = x
                 break
                 break
+
         if each.printed == 1:
             cylinder_count = int(each.quantity/10000)
             ink = Inventory.objects.filter(Q(item_type='Ink') & Q(item=each.color))
-            if ink.exists():
+            if ink.quantity > int(each.quantity/2500):
                 color = str(each.color)
                 color_count = int(each.quantity/2500)
                 matreq = True
             else:
                 matreq = False
+                request.session['matreq_ink'] = str(each.color)
+                request.session['matreq_quantity'] = int(each.quantity/2500)
                 break
                 break
 
@@ -768,7 +775,7 @@ def employee_delete(request, id):
 
 def demand_forecast(request):
     client = Client.objects.all()
-    po = JobOrder.objects.all()
+    po = JobOrder.objects.all().order_by('-date_issued')
 
     context = {
         'client' : client,
@@ -776,7 +783,6 @@ def demand_forecast(request):
     }
     return render(request, 'sales/client_demand_forecast.html', context)
 
-#FIXME accdg to products_id
 def most_common(lst):
     return max(set(lst), key=lst.count)
 
@@ -791,6 +797,7 @@ def demand_forecast_details(request, id):
                 items.append(every.products_id)
 
     item = most_common(items)
+    item = Product.objects.get(id=item)
     cursor = connection.cursor()
     forecast_ses = []
     forecast_hwes = []
@@ -798,7 +805,7 @@ def demand_forecast_details(request, id):
     forecast_arima = []
 
     query = 'SELECT po.date_issued, poi.quantity FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
-            'po.client_id = '+str(id)+' AND poi.client_po_id = po.id AND poi.products_id = '+str(item)
+            'po.client_id = '+str(id)+' AND poi.client_po_id = po.id AND poi.products_id = '+str(item.id)
 
     cursor.execute(query)
     df = pd.read_sql(query, connection)
@@ -806,15 +813,17 @@ def demand_forecast_details(request, id):
 
     #forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
     a = TimeSeriesForecasting.forecast_ses(df)
-    # print('BEFORE A', df)
+    a[1] = int(float(a[1]))
     forecast_ses.extend(a)
-    # print('BEFORE B', df)
     b = TimeSeriesForecasting.forecast_hwes(df)
+    b[1] = int(float(b[1]))
     forecast_hwes.extend(b)
     c = TimeSeriesForecasting.forecast_moving_average(df)
+    c[1] = int(float(c[1]))
     forecast_moving_average.extend(c)
-    #d = TimeSeriesForecasting.forecast_arima(df)
-    #forecast_arima.extend(d)
+    d = TimeSeriesForecasting.forecast_arima(df)
+    d[1] = int(float(d[1]))
+    forecast_arima.extend(d)
 
     context = {
         #'forecast_decomposition': forecast_decomposition,

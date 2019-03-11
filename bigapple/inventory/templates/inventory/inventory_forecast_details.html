@@ -70,7 +70,11 @@
                     <tfoot class="full-width">
                         <tr>
                             <th colspan="2">
-                                <a class="ui compact positive button" href="{% url 'inventory:supplierPO_form' %}">Order</a>
+                                 <form method='get'>
+
+                                   <input type="submit" class="ui green basic button" value="ORDER" id="ses_order" name="ses_order">
+
+
                             </th>
                         </tr>
                     </tfoot>
@@ -101,7 +105,9 @@
                     <tfoot class="full-width">
                         <tr>
                             <th colspan="2">
-                                <a class="ui compact positive button" href="{% url 'inventory:supplierPO_form' %}">Order</a>
+
+                                   <input type="submit" class="ui green basic button" value="ORDER" id="hwes_order" name="hwes_order">
+
                             </th>
                         </tr>
                     </tfoot>
@@ -133,7 +139,8 @@
                     <tfoot class="full-width">
                         <tr>
                             <th colspan="2">
-                                <a class="ui compact positive button" href="{% url 'inventory:supplierPO_form' %}">Order</a>
+                                <input type="submit" class="ui green basic button" value="ORDER" id="moving_average_order" name="moving_average_order">
+
                             </th>
                         </tr>
                     </tfoot>
@@ -164,7 +171,10 @@
                         <tfoot class="full-width">
                             <tr>
                                 <th colspan="2">
-                                    <a class="ui compact positive button" href="{% url 'inventory:supplierPO_form' %}">Order</a>
+
+                                   <input type="submit" class="ui green basic button" value="ORDER" id="arima_order" name="arima_order">
+
+                                    </form>
                                 </th>
                             </tr>
                         </tfoot>

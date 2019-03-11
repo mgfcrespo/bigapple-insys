@@ -72,7 +72,7 @@ def forecast_ses(og_df):
     # print(y_hat_avg['SES'].iloc[0])
     # get max y value and index (x)
     date_projected = str(y_hat_avg['SES'].idxmax())
-    qty_projected = str(int(y_hat_avg.loc[y_hat_avg['SES'].idxmax(), 'SES']))
+    qty_projected = str(y_hat_avg.loc[y_hat_avg['SES'].idxmax(), 'SES'])
     result = [date_projected, qty_projected]
     return result
 
@@ -92,7 +92,7 @@ def forecast_hwes(og_df):
     # plt.show()
     # get max y value and index (x)
     date_projected = str(y_hat_avg['Holt_Winter'].idxmax())
-    qty_projected = str(int(y_hat_avg.loc[y_hat_avg['Holt_Winter'].idxmax(), 'Holt_Winter']))
+    qty_projected = str(y_hat_avg.loc[y_hat_avg['Holt_Winter'].idxmax(), 'Holt_Winter'])
     result = [date_projected, qty_projected]
     return result
 
@@ -113,7 +113,7 @@ def forecast_moving_average(og_df):
     # print(y_hat_avg['moving_avg_forecast'].iloc[0])
     # get max y value and index (x)
     date_projected = str(y_hat_avg['moving_avg_forecast'].idxmax())
-    qty_projected = str(int(y_hat_avg.loc[y_hat_avg['moving_avg_forecast'].idxmax(), 'moving_avg_forecast']))
+    qty_projected = str(y_hat_avg.loc[y_hat_avg['moving_avg_forecast'].idxmax(), 'moving_avg_forecast'])
     result = [date_projected, qty_projected]
     return result
 
@@ -122,9 +122,9 @@ def forecast_arima(og_df):
     df = og_df.copy()
     train = aggregate_by_day(df)
     test = train.copy()
-    test = test.reindex(create_split(train))
+    test = train.reindex(create_split(train))
     y_hat_avg = test.copy()
-    fit1 = sm.tsa.statespace.SARIMAX(train.Count, order=(2, 1, 4), seasonal_order=(0, 1, 1, 7)).fit()
+    fit1 = sm.tsa.statespace.SARIMAX(train.Count, order=(2, 1, 4), seasonal_order=(0, 1, 1, 7)).fit(start_params=[0, 0, 0, 1])
     start_date = test.index[0]  # first date in test
     end_date = test.index[-1]  # last date in test
     y_hat_avg['SARIMA'] = fit1.predict(start=start_date, end=end_date, dynamic=False)
@@ -135,7 +135,7 @@ def forecast_arima(og_df):
     # plt.show()
     # get max y value and index (x)
     date_projected = str(y_hat_avg['SARIMA'].idxmax())
-    qty_projected = str(int(y_hat_avg.loc[y_hat_avg['SARIMA'].idxmax(), 'SARIMA']))
+    qty_projected = float(y_hat_avg.loc[y_hat_avg['SARIMA'].idxmax(), 'SARIMA'])
     result = [date_projected, qty_projected]
     return result
 

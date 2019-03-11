@@ -1,3 +1,4 @@
+import cursor as cursor
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
@@ -6,6 +7,7 @@ from django.db.models import aggregates
 from django.db import connection
 from django.contrib import messages
 
+from django import forms
 from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, Employee
 from .models import MaterialRequisition, InventoryCount
 from .forms import SupplierPOItemsForm, InventoryForm, SupplierPOForm, InventoryCountForm
@@ -44,8 +46,10 @@ def inventory_item_list(request):
 
     items = Inventory.objects.all()
     #FIXME: get quantities issued today
-    issued_to_production = MaterialRequisition.objects.filter(datetime_issued = date.today())
-
+    today = date.today()
+    issued_to_production = MaterialRequisition.objects.filter(datetime_issued__startswith=today)
+    print('issued to production: ')
+    print(issued_to_production)
     context = {
         'title': 'Inventory List',
         'items' : items,
@@ -100,19 +104,7 @@ def inventory_count_form(request, id):
             #new_form = new_form.pk
             #form_instance = item #get current form
 
-            #form_instance.old_count = i.new_count
-            #form_instance.save()
-            #new_form.save()
-            #else:
-            #form.save()
-            #count = InventoryCount.objects.get(id=form_id)
-            #count.inventory = data
-            #count.old_count = data.quantity
-            #count.new_count = request.POST.get('new_count')
-            #count.count_person = current_employee
-            #count.save()
-
-        data.quantity = request.POST.get('new_count')
+        data.quantity += int(request.POST.get('new_count'))
         data.save()
 
         return redirect('inventory:inventory_count_list', id = data.id)
@@ -137,17 +129,6 @@ def inventory_count_list(request, id):
     }
     return render (request, 'inventory/inventory_count_list.html', context)
 
-# Supplier Raw Material
-
-'''
-def supplier_rawmat_list(request):
-    items = SupplierRawMaterials.objects.all()
-    context = {
-        'title': 'List of Supplier Raw Material',
-        'items' : items
-    }
-'''
-
 def supplier_details_list(request, id):
     items = Inventory.objects.filter(supplier = id)
     data = SupplierPO.objects.filter(id = id)
@@ -160,86 +141,18 @@ def supplier_details_list(request, id):
         'data': data
     }
     return render (request, 'inventory/supplier_details_list.html', context)
-'''
-def supplier_rawmat_add(request):
-    form = Inventory(request.POST)
-    title =  'Add Supplier Raw Material'
 
-    if title == 'Add Supplier Raw Material':
-        if request.method == 'POST':
-            if form.is_valid():
-                if request.POST.get("item_type") == "Raw Materials":
-                    rm = Inventory.objects.filter(item = request.POST.get("rm_type"))
-                    print(rm)
-                    if rm.exists():
-                        print("Item Exists")
-                    else:
-                        iform = InventoryForm({
-                            'item': request.POST.get("rm_type"),
-                            'item_type': request.POST.get("item_type")
-                        })
-                        print("Item saved")
-                        iform.save()
-
-                elif request.POST.get("item_type") != "Raw Materials":
-                    i = Inventory.objects.filter(item = request.POST.get("item_name"), item_type =  request.POST.get("item_type"))
-                    if i.exists():
-                        print("Item Exists")
-                    else:
-                        iform = InventoryForm({
-                            'item': request.POST.get("item"),
-                            'item_type': request.POST.get("item_type"),
-                        })
-                        print("Item saved")
-                        iform.save()
-                else:
-                    print("Others: Do nothing")
-
-            form.save()
-            return redirect('../inventory-item-list/')
-
-    context = {
-        'form' : form,
-        'actiontype': 'Submit',
-        'title': title,
-    }
-
-    return render(request, 'inventory/supplier_rawmat_add.html', context)
-
-def supplier_rawmat_edit(request, id):
-    items = SupplierRawMaterials.objects.get(id=id)
-    form = SupplierRawMaterialsForm(request.POST or None, instance=items)
-    data = Supplier.objects.get(id = items.supplier.id)
-    if form.is_valid():
-        form.save()
-        return redirect('inventory:supplier_details_list', id = data.id)
-    
-    context = {
-        'form' : form,
-        'items' : items,
-        'title' : "Edit Supplier Raw Material",
-        'actiontype' : "Submit"
-    }
-    return render(request, 'inventory/supplier_rawmat_add.html', context)
-
-def supplier_rawmat_delete(request, id):
-    items = SupplierRawMaterials.objects.get(id=id)
-    data = Supplier.objects.get(id = items.supplier.id)
-    items.delete()
-    return redirect('inventory:supplier_details_list', id = data.id)
-'''
 # Material Requisition
 def materials_requisition_list(request):
     mr = MaterialRequisition.objects.all()
 
     for x in mr:
-        if request.method == "POST":
+        if str(x.id) in request.POST:
             x.status = "Retrieved"
             x.save()
-            i = Inventory.objects.get(item=x.item)  # get Inventory Items
+            i = Inventory.objects.get(item=x.item)
             i.quantity -= x.quantity
             i.save()
-
             messages.success(request, 'Materials have been retrieved.')
 
     context = {
@@ -288,159 +201,58 @@ def materials_requisition_approval(request, id):
         return redirect('inventory:materials_requisition_details', id = mr.id)
     
     return redirect('inventory:materials_requisition_details', id = mr.id)
-'''
-def materials_requisition_form(request):
-    # note:instance should be an object
-    matreq_item_formset = inlineformset_factory(MaterialRequisition, MaterialRequisitionItems,
-                                                  form=MaterialRequisitionForm, extra=1, can_delete=True)
-
-    if request.method == "POST":
-        form = MaterialRequisitionForm(request.POST)
-        # Set ClientPO.client from session user
-        # form.fields['client'].initial = Client.objects.get(id = request.session['session_userid'])
-        message = ""
-        print(form)
-        if form.is_valid():
-            # Save PO form then use newly saved ClientPO as instance for ClientPOItems
-            new_form = form.save()
-            new_form = new_form.pk
-            form_instance = MaterialRequisitionForm.objects.get(id=new_form)
-
-            # Use PO form instance for PO items
-            formset = matreq_item_formset(request.POST, instance=form_instance)
-            print(formset)
-            if formset.is_valid():
-                for form in formset:
-                    form.save()
-
-                formset_items = Inventory.objects.filter(id=new_form)
-                # formset_item_total = formset_items.aggregate(sum=aggregates.Sum('item_price'))['sum'] or 0
-
-                totalled_matreq = MaterialRequisitionForm.objects.get(id=new_form)
-                # totalled_matreq.total_amount = formset_item_total
-                totalled_matreq.save()
-                message = "Material Requisition Submitted"
-
-            else:
-                message += "Formset error"
-
-        else:
-            message = "Form is not valid"
-
-        # todo change index.html. page should be redirected after successful submission
-        return redirect('inventory:materials_requisition_list')
-
-    else:
-        return render(request, 'inventory/materials_requisition_form.html',
-                      {'formset': matreq_item_formset(),
-                       'form': MaterialRequisitionForm}
-                      )
-
-
-#Purchase Requisition
-def purchase_requisition_list(request):
-
-    pr = PurchaseRequisition.objects.all()
-    context = {
-        'title' :'Purchase Requisition List',
-        'pr' : pr
-    }
-    return render (request, 'inventory/purchase_requisition_list.html', context)
-
-def purchase_requisition_details(request, id):
-
-    pr = PurchaseRequisition.objects.get(id=id)
-    pri = PurchaseRequisitionItems.objects.filter(purchreq=pr)
-    context = {
-        'pr' : pr,
-        'title' : pr,
-        'pri' : pri
-    }
-    return render(request, 'inventory/purchase_requisition_details.html', context)
-
-def purchase_requisition_approval(request, id):
-
-    pr = PurchaseRequisition.objects.get(id=id)
-    
-    #def clean(self):
-    if request.POST:
-        if 'approve' in request.POST:
-            pr.approval = True
-            pr.status = "approved"
-            pr.save()
-            return redirect('inventory:purchase_requisition_list')
-        
-        elif 'decline' in request.POST:
-            pr.approval = False
-            pr.status = "declined"
-            pr.save()
-            return redirect('inventory:purchase_requisition_list')
-
-def purchase_requisition_form(request):
-    #note:instance should be an object
-    purchreq_item_formset = inlineformset_factory(PurchaseRequisition, PurchaseRequisitionItems, form=PurchaseRequisitionItemsForm, extra=1, can_delete=True)
-
-    if request.method == "POST":
-        form = PurchaseRequisitionForm(request.POST)
-        #Set ClientPO.client from session user
-        #form.fields['client'].initial = Client.objects.get(id = request.session['session_userid'])
-        message = ""
-        print(form)
-        if form.is_valid():
-            #Save PO form then use newly saved ClientPO as instance for ClientPOItems
-            new_form = form.save()
-            new_form = new_form.pk
-            form_instance = PurchaseRequisition.objects.get(id=new_form)
-
-            #Use PO form instance for PO items
-            formset = purchreq_item_formset(request.POST, instance=form_instance)
-            print(formset)
-            if formset.is_valid():
-                for form in formset:
-                    form.save()
-
-                formset_items = Inventory.objects.filter(id = new_form)
-                #formset_item_total = formset_items.aggregate(sum=aggregates.Sum('item_price'))['sum'] or 0
-
-                totalled_purchreq = PurchaseRequisition.objects.get(id=new_form)
-                #totalled_matreq.total_amount = formset_item_total
-                totalled_purchreq.save()
-                message = "Purchase Requisition Submitted"
-
-            else:
-                message += "Formset error"
-
-        else:
-            message = "Form is not valid"
-
-
-        #todo change index.html. page should be redirected after successful submission
-        return redirect('inventory:purchase_requisition_list')
-
-    else:
-        return render(request, 'inventory/purchase_requisition_form.html',
-                              {'formset':purchreq_item_formset(),
-                               'form': PurchaseRequisitionForm}
-                              )
-'''
 
 # Supplier PO
 def supplierPO_form(request):
-    supplierpo_item_formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm, extra=1, can_delete=True)
+    formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm, extra=1, can_delete=True)
     form = SupplierPOForm(request.POST)
+    quantity = 0
+    delivery_date = None
+    item = None
+
+    if request.META['HTTP_REFERER'].startswith('http://127.0.0.1:8000/sales/'):
+        print('sales:confirm_order')
+        quantity = request.session['matreq_quantity']
+        delivery_date = datetime.now().date()
+        if request.session['matreq_mat'] is not None:
+            item = Inventory.objects.filter(rm_type=request.session['matreq_mat']).first()
+            supplier = item.supplier
+            item = item.id
+        elif request.session['matreq_ink'] is not None:
+            item = Inventory.objects.filter(item=request.session['matreq_ink'])
+            supplier = item.supplier
+            item = item.id
+
+    elif request.META['HTTP_REFERER'].startswith('http://127.0.0.1:8000/inventory/'):
+        print('inventory:forecast')
+        item = request.session['item']
+        inv = Inventory.objects.get(id=item)
+        supplier = inv.supplier
+        if request.session['forecast'] == 'SES':
+            quantity = request.session['forecast_ses'][1]
+            date = request.session['forecast_ses'][0]
+            delivery_date = date[:10]
+        elif request.session['forecast'] == 'HWES':
+            quantity = request.session['forecast_hwes'][1]
+            date = request.session['forecast_hwes'][0]
+            delivery_date = date[:10]
+        elif request.session['forecast'] == 'MOVING':
+            quantity = request.session['forecast_moving_average'][1]
+            date = request.session['forecast_moving_average'][0]
+            delivery_date = date[:10]
+        elif request.session['forecast'] == 'ARIMA':
+            quantity = request.session['forecast_arima'][1]
+            date = request.session['forecast_arima'][0]
+            delivery_date = date[:10]
+
+
     if request.method == "POST":
-        #Set ClientPO.client from session user
-        #form.fields['client'].initial = Client.objects.get(id = request.session['session_userid'])
-        message = ""
-        print(form)
         if form.is_valid():
-            #Save PO form then use newly saved ClientPO as instance for ClientPOItems
             new_form = form.save()
             new_form = new_form.pk
             form_instance = SupplierPO.objects.get(id=new_form)
 
-            #Use PO form instance for PO items
-            formset = supplierpo_item_formset(request.POST, instance=form_instance)
+            formset = formset(request.POST, instance=form_instance)
             print(formset)
             if formset.is_valid():
                 for form in formset:
@@ -455,24 +267,22 @@ def supplierPO_form(request):
                 form_instance.total_amount = formset_item_total
                 form_instance.save()
 
-                message = "PO successfully created"
+        return redirect('inventory:supplierPO_list')
 
-            else:
-                message += "Formset error"
+    form.fields["supplier"].queryset = Supplier.objects.filter(id=supplier.id)
+    form.fields["delivery_date"] = forms.DateField(label='delivery_date', widget=forms.DateInput(attrs={'value': delivery_date}))
+    #FIXME Add quantity and item placeholders
+    #for form in formset.form:
+    #    form.fields["quantity"] = forms.FloatField(label='quantity',
+    #                                               widget=forms.NumberInput(attrs={'value': quantity}))
+    #    form.fields["item"].queryset = Inventory.objects.filter(id=item)
 
-        else:
-            message = "Form is not valid"
 
+    return render(request, 'inventory/supplierPO_form.html',
+                  {'formset': formset,
+                   'form': form}
+                  )
 
-        return render(request, 'inventory/supplierPO_form.html',
-                              {'message': message, 'formset': supplierpo_item_formset,
-                               'form': SupplierPOForm}
-                              )
-    else:
-        return render(request, 'inventory/supplierPO_form.html',
-                              {'formset': supplierpo_item_formset,
-                               'form': SupplierPOForm}
-                              )
 def supplierPO_form_test(request):
     supplierpo_item_formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm, extra=1, can_delete=True)
     # data = JobOrder.objects.get(id=id)
@@ -518,10 +328,16 @@ def load_items(request):
     items = Inventory.objects.filter(supplier_id=id).order_by('item')
     return render(request, 'inventory/dropdown_supplier_item.html', {'supplier_po' : supplier_po, 'items': items})
 
-
 def inventory_forecast(request):
+    i = Inventory.objects.all()
+    context ={
+        'i' : i
+    }
+    return render(request, 'inventory/inventory_forecast.html', context)
 
-    i = Inventory.objects.all().order_by('supplier')
+def inventory_forecast_details(request, pk):
+
+    item = Inventory.objects.get(id=pk)
     cursor = connection.cursor()
     #forecast_decomposition = []
     forecast_ses = []
@@ -529,30 +345,57 @@ def inventory_forecast(request):
     forecast_moving_average = []
     forecast_arima = []
 
+    query = 'SELECT spo.date_issued, spoi.quantity FROM inventory_mgt_inventory i, inventory_mgt_supplierpo spo, ' \
+            'inventory_mgt_supplierpoitems spoi where spoi.item_id = '+str(pk)+'  and spoi.supplier_po_id = spo.id'
 
-    for x in i :
-        query = 'SELECT spo.date_issued, spoi.quantity FROM inventory_mgt_inventory i, inventory_mgt_supplierpo spo, ' \
-                'inventory_mgt_supplierpoitems spoi where spoi.item_id = ' + str(x.id) + \
-                ' and spoi.supplier_po_id = spo.id'
-
-        cursor.execute(query)
-        df = pd.read_sql(query, connection)
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
         # get_data = cursor.execute(query)
         # df = DataFrame(get_data.fetchall())
         # df.columns = get_data.keys()
-
         #forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
-        forecast_ses.append(TimeSeriesForecasting.forecast_ses(df))
-        forecast_hwes.append(TimeSeriesForecasting.forecast_hwes(df))
-        forecast_moving_average.append(TimeSeriesForecasting.forecast_moving_average(df))
-        forecast_arima.append(TimeSeriesForecasting.forecast_arima(df))
+
+    a = TimeSeriesForecasting.forecast_ses(df)
+    a[1] = int(float(a[1]))
+    forecast_ses.extend(a)
+    b = TimeSeriesForecasting.forecast_hwes(df)
+    b[1] = int(float(b[1]))
+    forecast_hwes.extend(b)
+    c = TimeSeriesForecasting.forecast_moving_average(df)
+    c[1] = int(float(c[1]))
+    forecast_moving_average.extend(c)
+    #d = TimeSeriesForecasting.forecast_arima(df)
+    #d[1] = int(float(d[1]))
+    #forecast_arima.extend(d)
+
+    request.session['forecast_ses'] = forecast_ses
+    request.session['forecast_hwes'] = forecast_hwes
+    request.session['forecast_moving_average'] = forecast_moving_average
+    request.session['forecast_arima'] = forecast_arima
+    request.session['item'] = item.id
+
+    if 'ses_order' in request.GET:
+        request.session['forecast'] = 'SES'
+        return redirect('inventory:supplierPO_form')
+    elif 'hwes_order' in request.GET:
+        request.session['forecast'] = 'HWES'
+        return redirect('inventory:supplierPO_form')
+    elif 'moving_average_order' in request.GET:
+        request.session['forecast'] = 'MOVING'
+        return redirect('inventory:supplierPO_form')
+    elif 'arima_order' in request.GET:
+        request.session['forecast'] = 'ARIMA'
+        return redirect('inventory:supplierPO_form')
+    else:
+        request.session['forecast'] = None
+
 
     context = {
-        'i': i,
+        'item': item,
         #'forecast_decomposition': forecast_decomposition,
         'forecast_ses': forecast_ses,
         'forecast_hwes': forecast_hwes,
         'forecast_moving_average': forecast_moving_average,
         'forecast_arima': forecast_arima,
     }
-    return render(request, 'inventory/inventory_forecast.html', context)
+    return render(request, 'inventory/inventory_forecast_details.html', context)

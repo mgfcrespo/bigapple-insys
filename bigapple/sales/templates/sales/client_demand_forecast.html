@@ -19,7 +19,11 @@
             <td>{{x.company}}</td>
             <td>{{x.sales_agent}}</td>
             <td>
-
+                {% for i in po|slice:":1" %}
+                    {% if i.client_id == x.id %}
+                        {{i.date_issued}}
+                    {% endif %}
+                {% endfor %}
             </td>
             <td></td>
         </tr>
