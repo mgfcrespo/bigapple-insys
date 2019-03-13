@@ -6,12 +6,14 @@ from django.forms import inlineformset_factory
 from django.shortcuts import redirect
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse, Http404
 from pandas import DataFrame
+from django.contrib import messages
+
 
 from accounts.models import Employee
 from inventory.forms import MaterialRequisitionForm, SupplierPOForm, SupplierPOItemsForm
 from inventory.models import Inventory, Supplier, MaterialRequisition, SupplierPO, SupplierPOItems
 from production.forms import ClientPOForm
-from production.models import JobOrder
+from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
 from utilities import TimeSeriesForecasting, final_gantt
 from .forms import ClientPOFormItems
 from .forms import SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
@@ -269,6 +271,8 @@ def confirm_client_po(request, pk):
                         ink_form.quantity = color_count
                         ink_form.save()
 
+            # SAVE NEW PRODUCTION SCHEDULE
+            save_schedule(request, pk)
             return redirect('sales:po-list-view')
 
 
@@ -339,6 +343,9 @@ def invoice_detail_view(request, pk):
                 sales_invoice.total_paid += form.payment
                 sales_invoice.amount_due -= form.payment
                 client.outstanding_balance -= form.payment
+
+                sales_invoice.save()
+                client.save()
 
             sales_invoice.save()
             client.save()
@@ -555,11 +562,15 @@ def rush_order_assessment(request, pk):
                         matreq = True
                     else:
                         matreq = False
+                        request.session['matreq_quantity'] = each.quantity / 1000
+                        request.session['matreq_mat'] = x
                         break
                         break
             else:
                 inventory = None
                 matreq = False
+                request.session['matreq_quantity'] = each.quantity / 1000
+                request.session['matreq_mat'] = x
                 break
                 break
         print('matreq first run:')
@@ -574,6 +585,8 @@ def rush_order_assessment(request, pk):
                 matreq = True
             else:
                 matreq = False
+                request.session['matreq_ink'] = str(each.color)
+                request.session['matreq_quantity'] = int(each.quantity / 2500)
                 break
                 break
     print('matreq for second run:')
@@ -622,8 +635,6 @@ def rush_order_assessment(request, pk):
                         ink_form.quantity = color_count
                         ink_form.save()
 
-
-    #TODO: Insert current job to generic schedule and show if other JOs will meet date_due
     #simulated sched
     cursor = connection.cursor()
     query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p " \
@@ -646,7 +657,8 @@ def rush_order_assessment(request, pk):
     if 'approve_btn' in request.POST:
         rush_order.status = 'On Queue'
         rush_order.save()
-
+        # SAVE NEW PRODUCTION SCHEDULE
+        save_schedule(request, pk)
         return redirect('sales:rush_order_list')
 
     elif 'deny_btn' in request.POST:
@@ -836,3 +848,61 @@ def demand_forecast_details(request, id):
     }
 
     return render(request, 'sales/client_demand_forecast_details.html', context)
+
+def save_schedule(request, pk):
+    item = ClientItem.objects.get(client_po_id=pk)
+    mat = item.products.material_type
+
+    cursor = connection.cursor()
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status=" + "'Waiting'" + " and NOT j.status=" + "'Ready for delivery'" + " and NOT j.status =" + "'Delivered'"
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
+    data = {'id': pk,
+            'laminate': item.laminate,
+            'printed': item.printed,
+            'material_type': mat}
+    df2 = pd.DataFrame(data, index=[0])
+    df = df.append(df2, ignore_index=True)
+    #gantt = final_gantt.generate_overview_gantt_chart(df)
+
+    # TODO Save sked_op, sked_mach
+    ideal_ex = ExtruderSchedule.objects.filter(ideal=True)
+    ideal_cu = CuttingSchedule.objects.filter(ideal=True)
+    ideal_la = LaminatingSchedule.objects.filter(ideal=True)
+    ideal_pr = PrintingSchedule.objects.filter(ideal=True)
+
+    ideal_ex.delete()
+    ideal_cu.delete()
+    ideal_la.delete()
+    ideal_pr.delete()
+
+    ideal_sched = final_gantt.get_sched_data(df)
+    messages.success(request, 'Production schedule saved.')
+    print('ideal sched:')
+    print(ideal_sched)
+
+    for i in range(0, len(ideal_sched)):
+        if ideal_sched[i]['Task'] == 'Extruder':
+            new_ex = ExtruderSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+                                          sked_in=ideal_sched[i]['Start'],
+                                          sked_out=ideal_sched[i]['Finish'])
+            new_ex.save()
+            print('saved new_ex')
+        elif ideal_sched[i]['Task'] == 'Cutting':
+            new_cu = CuttingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+                                         sked_in=ideal_sched[i]['Start'],
+                                         sked_out=ideal_sched[i]['Finish'])
+            new_cu.save()
+            print('saved new_cu')
+        elif ideal_sched[i]['Task'] == 'Printing':
+            new_pr = PrintingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+                                          sked_in=ideal_sched[i]['Start'],
+                                          sked_out=ideal_sched[i]['Finish'])
+            new_pr.save()
+            print('saved new_pr')
+        elif ideal_sched[i]['Task'] == 'Laminating':
+            new_la = LaminatingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+                                            sked_in=ideal_sched[i]['Start'],
+                                            sked_out=ideal_sched[i]['Finish'])
+            new_la.save()
+            print('saved new_la')

@@ -212,20 +212,20 @@ def supplierPO_form(request):
 
     if request.META['HTTP_REFERER'].startswith('http://127.0.0.1:8000/sales/'):
         print('sales:confirm_order')
-        quantity = request.session['matreq_quantity']
+        quantity = request.session.get('matreq_quantity')
         delivery_date = datetime.now().date()
         if request.session['matreq_mat'] is not None:
-            item = Inventory.objects.filter(rm_type=request.session['matreq_mat']).first()
+            item = Inventory.objects.filter(rm_type=request.session.get('matreq_mat')).first()
             supplier = item.supplier
             item = item.id
         elif request.session['matreq_ink'] is not None:
-            item = Inventory.objects.filter(item=request.session['matreq_ink'])
+            item = Inventory.objects.get(item=request.session.get('matreq_ink'))
             supplier = item.supplier
             item = item.id
 
-    elif request.META['HTTP_REFERER'].startswith('http://127.0.0.1:8000/inventory/'):
+    elif request.META['HTTP_REFERER'].startswith('http://127.0.0.1:8000/inventory/inventory-forecast-details/'):
         print('inventory:forecast')
-        item = request.session['item']
+        item = request.session.get('item')
         inv = Inventory.objects.get(id=item)
         supplier = inv.supplier
         if request.session['forecast'] == 'SES':
@@ -244,6 +244,9 @@ def supplierPO_form(request):
             quantity = request.session['forecast_arima'][1]
             date = request.session['forecast_arima'][0]
             delivery_date = date[:10]
+
+    else:
+        delivery_date = datetime.now().date()
 
 
     if request.method == "POST":

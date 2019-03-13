@@ -94,16 +94,16 @@ def schedule(df, filename):
         # Include Printing and Laminating machine
         # Standard lead time: Plain - 1-2 weeks; Printed - 2-4 weeks
         # IN HOURS:
-            # Extruder = 4 days * 20 hours every 20000 pieces = 80hr/50000pcs
-            # Cutting = 3 days * 20 hours every 20000 pieces = 60hr/50000pcs
-            # Laminating = 3 days * 20 hours every 20000 pieces = 60hr/50000pcs
-            # Printing = 5 days * 20 hours  every 20000 pieces = 100hr/50000pcs
+            # Extruder = 4 days * 20 hours every 70000 pieces = 80hr/70000pcs
+            # Cutting = 3 days * 20 hours every 70000 pieces = 60hr/70000pcs
+            # Laminating = 3 days * 20 hours every 70000 pieces = 60hr/70000pcs
+            # Printing = 5 days * 20 hours  every 70000 pieces = 100hr/70000pcs
         item = ClientItem.objects.get(client_po_id=df.ix[i]['id'])
         quantity = item.quantity
-        extrusion_time = int((quantity * 80)/50000)
-        cutting_time = int((quantity * 60)/50000)
-        laminating_time = int((quantity * 60)/50000)
-        printing_time = int((quantity * 100)/50000)
+        extrusion_time = int((quantity * 80)/70000)
+        cutting_time = int((quantity * 60)/70000)
+        laminating_time = int((quantity * 60)/70000)
+        printing_time = int((quantity * 100)/70000)
 
         if df.ix[i]['printed'] == 1 and df.ix[i]['laminate'] == 1:
             processing_times.append([extrusion_time, printing_time, laminating_time, cutting_time]) # Extrude, Print, Laminate, Cut

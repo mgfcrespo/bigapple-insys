@@ -30,6 +30,10 @@
             <label>Count:</label>
             {{ form.new_count }}
         </div>
+    <div class="field">
+            <label>Supplier PO:</label>
+            {{ form.spo_count }}
+        </div>
 
     <button onclick="return confirm('Are you sure?')" class="small ui green button" type="submit">{{actiontype}}</button>
     <a class="small ui red button" href="{% url 'inventory:inventory_item_list'%}">Back</a>

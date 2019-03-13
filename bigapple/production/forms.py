@@ -51,7 +51,6 @@ class ExtruderScheduleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ExtruderScheduleForm, self).__init__(*args, **kwargs)
         self.fields['remarks'].required = False
-        self.fields['job_order'].queryset = JobOrder.objects.exclude(status='Delivered')
 
 class PrintingScheduleForm(forms.ModelForm):
     SHIFTS = (
@@ -71,16 +70,11 @@ class PrintingScheduleForm(forms.ModelForm):
             'datetime_out': DateTimeInput()
         }
 
-    shift = forms.IntegerField(widget=forms.Select(choices=SHIFTS))
     operator = forms.ModelChoiceField(queryset=Employee.objects.filter(position="Printing"))
-    datetime_in = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
-    datetime_out = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
-    remarks = forms.CharField(widget=forms.Textarea(attrs={'rows': '3'}))
 
     def __init__(self, *args, **kwargs):
         super(PrintingScheduleForm, self).__init__(*args, **kwargs)
         self.fields['remarks'].required = False
-        self.fields['job_order'].queryset = JobOrder.objects.exclude(status='Delivered')
 
 
 class CuttingScheduleForm(forms.ModelForm):
@@ -97,6 +91,7 @@ class CuttingScheduleForm(forms.ModelForm):
     )
 
     final = forms.BooleanField(initial=False, required=False)
+    operator = forms.ModelChoiceField(queryset=Employee.objects.filter(position="Cutting"))
 
     class Meta:
         model = CuttingSchedule
@@ -107,18 +102,9 @@ class CuttingScheduleForm(forms.ModelForm):
             'datetime_out': DateTimeInput()
         }
 
-    shift = forms.IntegerField(widget=forms.Select(choices=SHIFTS))
-    operator = forms.ModelChoiceField(queryset=Employee.objects.filter(position="Cutting"))
-    datetime_in = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
-    datetime_out = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
-    quantity = forms.IntegerField()
-    line = forms.CharField(max_length=200, label='line', widget=forms.Select(choices=LINE))
-    remarks = forms.CharField(widget=forms.Textarea(attrs={'rows': '3'}))
-
     def __init__(self, *args, **kwargs):
         super(CuttingScheduleForm, self).__init__(*args, **kwargs)
         self.fields['remarks'].required = False
-        self.fields['job_order'].queryset = JobOrder.objects.exclude(status='Delivered')
 
 
 class LaminatingScheduleForm(forms.ModelForm):
@@ -127,7 +113,9 @@ class LaminatingScheduleForm(forms.ModelForm):
         (2, 2),
         (3, 3)
     )
+
     final = forms.BooleanField(initial=False, required=False)
+    operator = forms.ModelChoiceField(queryset=Employee.objects.filter(position="Cutting"))
 
     class Meta:
         model = LaminatingSchedule
@@ -138,16 +126,10 @@ class LaminatingScheduleForm(forms.ModelForm):
             'datetime_out': DateTimeInput()
         }
 
-    shift = forms.IntegerField(widget=forms.Select(choices=SHIFTS))
-    operator = forms.ModelChoiceField(queryset=Employee.objects.filter(position="Cutting"))
-    datetime_in = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
-    datetime_out = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'])
-    remarks = forms.CharField(widget=forms.Textarea(attrs={'rows': '3'}))
 
     def __init__(self, *args, **kwargs):
         super(LaminatingScheduleForm, self).__init__(*args, **kwargs)
         self.fields['remarks'].required = False
-        self.fields['job_order'].queryset = JobOrder.objects.exclude(status='Delivered')
 
 
 class JODetailsForm(forms.ModelForm):

@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-from datetime import date, datetime
+from datetime import date, datetime, time, timedelta
 
 import pandas as pd
 from django.db import connection
@@ -108,66 +108,78 @@ def add_extruder_schedule(request, id):
     item = ClientItem.objects.get(client_po_id=id)
     e = ExtruderSchedule.objects.filter(job_order_id = id)
     e.job_order = id
-    ideal = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first() #TODO Sinsinin
-    items = ClientItem.objects.filter(client_po = data)
-    printed = False
-    for y in items:
-        if y.printed == 1:
-            printed == True
-            break
-
-    if e.count == 0:
-        data.status = 'Under Extrusion'
-        data.save()
-        ideal = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first() #TODO kung di siya first
-        #TODO balance, quantity left
-
     form = ExtruderScheduleForm(request.POST)
+    ideal = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first() #TODO Sinsinin
+    printed = False
+    if item.printed == 1:
+        printed == True
+
+    #if e.count == 0:
+    #    ideal = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first() #TODO kung di siya first
 
     if request.method == 'POST':
         data.status = 'Under Extrusion'
         data.save()
-        print(form)
         if form.is_valid():
-            print('VALID YUNG FORM ASJFKJGSK gaogaoesi')
             x = request.POST.get("weight_rolls")
             y = float(x)*float(4.74)
+            form = form.save(commit=False)
             form.balance = float(y)
-            print(form.balance)
             form.ideal = False
-            form.id = id
             new_schedule = form.save()
-            if new_schedule.final:
+            if form.final:
                 if printed:
                     data.status = 'Under Printing'
                     data.save()
                 else:
                     data.status = 'Under Cutting'
                     data.save()
+            else:
+                data.save()
         return redirect('production:job_order_details', id = id)
 
+    #TODO quantity calculations/balance
+    #if e.count == 0:
+    number_rolls = float(item.quantity/10000)
+    weight_rolls = number_rolls*5
+    core_weight = weight_rolls/1.5
+    output_kilos = weight_rolls
+    '''
+    else:
+        number_rolls = float(item.quantity / 10000)
+        weight_rolls = number_rolls * 5
+        core_weight = weight_rolls / 1.5
+        output_kilos = weight_rolls
+    '''
+
+    if ideal is not None:
+        sked_in = ideal.sked_in
+        sked_out = ideal.sked_out
+    else:
+        sked_in = datetime.now()
+        sked_out = datetime.now() + timedelta(days=int((item.quantity * 80)/70000))
+
+    # SHIFTS: 6am-2pm, 2pm-10pm, 10pm-6am
     SHIFTS = (
         (1, 1),
         (2, 2),
         (3, 3)
     )
 
-    number_rolls = float(item.quantity/10000)
-    weight_rolls = number_rolls*5
-    core_weight = weight_rolls/1.5
-    output_kilos = weight_rolls
-
+    if time(6,0) <= datetime.now().time() <= time(14,0):
+        shift = 1
+    elif time(14,0) <= datetime.now().time() <= time(22,0):
+        shift = 2
+    elif time(22,0) <= datetime.now().time() <= time(6,0):
+        shift = 3
+    else:
+        shift = 0
 
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Extruder')
-    #TODO: CONTROL CHECKS FOR PRODUCTION SCHEDULE
-    form.fields["datetime_in"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_in', widget=forms.DateTimeInput(attrs={'value': ideal.sked_in}))
-    form.fields["datetime_out"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_out', widget=forms.DateTimeInput(attrs={'value': ideal.sked_out}))
-    #SHIFTS: 6am-2pm, 2pm-10pm, 10pm-6am
-    form.fields["shift"] = forms.IntegerField(widget=forms.Select(choices=SHIFTS),
-   #                                           if datetime.time(6, 0) <= datetime.time.now() >= datetime.time(14, 0): initial=1
-   #                                           elif datetime.time(14, 0) <= datetime.time.now() >= datetime.time(22, 0): initial=2
-   #                                           elif datetime.time(22, 0) <= datetime.time.now() >= datetime.time(6, 0): initial=3
-    )
+    form.fields["job_order"].queryset = JobOrder.objects.filter(id=id)
+    form.fields["datetime_in"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_in', widget=forms.DateTimeInput(attrs={'value': str(sked_in)[:16]}))
+    form.fields["datetime_out"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_out', widget=forms.DateTimeInput(attrs={'value': str(sked_out)[:16]}))
+    form.fields["shift"] = forms.IntegerField(widget=forms.Select(choices=SHIFTS), initial=shift)
     form.fields["weight_rolls"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': weight_rolls}))
     form.fields["core_weight"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': core_weight}))
     form.fields["output_kilos"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': output_kilos}))
@@ -186,6 +198,8 @@ def add_printing_schedule(request, id):
 		
     data = JobOrder.objects.get(id=id)
     form = PrintingScheduleForm(request.POST)
+    item = ClientItem.objects.get(client_po_id=id)
+    ideal = PrintingSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first() #TODO Sinsinin
     p = PrintingSchedule.objects.filter(job_order_id = data.id)
     p.job_order = id
     items = ClientItem.objects.filter(client_po = id)
@@ -204,9 +218,10 @@ def add_printing_schedule(request, id):
       data.status = 'Under Printing'
       data.save()
       if form.is_valid():
+          form = form.save(commit=False)
           form.ideal = False
           new_schedule = form.save()
-          if new_schedule.final:
+          if form.final:
               if laminate:
                 data.status = 'Under Laminating'
                 data.save()
@@ -215,8 +230,49 @@ def add_printing_schedule(request, id):
                 data.save()
       return redirect('production:job_order_details', id = data.id)
 
+      # TODO quantity calculations/balance
+      number_rolls = float(item.quantity / 10000)
+      weight_rolls = number_rolls * 5
+      core_weight = weight_rolls / 1.5
+      output_kilos = weight_rolls
+
+      if ideal is not None:
+          sked_in = ideal.sked_in
+          sked_out = ideal.sked_out
+      else:
+          sked_in = datetime.now()
+          sked_out = datetime.now() + timedelta(days=int((quantity * 100)/70000))
+
+      # SHIFTS: 6am-2pm, 2pm-10pm, 10pm-6am
+      SHIFTS = (
+          (1, 1),
+          (2, 2),
+          (3, 3)
+      )
+
+      if time(6, 0) <= datetime.now().time() <= time(14, 0):
+          shift = 1
+      elif time(14, 0) <= datetime.now().time() <= time(22, 0):
+          shift = 2
+      elif time(22, 0) <= datetime.now().time() <= time(6, 0):
+          shift = 3
+      else:
+          shift = 0
+
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Printing')
-    
+    form.fields["job_order"].queryset = JobOrder.objects.filter(id=id)
+    form.fields["datetime_in"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_in',
+                                                     widget=forms.DateTimeInput(
+                                                         attrs={'value': str(sked_in)[:16]}))
+    form.fields["datetime_out"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_out',
+                                                      widget=forms.DateTimeInput(
+                                                          attrs={'value': str(sked_out)[:16]}))
+    form.fields["shift"] = forms.IntegerField(widget=forms.Select(choices=SHIFTS), initial=shift)
+    form.fields["weight_rolls"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': weight_rolls}))
+    form.fields["core_weight"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': core_weight}))
+    form.fields["output_kilos"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': output_kilos}))
+    form.fields["number_rolls"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': number_rolls}))
+
     context = {
       'data': data,
       'form': form,
@@ -228,9 +284,11 @@ def add_printing_schedule(request, id):
 # CUTTING
 def add_cutting_schedule(request, id):
     data = JobOrder.objects.get(id=id)
+    item = ClientItem.objects.get(client_po_id=id)
     form = CuttingScheduleForm(request.POST)
     invoice = SalesInvoice.objects.get(client_po = data)
     client = data.client
+    ideal = CuttingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()  # TODO Sinsinin
 
     c = CuttingSchedule.objects.filter(job_order_id = data.id)
     c.job_order = id
@@ -244,21 +302,61 @@ def add_cutting_schedule(request, id):
       data.status = 'Under Cutting'
       data.save()
       if form.is_valid():
+        form = form.save(commit=False)
         form.ideal = False
         new_schedule = form.save()
-        if new_schedule.final:
+        if form.final:
             data.status = 'Ready for delivery'
             data.save()
             invoice.date_issued = date.today()
             invoice.date_due = invoice.calculate_date_due()
+            invoice.total_paid = 0
             invoice.save()
 
             client.outstanding_balance += invoice.total_amount_computed
             client.save()
         return redirect('production:job_order_details', id = data.id)
 
+    # TODO quantity calculations/balance
+    number_rolls = float(item.quantity / 10000)
+    output_kilos = number_rolls * 5
+    quantity = item.quantity
+
+    if ideal is not None:
+        sked_in = ideal.sked_in
+        sked_out = ideal.sked_out
+    else:
+        sked_in = datetime.now()
+        sked_out = datetime.now() + timedelta(days=int((quantity * 60)/70000))
+
+    SHIFTS = (
+        (1, 1),
+        (2, 2),
+        (3, 3)
+    )
+
+    if time(6,0) <= datetime.now().time() <= time(14,0):
+        shift = 1
+    elif time(14,0) <= datetime.now().time() <= time(22,0):
+        shift = 2
+    elif time(22,0) <= datetime.now().time() <= time(6,0):
+        shift = 3
+    else:
+        shift = 0
+
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Cutting')
-    
+    form.fields["job_order"].queryset = JobOrder.objects.filter(id=id)
+    form.fields["datetime_in"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_in',
+                                                     widget=forms.DateTimeInput(
+                                                         attrs={'value': str(sked_in)[:16]}))
+    form.fields["datetime_out"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_out',
+                                                      widget=forms.DateTimeInput(
+                                                          attrs={'value': str(sked_out)[:16]}))
+    form.fields["shift"] = forms.IntegerField(widget=forms.Select(choices=SHIFTS), initial=shift)
+    form.fields["quantity"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': quantity}))
+    form.fields["output_kilos"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': output_kilos}))
+    form.fields["number_rolls"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': number_rolls}))
+
     context = {
       'data': data,
       'form': form,
@@ -271,8 +369,9 @@ def add_cutting_schedule(request, id):
 def add_laminating_schedule(request, id):
     data = JobOrder.objects.get(id=id)
     form = LaminatingScheduleForm(request.POST)
-
     l = LaminatingSchedule.objects.filter(job_order_id=data.id)
+    item = ClientItem.objects.get(client_po_id=id)
+    ideal = LaminatingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()  # TODO Sinsinin
     l.job_order = id
 
     if l.count == 0:
@@ -284,14 +383,48 @@ def add_laminating_schedule(request, id):
         data.status = 'Under Laminating'
         data.save()
         if form.is_valid():
+            form = form.save(commit=False)
             form.ideal = False
             new_schedule = form.save()
-            if new_schedule.final:
+            if form.final:
                 data.status = 'Under Cutting'
                 data.save()
         return redirect('production:job_order_details', id=data.id)
 
+    quantity = item.quantity
+
+    if ideal is not None:
+        sked_in = ideal.sked_in
+        sked_out = ideal.sked_out
+    else:
+        sked_in = datetime.now()
+        sked_out = datetime.now() + timedelta(days=int((quantity * 60)/70000))
+
+    SHIFTS = (
+        (1, 1),
+        (2, 2),
+        (3, 3)
+    )
+
+    if time(6, 0) <= datetime.now().time() <= time(14, 0):
+        shift = 1
+    elif time(14, 0) <= datetime.now().time() <= time(22, 0):
+        shift = 2
+    elif time(22, 0) <= datetime.now().time() <= time(6, 0):
+        shift = 3
+    else:
+        shift = 0
+
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Laminating')
+    form.fields["job_order"].queryset = JobOrder.objects.filter(id=id)
+    form.fields["datetime_in"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_in',
+                                                         widget=forms.DateTimeInput(
+                                                             attrs={'value': str(sked_in)[:16]}))
+    form.fields["datetime_out"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_out',
+                                                          widget=forms.DateTimeInput(
+                                                              attrs={'value': str(sked_out)[:16]}))
+    form.fields["shift"] = forms.IntegerField(widget=forms.Select(choices=SHIFTS), initial=shift)
+    form.fields["quantity"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': quantity}))
 
     context = {
         'data': data,

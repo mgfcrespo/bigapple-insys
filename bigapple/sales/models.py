@@ -190,14 +190,13 @@ class SalesInvoice(models.Model):
         po_number = self.client_po
         return str(po_number)
 
-    #TODO: CHECK EVERY LOGIN HOW MANY DAYS PASSED + IF OVERDUE
     def calculate_total_amount_computed(self):
         if self.client.discount is None:
-            total_net_vat = self.total_amount / (1 + self.client.net_vat/100)
+            total_net_vat = (self.total_amount * self.client.net_vat)/100
             total = float(self.total_amount + total_net_vat)
         else:
             total_discount = self.total_amount * (self.client.discount/100)
-            total_net_vat = self.total_amount / (1 + self.client.net_vat/100)
+            total_net_vat = (self.total_amount * self.client.net_vat)/100
             total = float(self.total_amount + total_net_vat - total_discount)
         return total
 
