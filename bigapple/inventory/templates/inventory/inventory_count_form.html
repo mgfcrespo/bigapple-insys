@@ -6,7 +6,7 @@
     <h2 class="ui dividing header">{{ title }}</h2>
     {% csrf_token %}
 
-        <div class="two fields">
+        <div class="three fields">
             <div class="field">
                 <label>Item</label>
                 {{ data.item }}
@@ -15,8 +15,12 @@
                 <label>Quantity </label>
                 {{ data.quantity }}
             </div>
+            <div class="field">
+                <label>Supplier</label>
+                {{ data.supplier }}
+            </div>
         </div>
-        <div class="two fields">
+        <div class="three fields">
             <div class="field">
                 <label>Item Type</label>
                 {{ data.item_type }}
@@ -26,13 +30,15 @@
                 {{ data.rm_type }}
             </div>
         </div>
-        <div class="field">
+        <div class="two fields">
+            <div class="field">
             <label>Count:</label>
             {{ form.new_count }}
-        </div>
-    <div class="field">
+            </div>
+            <div class="field">
             <label>Supplier PO:</label>
             {{ form.spo_count }}
+        </div>
         </div>
 
     <button onclick="return confirm('Are you sure?')" class="small ui green button" type="submit">{{actiontype}}</button>

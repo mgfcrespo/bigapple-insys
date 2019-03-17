@@ -32,8 +32,6 @@ def aggregate_by_day(df):
     # df = df.resample('D').ffill()  # fill with last known value
     # df = df.resample('D').bfill()  # fill with next known value
     df = df.fillna(0)
-    print('aggregate_by_day:')
-    print(df)
     # print(df.isnull().values.any())
 
     return df
@@ -58,8 +56,8 @@ def forecast_ses(og_df):
     df = og_df.copy()
     train = aggregate_by_day(df)
     test = train.copy()
-    print('train df before create split')
-    print(train)
+    #print('train df before create split')
+    #print(train)
     test = test.reindex(create_split(train))
     y_hat_avg = test.copy()
     fit2 = SimpleExpSmoothing(np.asarray(train['Count'])).fit(smoothing_level=0.6, optimized=False)
@@ -121,10 +119,11 @@ def forecast_moving_average(og_df):
 def forecast_arima(og_df):
     df = og_df.copy()
     train = aggregate_by_day(df)
+    #train = train[np.isfinite(train['Count'])]
     test = train.copy()
-    test = train.reindex(create_split(train))
+    test = test.reindex(create_split(train))
     y_hat_avg = test.copy()
-    fit1 = sm.tsa.statespace.SARIMAX(train.Count, order=(2, 1, 4), seasonal_order=(0, 1, 1, 7)).fit(start_params=[0, 0, 0, 1])
+    fit1 = sm.tsa.statespace.SARIMAX(train.Count, order=(2, 1, 4), seasonal_order=(0, 1, 1, 7)).fit()
     start_date = test.index[0]  # first date in test
     end_date = test.index[-1]  # last date in test
     y_hat_avg['SARIMA'] = fit1.predict(start=start_date, end=end_date, dynamic=False)
@@ -152,12 +151,6 @@ def main():
     # print(forecast_moving_average(df))
     # print(forecast_arima(df))
     # forecast_decomposition(df)
-
-    print(forecast_ses(df))
-    print(df)
-    print(forecast_hwes(df))
-    print(df)
-
 
 if __name__ == '__main__':
     main()

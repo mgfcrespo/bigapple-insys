@@ -636,13 +636,31 @@ def production_schedule(request):
     return render(request, 'production/production_schedule.html', context)
 
 def extruder_machine_schedule(request):
-    cursor = connection.cursor()
-    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
-    cursor.execute(query)
-    df = pd.read_sql(query, connection)
+    plot_list = []
+    ex = ExtruderSchedule.objects.filter(ideal=True)
+
+    if ex.exists():
+        for i in ex:
+            job = i.job_order_id
+            item = ClientItem.objects.get(client_po_id=job)
+            product = item.products
+            mat = product.material_type
+
+            sked_dict = {'Task': 'Extruder',
+                             'Start': str(i.sked_in),
+                             'Finish': str(i.sked_out),
+                             'Resource': i.job_order_id,
+                             'Description': mat
+                             }
+            plot_list.append(sked_dict)
+
+        #print('plot_list:')
+        #print(plot_list)
+        df1 = pd.DataFrame(plot_list)
+
     machines = Machine.objects.filter(machine_type='Extruder').values('machine_id')
 
-    extruder_gantt = final_gantt.generate_specific_gantt_chart(df, machines, machine_type='Extruder')
+    extruder_gantt = final_gantt.chart(df1, '/extruder-machine-schedule.html')
 
     context = {
         'extruder_gantt': extruder_gantt
@@ -651,13 +669,28 @@ def extruder_machine_schedule(request):
     return render(request, 'production/extruder_machine_schedule.html', context)
 
 def printing_machine_schedule(request):
-    cursor = connection.cursor()
-    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
-    cursor.execute(query)
-    df = pd.read_sql(query, connection)
-    machines = Machine.objects.filter(machine_type='Printing').values('machine_id')
+    plot_list = []
+    pr = PrintingSchedule.objects.filter(ideal=True)
 
-    printing_gantt = final_gantt.generate_specific_gantt_chart(df, machines, machine_type='Printing')
+    if pr.exists():
+        for i in pr:
+            job = i.job_order_id
+            item = ClientItem.objects.get(client_po_id=job)
+            product = item.products
+            mat = product.material_type
+
+            sked_dict = {'Task': 'Extruder',
+                         'Start': str(i.sked_in),
+                         'Finish': str(i.sked_out),
+                         'Resource': i.job_order_id,
+                         'Description': mat
+                         }
+            plot_list.append(sked_dict)
+
+        # print('plot_list:')
+        # print(plot_list)
+        df1 = pd.DataFrame(plot_list)
+    printing_gantt = final_gantt.chart(df1, '/printing-machine-schedule.html')
 
     context = {
         'printing_gantt': printing_gantt
@@ -698,13 +731,25 @@ def cutting_machine_schedule(request):
 def production_report(request):
     jo = JobOrder.objects.filter(~Q(status='Waiting') | ~Q(status='Ready for delivery') | ~Q(status='Delivered'))
     item = ClientItem.objects.all()
-    ex = ExtruderSchedule.objects.filter(ideal=True)
-    cu = CuttingSchedule.objects.filter(ideal=True)
-
+    ideal_ex = ExtruderSchedule.objects.filter(ideal=True)
+    ideal_cu = CuttingSchedule.objects.filter(ideal=True)
+    ideal_pr = PrintingSchedule.objects.filter(ideal=True)
+    ideal_la = LaminatingSchedule.objects.filter(ideal=True)
+    real_ex = ExtruderSchedule.objects.filter(ideal=False)
+    real_cu = CuttingSchedule.objects.filter(ideal=False)
+    real_pr = PrintingSchedule.objects.filter(ideal=False)
+    real_la = LaminatingSchedule.objects.filter(ideal=False)
 
     context = {
         'jo' : jo,
-        'ex' : ex,
+        'ideal_cu': ideal_cu,
+        'ideal_pr': ideal_pr,
+        'ideal_la': ideal_la,
+        'ideal_ex' : ideal_ex,
+        'real_ex' : real_ex,
+        'real_cu' : real_cu,
+        'real_pr' : real_pr,
+        'real_la' : real_la,
         'item' : item,
     }
 

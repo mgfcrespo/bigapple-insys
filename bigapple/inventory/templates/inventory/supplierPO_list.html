@@ -9,11 +9,12 @@
                 <th>Supplier</th>
                 <th>Delivery Date</th>
                 <th>Total Amount</th>
+                <th>Status</th>
+
           	</tr>
     		</thead>
     		<tbody>
 			{% if mr %}
-
 				{% for mr in mr %}
     			<tr class = "row">
                     <td> 
@@ -23,6 +24,11 @@
                     <td>{{ mr.supplier }}</td>
                     <td>{{ mr.delivery_date }}</td>
                     <td>{{ mr.total_amount }}</td>
+                   {% for x in received %}
+						{% if x.spo_count_id == mr.id %}
+						<td>Received</td>
+						{% endif %}
+					{% endfor %}
     			</tr>
 				{% endfor %}
 			{% else %}

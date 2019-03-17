@@ -81,35 +81,6 @@ def supplier_delete(request, id):
     return redirect('sales:supplier_list')
     
 # CRUD PO
-'''
-def add_clientPO(request):
-        query = ClientPO.objects.all()
-        context = {
-            'title': "New Purchase Order",
-            'actiontype': "Add",
-            'query': query,
-        }
-
-        if request.method == 'POST':
-            date_issued = request.POST['date_issued']
-            date_required = request.POST['date_required']
-            terms = request.POST['terms']
-            other_info = request.POST['other_info']
-            client = request.POST[Client] #modify, get Client.name
-            client_items = request.POST.getlist('client_items') #modify, make loop for item list
-            total_amount = request.POST['total_amount'] #system should calculate; NOT AN INPUT
-            laminate = request.POST['laminate']
-            confirmed = request.POST['confirmed']
-
-            result = ClientPO(date_issued=date_issued, date_required=date_required, terms=terms, other_info=other_info, client=client, client_items=client_items
-                              total_amount=total_amount, laminate=laminate, confirmed=confirmed)
-            result.save()
-            return HttpResponseRedirect('../clientPO_list')
-
-        else:
-            return render(request, 'sales/clientPO_form.html', context)
-'''
-
 def edit_clientPO(request, id):
         client_po = JobOrder.objects.get(id=id)
 
@@ -214,7 +185,7 @@ def confirm_client_po(request, pk):
 
         if each.printed == 1:
             cylinder_count = int(each.quantity/10000)
-            ink = Inventory.objects.filter(Q(item_type='Ink') & Q(item=each.color))
+            ink = Inventory.objects.filter(Q(item_type='Ink') & Q(item=each.color)).first()
             if ink.quantity > int(each.quantity/2500):
                 color = str(each.color)
                 color_count = int(each.quantity/2500)
@@ -578,7 +549,7 @@ def rush_order_assessment(request, pk):
 
         if each.printed == 1:
             cylinder_count = int(each.quantity/10000)
-            ink = Inventory.objects.filter(Q(item_type='Ink') & Q(item=each.color))
+            ink = Inventory.objects.filter(Q(item_type='Ink') & Q(item=each.color)).first()
             if ink.exists():
                 color = str(each.color)
                 color_count = int(each.quantity/2500)
@@ -822,6 +793,8 @@ def demand_forecast_details(request, id):
     cursor.execute(query)
     df = pd.read_sql(query, connection)
 
+    product = Product.objects.get(id=item)
+
 
     #forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
     a = TimeSeriesForecasting.forecast_ses(df)
@@ -844,7 +817,8 @@ def demand_forecast_details(request, id):
         'forecast_moving_average': forecast_moving_average,
         'forecast_arima': forecast_arima,
         'item' : item,
-        'client' : client
+        'client' : client,
+        'product' : product
     }
 
     return render(request, 'sales/client_demand_forecast_details.html', context)

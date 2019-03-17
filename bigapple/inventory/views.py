@@ -109,10 +109,12 @@ def inventory_count_form(request, id):
 
         return redirect('inventory:inventory_count_list', id = data.id)
 
+    form.fields['spo_count'].queryset = SupplierPO.objects.filter(supplier_id=data.supplier_id)
+
     context = {
         'form' : form,
         'data': data,
-        'title': 'Inventory Count',
+        'title': 'Procured Item Count',
         'actiontype': 'Submit'
         #'actiontype': 'Update'
     }
@@ -204,8 +206,7 @@ def materials_requisition_approval(request, id):
 
 # Supplier PO
 def supplierPO_form(request):
-    formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm, extra=1, can_delete=True)
-    form = SupplierPOForm(request.POST)
+
     quantity = 0
     delivery_date = None
     item = None
@@ -249,15 +250,23 @@ def supplierPO_form(request):
         delivery_date = datetime.now().date()
 
 
+    formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm, extra=1, can_delete=True, fields=['quantity',
+                                    'item'],
+                                widgets={ 'quantity': forms.NumberInput(attrs={'value': quantity}),
+                                             #FIXME Item queryset
+                                             })
+
+    form = SupplierPOForm(request.POST)
+
     if request.method == "POST":
         if form.is_valid():
             new_form = form.save()
             new_form = new_form.pk
             form_instance = SupplierPO.objects.get(id=new_form)
-
             formset = formset(request.POST, instance=form_instance)
-            print(formset)
+            print(formset.errors)
             if formset.is_valid():
+                print('formset valid')
                 for form in formset:
                     form.save()
 
@@ -273,17 +282,17 @@ def supplierPO_form(request):
         return redirect('inventory:supplierPO_list')
 
     form.fields["supplier"].queryset = Supplier.objects.filter(id=supplier.id)
-    form.fields["delivery_date"] = forms.DateField(label='delivery_date', widget=forms.DateInput(attrs={'value': delivery_date}))
-    #FIXME Add quantity and item placeholders
-    #for form in formset.form:
-    #    form.fields["quantity"] = forms.FloatField(label='quantity',
+    form.fields["delivery_date"] = forms.DateField(label='delivery_date',
+                                                   widget=forms.DateInput(attrs={'value': delivery_date}))
+    # FIXME Add quantity and item placeholders
+    # for each in formset:
+    #    each.fields["quantity"] = forms.FloatField(label='quantity',
     #                                               widget=forms.NumberInput(attrs={'value': quantity}))
-    #    form.fields["item"].queryset = Inventory.objects.filter(id=item)
-
+    #    each.fields["item"].queryset =  Inventory.objects.filter(id=item)
 
     return render(request, 'inventory/supplierPO_form.html',
                   {'formset': formset,
-                   'form': form}
+                   'form': form, 'quantity':quantity, 'item':item}
                   )
 
 def supplierPO_form_test(request):
@@ -309,9 +318,11 @@ def supplierPO_form_test(request):
 
 def supplierPO_list(request):
     mr = SupplierPO.objects.all()
+    received = InventoryCount.objects.all()
     context = {
         'title' :'Supplier PO List',
-        'mr' : mr
+        'mr' : mr,
+        'received' : received
     }
     return render (request, 'inventory/supplierPO_list.html', context)
 
@@ -319,10 +330,13 @@ def supplierPO_details(request, id):
 
     mr = SupplierPO.objects.get(id=id)
     mri = SupplierPOItems.objects.filter(supplier_po=mr)
+    received = InventoryCount.objects.all()
+
     context = {
         'mr' : mr,
         'title' : mr,
-        'mri' : mri
+        'mri' : mri,
+        'received' : received
     }
     return render(request, 'inventory/supplierPO_details.html', context)
 
@@ -348,7 +362,7 @@ def inventory_forecast_details(request, pk):
     forecast_moving_average = []
     forecast_arima = []
 
-    query = 'SELECT spo.date_issued, spoi.quantity FROM inventory_mgt_inventory i, inventory_mgt_supplierpo spo, ' \
+    query = 'SELECT spo.date_issued, spoi.quantity FROM inventory_mgt_supplierpo spo, ' \
             'inventory_mgt_supplierpoitems spoi where spoi.item_id = '+str(pk)+'  and spoi.supplier_po_id = spo.id'
 
     cursor.execute(query)
@@ -367,9 +381,9 @@ def inventory_forecast_details(request, pk):
     c = TimeSeriesForecasting.forecast_moving_average(df)
     c[1] = int(float(c[1]))
     forecast_moving_average.extend(c)
-    #d = TimeSeriesForecasting.forecast_arima(df)
-    #d[1] = int(float(d[1]))
-    #forecast_arima.extend(d)
+    d = TimeSeriesForecasting.forecast_arima(df)
+    d[1] = int(float(d[1]))
+    forecast_arima.extend(d)
 
     request.session['forecast_ses'] = forecast_ses
     request.session['forecast_hwes'] = forecast_hwes

@@ -1,35 +1,41 @@
 {% extends 'sidebar.html' %}
 {% block content %}
-<h3 class="ui dividing header">{{ title }}</h3>
+<h3 class="ui dividing header">Supplier PO Details</h3>
     <div class="six wide tablet ten wide computer column">
         <div>{{message}}</div>
             <h2 class="ui header">{{ title }}</h2>
             <div class = "field">
-                <label for="">Supplier</label>
+                <label for="">Supplier:</label>
                 <span>{{ mr.supplier }}</span>
             </div>
             <div class="two fields">
                 <div class = "field">
-                    <label for="">Date Issued</label>
+                    <label for="">Date Issued:</label>
                     <span>{{ mr.date_issued }}</span>
                 </div>
                 <div class = "field">
-                    <label for="">Date Delivery</label>
+                    <label for="">Date Delivery:</label>
                     <span>{{ mr.delivery_date }}</span>
                 </div>
             </div>
             <table class="ui table">
                 <thead>
                     <th class="five wide">Item</th>
-                    <th class="three wide">Quantity</th>
-                    <th class="four wide">Price</th>
-                    <th class="four wide">Total</th>
+                    <th class="three wide">Quantity Ordered</th>
+                    <th class="three wide">Quantity Received</th>
+                    <th class="three wide">Price</th>
+                    <th class="three wide">Total</th>
                 </thead>
                 <tbody>
                     {% for mri in mri %}
                     <tr>
                         <td>{{ mri.item }}</td>
                         <td>{{ mri.quantity }}</td>
+                        <td>{% for x in received %}
+                            {% if x.spo_count_id == mr.id %}
+                            x.new_count
+                            {% endif %}
+                        {% endfor %}</td>
                         <td>{{ mri.price }}</td>
                         <td>{{ mri.total_price }}</td>
                     </tr>

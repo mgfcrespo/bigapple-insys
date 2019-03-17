@@ -58,12 +58,11 @@ class InventoryForm(forms.ModelForm):
 
 
 class InventoryCountForm(ModelForm):
+    new_count = forms.IntegerField()
 
     class Meta:
         model = InventoryCount
-        fields = ('new_count',)
-
-        new_count = forms.IntegerField()
+        fields = ('new_count','spo_count',)
 
         def __init__(self, *args, **kwargs):
             super(InventoryCountForm, self).__init__(*args, **kwargs)
@@ -111,11 +110,9 @@ class SupplierPOItemsForm(ModelForm):
         model = SupplierPOItems
         fields = ('item', 'quantity')
 
-        inventory = forms.ModelChoiceField(queryset=Inventory.objects.all())
-
         def __init__(self, *args, **kwargs):
             super(SupplierPOItemsForm, self).__init__(*args, **kwargs)
-            self.fields['item'].queryset = Inventory.objects.all()
+
 
         # if 'supplier_po.supplier' in self.data:
         #     try:

@@ -21,9 +21,10 @@ from .models import Employee
 from .models import Client
 
 from accounts.forms import SignUpForm
-from sales.models import Supplier, SalesInvoice
-from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule
+from sales.models import Supplier, SalesInvoice, ClientItem, Product
+from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
 from inventory.models import Inventory
+from utilities import TimeSeriesForecasting, final_gantt
 # Create your views here.
 
 def register(request):
@@ -40,6 +41,8 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
 
+def most_common(lst):
+    return max(set(lst), key=lst.count)
 
 @login_required(login_url='/profile/login/')
 def user_page_view(request):
@@ -84,13 +87,134 @@ def user_page_view(request):
         POs_lastYear = JobOrder.objects.filter(date_issued__month=thisMonth, date_issued__year=lastYear).annotate(count=Count('id'))
         POs_lastMonthlastYear = JobOrder.objects.filter(date_issued__month=thisMonth-1, date_issued__year=lastYear).annotate(count=Count('id'))
 
-        #TODO change to saved prod sched
-        cursor = connection.cursor()
-        query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status=" + "'Waiting'" + " and NOT j.status=" + "'Ready for delivery'" + " and NOT j.status =" + "'Delivered'"
-        cursor.execute(query)
-        df = pd.read_sql(query, connection)
+        forecast_ses = []
+        forecast_hwes = []
+        forecast_moving_average = []
+        forecast_arima = []
 
-        gantt = production.final_gantt.generate_overview_gantt_chart(df=df)
+        #PRODUCTION SCHEDULE
+        plot_list = []
+        ideal = []
+        ex = ExtruderSchedule.objects.filter(ideal=True)
+        ex_list = list(ex)
+        ideal.append(ex_list)
+        cu = CuttingSchedule.objects.filter(ideal=True)
+        cu_list = list(cu)
+        ideal.append(cu_list)
+        pr = PrintingSchedule.objects.filter(ideal=True)
+        pr_list = list(pr)
+        ideal.append(pr_list)
+        la = LaminatingSchedule.objects.filter(ideal=True)
+        la_list = list(la)
+        print('la list:')
+        print(la_list)
+        ideal.append(la_list)
+
+        if ideal:
+            if ex.exists():
+                for i in ex:
+                    job = i.job_order_id
+                    item = ClientItem.objects.get(client_po_id=job)
+                    product = item.products
+                    mat = product.material_type
+
+                    sked_dict = {'Task': 'Extruder',
+                                 'Start': str(i.sked_in),
+                                 'Finish': str(i.sked_out),
+                                 'Resource': i.job_order_id,
+                                 'Description': mat
+                                 }
+                    plot_list.append(sked_dict)
+
+            if cu.exists():
+                for j in cu:
+                    job = j.job_order_id
+                    item = ClientItem.objects.get(client_po_id=job)
+                    product = item.products
+                    mat = product.material_type
+
+                    sked_dict = {'Task': 'Cutting',
+                                 'Start': str(j.sked_in),
+                                 'Finish': str(j.sked_out),
+                                 'Resource': j.job_order_id,
+                                 'Description': mat
+                                 }
+                    plot_list.append(sked_dict)
+            if pr.exists():
+                for k in pr:
+                    job = k.job_order_id
+                    item = ClientItem.objects.get(client_po_id=job)
+                    product = item.products
+                    mat = product.material_type
+
+                    sked_dict = {'Task': 'Printing',
+                                 'Start': str(k.sked_in),
+                                 'Finish': str(k.sked_out),
+                                 'Resource': k.job_order_id,
+                                 'Description': mat
+                                 }
+                    plot_list.append(sked_dict)
+            if la.exists():
+                for l in la:
+                    job = l.job_order_id
+                    item = ClientItem.objects.get(client_po_id=job)
+                    product = item.products
+                    mat = product.material_type
+
+                    sked_dict = {'Task': 'Laminating',
+                                 'Start': str(l.sked_in),
+                                 'Finish': str(l.sked_out),
+                                 'Resource': l.job_order_id,
+                                 'Description': mat
+                                 }
+                    plot_list.append(sked_dict)
+
+            print('plot_list:')
+            print(plot_list)
+            df1 = pd.DataFrame(plot_list)
+            print('df1:')
+            print(df1)
+            gantt = final_gantt.chart(df1, '/production_schedule.html')
+
+        else:
+            cursor = connection.cursor()
+            query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status=" + "'Waiting'" + " and NOT j.status=" + "'Ready for delivery'" + " and NOT j.status =" + "'Delivered'"
+            cursor.execute(query)
+            df = pd.read_sql(query, connection)
+            gantt = final_gantt.generate_overview_gantt_chart(df)
+
+            # TODO Save sked_op, sked_mach
+            if 'save_btn' in request.POST:
+                ideal_sched = final_gantt.get_sched_data(df)
+                messages.success(request, 'Production schedule saved.')
+                print('ideal sched:')
+                print(ideal_sched)
+
+                for i in range(0, len(ideal_sched)):
+                    if ideal_sched[i]['Task'] == 'Extruder':
+                        new_ex = ExtruderSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+                                                  sked_in=ideal_sched[i]['Start'],
+                                                  sked_out=ideal_sched[i]['Finish'])
+                        new_ex.save()
+                        print('saved new_ex')
+                    elif ideal_sched[i]['Task'] == 'Cutting':
+                        new_cu = CuttingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+                                                 sked_in=ideal_sched[i]['Start'],
+                                                 sked_out=ideal_sched[i]['Finish'])
+                        new_cu.save()
+                        print('saved new_cu')
+                    elif ideal_sched[i]['Task'] == 'Printing':
+                        new_pr = PrintingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+                                                  sked_in=ideal_sched[i]['Start'],
+                                                  sked_out=ideal_sched[i]['Finish'])
+                        new_pr.save()
+                        print('saved new_pr')
+                    elif ideal_sched[i]['Task'] == 'Laminating':
+                        new_la = LaminatingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+                                                    sked_in=ideal_sched[i]['Start'],
+                                                    sked_out=ideal_sched[i]['Finish'])
+                        new_la.save()
+                        print('saved new_la')
 
         client = Client.objects.filter(accounts_id=id)
         employee = Employee.objects.filter(accounts_id=id)
@@ -106,6 +230,46 @@ def user_page_view(request):
                 customer = Client.objects.filter(sales_agent=employee).exclude(status='Delivered')[:10]
                 po = JobOrder.objects.all()
                 client_po = []
+
+        #CLIENT DEMAND FORECAST FOR CLIENT
+        if hasattr(request.user, 'client'):
+            mga_po = JobOrder.objects.filter(client_id=id)
+            i = ClientItem.objects.all()
+            mga_item = []
+            for every in i:
+                for each in mga_po:
+                    if every.client_po_id == each.id:
+                        mga_item.append(every.products_id)
+
+            itong_item = most_common(mga_item)
+            itong_item = Product.objects.get(id=itong_item)
+            cursor = connection.cursor()
+            forecast_ses = []
+            forecast_hwes = []
+            forecast_moving_average = []
+            forecast_arima = []
+
+            query = 'SELECT po.date_issued, poi.quantity FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
+                    'po.client_id = ' + str(id) + ' AND poi.client_po_id = po.id AND poi.products_id = ' + str(itong_item.id)
+
+            cursor.execute(query)
+            df = pd.read_sql(query, connection)
+
+            product = Product.objects.get(id=item)
+
+            # forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
+            a = TimeSeriesForecasting.forecast_ses(df)
+            a[1] = int(float(a[1]))
+            forecast_ses.extend(a)
+            b = TimeSeriesForecasting.forecast_hwes(df)
+            b[1] = int(float(b[1]))
+            forecast_hwes.extend(b)
+            c = TimeSeriesForecasting.forecast_moving_average(df)
+            c[1] = int(float(c[1]))
+            forecast_moving_average.extend(c)
+            d = TimeSeriesForecasting.forecast_arima(df)
+            d[1] = int(float(d[1]))
+            forecast_arima.extend(d)
 
         invoice = SalesInvoice.objects.all()
         for x in invoice:
@@ -151,6 +315,12 @@ def user_page_view(request):
             'JobOrder_data': JobOrder_data,
             'JobOrder_data5': JobOrder_data5,
             'rush_order': rush_order,
+
+            'forecast_ses' : forecast_ses,
+            'forecast_hwes': forecast_hwes,
+            'forecast_moving_average': forecast_moving_average,
+            'forecast_arima': forecast_arima,
+            'product': product
         }
 
         request.session['session_username'] = username
