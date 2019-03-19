@@ -45,7 +45,6 @@ def inventory_item_add(request):
 def inventory_item_list(request):
 
     items = Inventory.objects.all()
-    #FIXME: get quantities issued today
     today = date.today()
     issued_to_production = MaterialRequisition.objects.filter(datetime_issued__startswith=today)
     print('issued to production: ')
@@ -152,8 +151,14 @@ def materials_requisition_list(request):
         if str(x.id) in request.POST:
             x.status = "Retrieved"
             x.save()
-            i = Inventory.objects.get(item=x.item)
+            i = Inventory.objects.get(id=x.item_id)
+            print('MATREQ ')
+            print(i)
+            print('before retrieve')
+            print(i.quantity)
             i.quantity -= x.quantity
+            print('after retrieve')
+            print(i.quantity)
             i.save()
             messages.success(request, 'Materials have been retrieved.')
 
@@ -217,7 +222,7 @@ def supplierPO_form(request):
         delivery_date = datetime.now().date()
         if request.session['matreq_mat'] is not None:
             item = Inventory.objects.filter(rm_type=request.session.get('matreq_mat')).first()
-            supplier = item.supplier
+            supplier = Supplier.objects.filter(supplier=item.supplier_id)
             item = item.id
         elif request.session['matreq_ink'] is not None:
             item = Inventory.objects.get(item=request.session.get('matreq_ink'))
@@ -228,7 +233,7 @@ def supplierPO_form(request):
         print('inventory:forecast')
         item = request.session.get('item')
         inv = Inventory.objects.get(id=item)
-        supplier = inv.supplier
+        supplier = Supplier.objects.filter(supplier=inv.supplier_id)
         if request.session['forecast'] == 'SES':
             quantity = request.session['forecast_ses'][1]
             date = request.session['forecast_ses'][0]
@@ -248,6 +253,7 @@ def supplierPO_form(request):
 
     else:
         delivery_date = datetime.now().date()
+        supplier = Supplier.objects.all()
 
 
     formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm, extra=1, can_delete=True, fields=['quantity',
@@ -281,10 +287,9 @@ def supplierPO_form(request):
 
         return redirect('inventory:supplierPO_list')
 
-    form.fields["supplier"].queryset = Supplier.objects.filter(id=supplier.id)
+    form.fields["supplier"].queryset = supplier
     form.fields["delivery_date"] = forms.DateField(label='delivery_date',
                                                    widget=forms.DateInput(attrs={'value': delivery_date}))
-    # FIXME Add quantity and item placeholders
     # for each in formset:
     #    each.fields["quantity"] = forms.FloatField(label='quantity',
     #                                               widget=forms.NumberInput(attrs={'value': quantity}))

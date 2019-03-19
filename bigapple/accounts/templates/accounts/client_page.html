@@ -87,7 +87,113 @@
 <h3 class="ui dividing header">Forecast</h3>
 <div class="ui horizontal segments">
 	<div class="ui segment">
+		<h4	class="ui dividing header">Demand Forecast</h4>
 
+		<h5 class="ui dividing header">{{product.id}} - {{product.products}}</h5>
+		<div>
+			<div class="ui very compact secondary menu">
+				<a class="item" data-tooltip="Simple Exponential Smoothing" data-tab="second" data-position="bottom center">SES</a>
+				<a class="item" data-tooltip="Holt Winters Exponential Smoothing" data-tab="third" data-position="bottom center">HWES</a>
+				<a class="item" data-tooltip="Moving Average" data-tab="fourth" data-position="bottom center">Moving Average</a>
+				<a class="item" data-tooltip="ARIMA" data-tab="fifth" data-position="bottom center">ARIMA</a>
+			</div>
+			<div class="ui active tab segment" data-tab="second">
+				<table class="ui small compact striped table center aligned">
+					<thead>
+						<tr>
+							<th>
+								Date
+							</th>
+							<th>
+								Quantity
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								{{ forecast_ses.0 }}
+							</td>
+							<td>
+								{{ forecast_ses.1 }}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="ui tab segment" data-tab="third">
+				<table class="ui small compact striped table center aligned">
+					<thead>
+						<tr>
+							<th>
+								Date
+							</th>
+							<th>
+								Quantity
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								{{ forecast_hwes.0 }}
+							</td>
+							<td>
+								{{ forecast_hwes.1 }}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="ui tab segment" data-tab="fourth">
+				<table class="ui small compact striped table center aligned">
+					<thead>
+						<tr>
+							<th>
+								Date
+							</th>
+							<th>
+								Quantity
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								{{ forecast_moving_average.0 }}
+							</td>
+							<td>
+								{{ forecast_moving_average.1 }}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="ui tab segment" data-tab="fifth">
+				<table class="ui small compact striped table center aligned">
+					<thead>
+						<tr>
+							<th>
+								Date
+							</th>
+							<th>
+								Quantity
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>
+								{{ forecast_arima.0 }}
+							</td>
+							<td>
+								{{ forecast_arima.1 }}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 </div>
 {% endblock %}

@@ -201,9 +201,10 @@ def confirm_client_po(request, pk):
     if request.method == "POST" and 'confirm_btn' in request.POST:
 
         if matreq:
+            # SAVE NEW PRODUCTION SCHEDULE
+            save_schedule(request, pk)
             clientpo.status = "On Queue"
             clientpo.save()
-
             for every in items:
                 for x in material:
                     form1 = MaterialRequisitionForm(request.POST)
@@ -242,8 +243,6 @@ def confirm_client_po(request, pk):
                         ink_form.quantity = color_count
                         ink_form.save()
 
-            # SAVE NEW PRODUCTION SCHEDULE
-            save_schedule(request, pk)
             return redirect('sales:po-list-view')
 
 
@@ -626,10 +625,10 @@ def rush_order_assessment(request, pk):
     simulated_sched = final_gantt.generate_overview_gantt_chart(df)
 
     if 'approve_btn' in request.POST:
-        rush_order.status = 'On Queue'
-        rush_order.save()
         # SAVE NEW PRODUCTION SCHEDULE
         save_schedule(request, pk)
+        rush_order.status = 'On Queue'
+        rush_order.save()
         return redirect('sales:rush_order_list')
 
     elif 'deny_btn' in request.POST:
@@ -793,8 +792,7 @@ def demand_forecast_details(request, id):
     cursor.execute(query)
     df = pd.read_sql(query, connection)
 
-    product = Product.objects.get(id=item)
-
+    product = item
 
     #forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
     a = TimeSeriesForecasting.forecast_ses(df)
@@ -816,7 +814,7 @@ def demand_forecast_details(request, id):
         'forecast_hwes': forecast_hwes,
         'forecast_moving_average': forecast_moving_average,
         'forecast_arima': forecast_arima,
-        'item' : item,
+        #'item' : item,
         'client' : client,
         'product' : product
     }
@@ -824,11 +822,43 @@ def demand_forecast_details(request, id):
     return render(request, 'sales/client_demand_forecast_details.html', context)
 
 def save_schedule(request, pk):
+    ideal_ex = ExtruderSchedule.objects.filter(ideal=True)
+    ideal_cu = CuttingSchedule.objects.filter(ideal=True)
+    ideal_la = LaminatingSchedule.objects.filter(ideal=True)
+    ideal_pr = PrintingSchedule.objects.filter(ideal=True)
+
+    for x in ideal_ex:
+        job = x.job_order
+        if job.status == 'Ready for delivery' or job.status == 'Delivered':
+            pass
+        else:
+            x.delete()
+    for y in ideal_cu:
+        job = y.job_order
+        if job.status == 'Ready for delivery' or job.status == 'Delivered':
+            pass
+        else:
+            y.delete()
+    for z in ideal_la:
+        job = z.job_order
+        if job.status == 'Ready for delivery' or job.status == 'Delivered':
+            pass
+        else:
+            z.delete()
+    for a in ideal_pr:
+        job = a.job_order
+        if job.status == 'Ready for delivery' or job.status == 'Delivered':
+            pass
+        else:
+            a.delete()
+
     item = ClientItem.objects.get(client_po_id=pk)
     mat = item.products.material_type
 
     cursor = connection.cursor()
-    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status=" + "'Waiting'" + " and NOT j.status=" + "'Ready for delivery'" + " and NOT j.status =" + "'Delivered'"
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p " \
+            "WHERE p.id = i.products_id and i.client_po_id = j.id and " \
+            "NOT j.status=" + "'Waiting'" + " and NOT j.status=" + "'Ready for delivery'" + " and NOT j.status =" + "'Delivered'"
     cursor.execute(query)
     df = pd.read_sql(query, connection)
     data = {'id': pk,
@@ -840,16 +870,6 @@ def save_schedule(request, pk):
     #gantt = final_gantt.generate_overview_gantt_chart(df)
 
     # TODO Save sked_op, sked_mach
-    ideal_ex = ExtruderSchedule.objects.filter(ideal=True)
-    ideal_cu = CuttingSchedule.objects.filter(ideal=True)
-    ideal_la = LaminatingSchedule.objects.filter(ideal=True)
-    ideal_pr = PrintingSchedule.objects.filter(ideal=True)
-
-    ideal_ex.delete()
-    ideal_cu.delete()
-    ideal_la.delete()
-    ideal_pr.delete()
-
     ideal_sched = final_gantt.get_sched_data(df)
     messages.success(request, 'Production schedule saved.')
     print('ideal sched:')

@@ -129,11 +129,6 @@ class ExtruderSchedule(models.Model):
     class Meta:
         db_table = 'production_mgt_extruderschedule'
 
-
-    def __str__(self):
-        data = str(self.job_order) + ' : ' + str(self.id)
-        return data + ' : ' + str(self.date)
-
     def save(self, *args, **kwargs):
         if self.weight_rolls is not None:
             self.balance = self.weight_rolls* float(4.74)
@@ -164,9 +159,6 @@ class PrintingSchedule(models.Model):
     class Meta:
 
         db_table = 'production_mgt_printingschedule'
-    def __str__(self):
-        data = str(self.job_order) + ' : ' + str(self.id)
-        return data + ' : ' + str(self.date)
 
     def time_in_day(self):
         return str(self.time_in) + ' : ' + str(self.day_in)
@@ -198,10 +190,6 @@ class CuttingSchedule(models.Model):
 
     class Meta:
         db_table = 'production_mgt_cuttingschedule'
-
-    def __str__(self):
-        data = str(self.job_order) + ' : ' + str(self.id)
-        return data + ' : ' + str(self.date)
 
     def time_in_day(self):
         return str(self.time_in) + ' : ' + str(self.day_in)

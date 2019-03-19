@@ -4,7 +4,7 @@
 <h3 class="ui dividing header">Production Report</h3>
 {% if jo %}
     {% for x in jo %}
-    <h4 class="ui dividing header">{{ x.id }} - {{ x.client.company }}</h4>
+    <h4 class="ui dividing header">Job Order {{ x.id }} - {{ x.client.company }}</h4>
     <div class="ui two column grid">
         <div class="column">
             <table class="ui structured striped table center aligned">
@@ -35,6 +35,7 @@
                 </thead>
                 <tbody>
                     <tr>
+
                         <td>
                             {{ i.sked_mach }}
                         </td>
@@ -55,6 +56,7 @@
                                 {% endif %}
                             {% endfor %}
                         </td>
+
                     </tr>
                 </tbody>
 
@@ -88,6 +90,7 @@
                 </thead>
                 <tbody>
                     <tr>
+                        {% if i.job_order_id == x.id %}
                         <td>
                             {{ i.machine }}
                         </td>
@@ -132,6 +135,7 @@
                                 {% endif %}
                             {% endfor %}
                         </td>
+                        {% endif %}
                     </tr>
                 </tbody>
                 <tfoot>

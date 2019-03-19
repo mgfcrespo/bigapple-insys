@@ -1,219 +1,1057 @@
 {% extends 'sidebar.html' %}
 
 {% block content %}
+{% load mathfilters %}
+
 <h3 class="ui dividing header">Job Order Details</h3>
-    <div class="six wide tablet sixteen wide computer column">
-        <form id = "myForm" class="ui form segment" action = "" method="POST" role="form">
-            {% csrf_token %}
-            <h2 class="ui header">JO #: {{ title }}</h2>
-            <div class = "four fields">
-                <div class="field">
-                    <label for="">Date Issued</label>
-                    <span>{{ data.date_issued }}</span>
-                </div>
-                <div class="field">
-                    <label>Date Due</label>
-                    <span>{{ data.date_required }}</span>
-                </div>
-                <div class = "field">
-                    <label for="">Total Amount</label>
-                    <span>{{ data.total_amount }}</span>
-                </div>
-                <div class = "field">
-                    <label for="">Status</label>
-                    <span id = "status">{{ data.status }}</span>
-                </div>
-            </div>
-            <div class="five fields">
-                <div class = "field">
-                    <label for="">Client PO</label>
-                    <span>{{ data }}</span>
-                </div>
-                <div class = "field">
-                    <label for="">Client</label>
-                    <span>{{ data.client }}</span>
-                </div>
-                <div class = "field">
-                    <label for="">Rush Order</label>
-                    <span>{% if data.rush_order == 0 %}
-                            No
-                            {% else %}
-                            Yes</span>
-                    {% endif %}
-                </div>
-                <div class = "field">
-                    <label for="">Payment Terms</label>
-                    <span>{{ data.client.payment_terms }}</span>
-                </div>
-                <div class = "field">
-                    <label for="">Items</label>
-                    <span>{% for x in items %}
-                        {{ x.quantity }} {{ x.products }}
-                    {% endfor %}</span>
-                </div>
+<div class="six wide tablet sixteen wide computer column">
+    <form id = "myForm" class="ui form segment" action = "" method="POST" role="form">
+        {% csrf_token %}
+        <h2 class="ui header">Job Order {{ title }}</h2>
+        <div class = "four fields">
+            <div class="field">
+                <label for="">Date Issued</label>
+                <span>{{ data.date_issued }}</span>
             </div>
             <div class="field">
-                <label for="">Remarks</label>
-                <span>{{ form.remarks }}</span>
+                <label>Date Due</label>
+                <span>{{ data.date_required }}</span>
             </div>
+            <div class = "field">
+                <label for="">Total Amount</label>
+                <span>{{ data.total_amount }}</span>
+            </div>
+            <div class = "field">
+                <label for="">Status</label>
+                <span id = "status">{{ data.status }}</span>
+            </div>
+        </div>
+        <div class="five fields">
+            <div class = "field">
+                <label for="">Client PO</label>
+                <span>{{ data }}</span>
+            </div>
+            <div class = "field">
+                <label for="">Client</label>
+                <span>{{ data.client }}</span>
+            </div>
+            <div class = "field">
+                <label for="">Rush Order</label>
+                <span>{% if data.rush_order == 0 %}
+                        No
+                        {% else %}
+                        Yes</span>
+                {% endif %}
+            </div>
+            <div class = "field">
+                <label for="">Payment Terms</label>
+                <span>{{ data.client.payment_terms }}</span>
+            </div>
+            <div class = "field">
+                <label for="">Items</label>
+                <span>{% for x in items %}
+                    {{ x.quantity }} {{ x.products }}
+                {% endfor %}</span>
+            </div>
+        </div>
+        <div class="field">
+            <label for="">Remarks</label>
+            <span>{{ form.remarks }}</span>
+        </div>
 
-            <button class="ui green basic button" type="submit">Edit</button>
-        </form>
-    </div>
-
-<div class="ui top attached tabular menu">
-    <a class="active item" data-tab="first">Extrusion</a>
-       {% if x.printed == 1 and x.laminate == 1%}
-        <a class="item" data-tab="second">Printing</a>
-        <a class="item" data-tab="third">Laminating</a>
-
-        {% elif x.printed == 1 %}
-        <a class="item" data-tab="second">Printing</a>
-        {% elif x.laminate == 1 %}
-        <a class="item" data-tab="third">Laminating</a>
-        {% else %}
-        {% endif %}
-    <a class="item" data-tab="fourth">Cutting</a>
+        <button class="ui green basic button" type="submit">Edit</button>
+    </form>
 </div>
 
-<div class="ui bottom attached active tab segment" data-tab="first">
-     <!--Extrusion Schedule-->
-    <div class="ui container" style = "font-size: 12px;">
-        <h4 class="ui block inverted header">Extrusion Schedule</h4>
-        <table class="ui striped table">
-            <thead>
-                <th>Machine</th>
-                <th>Datetime In</th>
-                <th>Datetime Out</th>
-                <th>Weight Rolls</th>
-                <th>Core Weight</th>
-                <th>Net Weight</th>
-                <th>Output Kilos</th>
-                <th>Number Rolls</th>
-                <th>Starting Scrap</th>
-                <th>Extruder Scrap</th>
-                <th>Balance</th>
-                <th>Remarks</th>
-            </thead>
-            <tbody>
-                {% for e in extrusion %}
-                <tr>
-                    <td>{{ e.machine }}</td>
-                    <td>{{ e.datetime_in }}</td>
-                    <td>{{ e.datetime_out }}</td>
-                    <td>{{ e.weight_rolls }}</td>
-                    <td>{{ e.core_weight }}</td>
-                    <td>{{ e.net_weight }}</td>
-                    <td>{{ e.output_kilos }}</td>
-                    <td>{{ e.number_rolls }}</td>
-                    <td>{{ e.starting_scrap }}</td>
-                    <td>{{ e.extruder_scrap }}</td>
-                    <td>{{ e.balance }}</td>
-                    <td>{{ e.remarks }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div class="ui segment">
+    <div class="ui top attached tabular menu">
+        <a class="active item" data-tab="first">Extrusion</a>
+           {% if x.printed == 1 and x.laminate == 1%}
+            <a class="item" data-tab="second">Printing</a>
+            <a class="item" data-tab="third">Laminating</a>
+
+            {% elif x.printed == 1 %}
+            <a class="item" data-tab="second">Printing</a>
+            {% elif x.laminate == 1 %}
+            <a class="item" data-tab="third">Laminating</a>
+            {% else %}
+            {% endif %}
+        <a class="item" data-tab="fourth">Cutting</a>
     </div>
-</div>
-<div class="ui bottom attached tab segment" data-tab="second">
-    <!--Printing Schedule-->
-    <div class="ui container" style = "font-size: 12px;">
-        <h4 class="ui block inverted header">Printing Schedule</h4>
-        <table class="ui striped table">
-            <thead>
-                <th>Machine</th>
-                <th>Datetime In</th>
-                <th>Datetime Out</th>
-                <th>Number Rolls</th>
-                <th>Starting Scrap</th>
-                <th>Printing Scrap</th>
-                <th>Remarks</th>
-            </thead>
-            <tbody>
-                {% for p in printing %}
-                <tr>
-                    <td>{{ p.machine }}</td>
-                    <td>{{ p.datetime_in }}</td>
-                    <td>{{ p.datetime_out }}</td>
-                    <td>{{ p.number_rolls }}</td>
-                    <td>{{ p.exit_scrap }}</td>
-                    <td>{{ p.printing_scrap }}</td>
-                    <td>{{ p.remarks }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="ui bottom attached active tab segment" data-tab="first">
+         <!--Extrusion Schedule-->
+        <div class="ui container" style = "font-size: 12px;">
+            <h4 class="ui block inverted header">Extrusion Schedule</h4>
+            <table class="ui striped table">
+                <thead>
+                    <th>Machine</th>
+                    <th>Datetime In</th>
+                    <th>Datetime Out</th>
+                    <th>Weight Rolls</th>
+                    <th>Core Weight</th>
+                    <th>Net Weight</th>
+                    <th>Output Kilos</th>
+                    <th>Number Rolls</th>
+                    <th>Starting Scrap</th>
+                    <th>Extruder Scrap</th>
+                    <th>Balance</th>
+                    <th>Remarks</th>
+                </thead>
+                <tbody>
+                    {% for e in extrusion %}
+                    <tr>
+                        <td>{{ e.machine }}</td>
+                        <td>{{ e.datetime_in }}</td>
+                        <td>{{ e.datetime_out }}</td>
+                        <td>{{ e.weight_rolls }}</td>
+                        <td>{{ e.core_weight }}</td>
+                        <td>{{ e.net_weight }}</td>
+                        <td>{{ e.output_kilos }}</td>
+                        <td>{{ e.number_rolls }}</td>
+                        <td>{{ e.starting_scrap }}</td>
+                        <td>{{ e.extruder_scrap }}</td>
+                        <td>{{ e.balance }}</td>
+                        <td>{{ e.remarks }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
-<div class="ui bottom attached tab segment" data-tab="third">
-    <!--Laminating Schedule-->
-    <div class="ui container" style = "font-size: 12px;">
-        <h4 class="ui block inverted header">Laminating Schedule</h4>
-        <table class="ui striped table">
-            <thead>
-                <th>Machine</th>
-                <th>Datetime In</th>
-                <th>Datetime Out</th>
-                <th>Quantity</th>
-                <th>Starting Scrap</th>
-                <th>Laminating Scrap</th>
-                <th>Remarks</th>
-            </thead>
-            <tbody>
-                {% for l in laminating %}
-                <tr>
-                    <td>{{ l.machine }}</td>
-                    <td>{{ l.datetime_in }}</td>
-                    <td>{{ l.datetime_out }}</td>
-                    <td>{{ l.quantity }}</td>
-                    <td>{{ l.starting_scrap }}</td>
-                    <td>{{ l.laminating_scrap }}</td>
-                    <td>{{ l.remarks }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="ui bottom attached tab segment" data-tab="second">
+        <!--Printing Schedule-->
+        <div class="ui container" style = "font-size: 12px;">
+            <h4 class="ui block inverted header">Printing Schedule</h4>
+            <table class="ui striped table">
+                <thead>
+                    <th>Machine</th>
+                    <th>Datetime In</th>
+                    <th>Datetime Out</th>
+                    <th>Number Rolls</th>
+                    <th>Starting Scrap</th>
+                    <th>Printing Scrap</th>
+                    <th>Remarks</th>
+                </thead>
+                <tbody>
+                    {% for p in printing %}
+                    <tr>
+                        <td>{{ p.machine }}</td>
+                        <td>{{ p.datetime_in }}</td>
+                        <td>{{ p.datetime_out }}</td>
+                        <td>{{ p.number_rolls }}</td>
+                        <td>{{ p.exit_scrap }}</td>
+                        <td>{{ p.printing_scrap }}</td>
+                        <td>{{ p.remarks }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
-<div class="ui bottom attached tab segment" data-tab="fourth">
-    <!--Cutting Schedule-->
-    <div class="ui container" style = "font-size: 12px;">
-        <h4 class="ui block inverted header">Cutting Schedule</h4>
-        <table class="ui striped table">
-            <thead>
-                <th>Machine</th>
-                <th>Datetime In</th>
-                <th>Datetime Out</th>
-                <th>Line</th>
-                <th>Quantity</th>
-                <th>Output Kilos</th>
-                <th>Number Rolls</th>
-                <th>Starting Scrap</th>
-                <th>Cutting Scrap</th>
-                <th>Remarks</th>
-            </thead>
-            <tbody>
-                {% for c in cutting %}
-                <tr>
-                    <td>{{ c.machine }}</td>
-                    <td>{{ c.datetime_in }}</td>
-                    <td>{{ c.datetime_out }}</td>
-                    <td>{{ c.line }}</td>
-                    <td>{{ c.quantity }}</td>
-                    <td>{{ c.output_kilos }}</td>
-                    <td>{{ c.number_rolls }}</td>
-                    <td>{{ c.starting_scrap }}</td>
-                    <td>{{ c.cutting_scrap }}</td>
-                    <td>{{ c.remarks }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="ui bottom attached tab segment" data-tab="third">
+        <!--Laminating Schedule-->
+        <div class="ui container" style = "font-size: 12px;">
+            <h4 class="ui block inverted header">Laminating Schedule</h4>
+            <table class="ui striped table">
+                <thead>
+                    <th>Machine</th>
+                    <th>Datetime In</th>
+                    <th>Datetime Out</th>
+                    <th>Quantity</th>
+                    <th>Starting Scrap</th>
+                    <th>Laminating Scrap</th>
+                    <th>Remarks</th>
+                </thead>
+                <tbody>
+                    {% for l in laminating %}
+                    <tr>
+                        <td>{{ l.machine }}</td>
+                        <td>{{ l.datetime_in }}</td>
+                        <td>{{ l.datetime_out }}</td>
+                        <td>{{ l.quantity }}</td>
+                        <td>{{ l.starting_scrap }}</td>
+                        <td>{{ l.laminating_scrap }}</td>
+                        <td>{{ l.remarks }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="ui bottom attached tab segment" data-tab="fourth">
+        <!--Cutting Schedule-->
+        <div class="ui container" style = "font-size: 12px;">
+            <h4 class="ui block inverted header">Cutting Schedule</h4>
+            <table class="ui striped table">
+                <thead>
+                    <th>Machine</th>
+                    <th>Datetime In</th>
+                    <th>Datetime Out</th>
+                    <th>Line</th>
+                    <th>Quantity</th>
+                    <th>Output Kilos</th>
+                    <th>Number Rolls</th>
+                    <th>Starting Scrap</th>
+                    <th>Cutting Scrap</th>
+                    <th>Remarks</th>
+                </thead>
+                <tbody>
+                    {% for c in cutting %}
+                    <tr>
+                        <td>{{ c.machine }}</td>
+                        <td>{{ c.datetime_in }}</td>
+                        <td>{{ c.datetime_out }}</td>
+                        <td>{{ c.line }}</td>
+                        <td>{{ c.quantity }}</td>
+                        <td>{{ c.output_kilos }}</td>
+                        <td>{{ c.number_rolls }}</td>
+                        <td>{{ c.starting_scrap }}</td>
+                        <td>{{ c.cutting_scrap }}</td>
+                        <td>{{ c.remarks }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<a href="{% url 'production:job_order_list' %}">Back</a>
+<div class="ui segment">
+
+    {% if ideal_ex and first_ex %}
+    <h3 class="ui dividing header">Extrusion Report</h3>
+    <div class="ui two column grid">
+        {% for i in ideal_ex %}
+        <div class="column">
+            <table class="ui structured striped table center aligned">
+                <thead>
+                    <tr>
+                        <th colspan="5">
+                            Ideal
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Time In
+                        </th>
+                        <th>
+                            Time Out
+                        </th>
+                        <th>
+                            Operator
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ i.sked_mach }}
+                        </td>
+                        <td>
+                            {{ i.sked_in }}
+                        </td>
+                        <td>
+                            {{ i.sked_out }}
+                        </td>
+                        <td>
+                            {{ i.sked_op }}
+                        </td>
+                        <td>
+                            {% for j in items %}
+                                {{ j.quantity }}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="column">
+
+            <table class="ui structured striped table center aligned">
+                <thead>
+                    <tr>
+                    {% if first_ex %}
+                        <th colspan="5">
+                            Actual
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Time In
+                        </th>
+                        <th>
+                            Time Out
+                        </th>
+                        <th>
+                            Operator
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ first_ex.machine }}
+                        </td>
+                        <td>
+                            {% if i.sked_in < first_ex.datetime_in %}
+                            <p style="color: red">
+                                {{ first_ex.datetime_in }}
+                            </p>
+                            {% else %}
+                            <p style="color:green;">
+                                {{ first_ex.datetime_in }}
+                            </p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ first_ex.datetime_out }}
+                        </td>
+                        <td>
+                            {{ first_ex.operator.last_name }}
+                        </td>
+                        <td>
+                            N/A
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <th></th>
+                    <th>
+                        {% if i.sked_in < first_ex.datetime_in %}
+                                <p style="color: red">behind schedule</p>
+                            {% else %}
+                                <p style="color: green">on time or early</p>
+                            {% endif %}
+                    </th>
+                    <th>
+
+                    </th>
+                    <th></th>
+                    <th>
+
+                    </th>
+                </tfoot>
+            </table>
+            {% endif %}
+
+            {% if last_ex %}
+            <table class="ui structured striped table center aligned">
+                <thead>
+                    <tr>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Time In
+                        </th>
+                        <th>
+                            Time Out
+                        </th>
+                        <th>
+                            Operator
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ last_ex.machine }}
+                        </td>
+                        <td>
+                            {{ last_ex.datetime_in }}
+                            </td>
+                        <td>
+                            {% if i.sked_out < last_ex.datetime_out %}
+                            <p style="color: red">
+                                {{ last_ex.datetime_out }}
+                            </p>
+                            {% else %}
+                            <p style="color:green;">
+                                {{ last_ex.datetime_out }}
+                            </p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ last_ex.operator.last_name }}
+                        </td>
+                        <td>
+                            N/A
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <th></th>
+                    <th>
+
+                    </th>
+                    <th>
+                        {% if i.sked_out < last_ex.datetime_out %}
+                            <p style="color: red">behind schedule</p>
+                        {% else %}
+                            <p style="color: green">on time or early</p>
+                        {% endif %}
+                    </th>
+                    <th></th>
+                    <th>
+
+
+                    </th>
+                </tfoot>
+            </table>
+        </div>
+        </div>
+    {% endif %}
+{% endfor %}
+    {% endif %}
+</div>
+
+<div class="ui segment">
+
+    {% if ideal_cu and first_cu %}
+    <h3 class="ui dividing header">Cutting Report</h3>
+    <div class="ui two column grid">
+        {% for i in ideal_cu %}
+        <div class="column">
+            <table class="ui structured striped table center aligned">
+                <thead>
+                    <tr>
+                        <th colspan="5">
+                            Ideal
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Time In
+                        </th>
+                        <th>
+                            Time Out
+                        </th>
+                        <th>
+                            Operator
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ i.sked_mach }}
+                        </td>
+                        <td>
+                            {{ i.sked_in }}
+                        </td>
+                        <td>
+                            {{ i.sked_out }}
+                        </td>
+                        <td>
+                            {{ i.sked_op }}
+                        </td>
+                        <td>
+                            {% for j in items %}
+                                {{ j.quantity }}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="column">
+
+            <table class="ui structured striped table center aligned">
+                <thead>
+                    <tr>
+                    {% if first_cu %}
+                        <th colspan="5">
+                            Actual
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Time In
+                        </th>
+                        <th>
+                            Time Out
+                        </th>
+                        <th>
+                            Operator
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ first_cu.machine }}
+                        </td>
+                        <td>
+                            {% if i.sked_in < first_cu.datetime_in %}
+                            <p style="color: red">
+                                {{ first_cu.datetime_in }}
+                            </p>
+                            {% else %}
+                            <p style="color:green;">
+                                {{ first_cu.datetime_in }}
+                            </p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ first_cu.datetime_out }}
+                        </td>
+                        <td>
+                            {{ first_cu.operator.last_name }}
+                        </td>
+                        <td>
+		                    {{ first_cu.quantity }}
+
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <th></th>
+                    <th>
+                        {% if i.sked_in < first_cu.datetime_in %}
+                                <p style="color: red">behind schedule</p>
+                            {% else %}
+                                <p style="color: green">on time or early</p>
+                            {% endif %}
+                    </th>
+                    <th>
+
+                    </th>
+                    <th></th>
+                    <th>
+
+                    </th>
+                </tfoot>
+            </table>
+            {% endif %}
+
+            {% if last_cu %}
+            <table class="ui structured striped table center aligned">
+                <thead>
+                    <tr>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Time In
+                        </th>
+                        <th>
+                            Time Out
+                        </th>
+                        <th>
+                            Operator
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ last_cu.machine }}
+                        </td>
+                        <td>
+                            {{ last_cu.datetime_in }}
+                            </td>
+                        <td>
+                            {% if i.sked_out < last_cu.datetime_out %}
+                            <p style="color: red">
+                                {{ last_cu.datetime_out }}
+                            </p>
+                            {% else %}
+                            <p style="color:green;">
+                                {{ last_cu.datetime_out }}
+                            </p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ last_cu.operator.last_name }}
+                        </td>
+                        <td>
+							    {% if withinmargin %}
+                                    <p style="color: red">
+                                                {{ last_cu.quantity }}
+                                            </p>
+                                            {% else %}
+                                            <p style="color:green;">
+                                                {{ last_cu.quantity }}
+                                            </p>
+                                {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <th></th>
+                    <th>
+
+                    </th>
+                    <th>
+                        {% if i.sked_out < last_cu.datetime_out %}
+                            <p style="color: red">behind schedule</p>
+                        {% else %}
+                            <p style="color: green">on time or early</p>
+                        {% endif %}
+                    </th>
+                    <th></th>
+                    <th>
+					{% if withinmargin %}
+                        <p style="color: red">
+                            exceeding 10% margin
+                        </p>
+                        {% else %}
+                        <p style="color:green;">
+                            within the 10% margin
+                        </p>
+                        {% endif %}
+
+                    </th>
+                </tfoot>
+            </table>
+        </div>
+        </div>
+		{% endif %}
+{% endfor %}
+    {% endif %}
+</div>
+
+<div class="ui segment">
+    {% if ideal_pr and first_pr %}
+    <h3 class="ui dividing header">Printing Report</h3>
+    <div class="ui two column grid">
+        {% for i in ideal_pr %}
+        <div class="column">
+            <table class="ui structured striped table center aligned">
+                <thead>
+                    <tr>
+                        <th colspan="5">
+                            Ideal
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Time In
+                        </th>
+                        <th>
+                            Time Out
+                        </th>
+                        <th>
+                            Operator
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ i.sked_mach }}
+                        </td>
+                        <td>
+                            {{ i.sked_in }}
+                        </td>
+                        <td>
+                            {{ i.sked_out }}
+                        </td>
+                        <td>
+                            {{ i.sked_op }}
+                        </td>
+                        <td>
+                            {% for j in items %}
+                                {{ j.quantity }}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="column">
+
+            <table class="ui structured striped table center aligned">
+                <thead>
+                    <tr>
+                    {% if first_pr %}
+                        <th colspan="5">
+                            Actual
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Time In
+                        </th>
+                        <th>
+                            Time Out
+                        </th>
+                        <th>
+                            Operator
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ first_pr.machine }}
+                        </td>
+                        <td>
+                            {% if i.sked_in < first_pr.datetime_in %}
+                            <p style="color: red">
+                                {{ first_pr.datetime_in }}
+                            </p>
+                            {% else %}
+                            <p style="color:green;">
+                                {{ first_pr.datetime_in }}
+                            </p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ first_pr.datetime_out }}
+                        </td>
+                        <td>
+                            {{ first_pr.operator.last_name }}
+                        </td>
+                        <td>
+		                    {{ first_pr.quantity }}
+
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <th></th>
+                    <th>
+                        {% if i.sked_in < first_pr.datetime_in %}
+                                <p style="color: red">behind schedule</p>
+                            {% else %}
+                                <p style="color: green">on time or early</p>
+                            {% endif %}
+                    </th>
+                    <th>
+
+                    </th>
+                    <th></th>
+                    <th>
+
+                    </th>
+                </tfoot>
+            </table>
+            {% endif %}
+
+            {% if last_pr %}
+            <table class="ui structured striped table center aligned">
+                <thead>
+                    <tr>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Time In
+                        </th>
+                        <th>
+                            Time Out
+                        </th>
+                        <th>
+                            Operator
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ last_pr.machine }}
+                        </td>
+                        <td>
+                            {{ last_pr.datetime_in }}
+                            </td>
+                        <td>
+                            {% if i.sked_out < last_pr.datetime_out %}
+                            <p style="color: red">
+                                {{ last_pr.datetime_out }}
+                            </p>
+                            {% else %}
+                            <p style="color:green;">
+                                {{ last_pr.datetime_out }}
+                            </p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ last_pr.operator.last_name }}
+                        </td>
+                        <td>
+							    N/A
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <th></th>
+                    <th>
+
+                    </th>
+                    <th>
+                        {% if i.sked_out < last_pr.datetime_out %}
+                            <p style="color: red">behind schedule</p>
+                        {% else %}
+                            <p style="color: green">on time or early</p>
+                        {% endif %}
+                    </th>
+                    <th></th>
+                    <th>
+					N/A
+                    </th>
+                </tfoot>
+            </table>
+        </div>
+        </div>
+		{% endif %}
+{% endfor %}
+    {% endif %}
+</div>
+
+<div class="ui segment">
+    {% if ideal_la and first_la %}
+    <h3 class="ui dividing header">Laminating Report</h3>
+    <div class="ui two column grid">
+        {% for i in ideal_la %}
+        <div class="column">
+            <table class="ui structured striped table center aligned">
+                <thead>
+                    <tr>
+                        <th colspan="5">
+                            Ideal
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Time In
+                        </th>
+                        <th>
+                            Time Out
+                        </th>
+                        <th>
+                            Operator
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ i.sked_mach }}
+                        </td>
+                        <td>
+                            {{ i.sked_in }}
+                        </td>
+                        <td>
+                            {{ i.sked_out }}
+                        </td>
+                        <td>
+                            {{ i.sked_op }}
+                        </td>
+                        <td>
+                            {% for j in items %}
+                                {{ j.quantity }}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="column">
+
+            <table class="ui structured striped table center aligned">
+                <thead>
+                    <tr>
+                    {% if first_la %}
+                        <th colspan="5">
+                            Actual
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Time In
+                        </th>
+                        <th>
+                            Time Out
+                        </th>
+                        <th>
+                            Operator
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ first_la.machine }}
+                        </td>
+                        <td>
+                            {% if i.sked_in < first_la.datetime_in %}
+                            <p style="color: red">
+                                {{ first_la.datetime_in }}
+                            </p>
+                            {% else %}
+                            <p style="color:green;">
+                                {{ first_la.datetime_in }}
+                            </p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ first_la.datetime_out }}
+                        </td>
+                        <td>
+                            {{ first_la.operator.last_name }}
+                        </td>
+                        <td>
+		                    {{ first_la.quantity }}
+
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <th></th>
+                    <th>
+                        {% if i.sked_in < first_la.datetime_in %}
+                                <p style="color: red">behind schedule</p>
+                            {% else %}
+                                <p style="color: green">on time or early</p>
+                            {% endif %}
+                    </th>
+                    <th>
+
+                    </th>
+                    <th></th>
+                    <th>
+
+                    </th>
+                </tfoot>
+            </table>
+            {% endif %}
+
+            {% if last_la %}
+            <table class="ui structured striped table center aligned">
+                <thead>
+                    <tr>
+                        <th>
+                            Machine
+                        </th>
+                        <th>
+                            Time In
+                        </th>
+                        <th>
+                            Time Out
+                        </th>
+                        <th>
+                            Operator
+                        </th>
+                        <th>
+                            Quantity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ last_la.machine }}
+                        </td>
+                        <td>
+                            {{ last_la.datetime_in }}
+                            </td>
+                        <td>
+                            {% if i.sked_out < last_la.datetime_out %}
+                            <p style="color: red">
+                                {{ last_la.datetime_out }}
+                            </p>
+                            {% else %}
+                            <p style="color:green;">
+                                {{ last_la.datetime_out }}
+                            </p>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ last_la.operator.last_name }}
+                        </td>
+                        <td>
+							N/A
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <th></th>
+                    <th>
+
+                    </th>
+                    <th>
+                        {% if i.sked_out < last_la.datetime_out %}
+                            <p style="color: red">behind schedule</p>
+                        {% else %}
+                            <p style="color: green">on time or early</p>
+                        {% endif %}
+                    </th>
+                    <th></th>
+                    <th>
+					N/A
+                    </th>
+                </tfoot>
+            </table>
+        </div>
+        </div>
+		{% endif %}
+{% endfor %}
+    {% endif %}
+</div>
+
+
+
+<div>
+    <a class="ui mini button" href="{% url 'production:job_order_list' %}">Back</a>
+</div>
 {% endblock %}
 
 {% block script %}

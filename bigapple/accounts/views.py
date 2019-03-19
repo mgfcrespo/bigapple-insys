@@ -44,6 +44,16 @@ def register(request):
 def most_common(lst):
     return max(set(lst), key=lst.count)
 
+def client_demand_query(id, product_id):
+    cursor_client = connection.cursor()
+    query_client = 'SELECT po.date_issued, poi.quantity FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
+                   'po.client_id = ' +str(id)+ ' AND poi.client_po_id = po.id AND poi.products_id = '+str(product_id)
+
+    cursor_client.execute(query_client)
+    df_client = pd.read_sql(query_client, connection)
+
+    return df_client
+
 @login_required(login_url='/profile/login/')
 def user_page_view(request):
 
@@ -222,6 +232,42 @@ def user_page_view(request):
         if client:
             client_po = JobOrder.objects.filter(client=Client.objects.get(accounts_id=id)).exclude(status='Delivered')[:5]
             x = 'Client'
+
+            # CLIENT DEMAND FORECAST FOR CLIENT
+            mga_po = JobOrder.objects.filter(client=Client.objects.get(accounts_id=id))
+            i = ClientItem.objects.all()
+            mga_item = []
+            for every in mga_po:
+                for each in i:
+                    if each.client_po_id == every.id:
+                        mga_item.append(each.products_id)
+
+            itong_item = most_common(mga_item)
+            itong_item = Product.objects.get(id=itong_item)
+
+            forecast_ses = []
+            forecast_hwes = []
+            forecast_moving_average = []
+            forecast_arima = []
+
+            df_client = client_demand_query(user.client.id, itong_item.id)
+
+            product = itong_item
+
+            # forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
+            a = TimeSeriesForecasting.forecast_ses(df_client)
+            a[1] = int(float(a[1]))
+            forecast_ses.extend(a)
+            b = TimeSeriesForecasting.forecast_hwes(df_client)
+            b[1] = int(float(b[1]))
+            forecast_hwes.extend(b)
+            c = TimeSeriesForecasting.forecast_moving_average(df_client)
+            c[1] = int(float(c[1]))
+            forecast_moving_average.extend(c)
+            # d = TimeSeriesForecasting.forecast_arima(df_client)
+            # d[1] = int(float(d[1]))
+            # forecast_arima.extend(d)
+
         elif employee:
             x = 'Employee'
             if Employee.objects.get(accounts_id=id).position == "Sales Coordinator" or "General Manager":
@@ -231,45 +277,6 @@ def user_page_view(request):
                 po = JobOrder.objects.all()
                 client_po = []
 
-        #CLIENT DEMAND FORECAST FOR CLIENT
-        if hasattr(request.user, 'client'):
-            mga_po = JobOrder.objects.filter(client_id=id)
-            i = ClientItem.objects.all()
-            mga_item = []
-            for every in i:
-                for each in mga_po:
-                    if every.client_po_id == each.id:
-                        mga_item.append(every.products_id)
-
-            itong_item = most_common(mga_item)
-            itong_item = Product.objects.get(id=itong_item)
-            cursor = connection.cursor()
-            forecast_ses = []
-            forecast_hwes = []
-            forecast_moving_average = []
-            forecast_arima = []
-
-            query = 'SELECT po.date_issued, poi.quantity FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
-                    'po.client_id = ' + str(id) + ' AND poi.client_po_id = po.id AND poi.products_id = ' + str(itong_item.id)
-
-            cursor.execute(query)
-            df = pd.read_sql(query, connection)
-
-            product = Product.objects.get(id=item)
-
-            # forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
-            a = TimeSeriesForecasting.forecast_ses(df)
-            a[1] = int(float(a[1]))
-            forecast_ses.extend(a)
-            b = TimeSeriesForecasting.forecast_hwes(df)
-            b[1] = int(float(b[1]))
-            forecast_hwes.extend(b)
-            c = TimeSeriesForecasting.forecast_moving_average(df)
-            c[1] = int(float(c[1]))
-            forecast_moving_average.extend(c)
-            d = TimeSeriesForecasting.forecast_arima(df)
-            d[1] = int(float(d[1]))
-            forecast_arima.extend(d)
 
         invoice = SalesInvoice.objects.all()
         for x in invoice:

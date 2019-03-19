@@ -16,10 +16,6 @@
             <label>Account Supervisor</label>
             {{ client.sales_agent }}
         </div>
-        <div class="field">
-            <label>Description</label>
-            {{item.description}}
-        </div>
     </div>
     <div class="column">
         <div class="field">
@@ -33,48 +29,19 @@
     </div>
 </div>
 </form>
-<h3 class="ui horizontal divider">Item Details</h3>
+<h3 class="ui horizontal divider">Product Details</h3>
 <form class="ui form">
     <div class="ui two column grid">
         <div class="column">
             <div class="field">
-                <label>Item</label>
-                {{item.item}}
+                <label>Product Name</label>
+                {{product.products}}
             </div>
             <div class="field">
-                <label>Quantity</label>
-                {{item.quantity}}
+                <label>Description</label>
+                {{product.description}}
             </div>
-            <div class="field">
-                <label>Width</label>
-                {{item.width}}
-            </div>
-            <div class="field">
-                <label>Length</label>
-                {{item.length}}
-            </div>
-            <div class="field">
-                <label>Thickness</label>
-                {{item.thickness}}
-            </div>
-        </div>
-        <div class="column">
-            <div class="field">
-                <label>Gusset</label>
-                {{item.gusset}}
-            </div>
-            <div class="field">
-                <label>Color</label>
-                {{item.color}}
-            </div>
-            <div class="field">
-                <label>Laminated</label>
-                {{item.laminated}}
-            </div>
-            <div class="field">
-                <label>Printed</label>
-                {{item.printed}}
-            </div>
+
         </div>
     </div>
 </form>
@@ -110,11 +77,7 @@
 
             </tbody>
             <tfoot class="full-width">
-                <tr>
-                    <th colspan="2">
-                        <a class="ui compact positive button" href="{% url 'sales:create-client-po-form' %}">Order</a>
-                    </th>
-                </tr>
+
             </tfoot>
         </table>
     </div>
@@ -141,11 +104,7 @@
                 </tr>
             </tbody>
             <tfoot class="full-width">
-                <tr>
-                    <th colspan="2">
-                        <a class="ui compact positive button" href="{% url 'sales:create-client-po-form' %}">Order</a>
-                    </th>
-                </tr>
+
             </tfoot>
 
         </table>
@@ -173,11 +132,6 @@
                 </tr>
             </tbody>
             <tfoot class="full-width">
-                <tr>
-                    <th colspan="2">
-                        <a class="ui compact positive button" href="{% url 'sales:create-client-po-form' %}">Order</a>
-                    </th>
-                </tr>
             </tfoot>
         </table>
     </div>
@@ -204,11 +158,6 @@
                     </tr>
                 </tbody>
                 <tfoot class="full-width">
-                    <tr>
-                        <th colspan="2">
-                        <a class="ui compact positive button" href="{% url 'sales:create-client-po-form' %}">Order</a>
-                        </th>
-                    </tr>
                 </tfoot>
         </table>
     </div>

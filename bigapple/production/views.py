@@ -40,6 +40,7 @@ def job_order_list(request):
     data = JobOrder.objects.exclude(status='Waiting').exclude(status='Ready for Delivery').exclude(status='Delivered')
     items = ClientItem.objects.filter(client_po=data)
 
+
     if request.session['session_position'] == "General Manager":
         template = 'general_manager_page_ui.html'
     elif request.session['session_position'] == "Production Manager":
@@ -58,11 +59,91 @@ def job_order_details(request, id):
 		
     data = JobOrder.objects.get(id=id)
     items = ClientItem.objects.filter(client_po=data)
+    quan = 0
+    tity = 0
+    withinmargin = False
     form = JODetailsForm(request.POST or None)
     extrusion = ExtruderSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).order_by('datetime_in')
     printing = PrintingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).order_by('datetime_in')
     cutting = CuttingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).order_by('datetime_in')
     laminating = LaminatingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).order_by('datetime_in')
+    ex_done = False
+    pr_done = False
+    cu_done = False
+    la_done = False
+
+    for x in extrusion:
+        if x.final:
+            ex_done = True
+            break
+        else:
+            ex_done = False
+
+    for y in printing:
+        if y.final:
+            pr_done = True
+            break
+        else:
+            pr_done = False
+
+    for z in cutting:
+        if z.final:
+            cu_done = True
+            break
+        else:
+            cu_done = False
+
+    for a in laminating:
+        if a.final:
+            la_done = True
+            break
+        else:
+            la_done = False
+
+    ideal_ex = ExtruderSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True))
+    ideal_cu = CuttingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True))
+    ideal_pr = PrintingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True))
+    ideal_la = LaminatingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True))
+
+    if extrusion.count() > 0:
+        first_ex = ExtruderSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).earliest('datetime_in')
+    else:
+        first_ex = []
+    if cutting.count() > 0:
+        first_cu = CuttingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).earliest('datetime_in')
+    else:
+        first_cu = []
+    if printing.count() > 0:
+        first_pr = PrintingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).earliest('datetime_in')
+    else:
+        first_pr = []
+    if laminating.count() > 0:
+        first_la = LaminatingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).earliest('datetime_in')
+    else:
+        first_la = []
+
+    if ex_done:
+        last_ex = ExtruderSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
+    else:
+        last_ex = []
+    if cu_done:
+        last_cu = CuttingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
+        for x in items:
+            quan = int(x.quantity * 0.1)
+            tity = x.quantity
+            break
+        if abs(tity-last_cu.quantity) > quan:
+            withinmargin = True
+    else:
+        last_cu = []
+    if pr_done:
+        last_pr = PrintingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
+    else:
+        last_pr = []
+    if la_done:
+        last_la = LaminatingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
+    else:
+        last_la = []
 
     if request.method == 'POST':
       data.remarks = request.POST.get("remarks")
@@ -80,7 +161,21 @@ def job_order_details(request, id):
       'printing': printing,
       'cutting': cutting,
       'laminating' : laminating,
-      'items' : items
+      'items' : items,
+      'ideal_cu': ideal_cu,
+      'ideal_pr': ideal_pr,
+      'ideal_la': ideal_la,
+      'ideal_ex': ideal_ex,
+      'first_ex' : first_ex,
+      'first_cu' : first_cu,
+      'first_la' : first_la,
+      'first_pr' : first_pr,
+      'last_ex': last_ex,
+      'last_cu': last_cu,
+      'last_la': last_la,
+      'last_pr': last_pr,
+      'withinmargin' : withinmargin
+
     }
     return render(request, 'production/job_order_details.html', context)
 
@@ -507,23 +602,45 @@ def production_schedule(request):
 
     plot_list = []
     ideal = []
-    ex = ExtruderSchedule.objects.filter(ideal=True)
+    ex = []
+    for x in ExtruderSchedule.objects.filter(ideal=True):
+        job = x.job_order
+        if job.status == 'Ready for delivery' or job.status == 'Delivered':
+            pass
+        else:
+            ex.append(x)
     ex_list = list(ex)
     ideal.append(ex_list)
-    cu = CuttingSchedule.objects.filter(ideal=True)
+    cu = []
+    for y in CuttingSchedule.objects.filter(ideal=True):
+        job = y.job_order
+        if job.status == 'Ready for delivery' or job.status == 'Delivered':
+            pass
+        else:
+            cu.append(y)
     cu_list = list(cu)
     ideal.append(cu_list)
-    pr = PrintingSchedule.objects.filter(ideal=True)
+    pr = []
+    for z in PrintingSchedule.objects.filter(ideal=True):
+        job = z.job_order
+        if job.status == 'Ready for delivery' or job.status == 'Delivered':
+            pass
+        else:
+            pr.append(z)
     pr_list = list(pr)
     ideal.append(pr_list)
-    la = LaminatingSchedule.objects.filter(ideal=True)
+    la = []
+    for a in LaminatingSchedule.objects.filter(ideal=True):
+        job = a.job_order
+        if job.status == 'Ready for delivery' or job.status == 'Delivered':
+            pass
+        else:
+            la.append(a)
     la_list = list(la)
-    print('la list:')
-    print(la_list)
     ideal.append(la_list)
 
     if ideal:
-        if ex.exists():
+        if ex:
             for i in ex:
                 job = i.job_order_id
                 item = ClientItem.objects.get(client_po_id=job)
@@ -538,7 +655,7 @@ def production_schedule(request):
                              }
                 plot_list.append(sked_dict)
 
-        if cu.exists():
+        if cu:
             for j in cu:
                 job = j.job_order_id
                 item = ClientItem.objects.get(client_po_id=job)
@@ -552,7 +669,7 @@ def production_schedule(request):
                              'Description': mat
                              }
                 plot_list.append(sked_dict)
-        if pr.exists():
+        if pr:
             for k in pr:
                 job = k.job_order_id
                 item = ClientItem.objects.get(client_po_id=job)
@@ -566,7 +683,7 @@ def production_schedule(request):
                              'Description': mat
                              }
                 plot_list.append(sked_dict)
-        if la.exists():
+        if la:
             for l in la:
                 job = l.job_order_id
                 item = ClientItem.objects.get(client_po_id=job)
@@ -637,9 +754,17 @@ def production_schedule(request):
 
 def extruder_machine_schedule(request):
     plot_list = []
-    ex = ExtruderSchedule.objects.filter(ideal=True)
+    ex = []
+    for x in ExtruderSchedule.objects.filter(ideal=True):
+        job = x.job_order
+        if job.status == 'Ready for delivery' or job.status == 'Delivered':
+            pass
+        else:
+            ex.append(x)
 
-    if ex.exists():
+    if ex:
+        print('ex:::::::::')
+        print(ex)
         for i in ex:
             job = i.job_order_id
             item = ClientItem.objects.get(client_po_id=job)
@@ -654,13 +779,14 @@ def extruder_machine_schedule(request):
                              }
             plot_list.append(sked_dict)
 
-        #print('plot_list:')
-        #print(plot_list)
-        df1 = pd.DataFrame(plot_list)
+        print('plot_list:')
+        print(plot_list)
+        #df1 = pd.DataFrame(plot_list)
 
     machines = Machine.objects.filter(machine_type='Extruder').values('machine_id')
+    machine_type = 'Extruder'
 
-    extruder_gantt = final_gantt.chart(df1, '/extruder-machine-schedule.html')
+    extruder_gantt = final_gantt.generate_specific_gantt_chart(plot_list, machines, machine_type)
 
     context = {
         'extruder_gantt': extruder_gantt

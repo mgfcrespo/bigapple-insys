@@ -254,40 +254,67 @@ def generate_overview_gantt_chart(df):
 
 
 # Generates gantt for specific machine types
-def generate_specific_gantt_chart(df, machines, machine_type):
+def generate_specific_gantt_chart(task_list, machines, machine_type):
     filename = machine_type + '_gantt_chart.html'
-    task_list = schedule(df, 'specific')
+    #task_list = schedule(df, 'specific')  # use OR-tools to solve over all schedule
     plot_list = []
+    last_task_finish_time = []  # keep track of batch finish times
     count = 0
 
-    # Loop through array find elements where Task == machine_type
+        # Loop through array find elements where Task == machine_type
     for i in range(0, len(task_list)):
-        # reset count when all machines have been allocated
+            # one by one, allocate a task per machine
+            # reset count when all machines have been allocated
+        j = 0  # batch counter
+
         if count == len(machines):
             count = 0
+            j += 1
 
-        # make a new dict
+            # make a new dict
         if (task_list[i])['Task'] == machine_type:
             curr_task = (task_list[i])
-            temp_dict = {'Task': machine_type + str(machines[count]),
-                         'Start': curr_task['Start'],
-                         'Finish': curr_task['Finish'],
-                         'Resource': curr_task['Resource'],
-                         'Description': curr_task['Description']
-                         }
-            print(temp_dict)
+
+            if count == 0:
+                    # assumes that tasks have the same length per machine type
+                    # copies the placement of the task from the first machine's schedule
+                if j == 0:
+                        # BATCH 1
+                    first_task_start_time = curr_task['Start']
+                    first_task_finish_time = curr_task['Finish']
+                    last_task_finish_time.append(first_task_finish_time)
+
+                else:
+                        # BATCH 2 onwards
+                    first_task_start_time = last_task_finish_time[j - 1]
+                    first_task_finish_time = get_finish_time(np.datetime64(first_task_start_time),
+                                                                 get_processing_time(machine_type))
+                    last_task_finish_time.append(first_task_finish_time)
+
+                temp_dict = {'Task': machine_type + str(machines[count]),
+                                 'Start': first_task_start_time,
+                                 'Finish': first_task_finish_time,
+                                 'Resource': curr_task['Resource'],
+                                 'Description': curr_task['Description']
+                                 }
+
+            else:
+                temp_dict = {'Task': machine_type + str(machines[count]),
+                                 'Start': first_task_start_time,
+                                 'Finish': first_task_finish_time,
+                                 'Resource': curr_task['Resource'],
+                                 'Description': curr_task['Description']
+                                 }
+
             plot_list.append(temp_dict)
 
-            count += 1
+        count += 1
 
     return chart(plot_list, filename)
 
 def get_sched_data(df):
     data = schedule(df, 'save')
-
     return data
-
-
 
 def main():
     data = {'id': [100, 101, 102],
