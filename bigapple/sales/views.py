@@ -1,4 +1,5 @@
 from datetime import datetime, date, timedelta
+import datetime
 
 from django.db import connection
 from django.db.models import aggregates, Sum, Count
@@ -13,7 +14,7 @@ from accounts.models import Employee
 from inventory.forms import MaterialRequisitionForm, SupplierPOForm, SupplierPOItemsForm
 from inventory.models import Inventory, Supplier, MaterialRequisition, SupplierPO, SupplierPOItems
 from production.forms import ClientPOForm
-from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
+from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule, Machine
 from utilities import TimeSeriesForecasting, final_gantt
 from .forms import ClientPOFormItems
 from .forms import SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
@@ -167,7 +168,7 @@ def confirm_client_po(request, pk):
             inventory = Inventory.objects.filter(rm_type=x)
             if inventory.exists():
                 for y in inventory:
-                    if y.quantity > each.quantity/1000:
+                    if y.quantity >= each.quantity/1000:
                         matreq = True
                     else:
                         matreq = False
@@ -186,7 +187,7 @@ def confirm_client_po(request, pk):
         if each.printed == 1:
             cylinder_count = int(each.quantity/10000)
             ink = Inventory.objects.filter(Q(item_type='Ink') & Q(item=each.color)).first()
-            if ink.quantity > int(each.quantity/2500):
+            if ink.quantity >= int(each.quantity/2500):
                 color = str(each.color)
                 color_count = int(each.quantity/2500)
                 matreq = True
@@ -549,7 +550,7 @@ def rush_order_assessment(request, pk):
         if each.printed == 1:
             cylinder_count = int(each.quantity/10000)
             ink = Inventory.objects.filter(Q(item_type='Ink') & Q(item=each.color)).first()
-            if ink.exists():
+            if ink:
                 color = str(each.color)
                 color_count = int(each.quantity/2500)
                 matreq = True
@@ -597,13 +598,16 @@ def rush_order_assessment(request, pk):
                 form.total_amount = form_item.total_price
                 form.save()
 
-                form2 = MaterialRequisitionForm(request.POST)
-                if form2.is_valid():
+                if ink:
+                    form2 = MaterialRequisitionForm(request.POST)
+                    if form2.is_valid():
                         ink_form = form2.save(commit=False)
                         ink_form.client_item = every
                         ink_form.item = Inventory.objects.get(item=color)
                         ink_form.quantity = color_count
                         ink_form.save()
+                else:
+                    pass
 
     #simulated sched
     cursor = connection.cursor()
@@ -622,7 +626,7 @@ def rush_order_assessment(request, pk):
     df = df.append(df2, ignore_index=True)
     print('df after append: ')
     print(df)
-    simulated_sched = final_gantt.generate_overview_gantt_chart(df)
+    simulated_sched = final_gantt.schedule(df, 'rush')
 
     if 'approve_btn' in request.POST:
         # SAVE NEW PRODUCTION SCHEDULE
@@ -730,8 +734,34 @@ def employee_edit(request, id):
     return render(request, 'sales/employee_add.html', context)
 
 def employee_details(request, id):
-
     data = Employee.objects.get(id=id)
+    ex_schedule = []
+    cu_schedule = []
+    pr_schedule = []
+    la_schedule = []
+    date = datetime.date.today()
+    start_week = date - datetime.timedelta(date.weekday())
+    end_week = start_week + datetime.timedelta(7)
+    e = ExtruderSchedule.objects.filter(Q(sked_op_id=id) & Q(sked_in__range=[start_week, end_week]))
+    c = CuttingSchedule.objects.filter(Q(sked_op_id=id) & Q(sked_in__range=[start_week, end_week]))
+    l = LaminatingSchedule.objects.filter(Q(sked_op_id=id) & Q(sked_in__range=[start_week, end_week]))
+    p = PrintingSchedule.objects.filter(Q(sked_op_id=id) & Q(sked_in__range=[start_week, end_week]))
+
+    if e:
+        for i in e:
+            ex_schedule.append(i)
+    if c:
+        for j in c:
+            cu_schedule.append(j)
+    if l:
+        for k in l:
+            la_schedule.append(k)
+    if p:
+        for x in p:
+            pr_schedule.append(x)
+
+    print('Extruder schedule:')
+    print(ex_schedule)
 
     form = EmployeeForm(request.POST or None, instance=data)
     if form.is_valid():
@@ -742,7 +772,11 @@ def employee_details(request, id):
     context = {
         'form':form,
         'data': data,
-        'title': 'Employee Details'
+        'title': 'Employee Details',
+        'ex_schedule' : ex_schedule,
+        'cu_schedule' : cu_schedule,
+        'pr_schedule' : pr_schedule,
+        'la_schedule' : la_schedule,
     }
 
     return render(request, 'sales/employee_details.html', context)
@@ -826,6 +860,7 @@ def save_schedule(request, pk):
     ideal_cu = CuttingSchedule.objects.filter(ideal=True)
     ideal_la = LaminatingSchedule.objects.filter(ideal=True)
     ideal_pr = PrintingSchedule.objects.filter(ideal=True)
+    charting = False
 
     for x in ideal_ex:
         job = x.job_order
@@ -874,29 +909,59 @@ def save_schedule(request, pk):
     messages.success(request, 'Production schedule saved.')
     print('ideal sched:')
     print(ideal_sched)
+    extruders = 0
+    printers = 0
+    cutters = 0
+    laminaters = 0
+
 
     for i in range(0, len(ideal_sched)):
         if ideal_sched[i]['Task'] == 'Extruder':
+            machines = Machine.objects.filter(Q(state='OK') & Q(machine_type='Extruder'))
+            workerz = Employee.objects.filter(position='Extruder')
+            workers = final_gantt.generate_specific_gantt_chart(ideal_sched, machines, 'Extruder', workerz, charting)
             new_ex = ExtruderSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
                                           sked_in=ideal_sched[i]['Start'],
-                                          sked_out=ideal_sched[i]['Finish'])
+                                          sked_out=ideal_sched[i]['Finish'],
+                                          sked_op=workers[extruders]
+                                      )
             new_ex.save()
+            extruders += 1
             print('saved new_ex')
         elif ideal_sched[i]['Task'] == 'Cutting':
+            machines = Machine.objects.filter(Q(state='OK') & Q(machine_type='Cutting'))
+            workerz = Employee.objects.filter(position='Cutting')
+            workers = final_gantt.generate_specific_gantt_chart(ideal_sched, machines, 'Cutting', workerz, charting)
             new_cu = CuttingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
                                          sked_in=ideal_sched[i]['Start'],
-                                         sked_out=ideal_sched[i]['Finish'])
+                                         sked_out=ideal_sched[i]['Finish'],
+                                        sked_op=workers[cutters]
+                                     )
             new_cu.save()
+            cutters += 1
             print('saved new_cu')
         elif ideal_sched[i]['Task'] == 'Printing':
+            machines = Machine.objects.filter(Q(state='OK') & Q(machine_type='Printing'))
+            workerz = Employee.objects.filter(position='Printing')
+            workers = final_gantt.generate_specific_gantt_chart(ideal_sched, machines, 'Printing', workerz, charting)
             new_pr = PrintingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
                                           sked_in=ideal_sched[i]['Start'],
-                                          sked_out=ideal_sched[i]['Finish'])
+                                          sked_out=ideal_sched[i]['Finish'],
+                                          sked_op=workers[printers]
+                                      )
             new_pr.save()
+            printers += 1
             print('saved new_pr')
         elif ideal_sched[i]['Task'] == 'Laminating':
+            machines = Machine.objects.filter(Q(state='OK') & Q(machine_type='Laminating'))
+            workerz = Employee.objects.filter(position='Laminating')
+            workers = final_gantt.generate_specific_gantt_chart(ideal_sched, machines, 'Laminating', workerz, charting)
+
             new_la = LaminatingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
                                             sked_in=ideal_sched[i]['Start'],
-                                            sked_out=ideal_sched[i]['Finish'])
+                                            sked_out=ideal_sched[i]['Finish'],
+                                            sked_op=workers[laminaters]
+                                        )
             new_la.save()
+            laminaters += 1
             print('saved new_la')

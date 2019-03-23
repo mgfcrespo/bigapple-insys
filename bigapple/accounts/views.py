@@ -24,7 +24,7 @@ from accounts.forms import SignUpForm
 from sales.models import Supplier, SalesInvoice, ClientItem, Product
 from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
 from inventory.models import Inventory
-from utilities import TimeSeriesForecasting, final_gantt
+from utilities import TimeSeriesForecasting, final_gantt, schedule
 # Create your views here.
 
 def register(request):
@@ -102,6 +102,8 @@ def user_page_view(request):
         forecast_moving_average = []
         forecast_arima = []
 
+        product = None
+
         #PRODUCTION SCHEDULE
         plot_list = []
         ideal = []
@@ -119,6 +121,7 @@ def user_page_view(request):
         print('la list:')
         print(la_list)
         ideal.append(la_list)
+        #ideal = None
 
         if ideal:
             if ex.exists():
@@ -192,6 +195,7 @@ def user_page_view(request):
             cursor.execute(query)
             df = pd.read_sql(query, connection)
             gantt = final_gantt.generate_overview_gantt_chart(df)
+            #gantt = schedule.schedule(df, 'generic')
 
             # TODO Save sked_op, sked_mach
             if 'save_btn' in request.POST:
@@ -264,9 +268,9 @@ def user_page_view(request):
             c = TimeSeriesForecasting.forecast_moving_average(df_client)
             c[1] = int(float(c[1]))
             forecast_moving_average.extend(c)
-            # d = TimeSeriesForecasting.forecast_arima(df_client)
-            # d[1] = int(float(d[1]))
-            # forecast_arima.extend(d)
+            d = TimeSeriesForecasting.forecast_arima(df_client)
+            d[1] = int(float(d[1]))
+            forecast_arima.extend(d)
 
         elif employee:
             x = 'Employee'
@@ -276,6 +280,7 @@ def user_page_view(request):
                 customer = Client.objects.filter(sales_agent=employee).exclude(status='Delivered')[:10]
                 po = JobOrder.objects.all()
                 client_po = []
+
 
 
         invoice = SalesInvoice.objects.all()

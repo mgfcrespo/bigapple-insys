@@ -222,7 +222,7 @@ def supplierPO_form(request):
         delivery_date = datetime.now().date()
         if request.session['matreq_mat'] is not None:
             item = Inventory.objects.filter(rm_type=request.session.get('matreq_mat')).first()
-            supplier = Supplier.objects.filter(supplier=item.supplier_id)
+            supplier = Supplier.objects.filter(id=item.supplier_id)
             item = item.id
         elif request.session['matreq_ink'] is not None:
             item = Inventory.objects.get(item=request.session.get('matreq_ink'))
@@ -233,7 +233,7 @@ def supplierPO_form(request):
         print('inventory:forecast')
         item = request.session.get('item')
         inv = Inventory.objects.get(id=item)
-        supplier = Supplier.objects.filter(supplier=inv.supplier_id)
+        supplier = Supplier.objects.filter(id=inv.supplier_id)
         if request.session['forecast'] == 'SES':
             quantity = request.session['forecast_ses'][1]
             date = request.session['forecast_ses'][0]

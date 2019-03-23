@@ -63,7 +63,7 @@
         </div>
 
         <div id="worker_schedule" style="display: none;">
-        <div class="ui horizontal divider">Worker Schedule</div>
+        <div class="ui horizontal divider">Worker Schedule for the Week</div>
 
         <table class="ui striped center aligned table">
             <thead>
@@ -71,7 +71,7 @@
                     Job Order Number
                 </th>
                 <th>
-                    Shift
+                    Expected Time In
                 </th>
                 <th>
                     Role
@@ -82,18 +82,76 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>
-                       <a href="">00000</a>
-                    </td>
-                    <td>
-                        1
-                    </td>
-                    <td>
-                        Extruder
-                    </td>
-                    <td>
-                        1
-                    </td>
+                    {% if ex_schedule %}
+                        {% for each in ex_schedule %}
+                        <td>
+                            <a href="{% url 'production:job_order_details' each.job_order_id %}">{{ each.job_order_id }}</a>
+                        </td>
+                        <td>
+                           {{ each.sked_in }}
+                        </td>
+                        <td>
+                            Extruder
+                        </td>
+                        <td>
+                            {{ each.sked_mach_id }}
+                        </td>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+             <tr>
+                    {% if cu_schedule %}
+                        {% for each in cu_schedule %}
+                        <td>
+                            <a href="{% url 'production:job_order_details' each.job_order_id %}">{{ each.job_order_id }}</a>
+                        </td>
+                        <td>
+                           {{ each.sked_in }}
+                        </td>
+                        <td>
+                            Cutter
+                        </td>
+                        <td>
+                            {{ each.sked_mach_id }}
+                        </td>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+             <tr>
+                    {% if pr_schedule %}
+                        {% for each in pr_schedule %}
+                        <td>
+                            <a href="{% url 'production:job_order_details' each.job_order_id %}">{{ each.job_order_id }}</a>
+                        </td>
+                        <td>
+                           {{ each.sked_in }}
+                        </td>
+                        <td>
+                            Printer
+                        </td>
+                        <td>
+                            {{each.sked_mach_id}}
+                        </td>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+             <tr>
+                    {% if la_schedule %}
+                        {% for each in la_schedule %}
+                        <td>
+                            <a href="{% url 'production:job_order_details' each.job_order_id %}">{{ each.job_order_id }}</a>
+                        </td>
+                        <td>
+                            {{each.sked_in}}
+                        </td>
+                        <td>
+                            Laminator
+                        </td>
+                        <td>
+                            {{each.sked_mach_id}}
+                        </td>
+                        {% endfor %}
+                    {% endif %}
                 </tr>
             </tbody>
         </table>

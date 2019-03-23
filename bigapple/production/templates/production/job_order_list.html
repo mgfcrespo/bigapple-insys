@@ -32,7 +32,7 @@
                     <td class="center aligned">
                         {% if data.status == 'On Queue' or data.status == 'Under Extrusion' %}
                             <a class="ui small blue button" href="{% url 'production:add_extruder_schedule' data.id %}" style="width: 100px;">Extrusion</a>
-                        {% elif items.printing == 1 and data.status == 'Under Printing'%}
+                        {% elif data.status == 'Under Printing'%}
                             <a class="ui small yellow button" href="{% url 'production:add_printing_schedule' data.id %}" style="width: 100px;">Printing</a>
                         {% elif data.status == 'Under Laminating' %}
                             <a class="ui small red button" href="{% url 'production:add_laminating_schedule' data.id %}" style="width: 100px;">Laminating</a>

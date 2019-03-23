@@ -52,12 +52,44 @@ def get_machine_type(i):
 
 def get_processing_time(machine_type):
     processing_time_dict = {'Extruder': 2, 'Printing': 5, 'Laminating': 1, 'Cutting': 4}
+
     return processing_time_dict.get(machine_type)
 
+    '''
+    processing_times = []
+    for i in range(0, len(df.index)):
+        # Include Printing and Laminating machine
+        # Standard lead time: Plain - 1-2 weeks; Printed - 2-4 weeks
+        # IN HOURS:
+        # Extruder = 4 days * 20 hours every 70000 pieces = 80hr/70000pcs
+        # Cutting = 3 days * 20 hours every 70000 pieces = 60hr/70000pcs
+        # Laminating = 3 days * 20 hours every 70000 pieces = 60hr/70000pcs
+        # Printing = 5 days * 20 hours  every 70000 pieces = 100hr/70000pcs
+        item = ClientItem.objects.get(client_po_id=df.ix[i]['id'])
+        quantity = item.quantity
+        extrusion_time = int((quantity * 80) / 70000)
+        cutting_time = int((quantity * 60) / 70000)
+        laminating_time = int((quantity * 60) / 70000)
+        printing_time = int((quantity * 100) / 70000)
+
+        if df.ix[i]['printed'] == 1 and df.ix[i]['laminate'] == 1:
+            processing_times.append(
+                [extrusion_time, printing_time, laminating_time, cutting_time])  # Extrude, Print, Laminate, Cut
+        # Include only Printing
+        elif df.ix[i]['printed'] == 1:
+            processing_times.append([extrusion_time, printing_time, cutting_time])
+        # Include only Laminating
+        elif df.ix[i]['laminate'] == 1:
+            processing_times.append([extrusion_time, laminating_time, cutting_time])
+        else:
+            processing_times.append([extrusion_time, cutting_time])
+
+    return processing_times
+    '''
 
 # Creates html file of plotly gantt chart
 def chart(task_list, filename):
-    fig = ff.create_gantt(task_list, index_col='Resource', show_colorbar=True, group_tasks=True, showgrid_y=True, showgrid_x=True)
+    fig = ff.create_gantt(task_list, index_col='', show_colorbar=True, group_tasks=True)
     # plot(fig, filename=filename)
     return plot(fig, filename=filename, include_plotlyjs=False, output_type='div')
     #print(fig)
@@ -68,11 +100,13 @@ def schedule(df, filename):
     solver = pywrapcp.Solver('jobshop')
 
     machines_count = Machine.objects.filter(state='OK').count() # Extrude, Print, (Laminate), Cut
-    workers_count = Employee.objects.filter(Q(position='Cutting') | Q(position='Extruder') | Q(position='Printing')).count()
+    machine_type = Machine.objects.filter(state='OK')
+    workers_count = Employee.objects.filter(Q(position='Cutting') | Q(position='Extruder') | Q(position='Printing') | Q(position='Laminating')).count()
     jobs_count = len(df.index)
     all_machines = range(0, machines_count)
     all_jobs = range(0, jobs_count)
     all_workers = range(0, workers_count)
+    workers = Employee.objects.filter(Q(position='Cutting') | Q(position='Extruder') | Q(position='Printing') | Q(position='Laminating'))
 
     # Define data.
     machines = []
@@ -94,19 +128,20 @@ def schedule(df, filename):
         # Include Printing and Laminating machine
         # Standard lead time: Plain - 1-2 weeks; Printed - 2-4 weeks
         # IN HOURS:
-            # Extruder = 4 days * 20 hours every 70000 pieces = 80hr/70000pcs
-            # Cutting = 3 days * 20 hours every 70000 pieces = 60hr/70000pcs
-            # Laminating = 3 days * 20 hours every 70000 pieces = 60hr/70000pcs
-            # Printing = 5 days * 20 hours  every 70000 pieces = 100hr/70000pcs
+        # Extruder = 4 days * 20 hours every 70000 pieces = 80hr/70000pcs
+        # Cutting = 3 days * 20 hours every 70000 pieces = 60hr/70000pcs
+        # Laminating = 3 days * 20 hours every 70000 pieces = 60hr/70000pcs
+        # Printing = 5 days * 20 hours  every 70000 pieces = 100hr/70000pcs
         item = ClientItem.objects.get(client_po_id=df.ix[i]['id'])
         quantity = item.quantity
-        extrusion_time = int((quantity * 80)/70000)
-        cutting_time = int((quantity * 60)/70000)
-        laminating_time = int((quantity * 60)/70000)
-        printing_time = int((quantity * 100)/70000)
+        extrusion_time = int((quantity * 80) / 70000)
+        cutting_time = int((quantity * 60) / 70000)
+        laminating_time = int((quantity * 60) / 70000)
+        printing_time = int((quantity * 100) / 70000)
 
         if df.ix[i]['printed'] == 1 and df.ix[i]['laminate'] == 1:
-            processing_times.append([extrusion_time, printing_time, laminating_time, cutting_time]) # Extrude, Print, Laminate, Cut
+            processing_times.append(
+                [extrusion_time, printing_time, laminating_time, cutting_time])  # Extrude, Print, Laminate, Cut
         # Include only Printing
         elif df.ix[i]['printed'] == 1:
             processing_times.append([extrusion_time, printing_time, cutting_time])
@@ -149,7 +184,7 @@ def schedule(df, filename):
         for j in range(0, len(machines[i]) - 1):
             solver.Add(all_tasks[(i, j + 1)].StartsAfterEnd(all_tasks[(i, j)]))
 
-    #TODO Consider date_required of job
+    # TODO Consider date_required of job
     '''
     for job in all_jobs:
         for task_id in range(0, len(jobs_count) - 1):
@@ -158,7 +193,7 @@ def schedule(df, filename):
     '''
 
     # Set the objective.
-    obj_var = solver.Max([all_tasks[(i, len(machines[i])-1)].EndExpr()
+    obj_var = solver.Max([all_tasks[(i, len(machines[i]) - 1)].EndExpr()
                           for i in all_jobs])
     objective_monitor = solver.Minimize(obj_var, 1)
     # Create search phases.
@@ -203,7 +238,7 @@ def schedule(df, filename):
 
             for j in range(0, seq_size):
                 t = seq.Interval(sequence[j]);
-                temp_name = t.Name().split('_')#, 1)[1]
+                temp_name = t.Name().split('_')  # , 1)[1]
                 temp_name_test = temp_name
                 temp_name = temp_name[1]  # get the job number
                 job_num = int(temp_name)
@@ -217,7 +252,7 @@ def schedule(df, filename):
                 # Add finish time
                 finish_list.append(get_finish_time(current_time, collector.Value(0, t.EndExpr().Var())))
 
-            #TODO Include worker in schedule
+            # TODO Include worker in schedule
             '''
                         for j in range(0, seq_size):
                             #t = seq.Interval(sequence[j]);
@@ -230,7 +265,7 @@ def schedule(df, filename):
                              'Finish': finish_list.pop(0),
                              'Resource': resource_list.pop(0),
                              'Description': description_list.pop(0),
-                            # 'Worker' : worker_list.pop(0)
+                             # 'Worker' : worker_list.pop(0)
                              }
                 plot_list.append(temp_dict)
 
@@ -254,63 +289,74 @@ def generate_overview_gantt_chart(df):
 
 
 # Generates gantt for specific machine types
-def generate_specific_gantt_chart(task_list, machines, machine_type):
+def generate_specific_gantt_chart(task_list, machines, machine_type, workers, charting):
     filename = machine_type + '_gantt_chart.html'
-    #task_list = schedule(df, 'specific')  # use OR-tools to solve over all schedule
+   #task_list = schedule(df, 'specific')  # use OR-tools to solve over all schedule
     plot_list = []
     last_task_finish_time = []  # keep track of batch finish times
     count = 0
+    worker_list = []
 
-        # Loop through array find elements where Task == machine_type
+    # Loop through array find elements where Task == machine_type
     for i in range(0, len(task_list)):
-            # one by one, allocate a task per machine
-            # reset count when all machines have been allocated
+        # one by one, allocate a task per machine
+        # reset count when all machines have been allocated
         j = 0  # batch counter
 
         if count == len(machines):
             count = 0
             j += 1
 
-            # make a new dict
+        # make a new dict
         if (task_list[i])['Task'] == machine_type:
+            # assumes 1 worker: 1 machine ratio, allocates one worker to all of the machine's tasks
+            worker_name = workers[count]
             curr_task = (task_list[i])
+            start_list = []
+            finish_list = []
 
-            if count == 0:
-                    # assumes that tasks have the same length per machine type
-                    # copies the placement of the task from the first machine's schedule
-                if j == 0:
-                        # BATCH 1
-                    first_task_start_time = curr_task['Start']
-                    first_task_finish_time = curr_task['Finish']
-                    last_task_finish_time.append(first_task_finish_time)
+            worker_list.append(worker_name)
+            #if count == 0:
+                # assumes that tasks have the same length per machine type
+                # copies the placement of the task from the first machine's schedule
+             #   if j == 0:
+                    # BATCH 1
+              #      first_task_start_time = curr_task['Start']
+               #     first_task_finish_time = curr_task['Finish']
+                    #last_task_finish_time.append(first_task_finish_time)
 
-                else:
-                        # BATCH 2 onwards
-                    first_task_start_time = last_task_finish_time[j - 1]
-                    first_task_finish_time = get_finish_time(np.datetime64(first_task_start_time),
-                                                                 get_processing_time(machine_type))
-                    last_task_finish_time.append(first_task_finish_time)
+               # else:
+                    # BATCH 2 onwards
+                #    first_task_start_time = last_task_finish_time[j-1]
+                 #   first_task_finish_time = get_finish_time(np.datetime64(first_task_start_time),
+                  #                                           get_processing_time(machine_type))
+                   # last_task_finish_time.append(first_task_finish_time)
 
-                temp_dict = {'Task': machine_type + str(machines[count]),
-                                 'Start': first_task_start_time,
-                                 'Finish': first_task_finish_time,
-                                 'Resource': curr_task['Resource'],
-                                 'Description': curr_task['Description']
-                                 }
+                # temp_dict = {'Task': machine_type + str(machines[count]),
+                #              'Start': first_task_start_time,
+                #              'Finish': first_task_finish_time,
+                #              'Resource': curr_task['Resource'],
+                #              'Description': curr_task['Description']
+                #              }
 
-            else:
-                temp_dict = {'Task': machine_type + str(machines[count]),
-                                 'Start': first_task_start_time,
-                                 'Finish': first_task_finish_time,
-                                 'Resource': curr_task['Resource'],
-                                 'Description': curr_task['Description']
-                                 }
+            # ADD TO DICTIONARY for plotly
+            temp_dict = {'Task': machine_type + str(count),
+                         'Start': curr_task['Start'],
+                         'Finish': curr_task['Finish'],
+                         'Resource': curr_task['Resource'],
+                         'Description': curr_task['Description']+' - '+ str(worker_name.first_name) + ' ' + str(worker_name.last_name)
+                         #'Worker': str(worker_name.first_name) + ' ' + str(worker_name.last_name)
+                         }
 
             plot_list.append(temp_dict)
 
         count += 1
 
-    return chart(plot_list, filename)
+    if charting:
+        return chart(plot_list, filename)
+    else:
+        return worker_list
+
 
 def get_sched_data(df):
     data = schedule(df, 'save')

@@ -4,7 +4,7 @@ from datetime import date, datetime, time, timedelta
 
 import pandas as pd
 from django.db import connection
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.shortcuts import render, redirect
 
 from django import forms
@@ -18,6 +18,7 @@ from .forms import JODetailsForm
 from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
 from .models import Machine
 from django.contrib import messages
+from accounts.models import Employee
 from plotly.offline import plot
 from plotly.graph_objs import Scatter
 
@@ -201,13 +202,13 @@ def add_extruder_schedule(request, id):
 		
     data = JobOrder.objects.get(id=id)
     item = ClientItem.objects.get(client_po_id=id)
-    e = ExtruderSchedule.objects.filter(job_order_id = id)
+    e = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=False))
     e.job_order = id
     form = ExtruderScheduleForm(request.POST)
     ideal = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first() #TODO Sinsinin
     printed = False
     if item.printed == 1:
-        printed == True
+        printed = True
 
     #if e.count == 0:
     #    ideal = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first() #TODO kung di siya first
@@ -227,25 +228,37 @@ def add_extruder_schedule(request, id):
                     data.status = 'Under Printing'
                     data.save()
                 else:
+                    print('SHET')
                     data.status = 'Under Cutting'
                     data.save()
             else:
                 data.save()
         return redirect('production:job_order_details', id = id)
 
-    #TODO quantity calculations/balance
-    #if e.count == 0:
-    number_rolls = float(item.quantity/10000)
-    weight_rolls = number_rolls*5
-    core_weight = weight_rolls/1.5
+    number_rolls = float(item.quantity / 10000)
+    weight_rolls = number_rolls * 5
+    core_weight = weight_rolls / 1.5
     output_kilos = weight_rolls
-    '''
+
+    if e:
+        sum_number_rolls = float(e.aggregate(Sum('number_rolls'))['number_rolls__sum'])
+        balance_number_rolls = number_rolls - sum_number_rolls
+        number_rolls = balance_number_rolls
+        sum_weight_rolls = float(e.aggregate(Sum('weight_rolls'))['weight_rolls__sum'])
+        balance_weight_rolls = weight_rolls - sum_weight_rolls
+        weight_rolls = balance_weight_rolls
+        sum_core_weight = float(e.aggregate(Sum('core_weight'))['core_weight__sum'])
+        balance_core_weight = core_weight - sum_core_weight
+        core_weight = balance_core_weight
+        sum_output_kilos = float(e.aggregate(Sum('output_kilos'))['output_kilos__sum'])
+        balance_output_kilos = output_kilos - sum_output_kilos
+        output_kilos = balance_output_kilos
     else:
-        number_rolls = float(item.quantity / 10000)
-        weight_rolls = number_rolls * 5
-        core_weight = weight_rolls / 1.5
+        number_rolls = number_rolls
+        weight_rolls = weight_rolls
+        core_weight = core_weight
         output_kilos = weight_rolls
-    '''
+
 
     if ideal is not None:
         sked_in = ideal.sked_in
@@ -290,12 +303,11 @@ def add_extruder_schedule(request, id):
 
 # PRINTING
 def add_printing_schedule(request, id):
-		
     data = JobOrder.objects.get(id=id)
     form = PrintingScheduleForm(request.POST)
     item = ClientItem.objects.get(client_po_id=id)
     ideal = PrintingSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first() #TODO Sinsinin
-    p = PrintingSchedule.objects.filter(job_order_id = data.id)
+    p = PrintingSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=False))
     p.job_order = id
     items = ClientItem.objects.filter(client_po = id)
     laminate = False
@@ -325,43 +337,61 @@ def add_printing_schedule(request, id):
                 data.save()
       return redirect('production:job_order_details', id = data.id)
 
-      # TODO quantity calculations/balance
-      number_rolls = float(item.quantity / 10000)
-      weight_rolls = number_rolls * 5
-      core_weight = weight_rolls / 1.5
-      output_kilos = weight_rolls
+    number_rolls = float(item.quantity / 10000)
+    weight_rolls = number_rolls * 5
+    core_weight = weight_rolls / 1.5
+    output_kilos = weight_rolls
 
-      if ideal is not None:
-          sked_in = ideal.sked_in
-          sked_out = ideal.sked_out
-      else:
-          sked_in = datetime.now()
-          sked_out = datetime.now() + timedelta(days=int((quantity * 100)/70000))
+    if p:
+        sum_number_rolls = float(p.aggregate(Sum('number_rolls'))['number_rolls__sum'])
+        balance_number_rolls = number_rolls - sum_number_rolls
+        number_rolls = balance_number_rolls
+        sum_weight_rolls = float(p.aggregate(Sum('weight_rolls'))['weight_rolls__sum'])
+        balance_weight_rolls = weight_rolls - sum_weight_rolls
+        weight_rolls = balance_weight_rolls
+        sum_core_weight = float(p.aggregate(Sum('core_weight'))['core_weight__sum'])
+        balance_core_weight = core_weight - sum_core_weight
+        core_weight = balance_core_weight
+        sum_output_kilos = float(p.aggregate(Sum('output_kilos'))['output_kilos__sum'])
+        balance_output_kilos = output_kilos - sum_output_kilos
+        output_kilos = balance_output_kilos
+    else:
+        number_rolls = number_rolls
+        weight_rolls = weight_rolls
+        core_weight = core_weight
+        output_kilos = weight_rolls
+
+
+
+    if ideal is not None:
+        sked_in = ideal.sked_in
+        sked_out = ideal.sked_out
+    else:
+        sked_in = datetime.now()
+        sked_out = datetime.now() + timedelta(days=int((item.quantity * 100)/70000))
 
       # SHIFTS: 6am-2pm, 2pm-10pm, 10pm-6am
-      SHIFTS = (
+    SHIFTS = (
           (1, 1),
           (2, 2),
           (3, 3)
       )
 
-      if time(6, 0) <= datetime.now().time() <= time(14, 0):
-          shift = 1
-      elif time(14, 0) <= datetime.now().time() <= time(22, 0):
-          shift = 2
-      elif time(22, 0) <= datetime.now().time() <= time(6, 0):
-          shift = 3
-      else:
+    if time(6, 0) <= datetime.now().time() <= time(14, 0):
+        shift = 1
+    elif time(14, 0) <= datetime.now().time() <= time(22, 0):
+        shift = 2
+    elif time(22, 0) <= datetime.now().time() <= time(6, 0):
+        shift = 3
+    else:
           shift = 0
 
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Printing')
     form.fields["job_order"].queryset = JobOrder.objects.filter(id=id)
     form.fields["datetime_in"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_in',
-                                                     widget=forms.DateTimeInput(
-                                                         attrs={'value': str(sked_in)[:16]}))
+                                                     widget=forms.DateTimeInput(attrs={'value': str(sked_in)[:16]}))
     form.fields["datetime_out"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_out',
-                                                      widget=forms.DateTimeInput(
-                                                          attrs={'value': str(sked_out)[:16]}))
+                                                      widget=forms.DateTimeInput(attrs={'value': str(sked_out)[:16]}))
     form.fields["shift"] = forms.IntegerField(widget=forms.Select(choices=SHIFTS), initial=shift)
     form.fields["weight_rolls"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': weight_rolls}))
     form.fields["core_weight"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': core_weight}))
@@ -385,7 +415,7 @@ def add_cutting_schedule(request, id):
     client = data.client
     ideal = CuttingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()  # TODO Sinsinin
 
-    c = CuttingSchedule.objects.filter(job_order_id = data.id)
+    c = CuttingSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=False))
     c.job_order = id
 
     if c.count == 0:
@@ -412,10 +442,26 @@ def add_cutting_schedule(request, id):
             client.save()
         return redirect('production:job_order_details', id = data.id)
 
-    # TODO quantity calculations/balance
     number_rolls = float(item.quantity / 10000)
     output_kilos = number_rolls * 5
     quantity = item.quantity
+
+    if c:
+        sum_number_rolls = float(c.aggregate(Sum('number_rolls'))['number_rolls__sum'])
+        balance_number_rolls = number_rolls - sum_number_rolls
+        number_rolls = balance_number_rolls
+        sum_output_kilos = float(c.aggregate(Sum('output_kilos'))['output_kilos__sum'])
+        balance_output_kilos = output_kilos - sum_output_kilos
+        output_kilos = balance_output_kilos
+        sum_quantity = float(c.aggregate(Sum('quantity'))['quantity__sum'])
+        balance_quantity = quantity - sum_quantity
+        quantity = balance_quantity
+
+    else:
+        number_rolls = number_rolls
+        output_kilos = output_kilos
+        quantity = quantity
+
 
     if ideal is not None:
         sked_in = ideal.sked_in
@@ -464,7 +510,7 @@ def add_cutting_schedule(request, id):
 def add_laminating_schedule(request, id):
     data = JobOrder.objects.get(id=id)
     form = LaminatingScheduleForm(request.POST)
-    l = LaminatingSchedule.objects.filter(job_order_id=data.id)
+    l = LaminatingSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=False))
     item = ClientItem.objects.get(client_po_id=id)
     ideal = LaminatingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()  # TODO Sinsinin
     l.job_order = id
@@ -652,6 +698,7 @@ def production_schedule(request):
                              'Finish': str(i.sked_out),
                              'Resource': i.job_order_id,
                              'Description': mat
+
                              }
                 plot_list.append(sked_dict)
 
@@ -753,6 +800,7 @@ def production_schedule(request):
     return render(request, 'production/production_schedule.html', context)
 
 def extruder_machine_schedule(request):
+    charting = True
     plot_list = []
     ex = []
     for x in ExtruderSchedule.objects.filter(ideal=True):
@@ -781,12 +829,18 @@ def extruder_machine_schedule(request):
 
         print('plot_list:')
         print(plot_list)
-        #df1 = pd.DataFrame(plot_list)
+        df1 = pd.DataFrame(plot_list)
 
-    machines = Machine.objects.filter(machine_type='Extruder').values('machine_id')
+    cursor = connection.cursor()
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status=" + "'Waiting'" + " and NOT j.status=" + "'Ready for delivery'" + " and NOT j.status =" + "'Delivered'"
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
+
+    machines = Machine.objects.filter(Q(machine_type='Extruder') & Q(state='OK')).values('machine_id')
     machine_type = 'Extruder'
+    workers = Employee.objects.filter(position='Extruder')
 
-    extruder_gantt = final_gantt.generate_specific_gantt_chart(plot_list, machines, machine_type)
+    extruder_gantt = final_gantt.generate_specific_gantt_chart(plot_list, machines, machine_type, workers, charting)
 
     context = {
         'extruder_gantt': extruder_gantt
@@ -795,6 +849,7 @@ def extruder_machine_schedule(request):
     return render(request, 'production/extruder_machine_schedule.html', context)
 
 def printing_machine_schedule(request):
+    charting = True
     plot_list = []
     pr = PrintingSchedule.objects.filter(ideal=True)
 
@@ -805,7 +860,7 @@ def printing_machine_schedule(request):
             product = item.products
             mat = product.material_type
 
-            sked_dict = {'Task': 'Extruder',
+            sked_dict = {'Task': 'Printing',
                          'Start': str(i.sked_in),
                          'Finish': str(i.sked_out),
                          'Resource': i.job_order_id,
@@ -816,7 +871,12 @@ def printing_machine_schedule(request):
         # print('plot_list:')
         # print(plot_list)
         df1 = pd.DataFrame(plot_list)
-    printing_gantt = final_gantt.chart(df1, '/printing-machine-schedule.html')
+
+    machines = Machine.objects.filter(Q(machine_type='Printing') & Q(state='OK')).values('machine_id')
+    machine_type = 'Printing'
+    workers = Employee.objects.filter(position='Printing')
+
+    printing_gantt = final_gantt.generate_specific_gantt_chart(plot_list, machines, machine_type, workers, charting)
 
     context = {
         'printing_gantt': printing_gantt
@@ -825,13 +885,34 @@ def printing_machine_schedule(request):
     return render(request, 'production/printing_machine_schedule.html', context)
 
 def laminating_machine_schedule(request):
-    cursor = connection.cursor()
-    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
-    cursor.execute(query)
-    df = pd.read_sql(query, connection)
-    machines = Machine.objects.filter(machine_type='Laminating').values('machine_id')
+    charting = True
+    plot_list = []
+    la = LaminatingSchedule.objects.filter(ideal=True)
 
-    laminating_gantt = final_gantt.generate_specific_gantt_chart(df, machines, machine_type='Laminating')
+    if la.exists():
+        for i in la:
+            job = i.job_order_id
+            item = ClientItem.objects.get(client_po_id=job)
+            product = item.products
+            mat = product.material_type
+
+            sked_dict = {'Task': 'Laminating',
+                         'Start': str(i.sked_in),
+                         'Finish': str(i.sked_out),
+                         'Resource': i.job_order_id,
+                         'Description': mat
+                         }
+            plot_list.append(sked_dict)
+
+        # print('plot_list:')
+        # print(plot_list)
+        df1 = pd.DataFrame(plot_list)
+
+    machines = Machine.objects.filter(Q(machine_type='Laminating') & Q(state='OK')).values('machine_id')
+    machine_type = 'Laminating'
+    workers = Employee.objects.filter(position='Laminating')
+
+    laminating_gantt = final_gantt.generate_specific_gantt_chart(plot_list, machines, machine_type, workers, charting)
 
     context = {
         'laminating_gantt': laminating_gantt
@@ -840,13 +921,34 @@ def laminating_machine_schedule(request):
     return render(request, 'production/laminating_machine_schedule.html', context)
 
 def cutting_machine_schedule(request):
-    cursor = connection.cursor()
-    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
-    cursor.execute(query)
-    df = pd.read_sql(query, connection)
-    machines = Machine.objects.filter(machine_type='Cutting').values('machine_id')
+    charting = True
+    plot_list = []
+    cu = CuttingSchedule.objects.filter(ideal=True)
 
-    cutting_gantt = final_gantt.generate_specific_gantt_chart(df, machines, machine_type='Cutting')
+    if cu.exists():
+        for i in cu:
+            job = i.job_order_id
+            item = ClientItem.objects.get(client_po_id=job)
+            product = item.products
+            mat = product.material_type
+
+            sked_dict = {'Task': 'Cutting',
+                         'Start': str(i.sked_in),
+                         'Finish': str(i.sked_out),
+                         'Resource': i.job_order_id,
+                         'Description': mat
+                         }
+            plot_list.append(sked_dict)
+
+        # print('plot_list:')
+        # print(plot_list)
+        df1 = pd.DataFrame(plot_list)
+
+    machines = Machine.objects.filter(Q(machine_type='Cutting') & Q(state='OK')).values('machine_id')
+    machine_type = 'Cutting'
+    workers = Employee.objects.filter(position='Cutting')
+
+    cutting_gantt = final_gantt.generate_specific_gantt_chart(plot_list, machines, machine_type, workers, charting)
 
     context = {
         'cutting_gantt': cutting_gantt
