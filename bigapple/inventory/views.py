@@ -128,7 +128,7 @@ def inventory_count_list(request, id):
         'i' : i,
         'item' : item
     }
-    return render (request, 'inventory/inventory_count_list.html', context)
+    return render(request, 'inventory/inventory_count_list.html', context)
 
 def supplier_details_list(request, id):
     items = Inventory.objects.filter(supplier = id)

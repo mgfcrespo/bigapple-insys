@@ -414,7 +414,7 @@ def statement_of_accounts_list_view(request):
     context = {
         'client' : client,
         'sales_invoice' : sales_invoice,
-        'date' : datetime.now()
+        'date' : datetime.datetime.now()
     }
 
     return render(request, 'sales/statement_of_accounts.html', context)
@@ -838,9 +838,9 @@ def demand_forecast_details(request, id):
     c = TimeSeriesForecasting.forecast_moving_average(df)
     c[1] = int(float(c[1]))
     forecast_moving_average.extend(c)
-    d = TimeSeriesForecasting.forecast_arima(df)
-    d[1] = int(float(d[1]))
-    forecast_arima.extend(d)
+    #d = TimeSeriesForecasting.forecast_arima(df)
+    #d[1] = int(float(d[1]))
+    #forecast_arima.extend(d)
 
     context = {
         #'forecast_decomposition': forecast_decomposition,

@@ -2,6 +2,7 @@ from __future__ import print_function
 
 from datetime import date, datetime, time, timedelta
 
+
 import pandas as pd
 from django.db import connection
 from django.db.models import Q, Sum
@@ -185,9 +186,10 @@ def finished_job_order_list_view(request):
     invoice = SalesInvoice.objects.all()
 
     for x in object_list:
-        if request.method == "POST":
+        if str(x.id) in request.POST:
             x.status = "Delivered"
             x.date_delivered = date.today()
+            print(x)
             x.save()
 
     context = {
@@ -982,3 +984,129 @@ def production_report(request):
     }
 
     return render(request, 'production/production_report.html', context)
+
+def shift_schedule(request):
+    ex_schedule = []
+    cu_schedule = []
+    pr_schedule = []
+    la_schedule = []
+    start_time = None
+    end_time = None
+    today = date.today()
+    e = ExtruderSchedule.objects.all()
+    c = CuttingSchedule.objects.all()
+    l = LaminatingSchedule.objects.all()
+    p = PrintingSchedule.objects.all()
+
+    if time(6, 0) <= datetime.now().time() <= time(14, 0):
+        shift = 1
+        for i in e:
+            sked_in = i.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 6 and sked_in.hour <= 14:
+                    ex_schedule.append(i)
+        for j in c:
+            sked_in = j.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 6 and sked_in.hour <= 14:
+                    cu_schedule.append(j)
+        for k in l:
+            sked_in = k.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 6 and sked_in.hour <= 14:
+                    la_schedule.append(k)
+        for x in p:
+            sked_in = x.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 6 and sked_in.hour <= 14:
+                    pr_schedule.append(x)
+
+
+    elif time(14, 0) <= datetime.now().time() <= time(22,0):
+        shift = 2
+
+        for i in e:
+            sked_in = i.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 14 and sked_in.hour <= 22:
+                    ex_schedule.append(i)
+        for j in c:
+            sked_in = j.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 14 and sked_in.hour <= 22:
+                    cu_schedule.append(j)
+        for k in l:
+            sked_in = k.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 14 and sked_in.hour <= 22:
+                    la_schedule.append(k)
+        for x in p:
+            sked_in = x.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 14 and sked_in.hour <= 122:
+                    pr_schedule.append(x)
+
+    elif datetime.now().time() >= time(22, 0):
+        shift = 3
+        for i in e:
+            sked_in = i.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    ex_schedule.append(i)
+        for j in c:
+            sked_in = j.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    cu_schedule.append(j)
+        for k in l:
+            sked_in = k.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    la_schedule.append(k)
+        for x in p:
+            sked_in = x.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    pr_schedule.append(x)
+    elif datetime.now().time() <= time(6, 0):
+        shift = 3
+        for i in e:
+            sked_in = i.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    ex_schedule.append(i)
+        for j in c:
+            sked_in = j.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    cu_schedule.append(j)
+        for k in l:
+            sked_in = k.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    la_schedule.append(k)
+        for x in p:
+            sked_in = x.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    pr_schedule.append(x)
+    else:
+        shift = 0
+
+
+    print('SHIFT SKED')
+    print(shift)
+    print(ex_schedule)
+
+    now = datetime.now()
+
+    context = {
+        'ex_schedule' : ex_schedule,
+        'cu_schedule' : cu_schedule,
+        'la_schedule' : la_schedule,
+        'pr_schedule' : pr_schedule,
+        'shift' : shift,
+        'now' : now
+
+    }
+    return render(request, 'production/shift_schedule.html', context)

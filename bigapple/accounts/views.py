@@ -268,9 +268,9 @@ def user_page_view(request):
             c = TimeSeriesForecasting.forecast_moving_average(df_client)
             c[1] = int(float(c[1]))
             forecast_moving_average.extend(c)
-            d = TimeSeriesForecasting.forecast_arima(df_client)
-            d[1] = int(float(d[1]))
-            forecast_arima.extend(d)
+            #d = TimeSeriesForecasting.forecast_arima(df_client)
+            #d[1] = int(float(d[1]))
+            #forecast_arima.extend(d)
 
         elif employee:
             x = 'Employee'

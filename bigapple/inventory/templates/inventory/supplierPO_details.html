@@ -33,7 +33,7 @@
                         <td>{{ mri.quantity }}</td>
                         <td>{% for x in received %}
                             {% if x.spo_count_id == mr.id %}
-                            x.new_count
+                            {{x.new_count}}
                             {% endif %}
                         {% endfor %}</td>
                         <td>{{ mri.price }}</td>

@@ -1,15 +1,16 @@
 {% extends 'sidebar.html' %}
 
   {% block content %}
-		<h2 class="ui header">Physical Count History </h2>
+		<h2 class="ui header">Procurement History </h2>
 		<h3 class="ui header">{{ item.item }}</h3>
 		<table class="ui striped table">
         	<thead>
           	<tr class = "row">
                 <th class = "four wide">Date Counted</th>
 				<th class = "six wide">Person</th>
-                <th class = "three wide">Previous Quantity</th>
-                <th class = "three wide">Quantity Added</th>
+                <th class = "two wide">Previous Quantity</th>
+                <th class = "two wide">Quantity Added</th>
+                <th class = "three wide">Supplier PO</th>
           	</tr>
     		</thead>
     		<tbody>
@@ -20,6 +21,7 @@
 					<td>{{ x.count_person }}</td>
                     <td>{{ x.old_count }}</td>
                     <td>{{ x.new_count }}</td>
+					<td>{{ x.spo_count }}</td>
     			</tr>
                 {% endfor %}
 			{% else %}

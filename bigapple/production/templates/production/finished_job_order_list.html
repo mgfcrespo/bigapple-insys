@@ -17,21 +17,20 @@
         </thead>
         <tbody>
             {% if object_list %}
-                {% for JobOrder in object_list %}
+                {% for x in object_list %}
                 <tr>
-                    <td><a href="{% url 'production:job_order_details' JobOrder.id %}">{{ JobOrder.id }}</a></td>
-                    <td>{{ JobOrder.client }}</td>
+                    <td><a href="{% url 'production:job_order_details' x.id %}">{{ x.id }}</a></td>
+                    <td>{{ x.client }}</td>
                     <td>{% for y in invoice %}
-                            {% if y.client_po_id == JobOrder.id %}
-                            <a href="{% url 'sales:sales_invoice_details' y.id %}">SI # {{ y.id }}</a> </td>
+                            {% if y.client_po_id == x.id %}
+                            <a href="{% url 'sales:sales_invoice_details' y.id %}">{{ y.id }}</a> </td>
                             {% endif %}
                         {% endfor %}
                     <td>
-                        {% if JobOrder.status == "Ready for delivery" %}
+                        {% if x.status == "Ready for delivery" %}
         <form method="post">
                 {% csrf_token %}
-
-                    <input type="submit" class="ui green basic button" value="Confirm Dispatch" id="confirm_btn" name="confirm_btn">
+                    <input type="submit" class="ui green basic button" value="Confirm Dispatch" id={{x.id}} name={{x.id}}>
 
             </form>
                         {% else %}
@@ -39,8 +38,8 @@
                     {% endif %}
                     </td>
                     <td>
-                        {% if JobOrder.date_delivered is not None %}
-                        {{ JobOrder.date_delivered }}
+                        {% if x.date_delivered is not None %}
+                        {{ x.date_delivered }}
                         {% else %}
                         N/A
                         {% endif %}

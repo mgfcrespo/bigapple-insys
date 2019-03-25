@@ -11,6 +11,7 @@ from production.models import Machine, JobOrder
 from sales.models import ClientItem
 from accounts.models import Employee
 from django.db.models import Q
+import random
 
 '''
 Job Shop example from 
@@ -89,7 +90,14 @@ def get_processing_time(machine_type):
 
 # Creates html file of plotly gantt chart
 def chart(task_list, filename):
-    fig = ff.create_gantt(task_list, index_col='', show_colorbar=True, group_tasks=True)
+    all_the_colors = list((x, y, z) for x in range(256) for y in range(256) for z in range(256))
+    colors = [f"rgb({random.choice(all_the_colors)})" for x in task_list.Resource.unique()]
+
+    print('generated colors')
+    task_list.Resource = task_list.Resource.apply(str)
+    print('applied to str')
+    fig = ff.create_gantt(task_list, colors=colors, index_col='Resource', show_colorbar=True, group_tasks=True)
+    print('created gantt')
     # plot(fig, filename=filename)
     return plot(fig, filename=filename, include_plotlyjs=False, output_type='div')
     #print(fig)
@@ -351,7 +359,8 @@ def generate_specific_gantt_chart(task_list, machines, machine_type, workers, ch
             plot_list.append(temp_dict)
 
         count += 1
-
+    print('plot_list')
+    print(plot_list)
     if charting:
         return chart(plot_list, filename)
     else:
