@@ -92,7 +92,6 @@ def get_processing_time(machine_type):
 def chart(task_list, filename):
     all_the_colors = list((x, y, z) for x in range(256) for y in range(256) for z in range(256))
     colors = [f"rgb({random.choice(all_the_colors)})" for x in task_list.Resource.unique()]
-
     print('generated colors')
     task_list.Resource = task_list.Resource.apply(str)
     print('applied to str')
@@ -101,6 +100,12 @@ def chart(task_list, filename):
     # plot(fig, filename=filename)
     return plot(fig, filename=filename, include_plotlyjs=False, output_type='div')
     #print(fig)
+
+def chart_specific(task_list, filename):
+    fig = ff.create_gantt(task_list, colors='Rainbow', index_col='Resource', show_colorbar=True, group_tasks=True)
+    print('created gantt')
+    # plot(fig, filename=filename)
+    return plot(fig, filename=filename, include_plotlyjs=False, output_type='div')
 
 
 # Solves the job shop problem using OR-tools constraint solver, returns a dictionary with the solution
@@ -362,7 +367,7 @@ def generate_specific_gantt_chart(task_list, machines, machine_type, workers, ch
     print('plot_list')
     print(plot_list)
     if charting:
-        return chart(plot_list, filename)
+        return chart_specific(plot_list, filename)
     else:
         return worker_list
 

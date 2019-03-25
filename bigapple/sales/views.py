@@ -920,48 +920,75 @@ def save_schedule(request, pk):
             machines = Machine.objects.filter(Q(state='OK') & Q(machine_type='Extruder'))
             workerz = Employee.objects.filter(position='Extruder')
             workers = final_gantt.generate_specific_gantt_chart(ideal_sched, machines, 'Extruder', workerz, charting)
-            new_ex = ExtruderSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
-                                          sked_in=ideal_sched[i]['Start'],
-                                          sked_out=ideal_sched[i]['Finish'],
-                                          sked_op=workers[extruders]
+            if workers:
+                new_ex = ExtruderSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+                                              sked_in=ideal_sched[i]['Start'],
+                                              sked_out=ideal_sched[i]['Finish'],
+                                              sked_op=workers[extruders]
                                       )
-            new_ex.save()
-            extruders += 1
-            print('saved new_ex')
+                new_ex.save()
+                extruders += 1
+                print('saved new_ex')
+            else:
+                new_ex = ExtruderSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+                                          sked_in=ideal_sched[i]['Start'],
+                                          sked_out=ideal_sched[i]['Finish'],)
+                new_ex.save()
+                print('saved new_ex')
         elif ideal_sched[i]['Task'] == 'Cutting':
             machines = Machine.objects.filter(Q(state='OK') & Q(machine_type='Cutting'))
             workerz = Employee.objects.filter(position='Cutting')
             workers = final_gantt.generate_specific_gantt_chart(ideal_sched, machines, 'Cutting', workerz, charting)
-            new_cu = CuttingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+            if workers:
+                new_cu = CuttingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+                                             sked_in=ideal_sched[i]['Start'],
+                                             sked_out=ideal_sched[i]['Finish'],
+                                            sked_op=workers[cutters]
+                                         )
+                new_cu.save()
+                cutters += 1
+                print('saved new_cu')
+            else:
+                new_cu = CuttingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
                                          sked_in=ideal_sched[i]['Start'],
-                                         sked_out=ideal_sched[i]['Finish'],
-                                        sked_op=workers[cutters]
-                                     )
-            new_cu.save()
-            cutters += 1
-            print('saved new_cu')
+                                         sked_out=ideal_sched[i]['Finish'],)
+                new_cu.save()
+                print('saved new_cu')
         elif ideal_sched[i]['Task'] == 'Printing':
             machines = Machine.objects.filter(Q(state='OK') & Q(machine_type='Printing'))
             workerz = Employee.objects.filter(position='Printing')
             workers = final_gantt.generate_specific_gantt_chart(ideal_sched, machines, 'Printing', workerz, charting)
-            new_pr = PrintingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+            if workers:
+                new_pr = PrintingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+                                              sked_in=ideal_sched[i]['Start'],
+                                              sked_out=ideal_sched[i]['Finish'],
+                                              sked_op=workers[printers]
+                                          )
+                new_pr.save()
+                printers += 1
+                print('saved new_pr')
+            else:
+                new_pr = PrintingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
                                           sked_in=ideal_sched[i]['Start'],
-                                          sked_out=ideal_sched[i]['Finish'],
-                                          sked_op=workers[printers]
-                                      )
-            new_pr.save()
-            printers += 1
-            print('saved new_pr')
+                                          sked_out=ideal_sched[i]['Finish'],)
+                new_pr.save()
+                print('saved new_pr')
         elif ideal_sched[i]['Task'] == 'Laminating':
             machines = Machine.objects.filter(Q(state='OK') & Q(machine_type='Laminating'))
             workerz = Employee.objects.filter(position='Laminating')
             workers = final_gantt.generate_specific_gantt_chart(ideal_sched, machines, 'Laminating', workerz, charting)
-
-            new_la = LaminatingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+            if workers:
+                new_la = LaminatingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+                                                sked_in=ideal_sched[i]['Start'],
+                                                sked_out=ideal_sched[i]['Finish'],
+                                                sked_op=workers[laminaters]
+                                            )
+                new_la.save()
+                laminaters += 1
+                print('saved new_la')
+            else:
+                new_la = LaminatingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
                                             sked_in=ideal_sched[i]['Start'],
-                                            sked_out=ideal_sched[i]['Finish'],
-                                            sked_op=workers[laminaters]
-                                        )
-            new_la.save()
-            laminaters += 1
-            print('saved new_la')
+                                            sked_out=ideal_sched[i]['Finish'],)
+                new_la.save()
+                print('saved new_la')
