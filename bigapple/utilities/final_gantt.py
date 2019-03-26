@@ -118,8 +118,6 @@ def schedule(df, filename):
     jobs_count = len(df.index)
     all_machines = range(0, machines_count)
     all_jobs = range(0, jobs_count)
-    all_workers = range(0, workers_count)
-    workers = Employee.objects.filter(Q(position='Cutting') | Q(position='Extruder') | Q(position='Printing') | Q(position='Laminating'))
 
     # Define data.
     machines = []
@@ -135,6 +133,8 @@ def schedule(df, filename):
             machines.append([0, 2, 3])
         else:
             machines.append([0, 3])
+    print('defined data')
+    print(machines)
 
     processing_times = []
     for i in range(0, len(df.index)):
@@ -164,6 +164,9 @@ def schedule(df, filename):
         else:
             processing_times.append([extrusion_time, cutting_time])
 
+    print('defined processing times')
+    print(processing_times)
+
     # Compute horizon.
     horizon = 0
     for i in all_jobs:
@@ -179,6 +182,8 @@ def schedule(df, filename):
                                                                 processing_times[i][j],
                                                                 False,
                                                                 'Job_%i_%i' % (i, j))
+    print('defined all_tasks')
+    print(all_tasks)
 
     # Create sequence variables and add disjunctive constraints.
     all_sequences = []
@@ -191,12 +196,16 @@ def schedule(df, filename):
         disj = solver.DisjunctiveConstraint(machines_jobs, 'machine %i' % i)
         all_sequences.append(disj.SequenceVar())
         solver.Add(disj)
+    print('defined all_sequences')
+    print(all_sequences)
 
     # Add conjunctive constraints.
     for i in all_jobs:
         for j in range(0, len(machines[i]) - 1):
             solver.Add(all_tasks[(i, j + 1)].StartsAfterEnd(all_tasks[(i, j)]))
 
+    print('defined conjunctive constraints')
+    print(solver)
     # TODO Consider date_required of job
     '''
     for job in all_jobs:
@@ -222,6 +231,23 @@ def schedule(df, filename):
     # Add the interesting variables to the SolutionCollector.
     collector.Add(all_sequences)
     collector.AddObjective(obj_var)
+    print('defined objective')
+    print(obj_var)
+
+    print('defined collector')
+    print(collector)
+
+#    for i in all_machines:
+#        if i not in all_sequences:
+#            continue
+#        sequence = all_sequences[i]
+ #       sequence_count = sequence.Size()
+  #      for j in range(0, sequence_count):
+   #         t = sequence.Interval(j)
+   # for key in all_tasks:
+   #     t = all_tasks[key]
+   #     collector.Add(t)
+
 
     for i in all_machines:
         sequence = all_sequences[i];
@@ -239,7 +265,6 @@ def schedule(df, filename):
     finish_list = []
     resource_list = []
     description_list = []
-    worker_list = []
     current_time = np.datetime64(datetime.datetime.now())
 
     if solver.Solve(main_phase, [objective_monitor, collector]):
@@ -278,7 +303,6 @@ def schedule(df, filename):
                              'Finish': finish_list.pop(0),
                              'Resource': resource_list.pop(0),
                              'Description': description_list.pop(0),
-                             # 'Worker' : worker_list.pop(0)
                              }
                 plot_list.append(temp_dict)
 

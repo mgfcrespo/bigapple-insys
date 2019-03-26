@@ -24,7 +24,7 @@ from accounts.forms import SignUpForm
 from sales.models import Supplier, SalesInvoice, ClientItem, Product
 from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
 from inventory.models import Inventory
-from utilities import TimeSeriesForecasting, final_gantt, schedule
+from utilities import TimeSeriesForecasting, final_gantt
 # Create your views here.
 
 def register(request):
