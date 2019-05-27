@@ -72,7 +72,7 @@ def inventory_item_edit(request, id):
         'title' : "Edit Inventory Item",
         'actiontype' : "Submit"
     }
-    return render(request, 'inventory/inventory_item_add.html', context)
+    return render(request, 'inventory/inventory_item_edit.html', context)
 
 def inventory_item_delete(request, id):
     items = Inventory.objects.get(id=id)
@@ -131,13 +131,10 @@ def inventory_count_list(request, id):
     return render(request, 'inventory/inventory_count_list.html', context)
 
 def supplier_details_list(request, id):
-    items = Inventory.objects.filter(supplier = id)
-    data = SupplierPO.objects.filter(id = id)
-    title1 = 'Supplier Raw Material'
-    title2 = 'Supplier Sales Invoice'
+    items = Inventory.objects.filter(supplier_id = id)
+    data = SupplierPO.objects.filter(supplier_id = id)
+
     context = {
-       'title1': title1,
-       'title2': title2,
         'items' : items,
         'data': data
     }
@@ -226,7 +223,7 @@ def supplierPO_form(request):
             item = item.id
         elif request.session['matreq_ink'] is not None:
             item = Inventory.objects.get(item=request.session.get('matreq_ink'))
-            supplier = item.supplier
+            supplier = Supplier.objects.filter(id=item.supplier_id)
             item = item.id
 
     elif request.META['HTTP_REFERER'].startswith('http://127.0.0.1:8000/inventory/inventory-forecast-details/'):
@@ -386,9 +383,9 @@ def inventory_forecast_details(request, pk):
     c = TimeSeriesForecasting.forecast_moving_average(df)
     c[1] = int(float(c[1]))
     forecast_moving_average.extend(c)
-    d = TimeSeriesForecasting.forecast_arima(df)
-    d[1] = int(float(d[1]))
-    forecast_arima.extend(d)
+    #d = TimeSeriesForecasting.forecast_arima(df)
+    #d[1] = int(float(d[1]))
+    #forecast_arima.extend(d)
 
     request.session['forecast_ses'] = forecast_ses
     request.session['forecast_hwes'] = forecast_hwes

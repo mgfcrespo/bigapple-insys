@@ -2,50 +2,40 @@
 
 {% block content %}
 <h3 class="ui dividing header">{{ title }}</h3>
-<div id="basic-form" class="section">
-    <div class="row">
-        <div class="col s6 offset-s3">
-            <div class="card-panel">
-                <h4 class="header1">{{ title }}</h4>
-                    <div class="row">
-                        <form class="col s12" action = "#" method="POST" role="form">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="input-field col s12">
-                                    {{form.item}}
-                                    <label for="supplier">Item</label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="input-field col s12">
-                                    {{ form.rm_type }}
-                                    <label for="item_name">Material Type (for Raw Materials)</label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="input-field col s12">
-                                    {{ form.price }}
-                                    <label for="item_type">Price per piece</label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="input-field col s12">
-                                    {{ form.description }}
-                                    <label for="item_type">Description</label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="center">
-                                    <button class="btn btn-small green" type="submit">{{ actiontype }}</button>
-                                    <button class="btn btn-small red" type="clear">Clear</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>                        
+<div>
+    <form class="ui form" action = "#" method="POST" role="form">
+        {% csrf_token %}
+        <div class="three fields">
+            <div class="field">
+                <label>Item</label>
+                {{ form.item }}
+            </div>
+            <div class="field">
+                <label>Item Type</label>
+                {{ form.item_type }}
+            </div>
+            <div class="field">
+                <label>Material Type (for Raw Materials)</label>
+                {{ form.rm_type }}
             </div>
         </div>
+            <div class="field">
+            <label>Price per unit</label>
+            {{ form.price }}
+        </div>
+            <div class="field">
+            <label>Supplier</label>
+            {{ form.supplier }}
+        </div>
+        <div class="field">
+            <label>Description</label>
+            {{ form.description }}
+        </div>
     </div>
+<br>
+            <button class="medium ui green button" style="width: 100px" type="submit">Submit</button>
+            <button class="medium ui yellow button" style="width: 100px" type="reset">Clear</button>
+        </form>
 </div>
 
 {% endblock %}

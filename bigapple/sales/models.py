@@ -221,21 +221,21 @@ class SalesInvoice(models.Model):
         return date_due
 
     def calculate_days_overdue(self):
-        sales_invoice = SalesInvoice.objects.filter(client=self.client)
-        overdue_sales_invoice = []
-        for x in sales_invoice:
-            if x.status == "Late":
-                overdue_sales_invoice.append(x)
-
-        overdue_sales_invoice = sales_invoice.order_by('date_issued')
-        object = overdue_sales_invoice.first()
-        issued_date = object.date_issued
-
-        if issued_date is not None:
-            diff = date.today() - issued_date
+        if self.status == "Late":
+            diff = date.today() - self.date_due
             return diff.days
         else:
             return 0
+
+    def add_overdue(self):
+        if self.status == 'Late':
+            client = self.client
+            client.overdue_balance += self.amount_due
+            print('ADDED TO OVERDUE BALANCE')
+            print(self.amount_due)
+            client.save()
+        else:
+            pass
 
     def save(self, *args, **kwargs):
         client = self.client
@@ -246,9 +246,12 @@ class SalesInvoice(models.Model):
         if self.date_issued is not None:
             self.date_due = self.calculate_date_due()
             self.days_passed = self.calculate_days_passed()
+            if self.status == 'Open' and self.days_passed <= 0:
+                self.status = 'Late'
+                self.add_overdue()
+            else:
+                pass
             self.days_overdue = self.calculate_days_overdue()
-            if self.days_passed <= 0:
-                self.status == 'Late'
         else:
             self.date_due = None
             self.days_passed = None

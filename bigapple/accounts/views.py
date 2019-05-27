@@ -107,39 +107,61 @@ def user_page_view(request):
         #PRODUCTION SCHEDULE
         plot_list = []
         ideal = []
-        ex = ExtruderSchedule.objects.filter(ideal=True)
+        ex = []
+        for x in ExtruderSchedule.objects.filter(ideal=True):
+            job = x.job_order
+            if job.status == 'Ready for delivery' or job.status == 'Delivered':
+                pass
+            else:
+                ex.append(x)
         ex_list = list(ex)
         ideal.append(ex_list)
-        cu = CuttingSchedule.objects.filter(ideal=True)
+        cu = []
+        for y in CuttingSchedule.objects.filter(ideal=True):
+            job = y.job_order
+            if job.status == 'Ready for delivery' or job.status == 'Delivered':
+                pass
+            else:
+                cu.append(y)
         cu_list = list(cu)
         ideal.append(cu_list)
-        pr = PrintingSchedule.objects.filter(ideal=True)
+        pr = []
+        for z in PrintingSchedule.objects.filter(ideal=True):
+            job = z.job_order
+            if job.status == 'Ready for delivery' or job.status == 'Delivered':
+                pass
+            else:
+                pr.append(z)
         pr_list = list(pr)
         ideal.append(pr_list)
-        la = LaminatingSchedule.objects.filter(ideal=True)
+        la = []
+        for a in LaminatingSchedule.objects.filter(ideal=True):
+            job = a.job_order
+            if job.status == 'Ready for delivery' or job.status == 'Delivered':
+                pass
+            else:
+                la.append(a)
         la_list = list(la)
-        print('la list:')
-        print(la_list)
         ideal.append(la_list)
-        #ideal = None
 
         if ideal:
-            if ex.exists():
+            if ex:
                 for i in ex:
                     job = i.job_order_id
                     item = ClientItem.objects.get(client_po_id=job)
                     product = item.products
                     mat = product.material_type
 
-                    sked_dict = {'Task': 'Extruder',
+                    sked_dict = {'Task': 'Extrusion',
                                  'Start': str(i.sked_in),
                                  'Finish': str(i.sked_out),
-                                 'Resource': i.job_order_id,
-                                 'Description': mat
+                                 'Resource': mat,
+                                 'Machine': str(i.sked_mach),
+                                 'Worker': str(i.sked_op)
                                  }
                     plot_list.append(sked_dict)
 
-            if cu.exists():
+            if cu:
                 for j in cu:
                     job = j.job_order_id
                     item = ClientItem.objects.get(client_po_id=job)
@@ -147,13 +169,14 @@ def user_page_view(request):
                     mat = product.material_type
 
                     sked_dict = {'Task': 'Cutting',
-                                 'Start': str(j.sked_in),
-                                 'Finish': str(j.sked_out),
-                                 'Resource': j.job_order_id,
-                                 'Description': mat
+                                 'Start': str(i.sked_in),
+                                 'Finish': str(i.sked_out),
+                                 'Resource': mat,
+                                 'Machine': str(i.sked_mach),
+                                 'Worker': str(i.sked_op)
                                  }
                     plot_list.append(sked_dict)
-            if pr.exists():
+            if pr:
                 for k in pr:
                     job = k.job_order_id
                     item = ClientItem.objects.get(client_po_id=job)
@@ -161,13 +184,14 @@ def user_page_view(request):
                     mat = product.material_type
 
                     sked_dict = {'Task': 'Printing',
-                                 'Start': str(k.sked_in),
-                                 'Finish': str(k.sked_out),
-                                 'Resource': k.job_order_id,
-                                 'Description': mat
+                                 'Start': str(i.sked_in),
+                                 'Finish': str(i.sked_out),
+                                 'Resource': mat,
+                                 'Machine': str(i.sked_mach),
+                                 'Worker': str(i.sked_op)
                                  }
                     plot_list.append(sked_dict)
-            if la.exists():
+            if la:
                 for l in la:
                     job = l.job_order_id
                     item = ClientItem.objects.get(client_po_id=job)
@@ -175,60 +199,16 @@ def user_page_view(request):
                     mat = product.material_type
 
                     sked_dict = {'Task': 'Laminating',
-                                 'Start': str(l.sked_in),
-                                 'Finish': str(l.sked_out),
-                                 'Resource': l.job_order_id,
-                                 'Description': mat
+                                 'Start': str(i.sked_in),
+                                 'Finish': str(i.sked_out),
+                                 'Resource': mat,
+                                 'Machine': str(i.sked_mach),
+                                 'Worker': str(i.sked_op)
                                  }
                     plot_list.append(sked_dict)
 
             print('plot_list:')
             print(plot_list)
-            df1 = pd.DataFrame(plot_list)
-            print('df1:')
-            print(df1)
-            gantt = final_gantt.chart(df1, '/production_schedule.html')
-
-        else:
-            cursor = connection.cursor()
-            query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status=" + "'Waiting'" + " and NOT j.status=" + "'Ready for delivery'" + " and NOT j.status =" + "'Delivered'"
-            cursor.execute(query)
-            df = pd.read_sql(query, connection)
-            gantt = final_gantt.generate_overview_gantt_chart(df)
-            #gantt = schedule.schedule(df, 'generic')
-
-            # TODO Save sked_op, sked_mach
-            if 'save_btn' in request.POST:
-                ideal_sched = final_gantt.get_sched_data(df)
-                messages.success(request, 'Production schedule saved.')
-                print('ideal sched:')
-                print(ideal_sched)
-
-                for i in range(0, len(ideal_sched)):
-                    if ideal_sched[i]['Task'] == 'Extruder':
-                        new_ex = ExtruderSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
-                                                  sked_in=ideal_sched[i]['Start'],
-                                                  sked_out=ideal_sched[i]['Finish'])
-                        new_ex.save()
-                        print('saved new_ex')
-                    elif ideal_sched[i]['Task'] == 'Cutting':
-                        new_cu = CuttingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
-                                                 sked_in=ideal_sched[i]['Start'],
-                                                 sked_out=ideal_sched[i]['Finish'])
-                        new_cu.save()
-                        print('saved new_cu')
-                    elif ideal_sched[i]['Task'] == 'Printing':
-                        new_pr = PrintingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
-                                                  sked_in=ideal_sched[i]['Start'],
-                                                  sked_out=ideal_sched[i]['Finish'])
-                        new_pr.save()
-                        print('saved new_pr')
-                    elif ideal_sched[i]['Task'] == 'Laminating':
-                        new_la = LaminatingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
-                                                    sked_in=ideal_sched[i]['Start'],
-                                                    sked_out=ideal_sched[i]['Finish'])
-                        new_la.save()
-                        print('saved new_la')
 
         client = Client.objects.filter(accounts_id=id)
         employee = Employee.objects.filter(accounts_id=id)
@@ -292,7 +272,7 @@ def user_page_view(request):
             'invoice': invoice,
             'client_po': client_po,
 
-            'gantt': gantt,
+            'plot_list' : plot_list,
 
             'POs_lastMonth': POs_lastMonth,
             'thisMonth': thisMonth,

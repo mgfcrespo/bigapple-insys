@@ -27,9 +27,8 @@
                 </td>
                 <td>
                     {% for every in sales_invoice %}
-                        {% if every.client_id == each.id %}
-                        {{ every.days_overdue }}
-                        {{ break }}
+                        {% if every.client_id == each.id and every.days_overdue > 0 %}
+                            {{ every.days_overdue }},
                         {% endif %}
                     {% endfor %}
 

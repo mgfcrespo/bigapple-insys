@@ -15,7 +15,7 @@ from inventory.forms import MaterialRequisitionForm, SupplierPOForm, SupplierPOI
 from inventory.models import Inventory, Supplier, MaterialRequisition, SupplierPO, SupplierPOItems
 from production.forms import ClientPOForm
 from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule, Machine
-from utilities import TimeSeriesForecasting, final_gantt
+from utilities import TimeSeriesForecasting, cpsat
 from .forms import ClientPOFormItems
 from .forms import SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
 from .models import ClientItem, Client, SalesInvoice, ClientPayment, ProductionCost, Product
@@ -292,13 +292,8 @@ def invoice_detail_view(request, pk):
     #form = ClientPaymentForm()
     payments = ClientPayment.objects.filter(invoice_id=sales_invoice.id)
 
+
     try:
-        client = Client.objects.get(id=sales_invoice.client_id)
-        client.save()
-        sales_invoice.save()
-
-        #form = add_payment(request, pk)
-
         client = Client.objects.get(id=sales_invoice.client_id)
         form = ClientPaymentForm(request.POST)
 
@@ -315,8 +310,8 @@ def invoice_detail_view(request, pk):
                 sales_invoice.amount_due -= form.payment
                 client.outstanding_balance -= form.payment
 
-                sales_invoice.save()
-                client.save()
+                if sales_invoice.status == 'Late':
+                    client.overdue_balance -= form.payment
 
             sales_invoice.save()
             client.save()
@@ -324,11 +319,7 @@ def invoice_detail_view(request, pk):
         if sales_invoice.amount_due <= 0.0 and sales_invoice.status != "Cancelled":
             sales_invoice.status = "Closed"
             sales_invoice.save()
-        else:
-            sales_invoice.status = "Open"
-            sales_invoice.save()
 
-            sales_invoice.save()
 
         payments = ClientPayment.objects.filter(invoice=sales_invoice)
 
@@ -336,6 +327,7 @@ def invoice_detail_view(request, pk):
                    'form' : form,
                    'payments' : payments,
                    'pk' : pk}
+
 
     except SalesInvoice.DoesNotExist:
         raise Http404("Sales Invoice does not exist")
@@ -409,7 +401,10 @@ def payment_detail_view(request, pk):
 
 def statement_of_accounts_list_view(request):
     client = Client.objects.all()
-    sales_invoice = SalesInvoice.objects.filter(date_issued__isnull=False)
+    sales_invoice = SalesInvoice.objects.filter(status='Late')
+    for x in client:
+        print('OVERDUE BALANCE CLIENT')
+        print(x.overdue_balance)
 
     context = {
         'client' : client,
@@ -626,7 +621,7 @@ def rush_order_assessment(request, pk):
     df = df.append(df2, ignore_index=True)
     print('df after append: ')
     print(df)
-    simulated_sched = final_gantt.schedule(df, 'rush')
+    simulated_sched = cpsat.flexible_jobshop(df)
 
     if 'approve_btn' in request.POST:
         # SAVE NEW PRODUCTION SCHEDULE
@@ -860,7 +855,6 @@ def save_schedule(request, pk):
     ideal_cu = CuttingSchedule.objects.filter(ideal=True)
     ideal_la = LaminatingSchedule.objects.filter(ideal=True)
     ideal_pr = PrintingSchedule.objects.filter(ideal=True)
-    charting = False
 
     for x in ideal_ex:
         job = x.job_order
@@ -902,93 +896,47 @@ def save_schedule(request, pk):
             'material_type': mat}
     df2 = pd.DataFrame(data, index=[0])
     df = df.append(df2, ignore_index=True)
-    #gantt = final_gantt.generate_overview_gantt_chart(df)
 
-    # TODO Save sked_op, sked_mach
-    ideal_sched = final_gantt.get_sched_data(df)
+    # TODO Save sked_op
+    ideal_sched = cpsat.flexible_jobshop(df)
     messages.success(request, 'Production schedule saved.')
     print('ideal sched:')
     print(ideal_sched)
-    extruders = 0
-    printers = 0
-    cutters = 0
-    laminaters = 0
-
 
     for i in range(0, len(ideal_sched)):
-        if ideal_sched[i]['Task'] == 'Extruder':
-            machines = Machine.objects.filter(Q(state='OK') & Q(machine_type='Extruder'))
-            workerz = Employee.objects.filter(position='Extruder')
-            workers = final_gantt.generate_specific_gantt_chart(ideal_sched, machines, 'Extruder', workerz, charting)
-            if workers:
-                new_ex = ExtruderSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
-                                              sked_in=ideal_sched[i]['Start'],
-                                              sked_out=ideal_sched[i]['Finish'],
-                                              sked_op=workers[extruders]
-                                      )
-                new_ex.save()
-                extruders += 1
-                print('saved new_ex')
-            else:
-                new_ex = ExtruderSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+        if ideal_sched[i]['Task'] == 0:
+                new_ex = ExtruderSchedule(job_order_id=ideal_sched[i]['ID'],
+                                          ideal=True,
                                           sked_in=ideal_sched[i]['Start'],
-                                          sked_out=ideal_sched[i]['Finish'],)
+                                          sked_out=ideal_sched[i]['Finish'],
+                                          sked_mach=ideal_sched[i]['Machine'],)
+                                         # sked_op=ideal_sched[i]['Worker'],)
                 new_ex.save()
                 print('saved new_ex')
-        elif ideal_sched[i]['Task'] == 'Cutting':
-            machines = Machine.objects.filter(Q(state='OK') & Q(machine_type='Cutting'))
-            workerz = Employee.objects.filter(position='Cutting')
-            workers = final_gantt.generate_specific_gantt_chart(ideal_sched, machines, 'Cutting', workerz, charting)
-            if workers:
-                new_cu = CuttingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
-                                             sked_in=ideal_sched[i]['Start'],
-                                             sked_out=ideal_sched[i]['Finish'],
-                                            sked_op=workers[cutters]
-                                         )
-                new_cu.save()
-                cutters += 1
-                print('saved new_cu')
-            else:
-                new_cu = CuttingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
-                                         sked_in=ideal_sched[i]['Start'],
-                                         sked_out=ideal_sched[i]['Finish'],)
-                new_cu.save()
-                print('saved new_cu')
-        elif ideal_sched[i]['Task'] == 'Printing':
-            machines = Machine.objects.filter(Q(state='OK') & Q(machine_type='Printing'))
-            workerz = Employee.objects.filter(position='Printing')
-            workers = final_gantt.generate_specific_gantt_chart(ideal_sched, machines, 'Printing', workerz, charting)
-            if workers:
-                new_pr = PrintingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
-                                              sked_in=ideal_sched[i]['Start'],
-                                              sked_out=ideal_sched[i]['Finish'],
-                                              sked_op=workers[printers]
-                                          )
-                new_pr.save()
-                printers += 1
-                print('saved new_pr')
-            else:
-                new_pr = PrintingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
+        elif ideal_sched[i]['Task'] == 3:
+                new_cu = CuttingSchedule(job_order_id=ideal_sched[i]['ID'],
+                                          ideal=True,
                                           sked_in=ideal_sched[i]['Start'],
-                                          sked_out=ideal_sched[i]['Finish'],)
+                                          sked_out=ideal_sched[i]['Finish'],
+                                          sked_mach=ideal_sched[i]['Machine'],)
+                                         # sked_op=ideal_sched[i]['Worker'],)
+                new_cu.save()
+                print('saved new_cu')
+        elif ideal_sched[i]['Task'] == 1:
+                new_pr = PrintingSchedule(job_order_id=ideal_sched[i]['ID'],
+                                          ideal=True,
+                                          sked_in=ideal_sched[i]['Start'],
+                                          sked_out=ideal_sched[i]['Finish'],
+                                          sked_mach=ideal_sched[i]['Machine'],)
+                                         # sked_op=ideal_sched[i]['Worker'],)
                 new_pr.save()
                 print('saved new_pr')
-        elif ideal_sched[i]['Task'] == 'Laminating':
-            machines = Machine.objects.filter(Q(state='OK') & Q(machine_type='Laminating'))
-            workerz = Employee.objects.filter(position='Laminating')
-            workers = final_gantt.generate_specific_gantt_chart(ideal_sched, machines, 'Laminating', workerz, charting)
-            if workers:
-                new_la = LaminatingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
-                                                sked_in=ideal_sched[i]['Start'],
-                                                sked_out=ideal_sched[i]['Finish'],
-                                                sked_op=workers[laminaters]
-                                            )
-                new_la.save()
-                laminaters += 1
-                print('saved new_la')
-            else:
-                new_la = LaminatingSchedule(job_order_id=ideal_sched[i]['Resource'], ideal=True,
-                                            sked_in=ideal_sched[i]['Start'],
-                                            sked_out=ideal_sched[i]['Finish'],)
+        elif ideal_sched[i]['Task'] == 2:
+                new_la = LaminatingSchedule(job_order_id=ideal_sched[i]['ID'],
+                                          ideal=True,
+                                          sked_in=ideal_sched[i]['Start'],
+                                          sked_out=ideal_sched[i]['Finish'],
+                                          sked_mach=ideal_sched[i]['Machine'],)
+                                         # sked_op=ideal_sched[i]['Worker'],)
                 new_la.save()
                 print('saved new_la')

@@ -81,9 +81,9 @@
                 </th>
             </thead>
             <tbody>
-                <tr>
-                    {% if ex_schedule %}
+            {% if ex_schedule %}
                         {% for each in ex_schedule %}
+                <tr>
                         <td>
                             <a href="{% url 'production:job_order_details' each.job_order_id %}">{{ each.job_order_id }}</a>
                         </td>
@@ -96,13 +96,15 @@
                         <td>
                             {{ each.sked_mach_id }}
                         </td>
-                        {% endfor %}
-                    {% endif %}
+
                 </tr>
-             <tr>
-                    {% if cu_schedule %}
+            {% endfor %}
+                    {% endif %}
+            {% if cu_schedule %}
                         {% for each in cu_schedule %}
-                        <td>
+
+             <tr>
+                     <td>
                             <a href="{% url 'production:job_order_details' each.job_order_id %}">{{ each.job_order_id }}</a>
                         </td>
                         <td>
@@ -114,12 +116,14 @@
                         <td>
                             {{ each.sked_mach_id }}
                         </td>
-                        {% endfor %}
-                    {% endif %}
+
                 </tr>
-             <tr>
-                    {% if pr_schedule %}
+            {% endfor %}
+                    {% endif %}
+            {% if pr_schedule %}
                         {% for each in pr_schedule %}
+             <tr>
+
                         <td>
                             <a href="{% url 'production:job_order_details' each.job_order_id %}">{{ each.job_order_id }}</a>
                         </td>
@@ -132,12 +136,14 @@
                         <td>
                             {{each.sked_mach_id}}
                         </td>
-                        {% endfor %}
-                    {% endif %}
+
                 </tr>
-             <tr>
-                    {% if la_schedule %}
+            {% endfor %}
+                    {% endif %}
+            {% if la_schedule %}
                         {% for each in la_schedule %}
+             <tr>
+
                         <td>
                             <a href="{% url 'production:job_order_details' each.job_order_id %}">{{ each.job_order_id }}</a>
                         </td>
@@ -150,9 +156,10 @@
                         <td>
                             {{each.sked_mach_id}}
                         </td>
-                        {% endfor %}
-                    {% endif %}
+
                 </tr>
+            {% endfor %}
+                    {% endif %}
             </tbody>
         </table>
         </div>

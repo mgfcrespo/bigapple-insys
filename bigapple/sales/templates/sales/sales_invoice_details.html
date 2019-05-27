@@ -49,12 +49,11 @@
                <tr>
               <th>Status</th>
                    {% if salesinvoice.status ==  "Open" %}
-                   <td><i class="icon checkmark"></i>Open</td>
+                   <td><i class="icon checkmark"></i> OPEN</td>
                    {% elif  salesinvoice.status ==  "Closed" %}
-                   <td ><i class="icon close"></i>Closed</td>
+                   <td ><i class="icon close"></i> CLOSED</td>
                    {% elif  salesinvoice.status ==  "Late" %}
-                   <td ><i class="icon close"></i>Closed</td>
-                   <i class="exclamation icon">Late</i>
+                   <td><i class="exclamation icon"></i> LATE</td>
                    {% else %}
                    <td ><i class="ban icon"></i>Cancelled</td>
                     {% endif %}
