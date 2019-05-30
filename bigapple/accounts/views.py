@@ -7,7 +7,8 @@ from django.template import loader
 from django.http import HttpResponse
 
 from django.db.models.functions import TruncMonth
-from datetime import datetime
+from datetime import datetime, timedelta, date, time
+import datetime, calendar
 
 from production import views as production
 from django.db import connection
@@ -22,9 +23,9 @@ from .models import Client
 
 from accounts.forms import SignUpForm
 from sales.models import Supplier, SalesInvoice, ClientItem, Product
-from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
+from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule, Machine
 from inventory.models import Inventory
-from utilities import TimeSeriesForecasting, final_gantt
+from utilities import TimeSeriesForecasting, cpsat
 # Create your views here.
 
 def register(request):
@@ -86,10 +87,10 @@ def user_page_view(request):
         status_delivered = JobOrder.objects.filter(status='Delivered').count()
         status_cancelled = JobOrder.objects.filter(status='Cancelled').count()
 
-        thisYear = datetime.now().year
-        lastYear = datetime.now().year-1
+        thisYear = date.today().year
+        lastYear = date.today().year-1
 
-        thisMonth = datetime.now().month
+        thisMonth = date.today().month
 
         POs = JobOrder.objects.filter(date_issued__month=thisMonth, date_issued__year=thisYear).annotate(count=Count('id'))
         POs_lastMonth = JobOrder.objects.filter(date_issued__month=thisMonth-1, date_issued__year=thisYear).annotate(count=Count('id'))
@@ -153,11 +154,11 @@ def user_page_view(request):
                     mat = product.material_type
 
                     sked_dict = {'Task': 'Extrusion',
-                                 'Start': str(i.sked_in),
-                                 'Finish': str(i.sked_out),
+                                 'Start': i.sked_in,
+                                 'Finish': i.sked_out,
                                  'Resource': mat,
-                                 'Machine': str(i.sked_mach),
-                                 'Worker': str(i.sked_op)
+                                 'Machine': i.sked_mach,
+                                 'Worker': i.sked_op
                                  }
                     plot_list.append(sked_dict)
 
@@ -169,11 +170,11 @@ def user_page_view(request):
                     mat = product.material_type
 
                     sked_dict = {'Task': 'Cutting',
-                                 'Start': str(i.sked_in),
-                                 'Finish': str(i.sked_out),
+                                 'Start': i.sked_in,
+                                 'Finish': i.sked_out,
                                  'Resource': mat,
-                                 'Machine': str(i.sked_mach),
-                                 'Worker': str(i.sked_op)
+                                 'Machine': i.sked_mach,
+                                 'Worker': i.sked_op
                                  }
                     plot_list.append(sked_dict)
             if pr:
@@ -184,11 +185,11 @@ def user_page_view(request):
                     mat = product.material_type
 
                     sked_dict = {'Task': 'Printing',
-                                 'Start': str(i.sked_in),
-                                 'Finish': str(i.sked_out),
+                                 'Start': i.sked_in,
+                                 'Finish': i.sked_out,
                                  'Resource': mat,
-                                 'Machine': str(i.sked_mach),
-                                 'Worker': str(i.sked_op)
+                                 'Machine': i.sked_mach,
+                                 'Worker': i.sked_op
                                  }
                     plot_list.append(sked_dict)
             if la:
@@ -199,16 +200,44 @@ def user_page_view(request):
                     mat = product.material_type
 
                     sked_dict = {'Task': 'Laminating',
-                                 'Start': str(i.sked_in),
-                                 'Finish': str(i.sked_out),
+                                 'Start': i.sked_in,
+                                 'Finish': i.sked_out,
                                  'Resource': mat,
-                                 'Machine': str(i.sked_mach),
-                                 'Worker': str(i.sked_op)
+                                 'Machine': i.sked_mach,
+                                 'Worker': i.sked_op
                                  }
                     plot_list.append(sked_dict)
 
             print('plot_list:')
             print(plot_list)
+        else:
+            cursor = connection.cursor()
+            query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status=" + "'Waiting'" + " and NOT j.status=" + "'Ready for delivery'" + " and NOT j.status =" + "'Delivered'"
+            cursor.execute(query)
+            df = pd.read_sql(query, connection)
+            plot_list = cpsat.flexible_jobshop(df)
+
+        today = date.today()
+        start_week = today - timedelta(days=today.weekday())
+        end_week = start_week + timedelta(days=7)
+        start_month = today.replace(day=1)
+        week = []
+        month = []
+        for i in range(0, 7):
+            week.append(start_week)
+            start_week += timedelta(days=1)
+        for i in range(0, calendar.monthrange(today.year, today.month)[1]):
+            month.append(start_month)
+            start_month += timedelta(days=1)
+        start_week = today - timedelta(days=today.weekday())
+        this_week = []
+        this_month = []
+
+        for i in range(len(plot_list)):
+            if start_week <= plot_list[i]['Start'].date() <= end_week:
+                this_week.append(plot_list[i])
+            if plot_list[i]['Start'].month == today.month:
+                this_month.append(plot_list[i])
 
         client = Client.objects.filter(accounts_id=id)
         employee = Employee.objects.filter(accounts_id=id)
@@ -272,7 +301,12 @@ def user_page_view(request):
             'invoice': invoice,
             'client_po': client_po,
 
-            'plot_list' : plot_list,
+            'machines': Machine.objects.all(),
+            'this_week': this_week,
+            'this_month': this_month,
+            'week': week,
+            'month': month,
+            'today': today,
 
             'POs_lastMonth': POs_lastMonth,
             'thisMonth': thisMonth,
@@ -312,7 +346,7 @@ def user_page_view(request):
             'forecast_hwes': forecast_hwes,
             'forecast_moving_average': forecast_moving_average,
             'forecast_arima': forecast_arima,
-            'product': product
+            'product': product,
         }
 
         request.session['session_username'] = username

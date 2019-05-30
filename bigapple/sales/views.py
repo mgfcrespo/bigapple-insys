@@ -1,5 +1,5 @@
 from datetime import datetime, date, timedelta
-import datetime
+import datetime, calendar
 
 from django.db import connection
 from django.db.models import aggregates, Sum, Count
@@ -621,7 +621,30 @@ def rush_order_assessment(request, pk):
     df = df.append(df2, ignore_index=True)
     print('df after append: ')
     print(df)
-    simulated_sched = cpsat.flexible_jobshop(df)
+    plot_list = cpsat.flexible_jobshop(df)
+
+    machines = Machine.objects.all()
+    today = date.today()
+    start_week = today - timedelta(days=today.weekday())
+    end_week = start_week + timedelta(days=7)
+    start_month = today.replace(day=1)
+    week = []
+    month = []
+    for i in range(0, 7):
+        week.append(start_week)
+        start_week += timedelta(days=1)
+    for i in range(0, calendar.monthrange(today.year, today.month)[1]):
+        month.append(start_month)
+        start_month += timedelta(days=1)
+    start_week = today - timedelta(days=today.weekday())
+    this_week = []
+    this_month = []
+
+    for i in range(len(plot_list)):
+        if start_week <= plot_list[i]['Start'].date() <= end_week:
+            this_week.append(plot_list[i])
+        if plot_list[i]['Start'].month == today.month:
+            this_month.append(plot_list[i])
 
     if 'approve_btn' in request.POST:
         # SAVE NEW PRODUCTION SCHEDULE
@@ -644,7 +667,12 @@ def rush_order_assessment(request, pk):
         'matreq' : matreq,
         'cylinder_count' : cylinder_count,
         'profit': profit,
-        'simulated_sched' : simulated_sched
+        'machines': machines,
+        'this_week': this_week,
+        'this_month': this_month,
+        'week': week,
+        'month': month,
+        'today': today
     }
 
     return render(request, 'sales/rush_order_assessment.html', context)

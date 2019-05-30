@@ -17,7 +17,32 @@
 <div>
     <div class="ui top attached tabular menu">
         <div class="active item" data-tab="first">Week of {{ today }}</div>
-        <div class="item" data-tab="second">{{ month.month }} {{ month.year }}</div>
+        <div class="item" data-tab="second">{% if today.month == 1 %}
+            January {{ today.year }}
+        {% elif today.month == 2 %}
+            February {{ today.year }}
+        {% elif today.month == 3 %}
+            March {{ today.year }}
+        {% elif today.month == 4 %}
+            April {{ today.year }}
+        {% elif today.month == 5 %}
+            May {{ today.year }}
+        {% elif today.month == 6 %}
+            June {{ today.year }}
+        {% elif today.month == 7 %}
+            July {{ today.year }}
+        {% elif today.month == 8 %}
+            August {{ today.year }}
+        {% elif today.month == 9 %}
+            September {{ today.year }}
+        {% elif today.month == 10 %}
+            October {{ today.year }}
+        {% elif today.month == 11 %}
+            November {{ today.year }}
+        {% elif today.month == 12 %}
+            December {{ today.year }}
+        {% endif %}
+        </div>
     </div>
     <div class="ui bottom attached active tab segment" data-tab="first">
         <div style="overflow-x: scroll;">

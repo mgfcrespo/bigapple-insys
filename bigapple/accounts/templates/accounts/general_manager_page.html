@@ -106,10 +106,125 @@
 
     <h3 class="ui dividing header">Production Dashboard</h3>
 
-        <div class="ui segment" style="height: 100%; width: 100%">
-            {{gantt|safe}}
+        <div>
+    <div class="ui top attached tabular menu">
+        <div class="active item" data-tab="first">Week of {{ today }}</div>
+        <div class="item" data-tab="second">{% if today.month == 1 %}
+            January {{ today.year }}
+        {% elif today.month == 2 %}
+            February {{ today.year }}
+        {% elif today.month == 3 %}
+            March {{ today.year }}
+        {% elif today.month == 4 %}
+            April {{ today.year }}
+        {% elif today.month == 5 %}
+            May {{ today.year }}
+        {% elif today.month == 6 %}
+            June {{ today.year }}
+        {% elif today.month == 7 %}
+            July {{ today.year }}
+        {% elif today.month == 8 %}
+            August {{ today.year }}
+        {% elif today.month == 9 %}
+            September {{ today.year }}
+        {% elif today.month == 10 %}
+            October {{ today.year }}
+        {% elif today.month == 11 %}
+            November {{ today.year }}
+        {% elif today.month == 12 %}
+            December {{ today.year }}
+        {% endif %}
         </div>
+    </div>
+    <div class="ui bottom attached active tab segment" data-tab="first">
+        <div style="overflow-x: scroll;">
+            <table class="ui striped center aligned table">
+                <thead>
+                    <tr>
+                        <th>Machine</th>
 
+                        {% for a in week %}
+                        <th>{{ a }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                {% for x in machines %}
+                    <tr>
+                        <td>
+                            <a href="#">Machine {{x.machine_id}} : {{x.machine_type}}</a>
+                            {% if x.state == 'OK' %}
+                            <i class="green check circle outline icon"></i>
+                            {% else %}
+                            <i class="red times circle outline icon"></i>
+                            {% endif %}
+                        </td>
+                        {% for i in this_week %}
+                            {% if i.Machine == x.machine_id %}
+                                <td>
+                                    <a href="{% url 'production:job_order_details' i.ID %}">Job {{ i.ID }}</a><br>
+                                    <i>Employee:</i> {{ i.Worker }}<br>
+                                    <i>RM:</i> {{ i.Resource }}<br>
+                                    {% if i.Start == today %}
+                                        <i>Start: </i> {{ i.Start.hour }} {{ i.Start.minute }} <br>
+                                    {% endif %}
+                                    {% if i.Finish == today %}
+                                        <i>End: </i> {{ i.Finish.hour }} {{ i.Finish.minute }} <br>
+                                    {% endif %}
+                                </td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="ui bottom attached tab segment" data-tab="second">
+        <div style="overflow-x: scroll;">
+            <table class="ui striped center aligned table">
+                <thead>
+                    <tr>
+                        <th>Machine</th>
+
+                        {% for b in month %}
+                        <th>{{ b.day }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for y in machines %}
+                        <tr>
+                            <td>
+                                <a href="#">Machine {{y.machine_id}} : {{y.machine_type}}</a>
+                                {% if y.state == 'OK' %}
+                                <i class="green check circle outline icon"></i>
+                                {% else %}
+                                <i class="red times circle outline icon"></i>
+                                {% endif %}
+                            </td>
+                            {% for j in this_month %}
+                                {% if j.Machine == y.machine_id %}
+                                <td>
+                                    <a href="{% url 'production:job_order_details' j.ID %}">{{ j.ID }}</a><br>
+                                    {{ j.Worker }}<br>
+                                    {{ j.Resource }}<br>
+                                    {% if j.Start == today %}
+                                        <i>Start: </i> {{ j.Start.hour }} {{ j.Start.minute }} <br>
+                                    {% endif %}
+                                    {% if j.Finish == today %}
+                                        <i>End: </i> {{ j.Finish.hour }} {{ j.Finish.minute }} <br>
+                                    {% endif %}
+                                </td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
     <h3 class="ui dividing header">Inventory Dashboard</h3>
         <div class="ui horizontal segments">
             <div class="ui segment">
