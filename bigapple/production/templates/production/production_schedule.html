@@ -45,7 +45,7 @@
                         {% for i in this_week %}
                             {% if i.Machine == x.machine_id %}
                                 <td>
-                                    <a href="#">Job {{ i.ID }}</a><br>
+                                    <a href="{% url 'production:job_order_details' i.ID %}">Job {{ i.ID }}</a><br>
                                     <i>Employee:</i> {{ i.Worker }}<br>
                                     <i>RM:</i> {{ i.Resource }}<br>
                                     {% if i.Start == today %}

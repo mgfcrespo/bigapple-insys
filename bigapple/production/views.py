@@ -797,6 +797,7 @@ def production_schedule(request):
         if plot_list[i]['Start'].month == today.month:
             this_month.append(plot_list[i])
 
+
     context = {
         'plot_list': plot_list,
         'machines' : machines,

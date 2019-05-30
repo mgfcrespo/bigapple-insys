@@ -268,10 +268,4 @@ def flexible_jobshop(df):
     print('  - branches  : %i' % solver.NumBranches())
     print('  - wall time : %f s' % solver.WallTime())
 
-    print('plot_list')
-    print(plot_list)
-
     return plot_list
-
-
-#flexible_jobshop(df)
