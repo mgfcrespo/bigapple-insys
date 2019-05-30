@@ -904,7 +904,7 @@ def save_schedule(request, pk):
     print(ideal_sched)
 
     for i in range(0, len(ideal_sched)):
-        if ideal_sched[i]['Task'] == 0:
+        if ideal_sched[i]['Task'] == 'Extrusion':
                 new_ex = ExtruderSchedule(job_order_id=ideal_sched[i]['ID'],
                                           ideal=True,
                                           sked_in=ideal_sched[i]['Start'],
@@ -913,7 +913,7 @@ def save_schedule(request, pk):
                                          # sked_op=ideal_sched[i]['Worker'],)
                 new_ex.save()
                 print('saved new_ex')
-        elif ideal_sched[i]['Task'] == 3:
+        elif ideal_sched[i]['Task'] == 'Cutting':
                 new_cu = CuttingSchedule(job_order_id=ideal_sched[i]['ID'],
                                           ideal=True,
                                           sked_in=ideal_sched[i]['Start'],
@@ -922,7 +922,7 @@ def save_schedule(request, pk):
                                          # sked_op=ideal_sched[i]['Worker'],)
                 new_cu.save()
                 print('saved new_cu')
-        elif ideal_sched[i]['Task'] == 1:
+        elif ideal_sched[i]['Task'] == 'Printing':
                 new_pr = PrintingSchedule(job_order_id=ideal_sched[i]['ID'],
                                           ideal=True,
                                           sked_in=ideal_sched[i]['Start'],
@@ -931,7 +931,7 @@ def save_schedule(request, pk):
                                          # sked_op=ideal_sched[i]['Worker'],)
                 new_pr.save()
                 print('saved new_pr')
-        elif ideal_sched[i]['Task'] == 2:
+        elif ideal_sched[i]['Task'] == 'Laminating':
                 new_la = LaminatingSchedule(job_order_id=ideal_sched[i]['ID'],
                                           ideal=True,
                                           sked_in=ideal_sched[i]['Start'],

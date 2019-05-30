@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 from datetime import date, datetime, time, timedelta
-import datetime
+import datetime, calendar
 
 
 import pandas as pd
@@ -15,7 +15,7 @@ from inventory.forms import MaterialRequisition
 from inventory.forms import MaterialRequisitionForm
 from sales.models import ClientItem, SalesInvoice
 from utilities import final_gantt
-from utilities import cpsat
+from utilities import cpsat, cpsatworkertest
 from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm, LaminatingScheduleForm
 from .forms import JODetailsForm
 from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
@@ -708,11 +708,11 @@ def production_schedule(request):
 
                 sked_dict = {'ID': job,
                              'Task': 'Extrusion',
-                             'Start': str(i.sked_in),
-                             'Finish': str(i.sked_out),
+                             'Start': i.sked_in,
+                             'Finish': i.sked_out,
                              'Resource': mat,
-                             'Machine': str(i.sked_mach),
-                             'Worker' : str(i.sked_op)
+                             'Machine': i.sked_mach,
+                             'Worker' : i.sked_op
                              }
                 plot_list.append(sked_dict)
 
@@ -725,11 +725,11 @@ def production_schedule(request):
 
                 sked_dict = {'ID': job,
                              'Task': 'Cutting',
-                             'Start': str(i.sked_in),
-                             'Finish': str(i.sked_out),
+                             'Start': i.sked_in,
+                             'Finish': i.sked_out,
                              'Resource': mat,
-                             'Machine': str(i.sked_mach),
-                             'Worker': str(i.sked_op)
+                             'Machine': i.sked_mach,
+                             'Worker': i.sked_op
                              }
                 plot_list.append(sked_dict)
         if pr:
@@ -741,11 +741,11 @@ def production_schedule(request):
 
                 sked_dict = {'ID': job,
                              'Task': 'Printing',
-                             'Start': str(i.sked_in),
-                             'Finish': str(i.sked_out),
+                             'Start': i.sked_in,
+                             'Finish': i.sked_out,
                              'Resource': mat,
-                             'Machine': str(i.sked_mach),
-                             'Worker': str(i.sked_op)
+                             'Machine': i.sked_mach,
+                             'Worker': i.sked_op
                              }
                 plot_list.append(sked_dict)
         if la:
@@ -757,11 +757,11 @@ def production_schedule(request):
 
                 sked_dict = {'ID': job,
                              'Task': 'Laminating',
-                             'Start': str(i.sked_in),
-                             'Finish': str(i.sked_out),
+                             'Start': i.sked_in,
+                             'Finish': i.sked_out,
                              'Resource': mat,
-                             'Machine': str(i.sked_mach),
-                             'Worker': str(i.sked_op)
+                             'Machine': i.sked_mach,
+                             'Worker': i.sked_op
                              }
                 plot_list.append(sked_dict)
 
@@ -778,6 +778,16 @@ def production_schedule(request):
     today = date.today()
     start_week = today - timedelta(days=today.weekday())
     end_week = start_week + timedelta(days=7)
+    start_month = today.replace(day=1)
+    week = []
+    month = []
+    for i in range(0,7):
+        week.append(start_week)
+        start_week += timedelta(days=1)
+    for i in range(0, calendar.monthrange(today.year, today.month)[1]):
+        month.append(start_month)
+        start_month += timedelta(days=1)
+    start_week = today - timedelta(days=today.weekday())
     this_week = []
     this_month = []
 
@@ -791,7 +801,10 @@ def production_schedule(request):
         'plot_list': plot_list,
         'machines' : machines,
         'this_week' : this_week,
-        'this_month' : this_month
+        'this_month' : this_month,
+        'week' : week,
+        'month' : month,
+        'today' : today
     }
 
     return render(request, 'production/production_schedule.html', context)
@@ -1099,8 +1112,7 @@ def sched_test(request):
     df = pd.read_sql(query, connection)
 
 
-    cpsat.flexible_jobshop(df)
-    solver = cpsat.flexible_jobshop(df)
+    cpsatworkertest.flexible_jobshop(df)
 
     context = {
 
