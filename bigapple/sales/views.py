@@ -263,25 +263,11 @@ def invoice_list_view(request):
 
     invoice = SalesInvoice.objects.filter(date_issued__isnull=False)
 
-    if request.session['session_position'] == "Sales Coordinator":
-        template = 'sales_coordinator_page.html'
-    elif request.session['session_position'] == "Sales Agent":
-        template = 'sales_agent_page.html'
-    elif request.session['session_position'] == "Credits and Collection Personnel":
-        template = 'credit_and_collection_personnel_page.html'
-    elif request.session['session_position'] == "General Manager":
-        template = 'general_manager_page.html'
-    elif request.session['session_position'] == 'Client':
+    if request.session['session_position'] == 'Client':
         invoice = SalesInvoice.objects.filter(Q(date_issued__isnull=False) & Q(client_id=request.session['session_userid']))
-        template = 'client_page.html'
-
-
-    else:
-        template = 'error.html'
 
     context = {
-     'invoice': invoice,
-     'template': template
+     'invoice': invoice
         }
 
     return render(request, 'sales/sales_invoice_list.html', context)
@@ -402,9 +388,6 @@ def payment_detail_view(request, pk):
 def statement_of_accounts_list_view(request):
     client = Client.objects.all()
     sales_invoice = SalesInvoice.objects.filter(status='Late')
-    for x in client:
-        print('OVERDUE BALANCE CLIENT')
-        print(x.overdue_balance)
 
     context = {
         'client' : client,
@@ -878,7 +861,7 @@ def demand_forecast_details(request, id):
 
     return render(request, 'sales/client_demand_forecast_details.html', context)
 
-def save_schedule(request, pk):
+def save_schedule(request, *pk):
     ideal_ex = ExtruderSchedule.objects.filter(ideal=True)
     ideal_cu = CuttingSchedule.objects.filter(ideal=True)
     ideal_la = LaminatingSchedule.objects.filter(ideal=True)
@@ -909,23 +892,26 @@ def save_schedule(request, pk):
         else:
             a.delete()
 
-    item = ClientItem.objects.get(client_po_id=pk)
-    mat = item.products.material_type
-
     cursor = connection.cursor()
     query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p " \
             "WHERE p.id = i.products_id and i.client_po_id = j.id and " \
             "NOT j.status=" + "'Waiting'" + " and NOT j.status=" + "'Ready for delivery'" + " and NOT j.status =" + "'Delivered'"
     cursor.execute(query)
     df = pd.read_sql(query, connection)
-    data = {'id': pk,
-            'laminate': item.laminate,
-            'printed': item.printed,
-            'material_type': mat}
-    df2 = pd.DataFrame(data, index=[0])
-    df = df.append(df2, ignore_index=True)
 
-    # TODO Save sked_op
+    if pk:
+        item = ClientItem.objects.get(client_po_id=pk)
+        mat = item.products.material_type
+
+        data = {'id': pk,
+                'laminate': item.laminate,
+                'printed': item.printed,
+                'material_type': mat}
+        df2 = pd.DataFrame(data, index=[0])
+        df = df.append(df2, ignore_index=True)
+    else:
+        pass
+
     ideal_sched = cpsat.flexible_jobshop(df)
     messages.success(request, 'Production schedule saved.')
     print('ideal sched:')
@@ -937,8 +923,8 @@ def save_schedule(request, pk):
                                           ideal=True,
                                           sked_in=ideal_sched[i]['Start'],
                                           sked_out=ideal_sched[i]['Finish'],
-                                          sked_mach=ideal_sched[i]['Machine'],)
-                                         # sked_op=ideal_sched[i]['Worker'],)
+                                          sked_mach=ideal_sched[i]['Machine'],
+                                          sked_op=ideal_sched[i]['Worker'],)
                 new_ex.save()
                 print('saved new_ex')
         elif ideal_sched[i]['Task'] == 'Cutting':
@@ -946,8 +932,8 @@ def save_schedule(request, pk):
                                           ideal=True,
                                           sked_in=ideal_sched[i]['Start'],
                                           sked_out=ideal_sched[i]['Finish'],
-                                          sked_mach=ideal_sched[i]['Machine'],)
-                                         # sked_op=ideal_sched[i]['Worker'],)
+                                          sked_mach=ideal_sched[i]['Machine'],
+                                          sked_op=ideal_sched[i]['Worker'],)
                 new_cu.save()
                 print('saved new_cu')
         elif ideal_sched[i]['Task'] == 'Printing':
@@ -955,8 +941,8 @@ def save_schedule(request, pk):
                                           ideal=True,
                                           sked_in=ideal_sched[i]['Start'],
                                           sked_out=ideal_sched[i]['Finish'],
-                                          sked_mach=ideal_sched[i]['Machine'],)
-                                         # sked_op=ideal_sched[i]['Worker'],)
+                                          sked_mach=ideal_sched[i]['Machine'],
+                                          sked_op=ideal_sched[i]['Worker'],)
                 new_pr.save()
                 print('saved new_pr')
         elif ideal_sched[i]['Task'] == 'Laminating':
@@ -964,7 +950,9 @@ def save_schedule(request, pk):
                                           ideal=True,
                                           sked_in=ideal_sched[i]['Start'],
                                           sked_out=ideal_sched[i]['Finish'],
-                                          sked_mach=ideal_sched[i]['Machine'],)
-                                         # sked_op=ideal_sched[i]['Worker'],)
+                                          sked_mach=ideal_sched[i]['Machine'],
+                                          sked_op=ideal_sched[i]['Worker'],)
                 new_la.save()
                 print('saved new_la')
+
+    return ideal_sched

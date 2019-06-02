@@ -1,7 +1,7 @@
 from __future__ import print_function
 
-from datetime import date, datetime, time, timedelta
 import datetime, calendar
+from datetime import date, datetime, time, timedelta
 
 
 import pandas as pd
@@ -16,6 +16,7 @@ from inventory.forms import MaterialRequisitionForm
 from sales.models import ClientItem, SalesInvoice
 from utilities import final_gantt
 from utilities import cpsat, cpsatworkertest
+from sales import views as sales_views
 from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm, LaminatingScheduleForm
 from .forms import JODetailsForm
 from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule
@@ -209,13 +210,10 @@ def add_extruder_schedule(request, id):
     e = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=False))
     e.job_order = id
     form = ExtruderScheduleForm(request.POST)
-    ideal = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first() #TODO Sinsinin
+    ideal = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first()
     printed = False
     if item.printed == 1:
         printed = True
-
-    #if e.count == 0:
-    #    ideal = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first() #TODO kung di siya first
 
     if request.method == 'POST':
         data.status = 'Under Extrusion'
@@ -267,10 +265,14 @@ def add_extruder_schedule(request, id):
     if ideal is not None:
         sked_in = ideal.sked_in
         sked_out = ideal.sked_out
+        sked_op = ideal.sked_op
+        sked_mach = ideal.sked_mach
     else:
         sked_in = datetime.now()
         sked_out = datetime.now() + timedelta(days=int((item.quantity * 80)/70000))
 
+    #TODO ACTUAL matches IDEAL contigency (save_schedule)
+    #all_ideal = ExtruderSchedule.objects.filter(Q(ideal=True) & (Q(sked_mach=)))
     # SHIFTS: 6am-2pm, 2pm-10pm, 10pm-6am
     SHIFTS = (
         (1, 1),
@@ -287,6 +289,7 @@ def add_extruder_schedule(request, id):
     else:
         shift = 0
 
+    #TODO Add Machine and Worker placeholder
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Extruder')
     form.fields["job_order"].queryset = JobOrder.objects.filter(id=id)
     form.fields["datetime_in"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_in', widget=forms.DateTimeInput(attrs={'value': str(sked_in)[:16]}))
@@ -310,7 +313,7 @@ def add_printing_schedule(request, id):
     data = JobOrder.objects.get(id=id)
     form = PrintingScheduleForm(request.POST)
     item = ClientItem.objects.get(client_po_id=id)
-    ideal = PrintingSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first() #TODO Sinsinin
+    ideal = PrintingSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first()
     p = PrintingSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=False))
     p.job_order = id
     items = ClientItem.objects.filter(client_po = id)
@@ -417,7 +420,7 @@ def add_cutting_schedule(request, id):
     form = CuttingScheduleForm(request.POST)
     invoice = SalesInvoice.objects.get(client_po = data)
     client = data.client
-    ideal = CuttingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()  # TODO Sinsinin
+    ideal = CuttingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()
 
     c = CuttingSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=False))
     c.job_order = id
@@ -516,7 +519,7 @@ def add_laminating_schedule(request, id):
     form = LaminatingScheduleForm(request.POST)
     l = LaminatingSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=False))
     item = ClientItem.objects.get(client_po_id=id)
-    ideal = LaminatingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()  # TODO Sinsinin
+    ideal = LaminatingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()
     l.job_order = id
 
     if l.count == 0:
@@ -763,15 +766,16 @@ def production_schedule(request):
                              }
                 plot_list.append(sked_dict)
 
-        print('plot_list:')
-        print(plot_list)
-
+        for q in range(len(plot_list)):
+            unavailable = []
+            is_it_ok = plot_list[q]['Machine']
+            if is_it_ok.state == 'OK':
+                pass
+            else:
+                unavailable.append(plot_list[q]['Machine'])
+                plot_list = sales_views.save_schedule(request)
     else:
-        cursor = connection.cursor()
-        query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status="+"'Waiting'"+" and NOT j.status="+"'Ready for delivery'"+" and NOT j.status ="+"'Delivered'"
-        cursor.execute(query)
-        df = pd.read_sql(query, connection)
-        plot_list = cpsat.flexible_jobshop(df)
+        plot_list = sales_views.save_schedule(request)
 
     today = date.today()
     start_week = today - timedelta(days=today.weekday())
@@ -794,6 +798,8 @@ def production_schedule(request):
             this_week.append(plot_list[i])
         if plot_list[i]['Start'].month == today.month:
             this_month.append(plot_list[i])
+
+    print(month)
 
 
     context = {
@@ -1215,9 +1221,39 @@ def sched_test(request):
     df = pd.read_sql(query, connection)
 
 
-    cpsatworkertest.flexible_jobshop(df)
+    plot_list = cpsatworkertest.flexible_jobshop(df)
+
+    machines = Machine.objects.all()
+    today = date.today()
+    start_week = today - timedelta(days=today.weekday())
+    end_week = start_week + timedelta(days=7)
+    start_month = today.replace(day=1)
+    week = []
+    month = []
+    for i in range(0, 7):
+        week.append(start_week)
+        start_week += timedelta(days=1)
+    for i in range(0, calendar.monthrange(today.year, today.month)[1]):
+        month.append(start_month)
+        start_month += timedelta(days=1)
+    start_week = today - timedelta(days=today.weekday())
+    this_week = []
+    this_month = []
+
+    for i in range(len(plot_list)):
+        if start_week <= plot_list[i]['Start'].date() <= end_week:
+            this_week.append(plot_list[i])
+        if plot_list[i]['Start'].month == today.month:
+            this_month.append(plot_list[i])
 
     context = {
+
+        'machines': machines,
+        'this_week': this_week,
+        'this_month': this_month,
+        'week': week,
+        'month': month,
+        'today': today
 
 
     }

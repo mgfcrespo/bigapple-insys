@@ -68,22 +68,26 @@ def flexible_jobshop(df):
         job = []
 
         for e in e_mach:
-            extrusion.append((extrusion_time, e))
+            for a in e_work:
+                extrusion.append((extrusion_time, e, a))
         job.append(extrusion)
         for p in p_mach:
             if df.ix[i]['printed'] == 1:
-                printing.append((printing_time, p))
+                for b in p_work:
+                    printing.append((printing_time, p, b))
                 job.append(printing)
             else:
                 pass
         for l in l_mach:
             if df.ix[i]['laminate'] == 1:
-                laminating.append((laminating_time, l))
+                for c in p_work:
+                    laminating.append((laminating_time, l, c))
                 job.append(laminating)
             else:
                 pass
         for c in c_mach:
-            cutting.append((cutting_time, c))
+            for d in c_work:
+                cutting.append((cutting_time, c, d))
         job.append(cutting)
 
         jobs.append(job)
@@ -93,6 +97,8 @@ def flexible_jobshop(df):
 
     num_machines = Machine.objects.filter(state='OK').count()
     all_machines = range(num_machines)
+
+    all_workers = range(len(e_work) + len(c_work) + len(p_work))
 
     # Model the flexible jobshop problem.
     model = cp_model.CpModel()
@@ -109,6 +115,7 @@ def flexible_jobshop(df):
 
     # Global storage of variables.
     intervals_per_resources = defaultdict(list)
+    intervals_per_workers = defaultdict(list)
     starts = {}  # indexed by (job_id, task_id).
     presences = {}  # indexed by (job_id, task_id, alt_id).
     job_ends = []
@@ -172,6 +179,9 @@ def flexible_jobshop(df):
                     # Add the local interval to the right machine.
                     intervals_per_resources[task[alt_id][1]].append(l_interval)
 
+                    # Add the local interval to the right worker.
+                    intervals_per_workers[task[alt_id][1]].append(l_interval)
+
                     # Store the presences for the solution.
                     presences[(job_id, task_id, alt_id)] = l_presence
 
@@ -179,6 +189,7 @@ def flexible_jobshop(df):
                 model.Add(sum(l_presences) == 1)
             else:
                 intervals_per_resources[task[0][1]].append(interval)
+                intervals_per_workers[task[0][1]].append(interval)
                 presences[(job_id, task_id, 0)] = model.NewIntVar(1, 1, '')
 
         job_ends.append(previous_end)
@@ -191,8 +202,8 @@ def flexible_jobshop(df):
             model.AddNoOverlap(intervals)
 
     # Create workers constraints.
-    for worker_id, intervals in intervals_per_resources.items():
-        intervals = intervals_per_resources[worker_id]
+    for worker_id, intervals in intervals_per_workers.items():
+        intervals = intervals_per_workers[worker_id]
 
         if len(intervals) > 1:
             model.AddNoOverlap(intervals)
@@ -217,14 +228,16 @@ def flexible_jobshop(df):
             machine = -1
             duration = -1
             selected = -1
+            worker = -1
             for alt_id in range(len(jobs[job_id][task_id])):
                 if solver.Value(presences[(job_id, task_id, alt_id)]):
                     duration = jobs[job_id][task_id][alt_id][0]
                     machine = jobs[job_id][task_id][alt_id][1]
                     selected = alt_id
+                    worker = jobs[job_id][task_id][alt_id][2]
             print(
-                '  task_%i_%i starts at %i (alt %i, machine %i, duration %i)' %
-                (job_id, task_id, start_value, selected, machine, duration))
+                '  task_%i_%i starts at %i (alt %i, machine %i, duration %i, worker %i)' %
+                (job_id, task_id, start_value, selected, machine, duration, worker))
 
             item = ClientItem.objects.get(client_po_id=joids[job_id])
             product = item.products
@@ -249,14 +262,13 @@ def flexible_jobshop(df):
             elif task_id == 3:
                 phase = 'Cutting'
 
-            #TODO Add Employee
             temp_dict = {'ID': joids[job_id],
-                         'Machine': machine,
+                         'Machine': Machine.objects.get(machine_id=machine),
                          'Task': phase,
                          'Start': datetime.now() + timedelta(hours=start_value),
-                         'Finish': datetime.now() + timedelta(hours=start_value+duration),
-                         'Resource' : material,
-                        #'Worker': y
+                         'Finish': datetime.now() + timedelta(hours=start_value + duration),
+                         'Resource': material,
+                         'Worker': Employee.objects.get(id=worker)
                          }
 
             plot_list.append(temp_dict)
@@ -267,5 +279,6 @@ def flexible_jobshop(df):
     print('  - conflicts : %i' % solver.NumConflicts())
     print('  - branches  : %i' % solver.NumBranches())
     print('  - wall time : %f s' % solver.WallTime())
+
 
     return plot_list

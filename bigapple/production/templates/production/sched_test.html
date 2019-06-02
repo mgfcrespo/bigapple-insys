@@ -1,10 +1,147 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>CPSAT TEST</title>
-</head>
-<body>
+{% extends 'sidebar.html' %}
 
-</body>
-</html>
+{% block content %}
+
+    <h3 class="ui dividing header">SCHED TEST</h3>
+
+    <div class="ui container" style="margin-top:20px; margin-bottom: 15px;">
+        <div class="ui five buttons">
+            <a class="ui basic black button" href="{% url 'production:production_schedule' %}">Overall Production Schedule</a>
+            <a class="ui basic black button" href="{% url 'production:extruder_machine_schedule' %}">Extruder Machine Schedule</a>
+            <a class="ui basic black button" href="{% url 'production:printing_machine_schedule' %}">Printing Machine Schedule</a>
+            <a class="ui basic black button" href="{% url 'production:laminating_machine_schedule' %}">Laminating Machine Schedule</a>
+            <a class="ui basic black button" href="{% url 'production:cutting_machine_schedule' %}">Cutting Machine Schedule</a>
+        </div>
+    </div>
+
+<div>
+    <div class="ui top attached tabular menu">
+        <div class="active item" data-tab="first">Week of {{ today }}</div>
+        <div class="item" data-tab="second">
+        {% if today.month == 1 %}
+            January {{ today.year }}
+        {% elif today.month == 2 %}
+            February {{ today.year }}
+        {% elif today.month == 3 %}
+            March {{ today.year }}
+        {% elif today.month == 4 %}
+            April {{ today.year }}
+        {% elif today.month == 5 %}
+            May {{ today.year }}
+        {% elif today.month == 6 %}
+            June {{ today.year }}
+        {% elif today.month == 7 %}
+            July {{ today.year }}
+        {% elif today.month == 8 %}
+            August {{ today.year }}
+        {% elif today.month == 9 %}
+            September {{ today.year }}
+        {% elif today.month == 10 %}
+            October {{ today.year }}
+        {% elif today.month == 11 %}
+            November {{ today.year }}
+        {% elif today.month == 12 %}
+            December {{ today.year }}
+        {% endif %}
+        </div>
+    </div>
+    <div class="ui bottom attached active tab segment" data-tab="first">
+        <div style="overflow-x: scroll;">
+            <table class="ui celled center aligned table">
+                <thead>
+                    <tr>
+                        <th>Machine</th>
+                        {% for a in week %}
+                        <th>{{ a }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                {% for x in machines %}
+                    <tr>
+                        <td>
+                            <a href="#">Machine {{x.machine_id}} : {{x.machine_type}}</a>
+                            {% if x.state == 'OK' %}
+                            <i class="green check circle outline icon"></i>
+                            {% else %}
+                            <i class="red times circle outline icon"></i>
+                            {% endif %}
+                        </td>
+                        {% for b in week %}
+                            <td>
+                                {% for i in this_week %}
+                                    {% if i.Start.date == b and i.Machine == x %}
+
+                                            <br>
+                                            <a href="{% url 'production:job_order_details' i.ID %}">Job {{ i.ID }}</a><br>
+                                            <i>Employee:</i> {{ i.Worker }}<br>
+                                            <i>RM:</i> {{ i.Resource }}<br>
+                                            {% if i.Start.date == b %}
+                                                <i>Start: </i> {{ i.Start.hour }}:{{ i.Start.minute }} <br>
+                                            {% endif %}
+                                            {% if i.Finish.date == b %}
+                                                <i>End: </i> {{ i.Finish.hour }}:{{ i.Finish.minute }} <br>
+                                            {% endif %}
+                                            <br>
+
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="ui bottom attached tab segment" data-tab="second">
+        <div style="overflow-x: scroll;">
+            <table class="ui celled center aligned table">
+                <thead>
+                    <tr>
+                       <th>Machine</th>
+                        {% for c in month %}
+                        <th>{{ c.day }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                {% for y in machines %}
+                    <tr>
+                        <td>
+                            <a href="#">Machine {{y.machine_id}} : {{y.machine_type}}</a>
+                            {% if y.state == 'OK' %}
+                            <i class="green check circle outline icon"></i>
+                            {% else %}
+                            <i class="red times circle outline icon"></i>
+                            {% endif %}
+                        </td>
+                        {% for d in month %}
+                            <td>
+                                {% for j in this_month %}
+                                    {% if j.Start.date == d and j.Machine == y %}
+                                            <br>
+                                            <a href="{% url 'production:job_order_details' j.ID %}">Job {{ j.ID }}</a><br>
+                                            <i>Employee:</i> {{ j.Worker }}<br>
+                                            <i>RM:</i> {{ j.Resource }}<br>
+                                            {% if j.Start.date == d %}
+                                                <i>Start: </i> {{ j.Start.hour }}:{{ j.Start.minute }} <br>
+                                            {% endif %}
+                                            {% if j.Finish.date == d %}
+                                                <i>End: </i> {{ j.Finish.hour }}:{{ j.Finish.minute }} <br>
+                                            {% endif %}
+                                            <br>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

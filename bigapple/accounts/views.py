@@ -26,6 +26,8 @@ from sales.models import Supplier, SalesInvoice, ClientItem, Product
 from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule, Machine
 from inventory.models import Inventory
 from utilities import TimeSeriesForecasting, cpsat
+from sales import views as sales_views
+
 # Create your views here.
 
 def register(request):
@@ -106,6 +108,8 @@ def user_page_view(request):
         product = None
 
         #PRODUCTION SCHEDULE
+        machines = Machine.objects.all()
+
         plot_list = []
         ideal = []
         ex = []
@@ -161,7 +165,6 @@ def user_page_view(request):
                                  'Worker': i.sked_op
                                  }
                     plot_list.append(sked_dict)
-
             if cu:
                 for j in cu:
                     job = j.job_order_id
@@ -208,14 +211,14 @@ def user_page_view(request):
                                  }
                     plot_list.append(sked_dict)
 
-            print('plot_list:')
-            print(plot_list)
+            for q in range(len(plot_list)):
+                is_it_ok = plot_list[q]['Machine']
+                if is_it_ok.state == 'OK':
+                    pass
+                else:
+                    plot_list = sales_views.save_schedule(request)
         else:
-            cursor = connection.cursor()
-            query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status=" + "'Waiting'" + " and NOT j.status=" + "'Ready for delivery'" + " and NOT j.status =" + "'Delivered'"
-            cursor.execute(query)
-            df = pd.read_sql(query, connection)
-            plot_list = cpsat.flexible_jobshop(df)
+            plot_list = sales_views.save_schedule(request)
 
         today = date.today()
         start_week = today - timedelta(days=today.weekday())
@@ -301,7 +304,7 @@ def user_page_view(request):
             'invoice': invoice,
             'client_po': client_po,
 
-            'machines': Machine.objects.all(),
+            'machines': machines,
             'this_week': this_week,
             'this_month': this_month,
             'week': week,
