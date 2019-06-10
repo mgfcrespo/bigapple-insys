@@ -231,8 +231,6 @@ class SalesInvoice(models.Model):
         if self.status == 'Late':
             client = self.client
             client.overdue_balance += self.amount_due
-            print('ADDED TO OVERDUE BALANCE')
-            print(self.amount_due)
             client.save()
         else:
             pass

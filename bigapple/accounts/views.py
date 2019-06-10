@@ -173,11 +173,11 @@ def user_page_view(request):
                     mat = product.material_type
 
                     sked_dict = {'Task': 'Cutting',
-                                 'Start': i.sked_in,
-                                 'Finish': i.sked_out,
+                                 'Start': j.sked_in,
+                                 'Finish':j.sked_out,
                                  'Resource': mat,
-                                 'Machine': i.sked_mach,
-                                 'Worker': i.sked_op
+                                 'Machine': j.sked_mach,
+                                 'Worker': j.sked_op
                                  }
                     plot_list.append(sked_dict)
             if pr:
@@ -188,11 +188,11 @@ def user_page_view(request):
                     mat = product.material_type
 
                     sked_dict = {'Task': 'Printing',
-                                 'Start': i.sked_in,
-                                 'Finish': i.sked_out,
+                                 'Start': k.sked_in,
+                                 'Finish': k.sked_out,
                                  'Resource': mat,
-                                 'Machine': i.sked_mach,
-                                 'Worker': i.sked_op
+                                 'Machine': k.sked_mach,
+                                 'Worker': k.sked_op
                                  }
                     plot_list.append(sked_dict)
             if la:
@@ -203,11 +203,11 @@ def user_page_view(request):
                     mat = product.material_type
 
                     sked_dict = {'Task': 'Laminating',
-                                 'Start': i.sked_in,
-                                 'Finish': i.sked_out,
+                                 'Start': l.sked_in,
+                                 'Finish': l.sked_out,
                                  'Resource': mat,
-                                 'Machine': i.sked_mach,
-                                 'Worker': i.sked_op
+                                 'Machine': l.sked_mach,
+                                 'Worker': l.sked_op
                                  }
                     plot_list.append(sked_dict)
 

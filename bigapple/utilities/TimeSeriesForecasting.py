@@ -53,66 +53,75 @@ def forecast_decomposition(df):
 
 
 def forecast_ses(og_df):
-    df = og_df.copy()
-    train = aggregate_by_day(df)
-    test = train.copy()
-    #print('train df before create split')
-    #print(train)
-    test = test.reindex(create_split(train))
-    y_hat_avg = test.copy()
-    fit2 = SimpleExpSmoothing(np.asarray(train['Count'])).fit(smoothing_level=0.6, optimized=False)
-    y_hat_avg['SES'] = fit2.forecast(len(test))
-    plt.figure(figsize=(16, 8))
-    plt.plot(train['Count'], label='Train')
-    plt.plot(y_hat_avg['SES'], label='SES')
-    plt.legend(loc='best')
-    # plt.show()
-    # print(y_hat_avg['SES'].iloc[0])
-    # get max y value and index (x)
-    date_projected = str(y_hat_avg['SES'].idxmax())
-    qty_projected = str(y_hat_avg.loc[y_hat_avg['SES'].idxmax(), 'SES'])
-    result = [date_projected, qty_projected]
+    if len(og_df) <= 1:
+        result = [0, 0]
+    else:
+        df = og_df.copy()
+        train = aggregate_by_day(df)
+        test = train.copy()
+        #print('train df before create split')
+        #print(train)
+        test = test.reindex(create_split(train))
+        y_hat_avg = test.copy()
+        fit2 = SimpleExpSmoothing(np.asarray(train['Count'])).fit(smoothing_level=0.6, optimized=False)
+        y_hat_avg['SES'] = fit2.forecast(len(test))
+        plt.figure(figsize=(16, 8))
+        plt.plot(train['Count'], label='Train')
+        plt.plot(y_hat_avg['SES'], label='SES')
+        plt.legend(loc='best')
+        # plt.show()
+        # print(y_hat_avg['SES'].iloc[0])
+        # get max y value and index (x)
+        date_projected = str(y_hat_avg['SES'].idxmax())
+        qty_projected = str(y_hat_avg.loc[y_hat_avg['SES'].idxmax(), 'SES'])
+        result = [date_projected, qty_projected]
     return result
 
 
 def forecast_hwes(og_df):
-    df = og_df.copy()
-    train = aggregate_by_day(df)
-    test = train.copy()
-    test = test.reindex(create_split(train))
-    y_hat_avg = test.copy()
-    fit1 = ExponentialSmoothing(np.asarray(train['Count']), seasonal_periods=7, trend='add', seasonal='add',).fit()
-    y_hat_avg['Holt_Winter'] = fit1.forecast(len(test))
-    plt.figure(figsize=(16, 8))
-    plt.plot(train['Count'], label='Train')
-    plt.plot(y_hat_avg['Holt_Winter'], label='Holt Winter')
-    plt.legend(loc='best')
-    # plt.show()
-    # get max y value and index (x)
-    date_projected = str(y_hat_avg['Holt_Winter'].idxmax())
-    qty_projected = str(y_hat_avg.loc[y_hat_avg['Holt_Winter'].idxmax(), 'Holt_Winter'])
-    result = [date_projected, qty_projected]
+    if len(og_df) <= 1:
+        result = [0, 0]
+    else:
+        df = og_df.copy()
+        train = aggregate_by_day(df)
+        test = train.copy()
+        test = test.reindex(create_split(train))
+        y_hat_avg = test.copy()
+        fit1 = ExponentialSmoothing(np.asarray(train['Count']), seasonal_periods=7, trend='add', seasonal='add',).fit()
+        y_hat_avg['Holt_Winter'] = fit1.forecast(len(test))
+        plt.figure(figsize=(16, 8))
+        plt.plot(train['Count'], label='Train')
+        plt.plot(y_hat_avg['Holt_Winter'], label='Holt Winter')
+        plt.legend(loc='best')
+        # plt.show()
+        # get max y value and index (x)
+        date_projected = str(y_hat_avg['Holt_Winter'].idxmax())
+        qty_projected = str(y_hat_avg.loc[y_hat_avg['Holt_Winter'].idxmax(), 'Holt_Winter'])
+        result = [date_projected, qty_projected]
     return result
 
 
 def forecast_moving_average(og_df):
-    df = og_df.copy()
-    train = aggregate_by_day(df)
-    test = train.copy()
-    test = test.reindex(create_split(train))
-    y_hat_avg = test.copy()
-    # gets the line showing moving average
-    y_hat_avg['moving_avg_forecast'] = train['Count'].rolling(60, min_periods=1).mean().iloc[-1]
-    plt.figure(figsize=(16, 8))
-    plt.plot(train['Count'], label='Train')
-    plt.plot(y_hat_avg['moving_avg_forecast'], label='Moving Average Forecast')
-    plt.legend(loc='best')
-    # plt.show()
-    # print(y_hat_avg['moving_avg_forecast'].iloc[0])
-    # get max y value and index (x)
-    date_projected = str(y_hat_avg['moving_avg_forecast'].idxmax())
-    qty_projected = str(y_hat_avg.loc[y_hat_avg['moving_avg_forecast'].idxmax(), 'moving_avg_forecast'])
-    result = [date_projected, qty_projected]
+    if len(og_df) <= 1:
+        result = [0, 0]
+    else:
+        df = og_df.copy()
+        train = aggregate_by_day(df)
+        test = train.copy()
+        test = test.reindex(create_split(train))
+        y_hat_avg = test.copy()
+        # gets the line showing moving average
+        y_hat_avg['moving_avg_forecast'] = train['Count'].rolling(60, min_periods=1).mean().iloc[-1]
+        plt.figure(figsize=(16, 8))
+        plt.plot(train['Count'], label='Train')
+        plt.plot(y_hat_avg['moving_avg_forecast'], label='Moving Average Forecast')
+        plt.legend(loc='best')
+        # plt.show()
+        # print(y_hat_avg['moving_avg_forecast'].iloc[0])
+        # get max y value and index (x)
+        date_projected = str(y_hat_avg['moving_avg_forecast'].idxmax())
+        qty_projected = str(y_hat_avg.loc[y_hat_avg['moving_avg_forecast'].idxmax(), 'moving_avg_forecast'])
+        result = [date_projected, qty_projected]
     return result
 
 

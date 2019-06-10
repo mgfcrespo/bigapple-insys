@@ -204,7 +204,7 @@ def finished_job_order_list_view(request):
 
 # EXTRUDER 
 def add_extruder_schedule(request, id):
-		
+
     data = JobOrder.objects.get(id=id)
     item = ClientItem.objects.get(client_po_id=id)
     e = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=False))
@@ -303,7 +303,8 @@ def add_extruder_schedule(request, id):
     context = {
       'data': data,
       'form': form,
-      'id' : id
+      'id' : id,
+      'sked_mach' : sked_mach
     }
     
     return render (request, 'production/add_extruder_schedule.html', context)
@@ -655,11 +656,6 @@ def production_schedule(request):
 
     plot_list = []
     machines = Machine.objects.all()
-    jobs = []
-    starts = []
-    ends = []
-    resources = []
-    workers = []
 
     ideal = []
     ex = []
@@ -726,11 +722,11 @@ def production_schedule(request):
 
                 sked_dict = {'ID': job,
                              'Task': 'Cutting',
-                             'Start': i.sked_in,
-                             'Finish': i.sked_out,
+                             'Start': j.sked_in,
+                             'Finish': j.sked_out,
                              'Resource': mat,
-                             'Machine': i.sked_mach,
-                             'Worker': i.sked_op
+                             'Machine': j.sked_mach,
+                             'Worker': j.sked_op
                              }
                 plot_list.append(sked_dict)
         if pr:
@@ -742,11 +738,11 @@ def production_schedule(request):
 
                 sked_dict = {'ID': job,
                              'Task': 'Printing',
-                             'Start': i.sked_in,
-                             'Finish': i.sked_out,
+                             'Start': k.sked_in,
+                             'Finish': k.sked_out,
                              'Resource': mat,
-                             'Machine': i.sked_mach,
-                             'Worker': i.sked_op
+                             'Machine': k.sked_mach,
+                             'Worker': k.sked_op
                              }
                 plot_list.append(sked_dict)
         if la:
@@ -758,22 +754,58 @@ def production_schedule(request):
 
                 sked_dict = {'ID': job,
                              'Task': 'Laminating',
-                             'Start': i.sked_in,
-                             'Finish': i.sked_out,
+                             'Start': l.sked_in,
+                             'Finish': l.sked_out,
                              'Resource': mat,
-                             'Machine': i.sked_mach,
-                             'Worker': i.sked_op
+                             'Machine': l.sked_mach,
+                             'Worker': l.sked_op
                              }
                 plot_list.append(sked_dict)
 
+        machines_in_production = []
+        all_machines = Machine.objects.filter(state='OK')
+
         for q in range(len(plot_list)):
-            unavailable = []
+            machines_in_production.append(plot_list[q]['Machine'])
+
+            #Machine breakdown.
             is_it_ok = plot_list[q]['Machine']
+
+            '''
+            #All machines of machine_type breakdown.
+            em_count = 0
+            cm_count = 0
+            pm_count = 0
+            lm_count = 0
+            extruders = Machine.objects.filter(machine_type='Extruder')
+            cutters = Machine.objects.filter(machine_type='Cutting')
+            printers = Machine.objects.filter(machine_type='Printing')
+            laminators = Machine.objects.filter(machine_type='Laminating')
+            for e in extruders:
+                if e.state == 'OK':
+                    em_count += 1
+            for c in cutters:
+                if c.state == 'OK':
+                    cm_count += 1
+            for p in printers:
+                if p.state == 'OK':
+                    pm_count += 1
+            for l in laminators:
+                if l.state == 'OK':
+                    lm_count += 1
+            '''
             if is_it_ok.state == 'OK':
                 pass
             else:
-                unavailable.append(plot_list[q]['Machine'])
                 plot_list = sales_views.save_schedule(request)
+                break
+
+        # Machine recently deployed.
+        yung_wala = set(all_machines).difference(machines_in_production)
+        if yung_wala:
+            plot_list = sales_views.save_schedule(request)
+        else:
+            pass
     else:
         plot_list = sales_views.save_schedule(request)
 
@@ -798,8 +830,6 @@ def production_schedule(request):
             this_week.append(plot_list[i])
         if plot_list[i]['Start'].month == today.month:
             this_month.append(plot_list[i])
-
-    print(month)
 
 
     context = {

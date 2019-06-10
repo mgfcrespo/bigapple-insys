@@ -58,12 +58,18 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>
-                                {{ forecast_ses.0 }}
-                            </td>
-                            <td>
-                                {{ forecast_ses.1 }}
-                            </td>
+                            {% if forecast_ses.0 == 0 and forecast_ses.1 == 0 %}
+                                <td>
+                                    Not enough data to generate forecast!
+                                </td>
+                            {% else %}
+                                <td>
+                                    {{ forecast_ses.0 }}
+                                </td>
+                                <td>
+                                    {{ forecast_ses.1 }}
+                                </td>
+                            {% endif %}
                         </tr>
 
                     </tbody>
@@ -94,12 +100,18 @@
                     </thead>
                     <tbody>
                         <tr>
+                            {% if forecast_hwes.0 == 0 and forecast_hwes.1 == 0 %}
+                                <td>
+                                    Not enough data to generate forecast!
+                                </td>
+                            {% else %}
                             <td>
                                 {{ forecast_hwes.0 }}
                             </td>
                             <td>
                                 {{ forecast_hwes.1 }}
                             </td>
+                            {% endif %}
                         </tr>
                     </tbody>
                     <tfoot class="full-width">
@@ -128,12 +140,18 @@
                     </thead>
                     <tbody>
                         <tr>
+                            {% if forecast_moving_average.0 == 0 and forecast_moving_average.1 == 0 %}
+                                <td>
+                                    Not enough data to generate forecast!
+                                </td>
+                            {% else %}
                             <td>
                                 {{ forecast_moving_average.0 }}
                             </td>
                             <td>
                                 {{ forecast_moving_average.1 }}
                             </td>
+                            {% endif %}
                         </tr>
                     </tbody>
                     <tfoot class="full-width">
