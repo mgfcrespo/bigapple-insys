@@ -212,6 +212,7 @@ def add_extruder_schedule(request, id):
     form = ExtruderScheduleForm(request.POST)
     ideal = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first()
     printed = False
+    all_ideal = []
     if item.printed == 1:
         printed = True
 
@@ -219,6 +220,19 @@ def add_extruder_schedule(request, id):
         data.status = 'Under Extrusion'
         data.save()
         if form.is_valid():
+            all_ideal = ExtruderSchedule.objects.filter(
+                Q(ideal=True) & Q(sked_mach=Machine.objects.get(machine_id=form['machine'].value())) & ~Q(job_order_id=id))
+            if all_ideal:
+                for x in all_ideal:
+                    xdatetimein = datetime.strptime(form['datetime_in'].value(), '%Y-%m-%d %H:%M')
+                    if x.sked_in.year == xdatetimein.year \
+                        and x.sked_in.month == xdatetimein.month \
+                        and x.sked_in.day == xdatetimein.day \
+                        and x.sked_in.hour == xdatetimein.hour:
+                        print('NEW SCHED! ACTUAL MATCHES IDEAL!')
+                        sales_views.save_schedule(request)
+                        break
+
             x = request.POST.get("weight_rolls")
             y = float(x)*float(4.74)
             form = form.save(commit=False)
@@ -230,9 +244,19 @@ def add_extruder_schedule(request, id):
                     data.status = 'Under Printing'
                     data.save()
                 else:
-                    print('SHET')
                     data.status = 'Under Cutting'
                     data.save()
+                '''
+                if all_ideal:
+                    for x in all_ideal:
+                        xdatetimeout = datetime.strptime(form['datetime_out'].value(), '%Y-%m-%d %H:%M')
+                        if x.sked_out.year == xdatetimeout.year \
+                            and x.sked_out.month == xdatetimeout.month \
+                            and x.sked_out.day == xdatetimeout.day \
+                            and x.sked_out.hour == xdatetimeout.hour:
+                            sales_views.save_schedule(request)
+                            break
+                '''
             else:
                 data.save()
         return redirect('production:job_order_details', id = id)
@@ -261,7 +285,6 @@ def add_extruder_schedule(request, id):
         core_weight = core_weight
         output_kilos = weight_rolls
 
-
     if ideal is not None:
         sked_in = ideal.sked_in
         sked_out = ideal.sked_out
@@ -271,8 +294,6 @@ def add_extruder_schedule(request, id):
         sked_in = datetime.now()
         sked_out = datetime.now() + timedelta(days=int((item.quantity * 80)/70000))
 
-    #TODO ACTUAL matches IDEAL contigency (save_schedule)
-    #all_ideal = ExtruderSchedule.objects.filter(Q(ideal=True) & (Q(sked_mach=)))
     # SHIFTS: 6am-2pm, 2pm-10pm, 10pm-6am
     SHIFTS = (
         (1, 1),
@@ -289,7 +310,7 @@ def add_extruder_schedule(request, id):
     else:
         shift = 0
 
-    #TODO Add Machine and Worker placeholder
+    #TODO Add Machine and Worker initial placeholder
     form.fields["machine"].queryset = Machine.objects.filter(machine_type='Extruder')
     form.fields["job_order"].queryset = JobOrder.objects.filter(id=id)
     form.fields["datetime_in"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_in', widget=forms.DateTimeInput(attrs={'value': str(sked_in)[:16]}))
