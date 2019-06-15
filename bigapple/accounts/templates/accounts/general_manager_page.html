@@ -165,7 +165,7 @@
                                     {% if iii.Start.date == b and iii.Machine == x %}
 
                                             <br>
-                                            <a href="{% url 'production:job_order_list' %}">Job {{ iii.ID }}</a><br>
+                                            <a href="{% url 'production:job_order_details' iii.ID %}">Job {{ iii.ID }}</a><br>
                                             <i>Employee:</i> {{ iii.Worker }}<br>
                                             <i>RM:</i> {{ iii.Resource }}<br>
                                             {% if iii.Start.date == b %}
@@ -213,7 +213,7 @@
                                 {% for j in this_month %}
                                     {% if j.Start.date == d and j.Machine == y %}
                                             <br>
-                                            <a href="{% url 'production:job_order_list' %}">Job {{ j.ID }}</a><br>
+                                            <a href="{% url 'production:job_order_details' j.ID %}">Job {{ j.ID }}</a><br>
                                             <i>Employee:</i> {{ j.Worker }}<br>
                                             <i>RM:</i> {{ j.Resource }}<br>
                                             {% if j.Start.date == d %}

@@ -157,12 +157,13 @@ def user_page_view(request):
                     product = item.products
                     mat = product.material_type
 
-                    sked_dict = {'Task': 'Extrusion',
+                    sked_dict = {'ID': job,
+                                 'Task': 'Extrusion',
                                  'Start': i.sked_in,
                                  'Finish': i.sked_out,
                                  'Resource': mat,
                                  'Machine': i.sked_mach,
-                                 'Worker': i.sked_op
+                                 'Worker' : i.sked_op
                                  }
                     plot_list.append(sked_dict)
             if cu:
@@ -172,7 +173,8 @@ def user_page_view(request):
                     product = item.products
                     mat = product.material_type
 
-                    sked_dict = {'Task': 'Cutting',
+                    sked_dict = {'ID': job,
+                                'Task': 'Cutting',
                                  'Start': j.sked_in,
                                  'Finish':j.sked_out,
                                  'Resource': mat,
@@ -187,7 +189,8 @@ def user_page_view(request):
                     product = item.products
                     mat = product.material_type
 
-                    sked_dict = {'Task': 'Printing',
+                    sked_dict = {'ID': job,
+                                'Task': 'Printing',
                                  'Start': k.sked_in,
                                  'Finish': k.sked_out,
                                  'Resource': mat,
@@ -202,7 +205,8 @@ def user_page_view(request):
                     product = item.products
                     mat = product.material_type
 
-                    sked_dict = {'Task': 'Laminating',
+                    sked_dict = {'ID': job,
+                                'Task': 'Laminating',
                                  'Start': l.sked_in,
                                  'Finish': l.sked_out,
                                  'Resource': mat,
