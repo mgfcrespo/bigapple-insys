@@ -105,28 +105,41 @@ def po_list_view(request):
     id = user.id
     client = Client.objects.filter(accounts_id = id)
     employee = Employee.objects.filter(accounts_id = id)
+    ideal = CuttingSchedule.objects.filter(ideal=True)
+    end_dates = []
     x = ''
+
     if client:
         client_po = JobOrder.objects.filter(client = Client.objects.get(accounts_id = id))
         x = 'Client'
+        for each in client_po:
+            for every in ideal:
+                if every.job_order_id == each.id:
+                    end_dates.append({'End' : every.sked_out.date(),
+                                      'PO' : each.id})
     elif employee:
         x = 'Employee'
         if Employee.objects.get(accounts_id = id).position == "Sales Coordinator" or "General Manager":
             client_po = JobOrder.objects.all()
-        #TODO: Sales Agent access level
+            for each in client_po:
+                for every in ideal:
+                    if every.job_order_id == each.id:
+                        end_dates.append({'End': every.sked_out.date(),
+                                          'PO': each.id})
         elif employee.position == "Sales Agent":
-            customer = Client.objects.filter(sales_agent = employee)
+            customer = Client.objects.filter(sales_agent_id = employee.id)
             po = JobOrder.objects.all()
             client_po = []
-            #for each in customer:
-             #   for every in po:
-              #      if every.client == each:
-               #         client_po.append(every)
+            for a in po:
+              for y in customer:
+                  if a.client_id == y.id:
+                     client_po.append(a)
 
     context = {
         'title' : "Client Purchase Orders",
         'client_po' : client_po,
-        'x' : x
+        'x' : x,
+        'end_dates' : end_dates
     }
 
     return render(request, 'sales/clientPO_list.html', context)

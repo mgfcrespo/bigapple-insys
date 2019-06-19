@@ -65,14 +65,14 @@
                 {% endif %}
             </div>
             <div class="ui segment">
-                <h4 class="ui dividing header">Sales Invoices</h4>
+                <h4 class="ui dividing header">Overdue Sales Invoices</h4>
                 <table class="ui striped table center aligned">
                     <thead>
                         <tr>
                             <th>Sales Invoice #</th>
-                            <th>Date Issued</th>
-                            <th>Date Due</th>
-                            <th>Total Amount</th>
+                            <th>Client</th>
+                            <th>Days Overdue</th>
+                            <th>Amount Due</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,9 +80,9 @@
                         {% for SalesInvoice in invoice  %}
                         <tr>
                             <td><a href="{% url 'sales:sales_invoice_details' SalesInvoice.id %}"> {{ SalesInvoice.id }} </a></td>
-                            <td> {{ SalesInvoice.date_issued }} </td>
-                            <td> {{ SalesInvoice.date_due }} </td>
-                            <td> {{ SalesInvoice.total_amount_computed }} </td>
+                            <td> {{ SalesInvoice.client }} </td>
+                            <td> {{ SalesInvoice.days_overdue }} </td>
+                            <td> {{ SalesInvoice.amount_due }} </td>
                         </tr>
                         {% endfor %}
                     {% else %}

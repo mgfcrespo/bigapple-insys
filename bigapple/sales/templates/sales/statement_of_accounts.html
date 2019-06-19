@@ -7,7 +7,7 @@
                 <th>Client</th>
                 <th>Receivables as of <p>{{date}}</p></th>
                 <th>Overdue Balance</th>
-                <th>Days Overdue</th>
+                <th>Days Overdue (per Late Invoice)</th>
                 <th>Payment Terms</th>
                 <th>Account Supervisor</th>
                 <th>Remarks</th>
@@ -28,7 +28,7 @@
                 <td>
                     {% for every in sales_invoice %}
                         {% if every.client_id == each.id and every.days_overdue > 0 %}
-                            {{ every.days_overdue }},
+                    <a href="{% url 'sales:sales_invoice_details' every.id %}">{{ every.days_overdue }}, </a>
                         {% endif %}
                     {% endfor %}
 

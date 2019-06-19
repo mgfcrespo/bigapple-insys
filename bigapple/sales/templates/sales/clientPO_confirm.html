@@ -110,13 +110,21 @@
             <form method="post">
                 {% csrf_token %}
 
-                {% if matreq %}
+                {% if matreq and credit_status == False %}
                     <input type="submit" class="ui green basic button" value="Confirm" id="confirm_btn" name="confirm_btn">
                 {% else %}
+                    {% if credit_status %}
+                    <div class="ui warning icon message">
+                        <i class="exclamation circle icon"></i>
+                        Client has unsettled overdue balances.
+                    </div>
+                    {% endif %}
+                    {% if matreq == False %}
                     <div class="ui warning icon message">
                         <i class="exclamation circle icon"></i>
                         Replenish inventory before proceeding.
                     </div>
+                    {% endif %}
                 {% endif %}
             </form>
             <!-- <button id="confirm" type = "submit" class="ui green basic button"  style="width: 200px;">Confirm</button> -->

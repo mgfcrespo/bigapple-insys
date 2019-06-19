@@ -5,12 +5,13 @@
 <table class="ui striped table center aligned">
 	<thead>
 		<tr>
-		  <th class="two wide">Purchase Order ID</th>
+		  <th class="one wide">Purchase Order ID</th>
 		  <th class="two wide">Date Issued</th>
 		  <th class="two wide">Date Required</th>
-		  <th class="two wide">Rush Order</th>
+		  <th class="one wide">Rush Order</th>
 		  <th class="two wide">Total Amount</th>
 		  <th class="one wide">Status</th>
+		  <th class="two wide">Estimated Finish Date</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -37,6 +38,13 @@
 					{% else %}
 					{{ each.status }}</td>
 					{% endif %}
+				<td>{% for x in end_dates %}
+						{% if x.PO == each.id %}
+							{{ x.End }}
+						{% endif %}
+					{% endfor %}
+				</td>
+
 			</tr>
 		{% endfor %}
 	{% else %}

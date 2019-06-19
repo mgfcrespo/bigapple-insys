@@ -220,6 +220,7 @@ def add_extruder_schedule(request, id):
         data.status = 'Under Extrusion'
         data.save()
         if form.is_valid():
+            '''
             all_ideal = ExtruderSchedule.objects.filter(
                 Q(ideal=True) & Q(sked_mach=Machine.objects.get(machine_id=form['machine'].value())) & ~Q(job_order_id=id))
             if all_ideal:
@@ -232,6 +233,7 @@ def add_extruder_schedule(request, id):
                         print('NEW SCHED! ACTUAL MATCHES IDEAL!')
                         sales_views.save_schedule(request)
                         break
+            '''
 
             x = request.POST.get("weight_rolls")
             y = float(x)*float(4.74)
@@ -311,7 +313,7 @@ def add_extruder_schedule(request, id):
         shift = 0
 
     #TODO Add Machine and Worker initial placeholder
-    form.fields["machine"].queryset = Machine.objects.filter(machine_type='Extruder')
+    form.fields["machine"].queryset = Machine.objects.filter(Q(machine_type='Extruder') & Q(state='OK'))
     form.fields["job_order"].queryset = JobOrder.objects.filter(id=id)
     form.fields["datetime_in"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_in', widget=forms.DateTimeInput(attrs={'value': str(sked_in)[:16]}))
     form.fields["datetime_out"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_out', widget=forms.DateTimeInput(attrs={'value': str(sked_out)[:16]}))
@@ -415,7 +417,7 @@ def add_printing_schedule(request, id):
     else:
           shift = 0
 
-    form.fields["machine"].queryset = Machine.objects.filter(machine_type='Printing')
+    form.fields["machine"].queryset = Machine.objects.filter(Q(machine_type='Printing') & Q(state='OK'))
     form.fields["job_order"].queryset = JobOrder.objects.filter(id=id)
     form.fields["datetime_in"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_in',
                                                      widget=forms.DateTimeInput(attrs={'value': str(sked_in)[:16]}))
@@ -514,7 +516,7 @@ def add_cutting_schedule(request, id):
     else:
         shift = 0
 
-    form.fields["machine"].queryset = Machine.objects.filter(machine_type='Cutting')
+    form.fields["machine"].queryset = Machine.objects.filter(Q(machine_type='Cutting') & Q(state='OK'))
     form.fields["job_order"].queryset = JobOrder.objects.filter(id=id)
     form.fields["datetime_in"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_in',
                                                      widget=forms.DateTimeInput(
@@ -585,7 +587,7 @@ def add_laminating_schedule(request, id):
     else:
         shift = 0
 
-    form.fields["machine"].queryset = Machine.objects.filter(machine_type='Laminating')
+    form.fields["machine"].queryset = Machine.objects.filter(Q(machine_type='Laminating') & Q(state='OK'))
     form.fields["job_order"].queryset = JobOrder.objects.filter(id=id)
     form.fields["datetime_in"] = forms.DateTimeField(input_formats=['%d-%m-%Y %H:%M'], label='datetime_in',
                                                          widget=forms.DateTimeInput(
@@ -792,29 +794,6 @@ def production_schedule(request):
             #Machine breakdown.
             is_it_ok = plot_list[q]['Machine']
 
-            '''
-            #All machines of machine_type breakdown.
-            em_count = 0
-            cm_count = 0
-            pm_count = 0
-            lm_count = 0
-            extruders = Machine.objects.filter(machine_type='Extruder')
-            cutters = Machine.objects.filter(machine_type='Cutting')
-            printers = Machine.objects.filter(machine_type='Printing')
-            laminators = Machine.objects.filter(machine_type='Laminating')
-            for e in extruders:
-                if e.state == 'OK':
-                    em_count += 1
-            for c in cutters:
-                if c.state == 'OK':
-                    cm_count += 1
-            for p in printers:
-                if p.state == 'OK':
-                    pm_count += 1
-            for l in laminators:
-                if l.state == 'OK':
-                    lm_count += 1
-            '''
             if is_it_ok.state == 'OK':
                 pass
             else:
@@ -827,6 +806,46 @@ def production_schedule(request):
             plot_list = sales_views.save_schedule(request)
         else:
             pass
+
+        '''
+        #All machines of machine_type breakdown.
+        em_count = 0
+        cm_count = 0
+        pm_count = 0
+        lm_count = 0
+        em_none = False
+        cm_none = False
+        pm_none = False
+        lm_none = False
+        extruders = Machine.objects.filter(machine_type='Extruder')
+        cutters = Machine.objects.filter(machine_type='Cutting')
+        printers = Machine.objects.filter(machine_type='Printing')
+        laminators = Machine.objects.filter(machine_type='Laminating')
+        for e in extruders:
+            if e.state == 'OK':
+                em_count += 1
+        if em_count == 0:
+            em_none = True
+        for c in cutters:
+            if c.state == 'OK':
+                cm_count += 1
+        if cm_count == 0:
+            cm_none = True
+        for p in printers:
+            if p.state == 'OK':
+                pm_count += 1
+        if pm_count == 0:
+            pm_none = True
+        for l in laminators:
+            if l.state == 'OK':
+                lm_count += 1
+        if lm_count == 0:
+            lm_none = True
+
+        if em_none:
+            plot_list = None
+        
+        '''
     else:
         plot_list = sales_views.save_schedule(request)
 
