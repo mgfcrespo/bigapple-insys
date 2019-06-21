@@ -130,15 +130,91 @@
             </table>
         </div>
     </div>
+    </div>
 
-</div>
+    <h3 class="ui dividing header">Job Order Monitoring</h3>
+    <div>
+        <table class="ui celled center aligned table">
+
+            <thead>
+                <tr>
+                    <th>
+                        Job Order ID
+                    </th>
+                    <th colspan="">
+                        Client
+                    </th>
+                    <th>
+                        Date Issued
+                    </th>
+                    <th>
+                        Date Required
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for x in JobOrder_data10 %}
+                    {% if x.date_required < datenow %}
+                    <tr class="negative">
+                        <td>
+                            Job {{x.id}}
+                        </td>
+                        <td>
+                            {{x.client}}
+                        </td>
+                        <td>
+                            {{x.date_issued}}
+                        </td>
+                        <td>
+                            {{x.date_required}}
+                        </td>
+                        <td>
+                            {{x.status}}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td>
+                            Job {{x.id}}
+                        </td>
+                        <td>
+                            {{x.client}}
+                        </td>
+                        <td>
+                            {{x.date_issued}}
+                        </td>
+                        <td>
+                            {{x.date_required}}
+                        </td>
+                        <td>
+                            {{x.status}}
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="5">
+                        <a href="{% url 'production:job_order_list'%}">See more</a>
+                    </th>
+                </tr>
+            </tfoot>
+
+        </table>
+    </div>
 
 
     <h3 class="ui dividing header">Inventory Dashboard</h3>
         <div class="ui horizontal segments">
-            <div class="ui segment">
-                <h4 class="ui dividing header">Raw Material Levels</h4>
-                <div id="rawmaterialLevels"></div>
+            <div style="overflow-x: scroll;">
+                <div class="ui segment">
+                    <h4 class="ui dividing header">Raw Material Levels</h4>
+                    <div id="rawmaterialLevels"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -173,7 +249,7 @@
             hAxis:{format: 'short'},
             width: 1000,
             height: 300,
-            bar: {groupWidth: "90%"},
+            bar: {groupWidth: "50%"},
             legend: { position: "none" },
           };
           var chart = new google.visualization.BarChart(document.getElementById("rawmaterialLevels"));

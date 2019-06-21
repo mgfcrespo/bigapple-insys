@@ -143,6 +143,7 @@ def supplier_details_list(request, id):
 # Material Requisition
 def materials_requisition_list(request):
     mr = MaterialRequisition.objects.all()
+    items = ClientItem.objects.all()
 
     for x in mr:
         if str(x.id) in request.POST:
@@ -160,6 +161,7 @@ def materials_requisition_list(request):
             messages.success(request, 'Materials have been retrieved.')
 
     context = {
+        'items' : items,
         'title' :'Material Requisition List',
         'mr' : mr
     }

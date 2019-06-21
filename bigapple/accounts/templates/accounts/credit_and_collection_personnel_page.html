@@ -1,126 +1,47 @@
 {% extends 'sidebar.html' %}
 {% block content %}
-<div class="ui relaxed grid">
-    <div class="eight wide column">
-        <div class="row">
-            <div class="ui container">
-                <div class="segments" style="margin:10px;">
-                    <div class="ui green segment" style="text-align: center">
-                        <h3>Payments to Collect</h3>
-                    </div>
-                    <table class="ui celled table center aligned">
-                        <thead>
-                            <tr>
-                                <th>Select</th>
-                                <th>JO Number</th>
-                                <th>Client Name</th>
-                                <th>Items</th>
-                                <th>Balance</th>
-                                <th>Due Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="ui checkbox">
-                                        <input type="checkbox" tabindex="0" class="hidden">
-                                        <label></label>
-                                    </div>
-                                </td>
-                                <td>
-                                    12345
-                                </td>
-                                <td>
-                                    Company A
-                                </td>
-                                <td>
-                                    - 100,000 Pcs. PET Bottle<br> - 100,000 Pcs. Sando bags SML
-                                </td>
-                                <td>
-                                    Php 45,000.00
-                                </td>
-                                <td>
-                                    04/01/2018
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="ui checkbox">
-                                        <input type="checkbox" tabindex="0" class="hidden">
-                                        <label></label>
-                                    </div>
-                                </td>
-                                <td>
-                                    67890
-                                </td>
-                                <td>
-                                    Company B
-                                </td>
-                                <td>
-                                    - 200,000 Pcs. PET Bottle<br> - 75,000 Pcs. Sando bags SML
-                                </td>
-                                <td>
-                                    Php 65,000.00
-                                </td>
-                                <td>
-                                    04/05/2018
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tfoot class="full-width">
-                            <tr>
-                                <th colspan="1">
-                                    <button class="ui green basic button">Paid</button>
-                                </th>
-                                <th colspan="5">
-                                </th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-        </div>
 
-    </div>
-    <div class="eight wide column">
-        <div class="row">
-            <div class="ui container">
-                <div class="segments" style="margin:10px;">
-                    <div class="ui green segment" style="text-align: center">
-                        <h3>Upcoming Accomplished JOs</h3>
-                    </div>
-                    <div class="ui segment" style="text-align: center">
-                        <div class="ui grid">
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company D</div>
-                                </div>
-                            </div>
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company E</div>
-                                </div>
-                            </div>
-                            <div class="sixteen wide column">
-                                <div class="ui progress">
-                                    <div class="bar">
-                                        <div class="progress"></div>
-                                    </div>
-                                    <div class="label">Company F</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<h3 class="ui dividing header">Overdue Sales Invoices</h3>
+    <div class="ui horizontal segments">
+        <div class="ui segment">
+                <table class="ui striped table center aligned">
+                    <thead>
+                        <tr>
+                            <th>Sales Invoice #</th>
+                            <th>Client</th>
+                            <th>Days Overdue</th>
+                            <th>Amount Due</th>
+                            <th>Contact Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% if invoice %}
+                        {% for SalesInvoice in invoice  %}
+                        <tr>
+                            <td><a href="{% url 'sales:sales_invoice_details' SalesInvoice.id %}"> {{ SalesInvoice.id }} </a></td>
+                            <td> {{ SalesInvoice.client }} </td>
+                            <td> {{ SalesInvoice.days_overdue }} </td>
+                            <td> {{ SalesInvoice.amount_due }} </td>
+                            <td> {{ SalesInvoice.client.contact_number }}<br>
+                            {{ SalesInvoice.client.email }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <td>
+                        <p>There are no Invoices to display</p>
+                    </td>
+                    {% endif %}
+                    </tbody>
+                    <tfoot class="full-width">
+                        <tr>
+                            <th colspan="5">
+                                <a href="{%url 'sales:sales_invoice_list'%}">See more</a>
+                            </th>
+                        </tr>
+                    </tfoot>
 
+                </table>
+            </div>
     </div>
-</div>
+
 {% endblock %}

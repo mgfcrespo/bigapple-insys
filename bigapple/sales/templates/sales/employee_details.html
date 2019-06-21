@@ -47,7 +47,7 @@
                       {{ data.address }}
                     </div>
                     <div class="field">
-                        <label>Contact Nmber</label>
+                        <label>Contact Number</label>
                         {{ data.contact_number }}
                     </div>
                     <div class="field">
@@ -79,10 +79,14 @@
                 <th>
                     Machine Number
                 </th>
+                <th>
+                    Worker Unavailable?
+                </th>
+
             </thead>
             <tbody>
             {% if ex_schedule %}
-                        {% for each in ex_schedule %}
+                        {% for each in ex_schedule|dictsort:"sked_in" %}
                 <tr>
                         <td>
                             <a href="{% url 'production:job_order_details' each.job_order_id %}">{{ each.job_order_id }}</a>
@@ -96,12 +100,15 @@
                         <td>
                             {{ each.sked_mach_id }}
                         </td>
+                    <td class="center aligned">
+                        <form method="get"> <input type="submit" class="ui small red" value="{{each}}" name="unavailable"></form>
+                    </td>
 
                 </tr>
             {% endfor %}
                     {% endif %}
             {% if cu_schedule %}
-                        {% for each in cu_schedule %}
+                        {% for each in cu_schedule|dictsort:"sked_in" %}
 
              <tr>
                      <td>
@@ -121,7 +128,7 @@
             {% endfor %}
                     {% endif %}
             {% if pr_schedule %}
-                        {% for each in pr_schedule %}
+                        {% for each in pr_schedule|dictsort:"sked_in" %}
              <tr>
 
                         <td>
@@ -141,7 +148,7 @@
             {% endfor %}
                     {% endif %}
             {% if la_schedule %}
-                        {% for each in la_schedule %}
+                        {% for each in la_schedule|dictsort:"sked_in" %}
              <tr>
 
                         <td>
@@ -160,6 +167,7 @@
                 </tr>
             {% endfor %}
                     {% endif %}
+
             </tbody>
         </table>
         </div>

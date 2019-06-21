@@ -2,7 +2,9 @@ from __future__ import print_function
 
 import datetime, calendar
 from datetime import date, datetime, time, timedelta
+from django.utils import timezone
 
+from .render import Render
 
 import pandas as pd
 from django.db import connection
@@ -14,7 +16,6 @@ from django.forms import ModelForm, ValidationError, Form, widgets, DateTimeInpu
 from inventory.forms import MaterialRequisition
 from inventory.forms import MaterialRequisitionForm
 from sales.models import ClientItem, SalesInvoice
-from utilities import final_gantt
 from utilities import cpsat, cpsatworkertest
 from sales import views as sales_views
 from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm, LaminatingScheduleForm
@@ -31,6 +32,15 @@ from plotly.graph_objs import Scatter
 
 #from ortools.constraint_solver import pywrapcp
 
+class Pdf():
+
+    def get(self, request):
+        today = timezone.now()
+        params = {
+            'today': today,
+            'request': request
+        }
+        return Render.render('pdf.html', params)
 
 # Create your views here.
 def production_details(request):
@@ -222,7 +232,7 @@ def add_extruder_schedule(request, id):
         if form.is_valid():
             '''
             all_ideal = ExtruderSchedule.objects.filter(
-                Q(ideal=True) & Q(sked_mach=Machine.objects.get(machine_id=form['machine'].value())) & ~Q(job_order_id=id))
+                Q(ideal=True) & Q(sked_mach=Machine.objects.get(machine_id=form['machine'].value())) & ~Q(job_order_id=id)).order_by('sked_in')
             if all_ideal:
                 for x in all_ideal:
                     xdatetimein = datetime.strptime(form['datetime_in'].value(), '%Y-%m-%d %H:%M')
@@ -248,17 +258,6 @@ def add_extruder_schedule(request, id):
                 else:
                     data.status = 'Under Cutting'
                     data.save()
-                '''
-                if all_ideal:
-                    for x in all_ideal:
-                        xdatetimeout = datetime.strptime(form['datetime_out'].value(), '%Y-%m-%d %H:%M')
-                        if x.sked_out.year == xdatetimeout.year \
-                            and x.sked_out.month == xdatetimeout.month \
-                            and x.sked_out.day == xdatetimeout.day \
-                            and x.sked_out.hour == xdatetimeout.hour:
-                            sales_views.save_schedule(request)
-                            break
-                '''
             else:
                 data.save()
         return redirect('production:job_order_details', id = id)
@@ -1282,6 +1281,58 @@ def shift_schedule(request):
     }
     return render(request, 'production/shift_schedule.html', context)
 
+def weekly_schedule(request):
+    ex_schedule = []
+    cu_schedule = []
+    pr_schedule = []
+    la_schedule = []
+    today = date.today()
+    e = ExtruderSchedule.objects.all()
+    c = CuttingSchedule.objects.all()
+    l = LaminatingSchedule.objects.all()
+    p = PrintingSchedule.objects.all()
+    start_week = today - timedelta(days=today.weekday())
+    end_week = start_week + timedelta(days=7)
+    week = []
+
+    for i in range(0, 7):
+        week.append(start_week)
+        start_week += timedelta(days=1)
+    start_week = today - timedelta(days=today.weekday())
+
+    for i in e:
+        sked_in = i.sked_in
+        if sked_in:
+            if start_week <= sked_in.date() < end_week:
+                ex_schedule.append(i)
+    for j in c:
+        sked_in = j.sked_in
+        if sked_in:
+            if start_week <= sked_in.date() < end_week:
+                cu_schedule.append(j)
+    for k in l:
+        sked_in = k.sked_in
+        if sked_in:
+            if start_week <= sked_in.date() < end_week:
+                la_schedule.append(k)
+    for x in p:
+        sked_in = x.sked_in
+        if sked_in:
+            if start_week <= sked_in.date() < end_week:
+                pr_schedule.append(x)
+
+
+    context = {
+        'ex_schedule' : ex_schedule,
+        'cu_schedule' : cu_schedule,
+        'la_schedule' : la_schedule,
+        'pr_schedule' : pr_schedule,
+        'now' : today,
+        'week' : week
+
+    }
+    return render(request, 'production/weekly_schedule.html', context)
+
 def sched_test(request):
     cursor = connection.cursor()
     query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p " \
@@ -1289,9 +1340,22 @@ def sched_test(request):
             "NOT j.status=" + "'Waiting'" + " and NOT j.status=" + "'Ready for delivery'" + " and NOT j.status =" + "'Delivered'"
     cursor.execute(query)
     df = pd.read_sql(query, connection)
+    now = datetime.now()
+    form = ExtruderScheduleForm(request.POST)
+    plot_list = []
 
-
-    plot_list = cpsatworkertest.flexible_jobshop(df)
+    if request.method == 'POST':
+        if form.is_valid():
+            form = form.save()
+            time = request.POST.get('datetime_out')
+            time = datetime.strptime(time, "%Y-%m-%d %H:%M")
+            if now.year == time.year and\
+                now.month == time.month and\
+                now.day == time.day and\
+                (now.hour-3) <= time.hour <= (now.hour+3):
+                plot_list = cpsatworkertest.flexible_jobshop(df, time)
+            else:
+                print('blech')
 
     machines = Machine.objects.all()
     today = date.today()
@@ -1316,6 +1380,7 @@ def sched_test(request):
         if plot_list[i]['Start'].month == today.month:
             this_month.append(plot_list[i])
 
+
     context = {
 
         'machines': machines,
@@ -1323,7 +1388,8 @@ def sched_test(request):
         'this_month': this_month,
         'week': week,
         'month': month,
-        'today': today
+        'today': today,
+        'form' : form
 
 
     }

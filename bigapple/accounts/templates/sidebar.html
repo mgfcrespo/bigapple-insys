@@ -330,7 +330,7 @@
 
 <!-- Supervisor -->
 <div id= "supervisor_sidebar" style="display: none;">
-    <a href="" class="item">
+    <a href="{% url 'production:production_schedule' %}" class="item">
         <i class="calendar alternate outline icon"></i>
         Production Schedule
     </a>
@@ -343,8 +343,8 @@
         Job Orders
     </a>
     <a href="{% url 'inventory:materials_requisition_list' %}" class="item">
-        <i class="plus circle icon"></i>
-        Create Materials Requisition
+        <i class="boxes icon"></i>
+        Materials Requisition
     </a>
 </div>
 

@@ -1,0 +1,121 @@
+{% extends 'sidebar.html' %}
+{% block content %}
+
+
+<h3 class="ui dividing header">Weekly Schedule</h3>
+<h2>Week of {{ now }}</h2>
+
+
+<table class="ui striped center aligned table">
+    <thead>
+        <th>
+            Job Order Number
+        </th>
+        <th>
+            Employee Name
+        </th>
+        <th>
+            Expected Time In
+        </th>
+        <th>
+            Role
+        </th>
+        <th>
+            Machine Number
+        </th>
+    </thead>
+    <tbody>
+    {% if ex_schedule %}
+                {% for each in ex_schedule|dictsort:"sked_in" %}
+        <tr>
+                <td>
+                    <a href="{% url 'production:job_order_details' each.job_order_id %}">{{ each.job_order_id }}</a>
+                </td>
+                <td>
+                    {{ each.sked_op}}
+                </td>
+                <td>
+                   {{ each.sked_in }}
+                </td>
+                <td>
+                    Extruder
+                </td>
+                <td>
+                    {{ each.sked_mach_id }}
+                </td>
+        </tr>
+    {% endfor %}
+            {% endif %}
+    {% if cu_schedule %}
+    <tr>
+                {% for each in cu_schedule|dictsort:"sked_in" %}
+        <tr>
+                <td>
+                    <a href="{% url 'production:job_order_details' each.job_order_id %}">{{ each.job_order_id }}</a>
+                </td>
+             <td>
+                    {{ each.sked_op}}
+                </td>
+                <td>
+                   {{ each.sked_in }}
+                </td>
+                <td>
+                    Cutter
+                </td>
+                <td>
+                    {{ each.sked_mach_id }}
+                </td>
+                {% endfor %}
+            {% endif %}
+        </tr>
+    </tr>
+    {% if pr_schedule %}
+                {% for each in pr_schedule|dictsort:"sked_in" %}
+        <tr>
+
+                <td>
+                    <a href="{% url 'production:job_order_details' each.job_order_id %}">{{ each.job_order_id }}</a>
+                </td>
+             <td>
+                    {{ each.sked_op}}
+                </td>
+                <td>
+                   {{ each.sked_in }}
+                </td>
+                <td>
+                    Printer
+                </td>
+                <td>
+                    {{each.sked_mach_id}}
+                </td>
+
+        </tr>
+    {% endfor %}
+            {% endif %}
+    {% if la_schedule %}
+                {% for each in la_schedule|dictsort:"sked_in" %}
+        <tr>
+
+                <td>
+                    <a href="{% url 'production:job_order_details' each.job_order_id %}">{{ each.job_order_id }}</a>
+                </td>
+             <td>
+                    {{ each.sked_op}}
+                </td>
+                <td>
+                    {{each.sked_in}}
+                </td>
+                <td>
+                    Laminator
+                </td>
+                <td>
+                    {{each.sked_mach_id}}
+                </td>
+
+        </tr>
+    {% endfor %}
+            {% endif %}
+    </tbody>
+</table>
+
+{% endblock %}

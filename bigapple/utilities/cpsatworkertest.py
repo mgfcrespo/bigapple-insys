@@ -10,7 +10,7 @@ from collections import defaultdict
 import datetime
 from datetime import timedelta, datetime
 
-def flexible_jobshop(df):
+def flexible_jobshop(df, time):
     # Data part.
     jobs = []
     joids = []
@@ -147,7 +147,10 @@ def flexible_jobshop(df):
 
             # Create main interval for the task.
             suffix_name = '_j%i_t%i' % (job_id, task_id)
-            start = model.NewIntVar(0, horizon, 'start' + suffix_name)
+            if time:
+                start = model.NewIntVar(4, horizon, 'start' + suffix_name)
+            else:
+                start = model.NewIntVar(0, horizon, 'start' + suffix_name)
             duration = model.NewIntVar(min_duration, max_duration,
                                        'duration' + suffix_name)
             end = model.NewIntVar(0, horizon, 'end' + suffix_name)

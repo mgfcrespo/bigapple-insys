@@ -15,11 +15,10 @@ from inventory.forms import MaterialRequisitionForm, SupplierPOForm, SupplierPOI
 from inventory.models import Inventory, Supplier, MaterialRequisition, SupplierPO, SupplierPOItems
 from production.forms import ClientPOForm
 from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule, Machine
-from utilities import TimeSeriesForecasting, cpsat
+from utilities import TimeSeriesForecasting, cpsat, cpsatworkertest
 from .forms import ClientPOFormItems
 from .forms import SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
 from .models import ClientItem, Client, SalesInvoice, ClientPayment, ProductionCost, Product
-
 import pandas as pd
 from django.db.models import Q
 
@@ -36,6 +35,9 @@ from django.db.models import Q
 
 
 # Create your views here.
+def most_common(lst):
+    return max(set(lst), key=lst.count)
+
 # CRUD SUPPLIER
 def supplier_add(request):
     form = SupplierForm(request.POST)
@@ -267,7 +269,8 @@ def confirm_client_po(request, pk):
         'matreq' : matreq,
         'credit_status' : credit_status,
         'formset': supplierpo_item_formset,
-    }
+
+            }
 
     return render(request, 'sales/clientPO_confirm.html', context)
 
@@ -412,7 +415,42 @@ def statement_of_accounts_list_view(request):
 
 #SAMPLE DYNAMIC FORM
 def create_client_po(request):
-    #note: instance should be an object
+    #FORECAST
+    client_po = JobOrder.objects.filter(client_id=request.session['session_userid'])
+    client = Client.objects.get(id=request.session['session_userid'])
+    i = ClientItem.objects.all()
+    items = []
+    for every in i:
+        for each in client_po:
+            if every.client_po_id == each.id:
+                items.append(every.products_id)
+
+    item = most_common(items)
+    item = Product.objects.get(id=item)
+    cursor = connection.cursor()
+    forecast_ses = []
+    forecast_hwes = []
+    forecast_moving_average = []
+
+    query = 'SELECT po.date_issued, poi.quantity FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
+            'po.client_id = ' + str(request.session['session_userid']) + ' AND poi.client_po_id = po.id AND poi.products_id = ' + str(item.id)
+
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
+
+    product = item
+
+    # forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
+    a = TimeSeriesForecasting.forecast_ses(df)
+    a[1] = int(float(a[1]))
+    forecast_ses.extend(a)
+    b = TimeSeriesForecasting.forecast_hwes(df)
+    b[1] = int(float(b[1]))
+    forecast_hwes.extend(b)
+    c = TimeSeriesForecasting.forecast_moving_average(df)
+    c[1] = int(float(c[1]))
+    forecast_moving_average.extend(c)
+
     clientpo_item_formset = inlineformset_factory(JobOrder, ClientItem, form=ClientPOFormItems, extra=1, can_delete=True)
     form = ClientPOForm(request.POST)
     if request.method == "POST":
@@ -460,12 +498,20 @@ def create_client_po(request):
             message = "Form is not valid"
 
         return render(request, 'accounts/client_page.html',
-                              {'message': message}
+                              {'message': message,
+        'forecast_ses': forecast_ses,
+        'forecast_hwes': forecast_hwes,
+        'forecast_moving_average': forecast_moving_average,
+        'product' : product}
                               )
     else:
         return render(request, 'sales/clientPO_form.html',
                               {'formset': clientpo_item_formset(),
-                               'form': ClientPOForm}
+                               'form': ClientPOForm,
+        'forecast_ses': forecast_ses,
+        'forecast_hwes': forecast_hwes,
+        'forecast_moving_average': forecast_moving_average,
+        'product' : product}
                               )
 
 
@@ -779,8 +825,8 @@ def employee_details(request, id):
         for x in p:
             pr_schedule.append(x)
 
-    print('Extruder schedule:')
-    print(ex_schedule)
+    if request.method == 'GET':
+        unavailable = request.GET.get('unavailable')
 
     form = EmployeeForm(request.POST or None, instance=data)
     if form.is_valid():
@@ -818,9 +864,6 @@ def demand_forecast(request):
     }
     return render(request, 'sales/client_demand_forecast.html', context)
 
-def most_common(lst):
-    return max(set(lst), key=lst.count)
-
 def demand_forecast_details(request, id):
     client_po = JobOrder.objects.filter(client_id=id)
     client = Client.objects.get(id=id)
@@ -837,7 +880,6 @@ def demand_forecast_details(request, id):
     forecast_ses = []
     forecast_hwes = []
     forecast_moving_average = []
-    forecast_arima = []
 
     query = 'SELECT po.date_issued, poi.quantity FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
             'po.client_id = '+str(id)+' AND poi.client_po_id = po.id AND poi.products_id = '+str(item.id)
@@ -866,7 +908,7 @@ def demand_forecast_details(request, id):
         'forecast_ses': forecast_ses,
         'forecast_hwes': forecast_hwes,
         'forecast_moving_average': forecast_moving_average,
-        'forecast_arima': forecast_arima,
+        #'forecast_arima': forecast_arima,
         #'item' : item,
         'client' : client,
         'product' : product
@@ -874,7 +916,7 @@ def demand_forecast_details(request, id):
 
     return render(request, 'sales/client_demand_forecast_details.html', context)
 
-def save_schedule(request, *pk):
+def save_schedule(request, *pk, **actual_out):
     ideal_ex = ExtruderSchedule.objects.filter(ideal=True)
     ideal_cu = CuttingSchedule.objects.filter(ideal=True)
     ideal_la = LaminatingSchedule.objects.filter(ideal=True)
@@ -925,10 +967,12 @@ def save_schedule(request, *pk):
     else:
         pass
 
-    ideal_sched = cpsat.flexible_jobshop(df)
-    messages.success(request, 'Production schedule saved.')
-    print('ideal sched:')
-    print(ideal_sched)
+    ideal_sched = []
+
+    if actual_out:
+        ideal_sched = cpsat.flexible_jobshop(df, actual_out)
+    else:
+        ideal_sched = cpsat.flexible_jobshop(df)
 
     for i in range(0, len(ideal_sched)):
         if ideal_sched[i]['Task'] == 'Extrusion':

@@ -6,6 +6,7 @@
         	<thead>
           	<tr class = "row">
                 <th>Control Number</th>
+                <th>Job Order #</th>
                 <th>Date Issued</th>
                 <th>Status</th>
           	</tr>
@@ -19,6 +20,11 @@
                     <td> 
                         <a href="{% url 'inventory:materials_requisition_details' x.id %}">{{ x }}</a>
                     </td>
+					<td>{% for a in items %}
+							{% if a.id == x.client_item_id %}
+						<a href="{% url 'sales:po-detail-view' a.client_po_id %}">{{a.client_po_id}}</a>
+							{% endif %}
+						{% endfor %}</td>
                     <td>{{ x.datetime_issued }}</td>
 					{% if x.status == "Pending" %}
 					<td class = "warning">

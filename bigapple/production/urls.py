@@ -23,6 +23,7 @@ urlpatterns = [
 
         path('production-report/', views.production_report, name='production_report'),
         path('shift-schedule/', views.shift_schedule, name='shift_schedule'),
+        path('weekly-schedule/', views.weekly_schedule, name='weekly_schedule'),
         path('sched-test/', views.sched_test, name='sched_test'),
 
 
