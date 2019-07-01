@@ -1,8 +1,8 @@
 from __future__ import print_function
 import collections
 from ortools.sat.python import cp_model
-from django.db.models import Count
-from production.models import Machine, JobOrder
+from django.db.models import Count, Sum
+from production.models import Machine, JobOrder, ExtruderSchedule, CuttingSchedule, PrintingSchedule, LaminatingSchedule
 from sales.models import ClientItem
 from accounts.models import Employee
 from django.db.models import Q
@@ -10,7 +10,7 @@ from collections import defaultdict
 import datetime
 from datetime import timedelta, datetime
 
-def flexible_jobshop(df):
+def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not_final, printing_not_final, laminating_not_final):
     # Data part.
     jobs = []
     joids = []
@@ -57,15 +57,47 @@ def flexible_jobshop(df):
         id = x.id
         l_work.append(id)
 
-
     for i in range(0, len(df.index)):
         item = ClientItem.objects.get(client_po_id=df.ix[i]['id'])
         joids.append(df.ix[i]['id'])
         quantity = item.quantity
-        extrusion_time = int((quantity * 80) / 70000)
-        cutting_time = int((quantity * 60) / 70000)
-        laminating_time = int((quantity * 60) / 70000)
-        printing_time = int((quantity * 100) / 70000)
+        number_rolls = number_rolls = float(quantity / 10000)
+        if extrusion_not_final and df.ix[i]['id'] == job_match:
+            e = ExtruderSchedule.objects.filter(Q(job_order_id = df.ix[i]['id']) & Q(ideal=False))
+            if e:
+                sum_number_rolls = float(e.aggregate(Sum('number_rolls'))['number_rolls__sum'])
+                balance_number_rolls = number_rolls - sum_number_rolls
+                quantity = balance_number_rolls * 10000
+                extrusion_time = int((quantity * 80) / 70000)
+        else:
+            extrusion_time = int((quantity * 80) / 70000)
+        if cutting_not_final and df.ix[i]['id'] == job_match:
+            c = CuttingSchedule.objects.filter(Q(job_order_id=df.ix[i]['id']) & Q(ideal=False))
+            if c:
+                sum_number_rolls = float(c.aggregate(Sum('number_rolls'))['number_rolls__sum'])
+                balance_number_rolls = number_rolls - sum_number_rolls
+                quantity = balance_number_rolls * 10000
+                cutting_time = int((quantity * 60) / 70000)
+        else:
+            cutting_time = int((quantity * 60) / 70000)
+        if laminating_not_final and df.ix[i]['id'] == job_match:
+            l = LaminatingSchedule.objects.filter(Q(job_order_id=df.ix[i]['id']) & Q(ideal=False))
+            if l:
+                sum_number_rolls = float(l.aggregate(Sum('number_rolls'))['number_rolls__sum'])
+                balance_number_rolls = number_rolls - sum_number_rolls
+                quantity = balance_number_rolls * 10000
+                laminating_time = int((quantity * 60) / 70000)
+        else:
+            laminating_time = int((quantity * 60) / 70000)
+        if printing_not_final and df.ix[i]['id'] == job_match:
+            p = PrintingSchedule.objects.filter(Q(job_order_id=df.ix[i]['id']) & Q(ideal=False))
+            if p:
+                sum_number_rolls = float(p.aggregate(Sum('number_rolls'))['number_rolls__sum'])
+                balance_number_rolls = number_rolls - sum_number_rolls
+                quantity = balance_number_rolls * 10000
+                printing_time = int((quantity * 100) / 70000)
+        else:
+            printing_time = int((quantity * 100) / 70000)
         extrusion = []
         cutting = []
         printing = []
@@ -75,25 +107,29 @@ def flexible_jobshop(df):
         for e in e_mach:
             for a in e_work:
                 extrusion.append((extrusion_time, e, a))
-        job.append(extrusion)
+        if extrusion_not_final:
+            job.append(extrusion)
         for p in p_mach:
             if df.ix[i]['printed'] == 1:
                 for b in p_work:
                     printing.append((printing_time, p, b))
-                job.append(printing)
+                if printing_not_final:
+                    job.append(printing)
             else:
                 pass
         for l in l_mach:
             if df.ix[i]['laminate'] == 1:
                 for c in l_work:
                     laminating.append((laminating_time, l, c))
-                job.append(laminating)
+                if laminating_not_final:
+                    job.append(laminating)
             else:
                 pass
         for c in c_mach:
             for d in c_work:
                 cutting.append((cutting_time, c, d))
-        job.append(cutting)
+        if cutting_not_final:
+            job.append(cutting)
 
         jobs.append(job)
 
@@ -218,6 +254,15 @@ def flexible_jobshop(df):
     model.AddMaxEquality(makespan, job_ends)
     model.Minimize(makespan)
 
+    if actual_out:
+        actual_out = str(actual_out)
+        actual_out = datetime.strptime(actual_out, "%Y-%m-%d %H:%M:%S")
+        dateTimeDifference = actual_out - datetime.now()
+        dateTimeDifferenceInHours = dateTimeDifference.total_seconds() / 3600
+        dateTimeDifferenceInHours = abs(dateTimeDifferenceInHours)
+    else:
+        dateTimeDifferenceInHours = 0
+
     # Solve model.
     solver = cp_model.CpSolver()
     status = solver.Solve(model)
@@ -230,6 +275,7 @@ def flexible_jobshop(df):
         print('Job %i:' % job_id)
         for task_id in range(len(jobs[job_id])):
             start_value = solver.Value(starts[(job_id, task_id)])
+            start_value = start_value - dateTimeDifferenceInHours
             machine = -1
             duration = -1
             selected = -1

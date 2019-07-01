@@ -68,6 +68,8 @@ def user_page_view(request):
         Supplier_data = Supplier.objects.all()
         JobOrder_data = JobOrder.objects.all()
 
+        JobOrder_data10 = JobOrder.objects.exclude(status='Delivered').order_by('-date_issued')[:10]
+        ideal_end = CuttingSchedule.objects.filter(ideal=True)
         JobOrder_data5 = JobOrder.objects.order_by('-id')[:5]
         rush_order = JobOrder.objects.filter(status='Waiting').order_by('date_required').exclude(rush_order=False)[:4]
 
@@ -220,9 +222,9 @@ def user_page_view(request):
                 if is_it_ok.state == 'OK':
                     pass
                 else:
-                    plot_list = sales_views.save_schedule(request)
+                    plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True)
         else:
-            plot_list = sales_views.save_schedule(request)
+            plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True)
 
         today = date.today()
         start_week = today - timedelta(days=today.weekday())
@@ -314,6 +316,7 @@ def user_page_view(request):
             'week': week,
             'month': month,
             'today': today,
+            'ideal_end' : ideal_end,
 
             'POs_lastMonth': POs_lastMonth,
             'thisMonth': thisMonth,
@@ -324,6 +327,7 @@ def user_page_view(request):
             'POs': POs,
             'POs_lastYear': POs_lastYear,
             'POs_lastMonthlastYear':POs_lastMonthlastYear,
+            'JobOrder_data10' : JobOrder_data10,
 
             'LDPE': LDPE,
             'LLDPE': LLDPE,
@@ -354,6 +358,8 @@ def user_page_view(request):
             'forecast_moving_average': forecast_moving_average,
             'forecast_arima': forecast_arima,
             'product': product,
+
+            'now' : date.today()
         }
 
         request.session['session_username'] = username

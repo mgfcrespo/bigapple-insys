@@ -58,7 +58,7 @@
             </div>
             <div style="margin-top: 15px;" class="center">
                 <a class="ui mini yellow basic button" style="width: 100px;" href="{% url 'sales:employee_edit' data.id %}">Edit</a>
-                <a a onclick="return confirm('Are you sure?')" class="ui mini red basic button" href="{% url 'sales:employee_delete' data.id %}" style="width: 100px;">Delete</a>
+                <a onclick="return confirm('Are you sure?')" class="ui mini red basic button" href="{% url 'sales:employee_delete' data.id %}" style="width: 100px;">Delete</a>
             </div>
         </div>
 
@@ -101,7 +101,9 @@
                             {{ each.sked_mach_id }}
                         </td>
                     <td class="center aligned">
-                        <form method="get"> <input type="submit" class="ui small red" value="{{each}}" name="unavailable"></form>
+                        <form method="post"> {% csrf_token %}
+                            <input type="submit" class="ui small red" value='{{ each.sked_in }}' id="unavailable1" name="unavailable1"/>
+                        </form>
                     </td>
 
                 </tr>
@@ -123,6 +125,11 @@
                         <td>
                             {{ each.sked_mach_id }}
                         </td>
+                        <td class="center aligned">
+                        <form method="post"> {% csrf_token %}
+                            <input type="submit" class="ui small red" value='{{ each.sked_in }}' id="unavailable2" name="unavailable2"/>
+                        </form>
+                    </td>
 
                 </tr>
             {% endfor %}
@@ -143,6 +150,11 @@
                         <td>
                             {{each.sked_mach_id}}
                         </td>
+                 <td class="center aligned">
+                        <form method="post"> {% csrf_token %}
+                            <input type="submit" class="ui small red" value='{{ each.sked_in }}' id="unavailable3" name="unavailable3"/>
+                        </form>
+                    </td>
 
                 </tr>
             {% endfor %}
@@ -163,6 +175,11 @@
                         <td>
                             {{each.sked_mach_id}}
                         </td>
+                 <td class="center aligned">
+                        <form method="post"> {% csrf_token %}
+                            <input type="submit" class="ui small red" value='{{ each.sked_in }}' id="unavailable4" name="unavailable4"/>
+                        </form>
+                    </td>
 
                 </tr>
             {% endfor %}
@@ -182,5 +199,13 @@
         else{
         }
     </script>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
 
 {% endblock %}

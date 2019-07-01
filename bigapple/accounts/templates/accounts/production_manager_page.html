@@ -148,7 +148,7 @@
                         Date Issued
                     </th>
                     <th>
-                        Date Required
+                        Estimated Finish Date & Time
                     </th>
                     <th>
                         Status
@@ -157,43 +157,47 @@
             </thead>
             <tbody>
                 {% for x in JobOrder_data10 %}
-                    {% if x.date_required < datenow %}
-                    <tr class="negative">
-                        <td>
-                            Job {{x.id}}
-                        </td>
-                        <td>
-                            {{x.client}}
-                        </td>
-                        <td>
-                            {{x.date_issued}}
-                        </td>
-                        <td>
-                            {{x.date_required}}
-                        </td>
-                        <td>
-                            {{x.status}}
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td>
-                            Job {{x.id}}
-                        </td>
-                        <td>
-                            {{x.client}}
-                        </td>
-                        <td>
-                            {{x.date_issued}}
-                        </td>
-                        <td>
-                            {{x.date_required}}
-                        </td>
-                        <td>
-                            {{x.status}}
-                        </td>
-                    </tr>
-                    {% endif %}
+                    {% for each in ideal_end %}
+                        {% if x.id == each.job_order_id %}
+                            {% if each.sked_out.date < now %}
+                                <tr class="negative">
+                                    <td>
+                                        Job {{x.id}}
+                                    </td>
+                                    <td>
+                                        {{x.client}}
+                                    </td>
+                                    <td>
+                                        {{x.date_issued}}
+                                    </td>
+                                    <td>
+                                        {{ each.sked_out }}
+                                    </td>
+                                    <td>
+                                        {{x.status}}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td>
+                                        Job {{x.id}}
+                                    </td>
+                                    <td>
+                                        {{x.client}}
+                                    </td>
+                                    <td>
+                                        {{x.date_issued}}
+                                    </td>
+                                    <td>
+                                        {{each.sked_out}}
+                                    </td>
+                                    <td>
+                                        {{x.status}}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
             </tbody>
             <tfoot>

@@ -3,8 +3,8 @@ from __future__ import print_function
 import datetime, calendar
 from datetime import date, datetime, time, timedelta
 from django.utils import timezone
-
-from .render import Render
+import pytz
+import bigapple.utils
 
 import pandas as pd
 from django.db import connection
@@ -24,23 +24,8 @@ from .models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedul
 from .models import Machine
 from django.contrib import messages
 from accounts.models import Employee
-from plotly.offline import plot
-from plotly.graph_objs import Scatter
-
-# scheduling import
-# Import Python wrapper for or-tools constraint solver.
-
-#from ortools.constraint_solver import pywrapcp
-
-class Pdf():
-
-    def get(self, request):
-        today = timezone.now()
-        params = {
-            'today': today,
-            'request': request
-        }
-        return Render.render('pdf.html', params)
+from django.http import HttpResponse
+from django.views.generic import View
 
 # Create your views here.
 def production_details(request):
@@ -54,7 +39,100 @@ def production_details(request):
 def job_order_list(request):
     data = JobOrder.objects.exclude(status='Waiting').exclude(status='Ready for Delivery').exclude(status='Delivered')
     items = ClientItem.objects.filter(client_po=data)
+    ex_schedule = []
+    cu_schedule = []
+    pr_schedule = []
+    la_schedule = []
+    today = date.today()
+    e = ExtruderSchedule.objects.all()
+    c = CuttingSchedule.objects.all()
+    l = LaminatingSchedule.objects.all()
+    p = PrintingSchedule.objects.all()
 
+    if time(6, 0) <= datetime.now().time() <= time(14, 0):
+        for i in e:
+            sked_in = i.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 6 and sked_in.hour <= 14:
+                    ex_schedule.append(i.job_order_id)
+        for j in c:
+            sked_in = j.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 6 and sked_in.hour <= 14:
+                    cu_schedule.append(j.job_order_id)
+        for k in l:
+            sked_in = k.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 6 and sked_in.hour <= 14:
+                    la_schedule.append(k.job_order_id)
+        for x in p:
+            sked_in = x.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 6 and sked_in.hour <= 14:
+                    pr_schedule.append(x.job_order_id)
+    elif time(14, 0) <= datetime.now().time() <= time(22, 0):
+        for i in e:
+            sked_in = i.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 14 and sked_in.hour <= 22:
+                    ex_schedule.append(i.job_order_id)
+        for j in c:
+            sked_in = j.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 14 and sked_in.hour <= 22:
+                    cu_schedule.append(j.job_order_id)
+        for k in l:
+            sked_in = k.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 14 and sked_in.hour <= 22:
+                    la_schedule.append(k.job_order_id)
+        for x in p:
+            sked_in = x.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 14 and sked_in.hour <= 122:
+                    pr_schedule.append(x.job_order_id)
+    elif datetime.now().time() >= time(22, 0):
+        for i in e:
+            sked_in = i.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    ex_schedule.append(i.job_order_id)
+        for j in c:
+            sked_in = j.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    cu_schedule.append(j.job_order_id)
+        for k in l:
+            sked_in = k.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    la_schedule.append(k.job_order_id)
+        for x in p:
+            sked_in = x.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    pr_schedule.append(x.job_order_id)
+    elif datetime.now().time() <= time(6, 0):
+        for i in e:
+            sked_in = i.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    ex_schedule.append(i.job_order_id)
+        for j in c:
+            sked_in = j.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    cu_schedule.append(j.job_order_id)
+        for k in l:
+            sked_in = k.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    la_schedule.append(k.job_order_id)
+        for x in p:
+            sked_in = x.sked_in
+            if sked_in:
+                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour <= 6:
+                    pr_schedule.append(x.job_order_id)
 
     if request.session['session_position'] == "General Manager":
         template = 'general_manager_page_ui.html'
@@ -66,7 +144,11 @@ def job_order_list(request):
         'items': items,
         'title': 'Job Order List',
         'data' : data,
-        'template' : template
+        'template' : template,
+        'ex_schedule' : ex_schedule,
+        'cu_schedule' : cu_schedule,
+        'pr_schedule': pr_schedule,
+        'la_schedule': la_schedule
     }
     return render (request, 'production/job_order_list.html', context)
 
@@ -214,15 +296,13 @@ def finished_job_order_list_view(request):
 
 # EXTRUDER 
 def add_extruder_schedule(request, id):
-
     data = JobOrder.objects.get(id=id)
     item = ClientItem.objects.get(client_po_id=id)
-    e = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=False))
+    e = ExtruderSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=False))
     e.job_order = id
     form = ExtruderScheduleForm(request.POST)
-    ideal = ExtruderSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first()
+    ideal = ExtruderSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True))
     printed = False
-    all_ideal = []
     if item.printed == 1:
         printed = True
 
@@ -230,27 +310,38 @@ def add_extruder_schedule(request, id):
         data.status = 'Under Extrusion'
         data.save()
         if form.is_valid():
-            '''
-            all_ideal = ExtruderSchedule.objects.filter(
-                Q(ideal=True) & Q(sked_mach=Machine.objects.get(machine_id=form['machine'].value())) & ~Q(job_order_id=id)).order_by('sked_in')
-            if all_ideal:
-                for x in all_ideal:
-                    xdatetimein = datetime.strptime(form['datetime_in'].value(), '%Y-%m-%d %H:%M')
-                    if x.sked_in.year == xdatetimein.year \
-                        and x.sked_in.month == xdatetimein.month \
-                        and x.sked_in.day == xdatetimein.day \
-                        and x.sked_in.hour == xdatetimein.hour:
-                        print('NEW SCHED! ACTUAL MATCHES IDEAL!')
-                        sales_views.save_schedule(request)
-                        break
-            '''
-
             x = request.POST.get("weight_rolls")
-            y = float(x)*float(4.74)
+            y = float(x) * float(4.74)
             form = form.save(commit=False)
             form.balance = float(y)
             form.ideal = False
             new_schedule = form.save()
+            pasok = request.POST.get('datetime_in')
+            pasok = datetime.strptime(pasok, "%Y-%m-%d %H:%M")
+            labas = request.POST.get('datetime_out')
+            labas = datetime.strptime(labas, "%Y-%m-%d %H:%M")
+            all_ideal = ExtruderSchedule.objects.filter(
+                Q(ideal=True) & Q(sked_mach_id=request.POST.get('machine')) &
+                ~Q(job_order_id=id)).order_by('sked_in')
+            final = request.POST.get('final')
+            if all_ideal:
+                for x in all_ideal:
+                    sked_in_1 = x.sked_in - timedelta(hours=3)
+                    sked_in_2 = x.sked_in + timedelta(hours=3)
+                    sked_out_1 = x.sked_out - timedelta(hours=3)
+                    sked_out_2 = x.sked_out + timedelta(hours=3)
+                    sked_in_1 = sked_in_1.replace(tzinfo=None)
+                    sked_in_2 = sked_in_2.replace(tzinfo=None)
+                    sked_out_1 = sked_out_1.replace(tzinfo=None)
+                    sked_out_2 = sked_out_2.replace(tzinfo=None)
+                    if sked_in_1 <= pasok <= sked_in_2 or \
+                            sked_out_1 <= labas <= sked_out_2:
+                        if final == 1:
+                            sales_views.save_schedule(request, None, labas, id, False, True, True, True)
+                            print('resched, final')
+                        else:
+                            sales_views.save_schedule(request, None, labas, id, True, True, True, True)
+                            print('resched, not final')
             if form.final:
                 if printed:
                     data.status = 'Under Printing'
@@ -260,7 +351,7 @@ def add_extruder_schedule(request, id):
                     data.save()
             else:
                 data.save()
-        return redirect('production:job_order_details', id = id)
+        return redirect('production:job_order_details', id=id)
 
     number_rolls = float(item.quantity / 10000)
     weight_rolls = number_rolls * 5
@@ -325,8 +416,7 @@ def add_extruder_schedule(request, id):
     context = {
       'data': data,
       'form': form,
-      'id' : id,
-      'sked_mach' : sked_mach
+      'id' : id
     }
     
     return render (request, 'production/add_extruder_schedule.html', context)
@@ -336,10 +426,10 @@ def add_printing_schedule(request, id):
     data = JobOrder.objects.get(id=id)
     form = PrintingScheduleForm(request.POST)
     item = ClientItem.objects.get(client_po_id=id)
-    ideal = PrintingSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=True)).first()
-    p = PrintingSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=False))
+    ideal = PrintingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True))
+    p = PrintingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=False))
     p.job_order = id
-    items = ClientItem.objects.filter(client_po = id)
+    items = ClientItem.objects.filter(client_po=id)
     laminate = False
     for x in items:
         if x.laminate == 1:
@@ -349,23 +439,51 @@ def add_printing_schedule(request, id):
     if p.count == 0:
         data.status = 'Under Printing'
         data.save()
-		
+
     print(form.errors)
     if request.method == 'POST':
-      data.status = 'Under Printing'
-      data.save()
-      if form.is_valid():
-          form = form.save(commit=False)
-          form.ideal = False
-          new_schedule = form.save()
-          if form.final:
-              if laminate:
-                data.status = 'Under Laminating'
+        data.status = 'Under Printing'
+        data.save()
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.ideal = False
+            new_schedule = form.save()
+            pasok = request.POST.get('datetime_in')
+            pasok = datetime.strptime(pasok, "%Y-%m-%d %H:%M")
+            labas = request.POST.get('datetime_out')
+            labas = datetime.strptime(labas, "%Y-%m-%d %H:%M")
+            all_ideal = PrintingSchedule.objects.filter(
+                Q(ideal=True) & Q(sked_mach_id=request.POST.get('machine')) &
+                ~Q(job_order_id=id)).order_by('sked_in')
+            final = request.POST.get('final')
+            if all_ideal:
+                for x in all_ideal:
+                    sked_in_1 = x.sked_in - timedelta(hours=3)
+                    sked_in_2 = x.sked_in + timedelta(hours=3)
+                    sked_out_1 = x.sked_out - timedelta(hours=3)
+                    sked_out_2 = x.sked_out + timedelta(hours=3)
+                    sked_in_1 = sked_in_1.replace(tzinfo=None)
+                    sked_in_2 = sked_in_2.replace(tzinfo=None)
+                    sked_out_1 = sked_out_1.replace(tzinfo=None)
+                    sked_out_2 = sked_out_2.replace(tzinfo=None)
+                    if sked_in_1 <= pasok <= sked_in_2 or \
+                            sked_out_1 <= labas <= sked_out_2:
+                        if final == 1:
+                            sales_views.save_schedule(request, None, labas, id, True, True, False, True)
+                            print('resched, final')
+                        else:
+                            sales_views.save_schedule(request, None, labas, id, True, True, True, True)
+                            print('resched, not final')
+            if form.final:
+                if laminate:
+                    data.status = 'Under Laminating'
+                    data.save()
+                else:
+                    data.status = 'Under Cutting'
+                    data.save()
+            else:
                 data.save()
-              else:
-                data.status = 'Under Cutting'
-                data.save()
-      return redirect('production:job_order_details', id = data.id)
+    return redirect('production:job_order_details', id=data.id)
 
     number_rolls = float(item.quantity / 10000)
     weight_rolls = number_rolls * 5
@@ -391,21 +509,19 @@ def add_printing_schedule(request, id):
         core_weight = core_weight
         output_kilos = weight_rolls
 
-
-
     if ideal is not None:
         sked_in = ideal.sked_in
         sked_out = ideal.sked_out
     else:
         sked_in = datetime.now()
-        sked_out = datetime.now() + timedelta(days=int((item.quantity * 100)/70000))
+        sked_out = datetime.now() + timedelta(days=int((item.quantity * 100) / 70000))
 
-      # SHIFTS: 6am-2pm, 2pm-10pm, 10pm-6am
+    # SHIFTS: 6am-2pm, 2pm-10pm, 10pm-6am
     SHIFTS = (
-          (1, 1),
-          (2, 2),
-          (3, 3)
-      )
+        (1, 1),
+        (2, 2),
+        (3, 3)
+    )
 
     if time(6, 0) <= datetime.now().time() <= time(14, 0):
         shift = 1
@@ -414,7 +530,7 @@ def add_printing_schedule(request, id):
     elif time(22, 0) <= datetime.now().time() <= time(6, 0):
         shift = 3
     else:
-          shift = 0
+        shift = 0
 
     form.fields["machine"].queryset = Machine.objects.filter(Q(machine_type='Printing') & Q(state='OK'))
     form.fields["job_order"].queryset = JobOrder.objects.filter(id=id)
@@ -429,37 +545,63 @@ def add_printing_schedule(request, id):
     form.fields["number_rolls"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': number_rolls}))
 
     context = {
-      'data': data,
-      'form': form,
+        'data': data,
+        'form': form,
         'id': id
     }
-    
-    return render (request, 'production/add_printing_schedule.html', context)
+
+    return render(request, 'production/add_printing_schedule.html', context)
 
 # CUTTING
 def add_cutting_schedule(request, id):
     data = JobOrder.objects.get(id=id)
     item = ClientItem.objects.get(client_po_id=id)
     form = CuttingScheduleForm(request.POST)
-    invoice = SalesInvoice.objects.get(client_po = data)
+    invoice = SalesInvoice.objects.get(client_po=data)
     client = data.client
-    ideal = CuttingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()
+    ideal = CuttingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True))
 
-    c = CuttingSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=False))
+    c = CuttingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=False))
     c.job_order = id
 
     if c.count == 0:
         data.status = 'Under Cutting'
         data.save()
-		
+
     print(form.errors)
     if request.method == 'POST':
-      data.status = 'Under Cutting'
-      data.save()
-      if form.is_valid():
-        form = form.save(commit=False)
-        form.ideal = False
-        new_schedule = form.save()
+        data.status = 'Under Cutting'
+        data.save()
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.ideal = False
+            new_schedule = form.save()
+            pasok = request.POST.get('datetime_in')
+            pasok = datetime.strptime(pasok, "%Y-%m-%d %H:%M")
+            labas = request.POST.get('datetime_out')
+            labas = datetime.strptime(labas, "%Y-%m-%d %H:%M")
+            all_ideal = CuttingSchedule.objects.filter(
+                Q(ideal=True) & Q(sked_mach_id=request.POST.get('machine')) &
+                ~Q(job_order_id=id)).order_by('sked_in')
+            final = request.POST.get('final')
+            if all_ideal:
+                for x in all_ideal:
+                    sked_in_1 = x.sked_in - timedelta(hours=3)
+                    sked_in_2 = x.sked_in + timedelta(hours=3)
+                    sked_out_1 = x.sked_out - timedelta(hours=3)
+                    sked_out_2 = x.sked_out + timedelta(hours=3)
+                    sked_in_1 = sked_in_1.replace(tzinfo=None)
+                    sked_in_2 = sked_in_2.replace(tzinfo=None)
+                    sked_out_1 = sked_out_1.replace(tzinfo=None)
+                    sked_out_2 = sked_out_2.replace(tzinfo=None)
+                    if sked_in_1 <= pasok <= sked_in_2 or \
+                            sked_out_1 <= labas <= sked_out_2:
+                        if final == 1:
+                            sales_views.save_schedule(request, None, labas, id, True, False, True, True)
+                            print('resched, final')
+                        else:
+                            sales_views.save_schedule(request, None, labas, id, True, True, True, True)
+                            print('resched, not final')
         if form.final:
             data.status = 'Ready for delivery'
             data.save()
@@ -470,7 +612,7 @@ def add_cutting_schedule(request, id):
 
             client.outstanding_balance += invoice.total_amount_computed
             client.save()
-        return redirect('production:job_order_details', id = data.id)
+        return redirect('production:job_order_details', id=data.id)
 
     number_rolls = float(item.quantity / 10000)
     output_kilos = number_rolls * 5
@@ -492,13 +634,12 @@ def add_cutting_schedule(request, id):
         output_kilos = output_kilos
         quantity = quantity
 
-
     if ideal is not None:
         sked_in = ideal.sked_in
         sked_out = ideal.sked_out
     else:
         sked_in = datetime.now()
-        sked_out = datetime.now() + timedelta(days=int((quantity * 60)/70000))
+        sked_out = datetime.now() + timedelta(days=int((quantity * 60) / 70000))
 
     SHIFTS = (
         (1, 1),
@@ -506,11 +647,11 @@ def add_cutting_schedule(request, id):
         (3, 3)
     )
 
-    if time(6,0) <= datetime.now().time() <= time(14,0):
+    if time(6, 0) <= datetime.now().time() <= time(14, 0):
         shift = 1
-    elif time(14,0) <= datetime.now().time() <= time(22,0):
+    elif time(14, 0) <= datetime.now().time() <= time(22, 0):
         shift = 2
-    elif time(22,0) <= datetime.now().time() <= time(6,0):
+    elif time(22, 0) <= datetime.now().time() <= time(6, 0):
         shift = 3
     else:
         shift = 0
@@ -529,12 +670,12 @@ def add_cutting_schedule(request, id):
     form.fields["number_rolls"] = forms.FloatField(widget=forms.NumberInput(attrs={'value': number_rolls}))
 
     context = {
-      'data': data,
-      'form': form,
-        'id' : id
+        'data': data,
+        'form': form,
+        'id': id
     }
-    
-    return render (request, 'production/add_cutting_schedule.html', context)
+
+    return render(request, 'production/add_cutting_schedule.html', context)
 
 
 def add_laminating_schedule(request, id):
@@ -557,6 +698,32 @@ def add_laminating_schedule(request, id):
             form = form.save(commit=False)
             form.ideal = False
             new_schedule = form.save()
+            pasok = request.POST.get('datetime_in')
+            pasok = datetime.strptime(pasok, "%Y-%m-%d %H:%M")
+            labas = request.POST.get('datetime_out')
+            labas = datetime.strptime(labas, "%Y-%m-%d %H:%M")
+            all_ideal = LaminatingSchedule.objects.filter(
+                Q(ideal=True) & Q(sked_mach_id=request.POST.get('machine')) &
+                ~Q(job_order_id=id)).order_by('sked_in')
+            final = request.POST.get('final')
+            if all_ideal:
+                for x in all_ideal:
+                    sked_in_1 = x.sked_in - timedelta(hours=3)
+                    sked_in_2 = x.sked_in + timedelta(hours=3)
+                    sked_out_1 = x.sked_out - timedelta(hours=3)
+                    sked_out_2 = x.sked_out + timedelta(hours=3)
+                    sked_in_1 = sked_in_1.replace(tzinfo=None)
+                    sked_in_2 = sked_in_2.replace(tzinfo=None)
+                    sked_out_1 = sked_out_1.replace(tzinfo=None)
+                    sked_out_2 = sked_out_2.replace(tzinfo=None)
+                    if sked_in_1 <= pasok <= sked_in_2 or \
+                            sked_out_1 <= labas <= sked_out_2:
+                        if final == 1:
+                            sales_views.save_schedule(request, None, labas, id, True, True, True, False)
+                            print('resched, final')
+                        else:
+                            sales_views.save_schedule(request, None, labas, id, True, True, True, True)
+                            print('resched, not final')
             if form.final:
                 data.status = 'Under Cutting'
                 data.save()
@@ -796,13 +963,13 @@ def production_schedule(request):
             if is_it_ok.state == 'OK':
                 pass
             else:
-                plot_list = sales_views.save_schedule(request)
+                plot_list = sales_views.save_schedule(request, None, None, None, True)
                 break
 
         # Machine recently deployed.
         yung_wala = set(all_machines).difference(machines_in_production)
         if yung_wala:
-            plot_list = sales_views.save_schedule(request)
+            plot_list = sales_views.save_schedule(request, None, None, None, True)
         else:
             pass
 
@@ -846,7 +1013,7 @@ def production_schedule(request):
         
         '''
     else:
-        plot_list = sales_views.save_schedule(request)
+        plot_list = sales_views.save_schedule(request, None, None, None, True)
 
     today = date.today()
     start_week = today - timedelta(days=today.weekday())
@@ -1340,22 +1507,50 @@ def sched_test(request):
             "NOT j.status=" + "'Waiting'" + " and NOT j.status=" + "'Ready for delivery'" + " and NOT j.status =" + "'Delivered'"
     cursor.execute(query)
     df = pd.read_sql(query, connection)
-    now = datetime.now()
+
+    data = JobOrder.objects.get(id=33)
+    item = ClientItem.objects.get(client_po_id=33)
+    e = ExtruderSchedule.objects.filter(Q(job_order_id=33) & Q(ideal=False))
+    e.job_order = id
     form = ExtruderScheduleForm(request.POST)
+    printed = False
+    all_ideal = []
     plot_list = []
+    now = datetime.now()
+    utc = pytz.UTC
 
     if request.method == 'POST':
+        data.status = 'Under Cutting'
+        data.save()
         if form.is_valid():
-            form = form.save()
-            time = request.POST.get('datetime_out')
-            time = datetime.strptime(time, "%Y-%m-%d %H:%M")
-            if now.year == time.year and\
-                now.month == time.month and\
-                now.day == time.day and\
-                (now.hour-3) <= time.hour <= (now.hour+3):
-                plot_list = cpsatworkertest.flexible_jobshop(df, time)
-            else:
-                print('blech')
+            pasok = request.POST.get('datetime_in')
+            pasok = datetime.strptime(pasok, "%Y-%m-%d %H:%M")
+            labas = request.POST.get('datetime_out')
+            labas = datetime.strptime(labas, "%Y-%m-%d %H:%M")
+            all_ideal = ExtruderSchedule.objects.filter(
+                Q(ideal=True) & Q(sked_mach=Machine.objects.get(machine_id=form['machine'].value())) & ~Q(
+                    job_order_id=33)).order_by('sked_in')
+            final = form['final'].value()
+            if all_ideal:
+                for x in all_ideal:
+                    sked_in_1 = x.sked_in - timedelta(hours=3)
+                    sked_in_2 = x.sked_in + timedelta(hours=3)
+                    sked_out_1 = x.sked_out - timedelta(hours=3)
+                    sked_out_2 = x.sked_out + timedelta(hours=3)
+                    sked_in_1 = sked_in_1.replace(tzinfo=None)
+                    sked_in_2 = sked_in_2.replace(tzinfo=None)
+                    sked_out_1 = sked_out_1.replace(tzinfo=None)
+                    sked_out_2 = sked_out_2.replace(tzinfo=None)
+                    if sked_in_1 <= pasok <= sked_in_2 or\
+                        sked_out_1 <= labas <= sked_out_2:
+                        print('resched')
+                        if final == 1:
+                            plot_list = cpsatworkertest.flexible_jobshop(df, labas, 33, False)
+                        else:
+                            plot_list = cpsatworkertest.flexible_jobshop(df, labas, 33, True)
+                    else:
+                        print('blech')
+                        pass
 
     machines = Machine.objects.all()
     today = date.today()

@@ -19,8 +19,10 @@
                         {% csrf_token %}
                         <div class="ui two buttons">
 
-                            <input type="submit" class="ui green button" value="Approve" id="approve_btn" name="approve_btn">
-                            <input type="submit" class="ui red button" value="Deny" id="deny_btn" name="deny_btn">
+                            <input type="submit" class="ui green button" value="Approve" id="approve_btn" name="approve_btn"
+                            onclick="return confirm('Are you sure you want to confirm this rush order?')">
+                            <input type="submit" class="ui red button" value="Deny" id="deny_btn" name="deny_btn"
+                            onclick="return confirm('Are you sure you want to deny this rush order?')">
 
                         </div>
                     </form>

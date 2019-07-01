@@ -1,5 +1,6 @@
 from datetime import datetime, date, timedelta
 import datetime, calendar
+import dateutil.parser
 
 from django.db import connection
 from django.db.models import aggregates, Sum, Count
@@ -218,7 +219,7 @@ def confirm_client_po(request, pk):
 
         if matreq:
             # SAVE NEW PRODUCTION SCHEDULE
-            save_schedule(request, pk)
+            save_schedule(request, pk, None, None, True, True, True, True)
             clientpo.status = "On Queue"
             clientpo.save()
             for every in items:
@@ -663,7 +664,7 @@ def rush_order_assessment(request, pk):
     df = df.append(df2, ignore_index=True)
     print('df after append: ')
     print(df)
-    plot_list = cpsat.flexible_jobshop(df)
+    plot_list = cpsat.flexible_jobshop(df, None, None, True, True, True, True)
 
     machines = Machine.objects.all()
     today = date.today()
@@ -690,7 +691,7 @@ def rush_order_assessment(request, pk):
 
     if 'approve_btn' in request.POST:
         # SAVE NEW PRODUCTION SCHEDULE
-        save_schedule(request, pk)
+        save_schedule(request, pk, None, None, True, True, True, True)
         rush_order.status = 'On Queue'
         rush_order.save()
         return redirect('sales:rush_order_list')
@@ -804,6 +805,7 @@ def employee_details(request, id):
     cu_schedule = []
     pr_schedule = []
     la_schedule = []
+    new_sked_op = None
     date = datetime.date.today()
     start_week = date - datetime.timedelta(date.weekday())
     end_week = start_week + datetime.timedelta(7)
@@ -825,14 +827,86 @@ def employee_details(request, id):
         for x in p:
             pr_schedule.append(x)
 
-    if request.method == 'GET':
-        unavailable = request.GET.get('unavailable')
+    if request.method == 'POST':
+        unavailable = None
+        for_replacement = None
+        if request.POST.get('unavailable1'):
+            unavailable = request.POST.get('unavailable1')
+            unavailable = dateutil.parser.parse(unavailable)
+            for y in e:
+                compare = y.sked_in
+                compare = compare.replace(tzinfo=None)
+                if compare.year == unavailable.year \
+                        and compare.month == unavailable.month \
+                        and compare.day == unavailable.day \
+                        and compare.hour == unavailable.hour:
+                    for_replacement = y
+                    break
+                else:
+                    pass
+        elif request.POST.get('unavailable2'):
+            unavailable = request.POST.get('unavailable2')
+            unavailable = dateutil.parser.parse(unavailable)
+            for z in c:
+                compare = z.sked_in
+                compare = compare.replace(tzinfo=None)
+                if compare.year == unavailable.year \
+                        and compare.month == unavailable.month \
+                        and compare.day == unavailable.day \
+                        and compare.hour == unavailable.hour:
+                    for_replacement = z
+                    break
+                else:
+                    pass
+        elif request.POST.get('unavailable3'):
+            unavailable = request.POST.get('unavailable3')
+            unavailable = dateutil.parser.parse(unavailable)
+            for q in p:
+                compare = q.sked_in
+                compare = compare.replace(tzinfo=None)
+                if compare.year == unavailable.year \
+                        and compare.month == unavailable.month \
+                        and compare.day == unavailable.day \
+                        and compare.hour == unavailable.hour:
+                    for_replacement = q
+                    break
+                else:
+                    pass
+        elif request.POST.get('unavailable4'):
+            unavailable = request.POST.get('unavailable4')
+            unavailable = dateutil.parser.parse(unavailable)
+            for w in l:
+                compare = w.sked_in
+                compare = compare.replace(tzinfo=None)
+                if compare.year == unavailable.year \
+                        and compare.month == unavailable.month \
+                        and compare.day == unavailable.day \
+                        and compare.hour == unavailable.hour:
+                    for_replacement = w
+                    break
+                else:
+                    pass
+        ekis = []
+        di_pweds = []
+        di_pweds.extend(list(ExtruderSchedule.objects.filter(sked_in__range=[for_replacement.sked_in, for_replacement.sked_out])))
+        di_pweds.extend(list(CuttingSchedule.objects.filter(sked_in__range=[for_replacement.sked_in, for_replacement.sked_out])))
+        di_pweds.extend(list(LaminatingSchedule.objects.filter(sked_in__range=[for_replacement.sked_in, for_replacement.sked_out])))
+        di_pweds.extend(list(PrintingSchedule.objects.filter(sked_in__range=[for_replacement.sked_in, for_replacement.sked_out])))
+        all_workers = Employee.objects.filter(Q(position='Extruder') | Q(position='Cutting') | Q(position='Printing') | Q(position='Laminating'))
+        for a in di_pweds:
+            ekis.append(a.sked_op)
+
+        new_sked_op = list(set(all_workers).difference(ekis))[0]
+        if new_sked_op:
+            for_replacement.sked_op = new_sked_op
+            for_replacement.save()
+            messages.info(request,
+                          'You have reassigned the task for Job '+str(for_replacement.job_order_id)+' scheduled at ' + str(unavailable) + ' to ' + str(new_sked_op) + '.')
 
     form = EmployeeForm(request.POST or None, instance=data)
     if form.is_valid():
         form.save()
         return redirect('sales:employee_list')
-
 
     context = {
         'form':form,
@@ -842,6 +916,7 @@ def employee_details(request, id):
         'cu_schedule' : cu_schedule,
         'pr_schedule' : pr_schedule,
         'la_schedule' : la_schedule,
+        'new_sked_op' : new_sked_op
     }
 
     return render(request, 'sales/employee_details.html', context)
@@ -916,7 +991,7 @@ def demand_forecast_details(request, id):
 
     return render(request, 'sales/client_demand_forecast_details.html', context)
 
-def save_schedule(request, *pk, **actual_out):
+def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutting_not_final, printing_not_final, laminating_not_final):
     ideal_ex = ExtruderSchedule.objects.filter(ideal=True)
     ideal_cu = CuttingSchedule.objects.filter(ideal=True)
     ideal_la = LaminatingSchedule.objects.filter(ideal=True)
@@ -954,7 +1029,7 @@ def save_schedule(request, *pk, **actual_out):
     cursor.execute(query)
     df = pd.read_sql(query, connection)
 
-    if pk:
+    if pk is not None:
         item = ClientItem.objects.get(client_po_id=pk)
         mat = item.products.material_type
 
@@ -967,12 +1042,7 @@ def save_schedule(request, *pk, **actual_out):
     else:
         pass
 
-    ideal_sched = []
-
-    if actual_out:
-        ideal_sched = cpsat.flexible_jobshop(df, actual_out)
-    else:
-        ideal_sched = cpsat.flexible_jobshop(df)
+    ideal_sched = cpsat.flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not_final, printing_not_final, laminating_not_final)
 
     for i in range(0, len(ideal_sched)):
         if ideal_sched[i]['Task'] == 'Extrusion':
