@@ -4,7 +4,7 @@ import datetime, calendar
 from datetime import date, datetime, time, timedelta
 from django.utils import timezone
 import pytz
-import bigapple.utils
+#import bigapple.utils
 
 import pandas as pd
 from django.db import connection
@@ -48,6 +48,7 @@ def job_order_list(request):
     c = CuttingSchedule.objects.all()
     l = LaminatingSchedule.objects.all()
     p = PrintingSchedule.objects.all()
+    ideal_end = CuttingSchedule.objects.filter(ideal=True)
 
     if time(6, 0) <= datetime.now().time() <= time(14, 0):
         for i in e:
@@ -148,7 +149,9 @@ def job_order_list(request):
         'ex_schedule' : ex_schedule,
         'cu_schedule' : cu_schedule,
         'pr_schedule': pr_schedule,
-        'la_schedule': la_schedule
+        'la_schedule': la_schedule,
+        'now': date.today(),
+        'ideal_end' : ideal_end
     }
     return render (request, 'production/job_order_list.html', context)
 
@@ -279,17 +282,85 @@ def job_order_details(request, id):
 def finished_job_order_list_view(request):
     object_list = JobOrder.objects.filter(Q(status='Ready for delivery') | Q(status='Delivered'))
     invoice = SalesInvoice.objects.all()
+    items = []
+    ex_output_kg = []
+    ex_output_nr = []
+    prt = []
+    prt_output = []
+    cut = []
+    cut_output = []
+    ex_scrap = []
+    pr_scrap = []
+    cu_scrap = []
 
-    for x in object_list:
-        if str(x.id) in request.POST:
-            x.status = "Delivered"
-            x.date_delivered = date.today()
-            print(x)
-            x.save()
+    items = []
+    for a in object_list:
+        for x in ClientItem.objects.all():
+            if x.client_po_id == a.id:
+                items.append(x)
+
+        try:
+            e = ExtruderSchedule.objects.filter(job_order_id=a.id)
+            try:
+                ex_output_kg.append(float(e.aggregate(Sum('output_kilos'))['output_kilos__sum']))
+                ex_output_nr.append(float(e.aggregate(Sum('number_rolls'))['number_rolls__sum']))
+            except TypeError:
+                ex_output_kg.append(None)
+                ex_output_nr.append(None)
+        except ExtruderSchedule.DoesNotExist:
+            ex_output_kg.append(None)
+            ex_output_nr.append(None)
+
+        try:
+            prts = PrintingSchedule.objects.filter(job_order_id=a.id).latest('datetime_out')
+            prt.append(prts)
+        except PrintingSchedule.DoesNotExist:
+            prts = None
+
+        try:
+            p = PrintingSchedule.objects.filter(job_order_id=a.id)
+            try:
+                prt_output.append(float(p.aggregate(Sum('output_kilos'))['output_kilos__sum']))
+            except TypeError:
+                prt_output.append(None)
+        except ExtruderSchedule.DoesNotExist:
+            prt_output.append(None)
+
+        try:
+            cuts = CuttingSchedule.objects.filter(job_order_id=a.id).latest('datetime_out')
+            cut.append(cuts)
+        except CuttingSchedule.DoesNotExist:
+            cuts = None
+
+        try:
+            c = CuttingSchedule.objects.filter(job_order_id=a.id)
+            try:
+                cut_output.append(float(c.aggregate(Sum('quantity'))['quantity__sum']))
+            except TypeError:
+                cut_output.append(None)
+        except ExtruderSchedule.DoesNotExist:
+            cut_output.append(None)
+
+
+    for b in object_list:
+        if str(b.id) in request.POST:
+            b.status = "Delivered"
+            b.date_delivered = date.today()
+            b.save()
+
+    #Cutting finish, Total output (m - kg)
+    # SCRAP (extruder, printing, cutting), Remarks
 
     context = {
         'object_list': object_list,
-        'invoice' : invoice
+        'invoice' : invoice,
+        'items' : items,
+        'ex_output_kg' : ex_output_kg,
+        'ex_output_nr' : ex_output_nr,
+        'prt' : prt,
+        'cut' : cut,
+        'prt_output' : prt_output,
+        'cut_output' : cut_output,
     }
 
     return render(request, 'production/finished_job_order_list.html', context)

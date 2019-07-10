@@ -1,6 +1,7 @@
 
 {% extends 'sidebar.html' %}
 {% block content %}
+{% load index %}
 <html>
 <h3 class="ui dividing header">Finished Job Order Report</h3>
 
@@ -9,6 +10,16 @@
             <tr>
                 <th>Purchase Order ID</th>
                 <th>Client</th>
+                <th>Order Quantity</th>
+                <th>Dimensions</th>
+                <th>Extrusion Output (kg)</th>
+                <th>Extrusion Output (number rolls)</th>
+                <th>Printing Finish</th>
+                <th>Printing Output (kg)</th>
+                <th>Cutting Finish</th>
+                <th>Total Output (quantity)</th>
+                <th>Scrap (kg)</th> <!-- Extruder, Printing, Cutting sub headers -->
+                <th>Remarks</th>
                 <th>Sales Invoice Issued</th>
                 <th>Dispatch Status</th>
                 <th>Date Delivered</th>
@@ -21,6 +32,28 @@
                 <tr>
                     <td><a href="{% url 'production:job_order_details' x.id %}">{{ x.id }}</a></td>
                     <td>{{ x.client }}</td>
+                    {% for y in items %}
+                    {% if y.client_po_id == x.id %}
+                    <td>{{ y.quantity }}</td>
+                    <td>{{ y.width }} x {{ y.length }} x {{ y.thickness }}</td>
+                    {% endif %}
+                    {% endfor %}
+                    <td>{{ ex_output_kg|index:forloop.counter0 }}</td>
+                    <td>{{ ex_output_nr|index:forloop.counter0 }}</td>
+                    <td>{% for z in prt %}
+                    {% if z.job_order_id == x.id %}
+                        {{ z.datetime_out}}
+                    {% endif %}
+                    {% endfor %}</td>
+                    <td>{{ prt_output|index:forloop.counter0 }}</td>
+                    <td>{% for a in cut %}
+                    {% if a.job_order_id == x.id %}
+                        {{ a.datetime_out}}
+                    {% endif %}
+                    {% endfor %}</td>
+                    <td>{{ cut_output|index:forloop.counter0 }}</td>
+                    <td>Scrap</td>
+                    <td>{{x.remarks}}</td>
                     <td>{% for y in invoice %}
                             {% if y.client_po_id == x.id %}
                             <a href="{% url 'sales:sales_invoice_details' y.id %}">{{ y.id }}</a> </td>
@@ -43,14 +76,13 @@
                         {% else %}
                         N/A
                         {% endif %}
-
                     </td>
 
                 </tr>
                 {% endfor %}
             {% else %}
             <td>
-                <p>There are no Job Orders to display</p>
+                <p>There are no Job Orders to display.</p>
             </td>
 			{% endif %}
 
