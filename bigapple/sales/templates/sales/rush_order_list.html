@@ -13,6 +13,7 @@
             </tr>
         </thead>
         <tbody>
+        {% if rush_orders %}
             {% for rush_order in rush_orders %}
             <tr>
                 <td>
@@ -38,6 +39,9 @@
                 {% endif %}
             </tr>
             {% endfor %}
+        {% else %}
+        <td>There are no Rush Orders to display.</td>
+        {% endif %}
         </tbody>
     </table>
 

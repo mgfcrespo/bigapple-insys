@@ -37,7 +37,10 @@ from django.db.models import Q
 
 # Create your views here.
 def most_common(lst):
-    return max(set(lst), key=lst.count)
+    if lst:
+        return max(set(lst), key=lst.count)
+    else:
+        return None
 
 # CRUD SUPPLIER
 def supplier_add(request):
@@ -149,9 +152,55 @@ def po_list_view(request):
 
 def po_detail_view(request, pk):
     client_po = JobOrder.objects.get(pk=pk)
+    client = client_po.client
+    items = ClientItem.objects.filter(client_po = client_po)
+    preprod = False
+    if client_po.status == 'Waiting' or client_po.status == 'On Queue':
+        preprod = True
+
+    # credit status
+    if client.overdue_balance > 0:
+        client.credit_status = 1
+        credit_status = True
+    else:
+        client.credit_status = 0
+        credit_status = False
+
+    #matreq determinant
+    products = []
+    material = []
+
+    matreq = False
+    for each in items:
+        products.append(each.products)
+        material.append(each.products.material_type)
+        for x in material:
+            inventory = Inventory.objects.filter(rm_type=x)
+            if inventory.exists():
+                for y in inventory:
+                    if y.quantity >= each.quantity/1000:
+                        matreq = True
+                    else:
+                        matreq = False
+                        break
+                        break
+            else:
+                matreq = False
+                break
+                break
+
+        if each.printed == 1:
+            ink = Inventory.objects.filter(Q(item_type='Ink') & Q(item=each.color)).first()
+            if ink is not None:
+                if ink.quantity >= int(each.quantity/2500):
+                    matreq = True
+            else:
+                matreq = False
+                break
+                break
 
     context = {'client_po': client_po,
-               'pk' : pk}
+               'pk' : pk, 'matreq' : matreq, 'credit_status' : credit_status, 'preprod' : preprod}
 
     return render(request, 'sales/clientPO_detail.html', context)
 
@@ -162,7 +211,7 @@ def confirm_client_po(request, pk):
     items = ClientItem.objects.filter(client_po = clientpo)
     supplierpo_item_formset = None
 
-    # credit status
+    #credit status
     if client.overdue_balance > 0:
         client.credit_status = 1
         credit_status = True
@@ -203,10 +252,11 @@ def confirm_client_po(request, pk):
         if each.printed == 1:
             cylinder_count = int(each.quantity/10000)
             ink = Inventory.objects.filter(Q(item_type='Ink') & Q(item=each.color)).first()
-            if ink.quantity >= int(each.quantity/2500):
-                color = str(each.color)
-                color_count = int(each.quantity/2500)
-                matreq = True
+            if ink is not None:
+                if ink.quantity >= int(each.quantity/2500):
+                    color = str(each.color)
+                    color_count = int(each.quantity/2500)
+                    matreq = True
             else:
                 matreq = False
                 request.session['matreq_ink'] = str(each.color)
@@ -219,7 +269,9 @@ def confirm_client_po(request, pk):
 
         if matreq:
             # SAVE NEW PRODUCTION SCHEDULE
-            save_schedule(request, pk, None, None, True, True, True, True)
+            in_production = JobOrder.objects.filter(
+                ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
+            save_schedule(request, pk, None, None, True, True, True, True, in_production)
             clientpo.status = "On Queue"
             clientpo.save()
             for every in items:
@@ -417,6 +469,8 @@ def statement_of_accounts_list_view(request):
 #SAMPLE DYNAMIC FORM
 def create_client_po(request):
     #FORECAST
+    matreq = False
+    credit_status = False
     client_po = JobOrder.objects.filter(client_id=request.session['session_userid'])
     client = Client.objects.get(id=request.session['session_userid'])
     i = ClientItem.objects.all()
@@ -486,9 +540,6 @@ def create_client_po(request):
                 invoice.amount_due = invoice.calculate_total_amount_computed()
                 invoice.save()
 
-                #invoice = invoice.pk
-                #invoice = SalesInvoice.objects.get(id=invoice)
-
                 message = "PO successfully created"
                 return redirect('sales:po-list-view')
 
@@ -512,7 +563,8 @@ def create_client_po(request):
         'forecast_ses': forecast_ses,
         'forecast_hwes': forecast_hwes,
         'forecast_moving_average': forecast_moving_average,
-        'product' : product}
+        'product' : product
+        }
                               )
 
 
@@ -664,7 +716,9 @@ def rush_order_assessment(request, pk):
     df = df.append(df2, ignore_index=True)
     print('df after append: ')
     print(df)
-    plot_list = cpsat.flexible_jobshop(df, None, None, True, True, True, True)
+    in_production = JobOrder.objects.filter(
+        ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
+    plot_list = cpsat.flexible_jobshop(df, None, None, True, True, True, True, in_production)
 
     machines = Machine.objects.all()
     today = date.today()
@@ -691,7 +745,9 @@ def rush_order_assessment(request, pk):
 
     if 'approve_btn' in request.POST:
         # SAVE NEW PRODUCTION SCHEDULE
-        save_schedule(request, pk, None, None, True, True, True, True)
+        in_production = JobOrder.objects.filter(
+            ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
+        save_schedule(request, pk, None, None, True, True, True, True, in_production)
         rush_order.status = 'On Queue'
         rush_order.save()
         return redirect('sales:rush_order_list')
@@ -897,11 +953,15 @@ def employee_details(request, id):
             ekis.append(a.sked_op)
 
         new_sked_op = list(set(all_workers).difference(ekis))[0]
-        if new_sked_op:
+        aaa = for_replacement.sked_in
+        aaa = aaa.replace(tzinfo=None)
+        if new_sked_op and datetime.datetime.now() < aaa:
             for_replacement.sked_op = new_sked_op
             for_replacement.save()
             messages.info(request,
                           'You have reassigned the task for Job '+str(for_replacement.job_order_id)+' scheduled at ' + str(unavailable) + ' to ' + str(new_sked_op) + '.')
+        elif datetime.datetime.now() > aaa:
+            messages.info(request, 'It is past the time of the task intended to be reassigned!')
 
     form = EmployeeForm(request.POST or None, instance=data)
     if form.is_valid():
@@ -943,40 +1003,41 @@ def demand_forecast_details(request, id):
     client_po = JobOrder.objects.filter(client_id=id)
     client = Client.objects.get(id=id)
     i = ClientItem.objects.all()
+    forecast_ses = []
+    forecast_hwes = []
+    forecast_moving_average = []
+    product = []
     items = []
     for every in i:
         for each in client_po:
             if every.client_po_id == each.id:
                 items.append(every.products_id)
 
-    item = most_common(items)
-    item = Product.objects.get(id=item)
-    cursor = connection.cursor()
-    forecast_ses = []
-    forecast_hwes = []
-    forecast_moving_average = []
+    if items:
+        item = most_common(items)
+        item = Product.objects.get(id=item)
+        cursor = connection.cursor()
+        forecast_ses = []
+        forecast_hwes = []
+        forecast_moving_average = []
 
-    query = 'SELECT po.date_issued, poi.quantity FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
-            'po.client_id = '+str(id)+' AND poi.client_po_id = po.id AND poi.products_id = '+str(item.id)
+        query = 'SELECT po.date_issued, poi.quantity FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
+                'po.client_id = '+str(id)+' AND poi.client_po_id = po.id AND poi.products_id = '+str(item.id)
 
-    cursor.execute(query)
-    df = pd.read_sql(query, connection)
+        cursor.execute(query)
+        df = pd.read_sql(query, connection)
 
-    product = item
+        product = item
 
-    #forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
-    a = TimeSeriesForecasting.forecast_ses(df)
-    a[1] = int(float(a[1]))
-    forecast_ses.extend(a)
-    b = TimeSeriesForecasting.forecast_hwes(df)
-    b[1] = int(float(b[1]))
-    forecast_hwes.extend(b)
-    c = TimeSeriesForecasting.forecast_moving_average(df)
-    c[1] = int(float(c[1]))
-    forecast_moving_average.extend(c)
-    #d = TimeSeriesForecasting.forecast_arima(df)
-    #d[1] = int(float(d[1]))
-    #forecast_arima.extend(d)
+        a = TimeSeriesForecasting.forecast_ses(df)
+        a[1] = int(float(a[1]))
+        forecast_ses.extend(a)
+        b = TimeSeriesForecasting.forecast_hwes(df)
+        b[1] = int(float(b[1]))
+        forecast_hwes.extend(b)
+        c = TimeSeriesForecasting.forecast_moving_average(df)
+        c[1] = int(float(c[1]))
+        forecast_moving_average.extend(c)
 
     context = {
         #'forecast_decomposition': forecast_decomposition,
@@ -991,7 +1052,7 @@ def demand_forecast_details(request, id):
 
     return render(request, 'sales/client_demand_forecast_details.html', context)
 
-def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutting_not_final, printing_not_final, laminating_not_final):
+def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutting_not_final, printing_not_final, laminating_not_final, in_production):
     ideal_ex = ExtruderSchedule.objects.filter(ideal=True)
     ideal_cu = CuttingSchedule.objects.filter(ideal=True)
     ideal_la = LaminatingSchedule.objects.filter(ideal=True)
@@ -1042,7 +1103,7 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
     else:
         pass
 
-    ideal_sched = cpsat.flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not_final, printing_not_final, laminating_not_final)
+    ideal_sched = cpsat.flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not_final, printing_not_final, laminating_not_final, in_production)
 
     for i in range(0, len(ideal_sched)):
         if ideal_sched[i]['Task'] == 'Extrusion':

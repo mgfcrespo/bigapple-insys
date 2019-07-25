@@ -69,23 +69,33 @@
                         </td>
                         {% for b in week %}
                             <td>
+
                                 {% for i in this_week %}
                                     {% if i.Start.date == b and i.Machine == x %}
 
-                                            <br>
-                                            <a href="{% url 'production:job_order_details' i.ID %}">Job {{ i.ID }}</a><br>
-                                            <i>Employee:</i> {{ i.Worker }}<br>
-                                            <i>RM:</i> {{ i.Resource }}<br>
-                                            {% if i.Start.date == b %}
-                                                <i>Start: </i> {{ i.Start.hour }}:{{ i.Start.minute }} <br>
-                                            {% endif %}
-                                            {% if i.Finish.date == b %}
-                                                <i>End: </i> {{ i.Finish.hour }}:{{ i.Finish.minute }} <br>
-                                            {% endif %}
-                                            <br>
+                                        <div class="ui link raised card" style="padding: 1px">
+                                            <div class="content">
+                                                <div class="header"><a href="{% url 'production:job_order_details' i.ID %}">Job {{i.ID}}</a></div>
+                                            </div>
+                                            <div class="content">
+                                                <div class="description">
+                                                    Worker: {{i.Worker}}<br>
+                                                    Resource: {{i.Resource}} <br>
+                                                {% if i.Start.date == b %}
+                                                    Start: {{i.Start.hour}}:{{i.Start.minute}} <br>
+                                                {% endif %}
+                                                {% if i.Finish.date == b %}
+                                                    End: {{i.Finish.hour}}:{{i.Finish.minute}}
+                                                {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
 
                                     {% endif %}
                                 {% endfor %}
+
+
+
                             </td>
                         {% endfor %}
                     </tr>
@@ -120,17 +130,25 @@
                             <td>
                                 {% for j in this_month %}
                                     {% if j.Start.date == d and j.Machine == y %}
-                                            <br>
-                                            <a href="{% url 'production:job_order_details' j.ID %}">Job {{ j.ID }}</a><br>
-                                            <i>Employee:</i> {{ j.Worker }}<br>
-                                            <i>RM:</i> {{ j.Resource }}<br>
-                                            {% if j.Start.date == d %}
-                                                <i>Start: </i> {{ j.Start.hour }}:{{ j.Start.minute }} <br>
-                                            {% endif %}
-                                            {% if j.Finish.date == d %}
-                                                <i>End: </i> {{ j.Finish.hour }}:{{ j.Finish.minute }} <br>
-                                            {% endif %}
-                                            <br>
+
+                                        <div class="ui link raised card" style="padding: 2px">
+                                            <div class="content">
+                                                <div class="header"><a href="{% url 'production:job_order_details' j.ID %}">Job {{j.ID}}</a></div>
+                                            </div>
+                                            <div class="content">
+                                                <div class="description">
+                                                    Worker: {{j.Worker}}<br>
+                                                    Resource: {{j.Resource}} <br>
+                                                {% if j.Start.date == d %}
+                                                    Start: {{j.Start.hour}}:{{j.Start.minute}} <br>
+                                                {% endif %}
+                                                {% if j.Finish.date == d %}
+                                                    End: {{j.Finish.hour}}:{{j.Finish.minute}}
+                                                {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     {% endif %}
                                 {% endfor %}
                             </td>

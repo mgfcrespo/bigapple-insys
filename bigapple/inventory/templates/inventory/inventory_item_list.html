@@ -1,42 +1,104 @@
 {% extends 'sidebar.html' %}
 {% block content %}
 <h3 class="ui dividing header">{{ title }}</h3>
+
+<div style="overflow-x: scroll">
 	<table class="ui striped table center aligned">
 		<thead>
-		<tr class = "row">
-			<th class="four wide">Item</th>
-			<th class="four wide">Type</th>
-			<th class="four wide">Quantity</th>
-			<th class="four wide">Quantity Issued to Production as of {{ now }}</th>
-
-			<th class="four wide"></th>
+		<tr>
+			<th rowspan="3">Item</th>
+			<th rowspan="3">Type</th>
+			<th rowspan="1">Deliveries</th>
+			<th colspan="3">Materials Requisition</th>
+			<th rowspan="3">Total Qty Issued for the Day <br>as of {{ now }}</th>
+			<th rowspan="3">Qty On-hand</th>
+			<th rowspan="3">Economic Order Quantity</th>
+			<th rowspan="3"></th>
 		</tr>
+		<tr>
+			<th rowspan="3">Supplier PO # : Qty Received</th>
+			<th colspan="1">1st Shift</th>
+			<th colspan="1">2nd Shift</th>
+			<th colspan="1">3rd Shift</th>
+		</tr>
+		<tr>
+			<th rowspan="1">Req. Form # : Qty Issued</th>
+			<th rowspan="1">Req. Form # : Qty Issued</th>
+			<th rowspan="1">Req. Form # : Qty Issued</th>
+		</tr>
+
 		</thead>
 		<tbody>
 			{% if items %}
-			{% for items in items %}
+			{% for x in items %}
 			<tr class = "row">
 				<td>
-					<a href="{% url 'inventory:inventory_count_list' items.id %}">{{ items.item }}</a>
+					<a href="{% url 'inventory:inventory_count_list' x.id %}">{{ x.item }}</a>
 				</td>
-				<td>{{ items.item_type }}</td>
-				<td>{{ items.quantity }}</td>
-                {% for every in issued_to_production %}
-                    {% if every.item == items %}
-				<td>{{ every.quantity }} </td>
+				<td>{{ x.item_type }}</td>
+				<td>
+					{% for a in spo %}
+						{% if a.item_id == x.id %}
+							<a href="{% url 'inventory:supplierPO_details' a.supplier_po_id %}">{{ a.supplier_po_id }} </a>
+
+							{% for b in counts %}
+									{% if b.spo_count_id == a.supplier_po_id %}
+										: {{ b.new_count }},
+									{% endif %}
+							{% endfor %}
+						{% endif %}
+					{% endfor %}
+				</td>
+				<td>{% for c in matreqs_1st_shift %}
+						{% if c.item_id == x.id %}
+							<a href="{% url 'inventory:materials_requisition_details' c.id %}">{{ c.id }} </a>
+							: {{ c.quantity }},
+						{% endif %}
+					{% endfor %}</td>
+				<td>{% for d in matreqs_2nd_shift %}
+						{% if d.item_id == x.id %}
+							<a href="{% url 'inventory:materials_requisition_details' d.id %}">{{ d.id }} </a>
+							: {{ d.quantity }},
+						{% endif %}
+					{% endfor %}</td>
+				<td>{% for e in matreqs_3rd_shift %}
+						{% if e.item_id == x.id %}
+							<a href="{% url 'inventory:materials_requisition_details' e.id %}">{{ e.id }} </a>
+							: {{ e.quantity }},
+						{% endif %}
+					{% endfor %}</td>
+				<td>{% for every in issued_to_production %}
+                    {% if every.item == x %}
+				{{ every.quantity }}
                     {% endif %}
-                {% endfor %}
-				<td class="right aligned">
-					<a style = "padding: 5px;" href="{% url 'inventory:inventory_count_form' items.id %}">
+                {% endfor %}</td>
+				<td>{{ x.quantity }}</td>
+				<td>{% if x.rm_type == 'LDPE' %}
+				{{ EOQ_ldpe }}
+				{% elif x.rm_type == 'LLDPE' %}
+				{{ EOQ_lldpe }}
+				{% elif x.rm_type == 'HDPE' %}
+				{{ EOQ_hdpe }}
+				{% elif x.rm_type == 'PP' %}
+				{{ EOQ_pp }}
+				{% elif x.rm_type == 'PET' %}
+				{{ EOQ_pet }}
+				{% elif x.rm_type == 'PE' %}
+				{{ EOQ_pe }}
+				{% elif x.rm_type == 'HD' %}
+				{{ EOQ_hd }}
+				{% endif %}</td>
+
+				<td>
+					<a style = "padding: 5px;" href="{% url 'inventory:inventory_count_form' x.id %}">
 						<i class="primary boxes icon"></i>
 					</a>
-					<a style = "padding: 5px;" href="{% url 'inventory:inventory_item_edit' items.id %}">
+					<a style = "padding: 5px;" href="{% url 'inventory:inventory_item_edit' x.id %}">
 						<i class="yellow edit icon"></i>
 					</a>
-					<a onclick="return confirm('Are you sure?')" class = "button"style = "padding: 5px;" href="{% url 'inventory:inventory_item_delete' items.id %}">
+					<a onclick="return confirm('Are you sure?')" class = "button"style = "padding: 5px;" href="{% url 'inventory:inventory_item_delete' x.id %}">
 						<i class="red trash icon"></i>
 					</a>
-
 				</td>
 			</tr>
 			{% endfor %}
@@ -57,5 +119,5 @@
 			<div class="ui cancel button">Cancel</div>
 		</div>
 	</div> -->
-
+</div>
 {% endblock %}

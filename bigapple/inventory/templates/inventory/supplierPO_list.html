@@ -8,6 +8,7 @@
                 <th>Date Issued</th>
                 <th>Supplier</th>
                 <th>Delivery Date</th>
+                <th>For Job Order</th>
                 <th>Total Amount</th>
                 <th>Status</th>
 
@@ -23,12 +24,19 @@
 					<td>{{ mr.date_issued }}</td>
                     <td>{{ mr.supplier }}</td>
                     <td>{{ mr.delivery_date }}</td>
-                    <td>{{ mr.total_amount }}</td>
-                   {% for x in received %}
-						{% if x.spo_count_id == mr.id %}
-						<td>Received</td>
+					<td>
+                     {% if mr.client_po %}
+                            <a href="{% url 'production:job_order_details' mr.client_po_id %}">{{mr.client_po_id}}</a>
+                        {% else %}
+                        N/A
 						{% endif %}
-					{% endfor %}
+                    </td>
+                    <td>{{ mr.total_amount }}</td>
+                   <td>{% for x in received %}
+						{% if x.spo_count_id == mr.id %}
+						Received
+						{% endif %}
+					{% endfor %}</td>
     			</tr>
 				{% endfor %}
 			{% else %}

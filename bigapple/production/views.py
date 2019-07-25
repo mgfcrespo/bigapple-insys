@@ -304,12 +304,15 @@ def finished_job_order_list_view(request):
             try:
                 ex_output_kg.append(float(e.aggregate(Sum('output_kilos'))['output_kilos__sum']))
                 ex_output_nr.append(float(e.aggregate(Sum('number_rolls'))['number_rolls__sum']))
+                ex_scrap.append(float(e.aggregate(Sum('extruder_scrap'))['extruder_scrap__sum']))
             except TypeError:
                 ex_output_kg.append(None)
                 ex_output_nr.append(None)
+                ex_scrap.append(None)
         except ExtruderSchedule.DoesNotExist:
             ex_output_kg.append(None)
             ex_output_nr.append(None)
+            ex_scrap.append(None)
 
         try:
             prts = PrintingSchedule.objects.filter(job_order_id=a.id).latest('datetime_out')
@@ -321,10 +324,13 @@ def finished_job_order_list_view(request):
             p = PrintingSchedule.objects.filter(job_order_id=a.id)
             try:
                 prt_output.append(float(p.aggregate(Sum('output_kilos'))['output_kilos__sum']))
+                pr_scrap.append(float(p.aggregate(Sum('printing_scrap'))['printing_scrap__sum']))
             except TypeError:
                 prt_output.append(None)
+                pr_scrap.append(None)
         except ExtruderSchedule.DoesNotExist:
             prt_output.append(None)
+            pr_scrap.append(None)
 
         try:
             cuts = CuttingSchedule.objects.filter(job_order_id=a.id).latest('datetime_out')
@@ -336,11 +342,13 @@ def finished_job_order_list_view(request):
             c = CuttingSchedule.objects.filter(job_order_id=a.id)
             try:
                 cut_output.append(float(c.aggregate(Sum('quantity'))['quantity__sum']))
+                cu_scrap.append(float(c.aggregate(Sum('cutting_scrap'))['cutting_scrap__sum']))
             except TypeError:
                 cut_output.append(None)
+                cu_scrap.append(None)
         except ExtruderSchedule.DoesNotExist:
             cut_output.append(None)
-
+            cu_scrap.append(None)
 
     for b in object_list:
         if str(b.id) in request.POST:
@@ -361,6 +369,9 @@ def finished_job_order_list_view(request):
         'cut' : cut,
         'prt_output' : prt_output,
         'cut_output' : cut_output,
+        'ex_scrap' : ex_scrap,
+        'cu_scrap' : cu_scrap,
+        'pr_scrap' : pr_scrap
     }
 
     return render(request, 'production/finished_job_order_list.html', context)
@@ -372,7 +383,7 @@ def add_extruder_schedule(request, id):
     e = ExtruderSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=False))
     e.job_order = id
     form = ExtruderScheduleForm(request.POST)
-    ideal = ExtruderSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True))
+    ideal = ExtruderSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()
     printed = False
     if item.printed == 1:
         printed = True
@@ -408,10 +419,14 @@ def add_extruder_schedule(request, id):
                     if sked_in_1 <= pasok <= sked_in_2 or \
                             sked_out_1 <= labas <= sked_out_2:
                         if final == 1:
-                            sales_views.save_schedule(request, None, labas, id, False, True, True, True)
+                            in_production = JobOrder.objects.filter(
+                                ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
+                            sales_views.save_schedule(request, None, labas, id, False, True, True, True, in_production)
                             print('resched, final')
                         else:
-                            sales_views.save_schedule(request, None, labas, id, True, True, True, True)
+                            in_production = JobOrder.objects.filter(
+                                ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
+                            sales_views.save_schedule(request, None, labas, id, True, True, True, True, in_production)
                             print('resched, not final')
             if form.final:
                 if printed:
@@ -497,7 +512,7 @@ def add_printing_schedule(request, id):
     data = JobOrder.objects.get(id=id)
     form = PrintingScheduleForm(request.POST)
     item = ClientItem.objects.get(client_po_id=id)
-    ideal = PrintingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True))
+    ideal = PrintingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()
     p = PrintingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=False))
     p.job_order = id
     items = ClientItem.objects.filter(client_po=id)
@@ -540,10 +555,14 @@ def add_printing_schedule(request, id):
                     if sked_in_1 <= pasok <= sked_in_2 or \
                             sked_out_1 <= labas <= sked_out_2:
                         if final == 1:
-                            sales_views.save_schedule(request, None, labas, id, True, True, False, True)
+                            in_production = JobOrder.objects.filter(
+                                ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
+                            sales_views.save_schedule(request, None, labas, id, True, True, False, True, in_production)
                             print('resched, final')
                         else:
-                            sales_views.save_schedule(request, None, labas, id, True, True, True, True)
+                            in_production = JobOrder.objects.filter(
+                                ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
+                            sales_views.save_schedule(request, None, labas, id, True, True, True, True, in_production)
                             print('resched, not final')
             if form.final:
                 if laminate:
@@ -630,7 +649,7 @@ def add_cutting_schedule(request, id):
     form = CuttingScheduleForm(request.POST)
     invoice = SalesInvoice.objects.get(client_po=data)
     client = data.client
-    ideal = CuttingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True))
+    ideal = CuttingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()
 
     c = CuttingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=False))
     c.job_order = id
@@ -668,10 +687,13 @@ def add_cutting_schedule(request, id):
                     if sked_in_1 <= pasok <= sked_in_2 or \
                             sked_out_1 <= labas <= sked_out_2:
                         if final == 1:
-                            sales_views.save_schedule(request, None, labas, id, True, False, True, True)
+                            in_production = JobOrder.objects.filter(
+                                ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
+                            sales_views.save_schedule(request, None, labas, id, True, False, True, True, in_production)
                             print('resched, final')
                         else:
-                            sales_views.save_schedule(request, None, labas, id, True, True, True, True)
+                            in_production = JobOrder.objects.filter(~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
+                            sales_views.save_schedule(request, None, labas, id, True, True, True, True, in_production)
                             print('resched, not final')
         if form.final:
             data.status = 'Ready for delivery'
@@ -790,10 +812,14 @@ def add_laminating_schedule(request, id):
                     if sked_in_1 <= pasok <= sked_in_2 or \
                             sked_out_1 <= labas <= sked_out_2:
                         if final == 1:
-                            sales_views.save_schedule(request, None, labas, id, True, True, True, False)
+                            in_production = JobOrder.objects.filter(
+                                ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
+                            sales_views.save_schedule(request, None, labas, id, True, True, True, False, in_production)
                             print('resched, final')
                         else:
-                            sales_views.save_schedule(request, None, labas, id, True, True, True, True)
+                            in_production = JobOrder.objects.filter(
+                                ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
+                            sales_views.save_schedule(request, None, labas, id, True, True, True, True, in_production)
                             print('resched, not final')
             if form.final:
                 data.status = 'Under Cutting'
@@ -1034,13 +1060,25 @@ def production_schedule(request):
             if is_it_ok.state == 'OK':
                 pass
             else:
-                plot_list = sales_views.save_schedule(request, None, None, None, True)
+                print('MACHINE BREAKDOWN')
+                in_production = JobOrder.objects.filter(
+                    ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
+                plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production)
                 break
 
         # Machine recently deployed.
         yung_wala = set(all_machines).difference(machines_in_production)
-        if yung_wala:
-            plot_list = sales_views.save_schedule(request, None, None, None, True)
+        yes_deployed = False
+        for x in yung_wala:
+            for y in range(len(plot_list)):
+                if x.machine_type == plot_list[y]['Task'] or x.machine_type == 'Extruder':
+                    yes_deployed = True
+                    break
+        if yung_wala and yes_deployed:
+            print('MACHINE RECENTLY DEPLOYED')
+            in_production = JobOrder.objects.filter(
+                ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
+            plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production)
         else:
             pass
 
@@ -1084,7 +1122,10 @@ def production_schedule(request):
         
         '''
     else:
-        plot_list = sales_views.save_schedule(request, None, None, None, True)
+        print('NO IDEAL')
+        in_production = JobOrder.objects.filter(
+            ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
+        plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production)
 
     today = date.today()
     start_week = today - timedelta(days=today.weekday())

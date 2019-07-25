@@ -35,7 +35,11 @@
         <div class="column">
             <div class="field">
                 <label>Product Name</label>
-                {{product.products}}
+                {% if product %}
+                    {{product.products}}
+                {% else %}
+                    Not enough data to generate forecast!
+                {% endif %}
             </div>
             <div class="field">
                 <label>Description</label>

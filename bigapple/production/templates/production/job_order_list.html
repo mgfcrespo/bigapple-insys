@@ -38,21 +38,21 @@
                         {% if data.status == 'On Queue' or data.status == 'Under Extrusion' %}
                             {% for each in ex_schedule %}
                                 {% if data.id == each %}
-                                    Due this shift!
+                                    Due this shift!<br>
                                 {% endif %}
                             {% endfor %}
                             <a class="ui small blue button" href="{% url 'production:add_extruder_schedule' data.id %}" style="width: 100px;">Extrusion</a>
                         {% elif data.status == 'Under Printing'%}
                             {% for each in pr_schedule %}
                                 {% if data.id == each %}
-                                    Due this shift!
+                                    Due this shift!<br>
                                 {% endif %}
                             {% endfor %}
                             <a class="ui small yellow button" href="{% url 'production:add_printing_schedule' data.id %}" style="width: 100px;">Printing</a>
                         {% elif data.status == 'Under Laminating' %}
                             {% for each in la_schedule %}
                                 {% if data.id == each %}
-                                    Due this shift!
+                                    Due this shift!<br>
                                 {% endif %}
                             {% endfor %}
                             <a class="ui small red button" href="{% url 'production:add_laminating_schedule' data.id %}" style="width: 100px;">Laminating</a>

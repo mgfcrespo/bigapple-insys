@@ -5,25 +5,30 @@
 <html>
 <h3 class="ui dividing header">Finished Job Order Report</h3>
 
+<div style="overflow-x: scroll">
     <table class = "ui striped table center aligned">
         <thead>
             <tr>
-                <th>Purchase Order ID</th>
-                <th>Client</th>
-                <th>Order Quantity</th>
-                <th>Dimensions</th>
-                <th>Extrusion Output (kg)</th>
-                <th>Extrusion Output (number rolls)</th>
-                <th>Printing Finish</th>
-                <th>Printing Output (kg)</th>
-                <th>Cutting Finish</th>
-                <th>Total Output (quantity)</th>
-                <th>Scrap (kg)</th> <!-- Extruder, Printing, Cutting sub headers -->
-                <th>Remarks</th>
-                <th>Sales Invoice Issued</th>
-                <th>Dispatch Status</th>
-                <th>Date Delivered</th>
-
+                <th rowspan="2">Purchase Order ID</th>
+                <th rowspan="2">Client</th>
+                <th rowspan="2">Order Quantity</th>
+                <th rowspan="2">Dimensions</th>
+                <th rowspan="2">Extrusion Output (kg)</th>
+                <th rowspan="2">Extrusion Output (number rolls)</th>
+                <th rowspan="2">Printing Finish</th>
+                <th rowspan="2">Printing Output (kg)</th>
+                <th rowspan="2">Cutting Finish</th>
+                <th rowspan="2">Total Output (quantity)</th>
+                <th colspan="3">Scrap (kg)</th> <!-- Extruder, Printing, Cutting sub headers -->
+                <th rowspan="2">Remarks</th>
+                <th rowspan="2">Sales Invoice Issued</th>
+                <th rowspan="2">Dispatch Status</th>
+                <th rowspan="2">Date Delivered</th>
+            </tr>
+            <tr>
+                <th>Extrusion</th>
+                <th>Printing</th>
+                <th>Cutting</th>
             </tr>
         </thead>
         <tbody>
@@ -31,11 +36,15 @@
                 {% for x in object_list %}
                 <tr>
                     <td><a href="{% url 'production:job_order_details' x.id %}">{{ x.id }}</a></td>
+
                     <td>{{ x.client }}</td>
                     {% for y in items %}
                     {% if y.client_po_id == x.id %}
+
                     <td>{{ y.quantity }}</td>
+
                     <td>{{ y.width }} x {{ y.length }} x {{ y.thickness }}</td>
+
                     {% endif %}
                     {% endfor %}
                     <td>{{ ex_output_kg|index:forloop.counter0 }}</td>
@@ -45,15 +54,26 @@
                         {{ z.datetime_out}}
                     {% endif %}
                     {% endfor %}</td>
+
                     <td>{{ prt_output|index:forloop.counter0 }}</td>
+
                     <td>{% for a in cut %}
                     {% if a.job_order_id == x.id %}
                         {{ a.datetime_out}}
                     {% endif %}
-                    {% endfor %}</td>
+                    {% endfor %}
+                    </td>
+
                     <td>{{ cut_output|index:forloop.counter0 }}</td>
-                    <td>Scrap</td>
+
+                    <td>{{ ex_scrap|index:forloop.counter0 }}</td>
+
+                    <td>{{ pr_scrap|index:forloop.counter0 }} </td>
+
+                    <td>{{ cu_scrap|index:forloop.counter0 }} </td>
+
                     <td>{{x.remarks}}</td>
+
                     <td>{% for y in invoice %}
                             {% if y.client_po_id == x.id %}
                             <a href="{% url 'sales:sales_invoice_details' y.id %}">{{ y.id }}</a> </td>
@@ -61,15 +81,15 @@
                         {% endfor %}
                     <td>
                         {% if x.status == "Ready for delivery" %}
-        <form method="post">
-                {% csrf_token %}
-                    <input type="submit" class="ui green basic button" value="Confirm Dispatch" id={{x.id}} name={{x.id}}>
-
-            </form>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="submit" class="ui green basic button" value="Confirm Dispatch" id={{x.id}} name={{x.id}}>
+                            </form>
                         {% else %}
                         Already delivered
                     {% endif %}
                     </td>
+
                     <td>
                         {% if x.date_delivered is not None %}
                         {{ x.date_delivered }}
@@ -77,7 +97,6 @@
                         N/A
                         {% endif %}
                     </td>
-
                 </tr>
                 {% endfor %}
             {% else %}
@@ -90,5 +109,6 @@
         </tbody>
     </table>
 
+</div>
 {% endblock %}
 </html>

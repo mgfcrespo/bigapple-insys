@@ -216,50 +216,69 @@
         <div style="overflow-x: scroll;">
             <div class="ui segment">
                 <h4 class="ui dividing header">Raw Material Levels</h4>
-                <div id="rawmaterialLevels"></div>
+                <canvas id="inventoryCanvas" width="400" height="250"></canvas>
             </div>
         </div>
     </div>
 </div>
 
+<script>
+    var inventory = {
+      label: "Inventory Levels",
+      data: ['{{ LDPE }}', '{{ LLDPE }}', '{{ HDPE }}', '{{ PP }}', '{{ PE }}', '{{ PET }}', '{{ HD }}'],
+      backgroundColor: "rgba(0, 99, 132, 0.6)",
+      borderWidth: 0,
+      yAxisID: "y-axis-level"
+    };
 
-    <script>
+    var eoq = {
+      label: "Economic Order Quantity",
+      data: ['{{EOQ_ldpe}}', '{{EOQ_lldpe}}','{{EOQ_hpde}}','{{EOQ_pp}}','{{EOQ_pe}}','{{EOQ_pet}}','{{EOQ_hd}}',],
+      backgroundColor: "rgba(99, 132, 0, 0.6)",
+      borderWidth: 0,
+      yAxisID: "y-axis-eoq"
+    };
 
-        google.charts.load('current', {'packages':['corechart', 'bar']});
+    var inventoryData = {
+      labels: [
+        "LDPE",
+        "LLDPE",
+        "HDPE",
+        "PP",
+        "PE",
+        "PET",
+        "HD",
+      ],
+      datasets: [inventory, eoq]
+    };
 
-        // for raw material levels
-        google.charts.setOnLoadCallback(rawmaterialLevels);
-        function rawmaterialLevels() {
-          var data = google.visualization.arrayToDataTable([
-            ["Raw Material Type", "Amount", { role: "style" } ],
-            ["LDPE", parseInt("{{ LDPE }}"), "#97cfca"],
-            ["LLDPE", parseInt("{{ LLDPE }}"), "#619c17"],
-            ["HDPE", parseInt("{{ HDPE }}"), "#9c2f2f"],
-            ["PP", parseInt("{{ PP }}"), "#d7e374"],
-            ["PET", parseInt("{{ PET }}"),"#9c732c"],
-            ["PE", parseInt("{{ PE }}"),"#249c3f"],
-            ["HD", parseInt("{{ HD }}"),"#34919c"]
-          ]);
-
-          var view = new google.visualization.DataView(data);
-          view.setColumns([0, 1,
-                           { calc: "stringify",
-                             sourceColumn: 1,
-                             type: "string",
-                             role: "annotation" },
-                           2]);
-
-          var options = {
-            hAxis:{format: 'short'},
-            width: 1000,
-            height: 300,
-            bar: {groupWidth: "90%"},
-            legend: { position: "none" },
-          };
-          var chart = new google.visualization.BarChart(document.getElementById("rawmaterialLevels"));
-          chart.draw(view, options);
+    var chartOptions = {
+      scales: {
+        xAxes: [
+          {
+            barPercentage: 1,
+            categoryPercentage: 0.6
+          }
+        ],
+        yAxes: [
+          {
+            id: "y-axis-level"
+          },
+          {
+            id: "y-axis-eoq"
+          }
+        ]
       }
-    </script>
+    };
+
+    var barChart = new Chart(inventoryCanvas, {
+      type: "bar",
+      data: inventoryData,
+      options: chartOptions
+    });
+</script>
+
 </div>
+
 
 {% endblock %}

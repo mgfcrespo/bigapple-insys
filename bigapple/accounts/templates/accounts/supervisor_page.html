@@ -211,55 +211,14 @@
         </table>
     </div>
 
+
     <h3 class="ui dividing header">Inventory Dashboard</h3>
-    <div class="ui horizontal segments">
-        <div style="overflow-x: scroll;">
-            <div class="ui segment">
-                <h4 class="ui dividing header">Raw Material Levels</h4>
-                <div id="rawmaterialLevels"></div>
-            </div>
+    <div style="overflow-x: scroll;">
+        <div class="ui segment">
+            <h4 class="ui dividing header">Raw Material Levels</h4>
+            <canvas id="inventoryCanvas" width="400" height="250"></canvas>
         </div>
     </div>
-</div>
-
-
-    <script>
-
-        google.charts.load('current', {'packages':['corechart', 'bar']});
-
-        // for raw material levels
-        google.charts.setOnLoadCallback(rawmaterialLevels);
-        function rawmaterialLevels() {
-          var data = google.visualization.arrayToDataTable([
-            ["Raw Material Type", "Amount", { role: "style" } ],
-            ["LDPE", parseInt("{{ LDPE }}"), "#97cfca"],
-            ["LLDPE", parseInt("{{ LLDPE }}"), "#619c17"],
-            ["HDPE", parseInt("{{ HDPE }}"), "#9c2f2f"],
-            ["PP", parseInt("{{ PP }}"), "#d7e374"],
-            ["PET", parseInt("{{ PET }}"),"#9c732c"],
-            ["PE", parseInt("{{ PE }}"),"#249c3f"],
-            ["HD", parseInt("{{ HD }}"),"#34919c"]
-          ]);
-
-          var view = new google.visualization.DataView(data);
-          view.setColumns([0, 1,
-                           { calc: "stringify",
-                             sourceColumn: 1,
-                             type: "string",
-                             role: "annotation" },
-                           2]);
-
-          var options = {
-            hAxis:{format: 'short'},
-            width: 1000,
-            height: 300,
-            bar: {groupWidth: "90%"},
-            legend: { position: "none" },
-          };
-          var chart = new google.visualization.BarChart(document.getElementById("rawmaterialLevels"));
-          chart.draw(view, options);
-      }
-    </script>
 </div>
 
 {% endblock %}

@@ -2,7 +2,9 @@ from django.db import models
 
 from accounts.models import Employee
 from sales.models import Supplier, ClientItem
-
+from production.models import JobOrder
+from datetime import date, timedelta, datetime, time
+from django.utils import timezone
 
 # Create your models here.
 
@@ -46,6 +48,7 @@ class SupplierPO(models.Model):
     date_issued = models.DateField(auto_now_add=True)
     delivery_date = models.DateField()
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    client_po = models.ForeignKey(JobOrder, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
         db_table = 'inventory_mgt_supplierpo'
@@ -65,6 +68,7 @@ class InventoryCount(models.Model):
     date_counted = models.DateField(blank=True, null=True)
     count_person = models.ForeignKey(Employee, on_delete=models.CASCADE)
     spo_count = models.ForeignKey(SupplierPO, on_delete=models.CASCADE)
+    client_po = models.ForeignKey(JobOrder, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
         db_table = 'inventory_mgt_inventorycount'
@@ -102,7 +106,7 @@ class MaterialRequisition(models.Model):
         ('Pending', 'Pending'),
     )
 
-    datetime_issued = models.DateTimeField(auto_now_add=True)
+    datetime_issued = models.DateTimeField('datetime_issued', default=timezone.now)
     shift = models.IntegerField(null=True, blank=True)
     item = models.ForeignKey(Inventory, on_delete=models.CASCADE)
     quantity = models.IntegerField()

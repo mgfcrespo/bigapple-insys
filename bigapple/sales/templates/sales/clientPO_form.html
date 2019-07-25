@@ -1,6 +1,6 @@
 {% extends "sidebar.html" %} {% block content %}
 
-<h3 class="ui dividing header">Create Client PO</h3>
+<h3 class="ui dividing header">Create Purchase Order</h3>
 
     <form id="myForm" class="ui form" action="{% url 'sales:create-client-po-form' %}" method="POST" enctype="multipart/form-data">
 
@@ -58,8 +58,8 @@
 
         {{formset.management_form}}
 
-        <button type="submit" class="ui small green button" onclick="return confirm('Are you sure?')">Submit</button>
-    </form>
+		<button type="submit" class="ui small green button" onclick="return confirm('Are you sure you want to proceed?')">Submit</button>
+	</form>
 
 
 <h3 class="ui dividing header">Your Demand Forecast</h3>
@@ -149,6 +149,55 @@
 		</div>
 	</div>
 </div>
+
+<!-- {% if credit_status %}
+        <div class="ui negative icon message">
+            <i class="times circle icon"></i>
+            <div class="content"><div class="header">
+                You have an overdue balance with the company.
+            </div>
+            <p>
+                Please settle this immediately as it will affect this order's confirmation.
+            </p>
+            </div>
+        </div>
+{% else %}
+        <div class="ui positive icon message">
+            <i class="check circle icon"></i>
+            <div class="content"><div class="header">
+                Credit status cleared.
+            </div>
+            <p>
+                You have no overdue balance in the company's records.
+            </p>
+            </div>
+        </div>
+{% endif %}
+{% if matreq %}
+	<div class="ui positive icon message">
+		<i class="check circle icon"></i>
+		<div class="content">
+			<div class="header">
+				There are enough materials in the site's warehouse to produce this order.
+			</div>
+			<p>
+				Big Apple can proceed with processing this order without having to procure materials.
+			</p>
+		</div>
+	</div>
+{% else %}
+	<div class="ui negative icon message">
+		<i class="times circle icon"></i>
+		<div class="content">
+			<div class="header">
+			   There are not enough materials in the site's warehouse to produce this order at the moment.
+			</div>
+			<p>
+				Big Apple will have to procure materials first before being able to process this order.
+			</p>
+		</div>
+	</div>
+{% endif %} -->
 
 <!--
 <p>Total: </p><input id ="Total" type="number">

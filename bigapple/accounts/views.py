@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.sessions.models import Session
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Avg
 from django.template import loader
 from django.http import HttpResponse
 
@@ -24,9 +24,12 @@ from .models import Client
 from accounts.forms import SignUpForm
 from sales.models import Supplier, SalesInvoice, ClientItem, Product
 from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule, Machine
-from inventory.models import Inventory
+from inventory.models import Inventory, SupplierPOItems
 from utilities import TimeSeriesForecasting, cpsat
 from sales import views as sales_views
+from django.db.models import Q
+
+import math
 
 # Create your views here.
 
@@ -80,6 +83,120 @@ def user_page_view(request):
         PET = Inventory.objects.filter(rm_type='PET').aggregate(Sum('quantity')).get('quantity__sum', 0)
         PE = Inventory.objects.filter(rm_type='PE').aggregate(Sum('quantity')).get('quantity__sum', 0)
         HD = Inventory.objects.filter(rm_type='HD').aggregate(Sum('quantity')).get('quantity__sum', 0)
+
+        # EOQ
+        # LDPE
+        ldpe = Product.objects.filter(material_type='LDPE')
+        if not ldpe:
+            EOQ_ldpe = 0
+        else:
+            ldpe_demand = 0
+            ldpe_cost = Inventory.objects.filter(rm_type='LDPE').aggregate(Avg('price')).get(
+                'price__avg', 0)
+
+            for x in ldpe:
+                i = ClientItem.objects.filter(products_id=x)
+                for y in i:
+                    ldpe_demand += y.quantity
+
+            EOQ_ldpe = (math.sqrt(2 * ldpe_demand * ldpe_cost)) / 100
+
+        # LLDPE
+        lldpe = Product.objects.filter(material_type='LLDPE')
+        if not lldpe:
+            EOQ_lldpe = 0
+        else:
+            lldpe_demand = 0
+            lldpe_cost = Inventory.objects.filter(rm_type='LLDPE').aggregate(Avg('price')).get(
+                'price__avg', 0)
+
+            for x in lldpe:
+                i = ClientItem.objects.filter(products_id=x)
+                for y in i:
+                    lldpe_demand += y.quantity
+
+            EOQ_lldpe = (math.sqrt(2 * lldpe_demand * lldpe_cost)) / 100
+
+        # HDPE
+        hdpe = Product.objects.filter(material_type='HDPE')
+        if not hdpe:
+            EOQ_hdpe = 0
+        else:
+            hdpe_demand = 0
+            hdpe_cost = Inventory.objects.filter(rm_type='HDPE').aggregate(Avg('price')).get(
+                'price__avg', 0)
+
+            for x in hdpe:
+                i = ClientItem.objects.filter(products_id=x)
+                for y in i:
+                    hdpe_demand += y.quantity
+
+            EOQ_hdpe = (math.sqrt(2 * hdpe_demand * hdpe_cost)) / 100
+
+        # PP
+        pp = Product.objects.filter(material_type='PP')
+        if not pp:
+            EOQ_pp = 0
+        else:
+            pp_demand = 0
+            pp_cost = Inventory.objects.filter(rm_type='PP').aggregate(Avg('price')).get(
+                'price__avg', 0)
+
+            for x in pp:
+                i = ClientItem.objects.filter(products_id=x)
+                for y in i:
+                    pp_demand += y.quantity
+
+        EOQ_pp = (math.sqrt(2 * pp_demand * pp_cost)) / 100
+
+        # PET
+        pet = Product.objects.filter(material_type='PET')
+        if not pet:
+            EOQ_pet = 0
+        else:
+            pet_demand = 0
+            pet_cost = Inventory.objects.filter(rm_type='PET').aggregate(Avg('price')).get(
+                'price__avg', 0)
+
+            for x in pet:
+                i = ClientItem.objects.filter(products_id=x)
+                if pet_demand is None:
+                    pet_demand = 0
+                for y in i:
+                    pet_demand += y.quantity
+            EOQ_pet = (math.sqrt(2 * pet_demand * pet_cost)) / 100
+
+        # PE
+        pe = Product.objects.filter(material_type='PE')
+        if not pe:
+            EOQ_pe = 0
+        else:
+            pe_demand = 0
+            pe_cost = Inventory.objects.filter(rm_type='PE').aggregate(Avg('price')).get(
+                'price__avg', 0)
+
+            for x in pe:
+                i = ClientItem.objects.filter(products_id=x)
+                for y in i:
+                    pe_demand += y.quantity
+
+            EOQ_pe = (math.sqrt(2 * pe_demand * pe_cost)) / 100
+
+        # HD
+        hd = Product.objects.filter(material_type='HD')
+        if not hd:
+            EOQ_hd = 0
+        else:
+            hd_demand = 0
+            hd_cost = Inventory.objects.filter(rm_type='HD').aggregate(Avg('price')).get(
+                'price__avg', 0)
+
+            for x in hd:
+                i = ClientItem.objects.filter(products_id=x)
+                for y in i:
+                    hd_demand += y.quantity
+
+            EOQ_hd = (math.sqrt(2 * hd_demand * hd_cost)) / 100
 
         status_waiting = JobOrder.objects.filter(status='Waiting').count()
         status_onqueue = JobOrder.objects.filter(status='On Queue').count()
@@ -217,14 +334,43 @@ def user_page_view(request):
                                  }
                     plot_list.append(sked_dict)
 
+            machines_in_production = []
+            all_machines = Machine.objects.filter(state='OK')
+
             for q in range(len(plot_list)):
+                machines_in_production.append(plot_list[q]['Machine'])
+
+                # Machine breakdown.
                 is_it_ok = plot_list[q]['Machine']
+
                 if is_it_ok.state == 'OK':
                     pass
                 else:
-                    plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True)
+                    print('MACHINE BREAKDOWN')
+                    in_production = JobOrder.objects.filter(~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered'))
+                    plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production)
+                    break
+
+            # Machine recently deployed.
+            yung_wala = set(all_machines).difference(machines_in_production)
+            yes_deployed = False
+            for x in yung_wala:
+                for y in range(len(plot_list)):
+                    if x.machine_type == plot_list[y]['Task'] or x.machine_type == 'Extruder':
+                        yes_deployed = True
+                        break
+            if yung_wala and yes_deployed:
+                print('MACHINE RECENTLY DEPLOYED')
+                in_production = JobOrder.objects.filter(
+                    ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered'))
+                plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production)
+            else:
+                pass
+
         else:
-            plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True)
+            in_production = JobOrder.objects.filter(
+                ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered'))
+            plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production)
 
         today = date.today()
         start_week = today - timedelta(days=today.weekday())
@@ -307,6 +453,14 @@ def user_page_view(request):
         invoice = SalesInvoice.objects.filter(status='Late')[:10]
 
         context = {
+            'EOQ_ldpe': EOQ_ldpe,
+            'EOQ_lldpe': EOQ_lldpe,
+            'EOQ_hdpe': EOQ_hdpe,
+            'EOQ_pp': EOQ_pp,
+            'EOQ_pet': EOQ_pet,
+            'EOQ_pe': EOQ_pe,
+            'EOQ_hd': EOQ_hd,
+
             'invoice': invoice,
             'client_po': client_po,
 

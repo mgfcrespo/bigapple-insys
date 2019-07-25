@@ -20,9 +20,10 @@
             </div>
             <table class="ui table">
                 <thead>
-                    <th class="five wide">Item</th>
+                    <th class="four wide">Item</th>
                     <th class="three wide">Quantity Ordered</th>
                     <th class="three wide">Quantity Received</th>
+                    <th class="three wide">For Job Order</th>
                     <th class="three wide">Price</th>
                     <th class="three wide">Total</th>
                 </thead>
@@ -36,6 +37,11 @@
                             {{x.new_count}}
                             {% endif %}
                         {% endfor %}</td>
+                        <td>{% if mr.client_po %}
+                            <a href="{% url 'production:job_order_details' mr.client_po_id %}">{{mr.client_po_id}}</a>
+                        {% else %}
+                        N/A
+                        {% endif %}</td>
                         <td>{{ mri.price }}</td>
                         <td>{{ mri.total_price }}</td>
                     </tr>

@@ -55,6 +55,57 @@
 			</tbody>
     	</table>
 
+{% if preprod %}
+    {% if credit_status %}
+            <div class="ui negative icon message">
+                <i class="times circle icon"></i>
+                <div class="content"><div class="header">
+                    You have an overdue balance with the company.
+                </div>
+                <p>
+                    Please settle this immediately as it will affect this order's confirmation.
+                </p>
+                </div>
+            </div>
+    {% else %}
+            <div class="ui positive icon message">
+                <i class="check circle icon"></i>
+                <div class="content"><div class="header">
+                    Credit status cleared.
+                </div>
+                <p>
+                    You have no overdue balance in the company's records.
+                </p>
+                </div>
+            </div>
+    {% endif %}
+    {% if matreq %}
+        <div class="ui positive icon message">
+            <i class="check circle icon"></i>
+            <div class="content">
+                <div class="header">
+                    There are enough materials in the site's warehouse to produce this order.
+                </div>
+                <p>
+                    Big Apple can proceed with processing this order without having to procure materials.
+                </p>
+            </div>
+        </div>
+    {% else %}
+        <div class="ui negative icon message">
+            <i class="times circle icon"></i>
+            <div class="content">
+                <div class="header">
+                   There are not enough materials in the site's warehouse to produce this order at the moment.
+                </div>
+                <p>
+                    Big Apple will have to procure materials first before being able to process this order.
+                </p>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
+
 
 	<a class="small ui yellow button" href="{% url 'sales:po-list-view' %}">Back</a>
 

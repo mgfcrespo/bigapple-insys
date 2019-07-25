@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory, inlineformset_factory
-from django.db.models import aggregates
+from django.db.models import aggregates, Avg
 from django.db import connection
 from django.contrib import messages
 
@@ -12,12 +12,15 @@ from .models import Supplier, SupplierPO, SupplierPOItems, Inventory, Employee
 from .models import MaterialRequisition, InventoryCount
 from .forms import SupplierPOItemsForm, InventoryForm, SupplierPOForm, InventoryCountForm
 from .forms import MaterialRequisitionForm
-from sales.models import ClientItem
-from datetime import datetime, date
+from sales.models import ClientItem, Product
+from datetime import datetime, date, timedelta
+from production.models import JobOrder
 
 from utilities import TimeSeriesForecasting
 import pandas as pd
 from pandas import DataFrame
+import math
+from django.db.models import Q
 
 
 # Create your views here.
@@ -47,13 +50,164 @@ def inventory_item_list(request):
     items = Inventory.objects.all()
     today = date.today()
     issued_to_production = MaterialRequisition.objects.filter(datetime_issued__startswith=today)
-    print('issued to production: ')
-    print(issued_to_production)
+    spo_items = SupplierPOItems.objects.all()
+    spo = []
+    supplier_po = SupplierPO.objects.filter(date_issued=today)
+    for each in spo_items:
+        for every in supplier_po:
+            if each.supplier_po_id == every.id:
+                spo.append(each)
+
+    a = InventoryCount.objects.all()
+    counts = []
+    for b in a:
+        for c in supplier_po:
+            if b.spo_count_id == c.id:
+                counts.append(b)
+    shift11 = datetime.now()
+    shift12 = datetime.now()
+    shift22 = datetime.now()
+    shift32 = datetime.now() + timedelta(days=1)
+    shift11 = shift11.replace(hour=6)
+    shift12 = shift12.replace(hour=14)
+    shift22 = shift22.replace(hour=22)
+    shift32 = shift32.replace(hour=6)
+
+    matreqs_1st_shift = MaterialRequisition.objects.filter(datetime_issued__range=[shift11, shift12])
+    matreqs_2nd_shift = MaterialRequisition.objects.filter(datetime_issued__range=[shift12, shift22])
+    matreqs_3rd_shift = MaterialRequisition.objects.filter(datetime_issued__range=[shift22, shift32])
+
+    # EOQ
+    # LDPE
+    ldpe = Product.objects.filter(material_type='LDPE')
+    if not ldpe:
+        EOQ_ldpe = 0
+    else:
+        ldpe_demand = 0
+        ldpe_cost = Inventory.objects.filter(rm_type='LDPE').aggregate(Avg('price')).get(
+            'price__avg', 0)
+
+        for x in ldpe:
+            i = ClientItem.objects.filter(products_id=x)
+            for y in i:
+                ldpe_demand += y.quantity
+
+        EOQ_ldpe = (math.sqrt(2 * ldpe_demand * ldpe_cost)) / 100
+
+    # LLDPE
+    lldpe = Product.objects.filter(material_type='LLDPE')
+    if not lldpe:
+        EOQ_lldpe = 0
+    else:
+        lldpe_demand = 0
+        lldpe_cost = Inventory.objects.filter(rm_type='LLDPE').aggregate(Avg('price')).get(
+            'price__avg', 0)
+
+        for x in lldpe:
+            i = ClientItem.objects.filter(products_id=x)
+            for y in i:
+                lldpe_demand += y.quantity
+
+        EOQ_lldpe = (math.sqrt(2 * lldpe_demand * lldpe_cost)) / 100
+
+    # HDPE
+    hdpe = Product.objects.filter(material_type='HDPE')
+    if not hdpe:
+        EOQ_hdpe = 0
+    else:
+        hdpe_demand = 0
+        hdpe_cost = Inventory.objects.filter(rm_type='HDPE').aggregate(Avg('price')).get(
+            'price__avg', 0)
+
+        for x in hdpe:
+            i = ClientItem.objects.filter(products_id=x)
+            for y in i:
+                hdpe_demand += y.quantity
+
+        EOQ_hdpe = (math.sqrt(2 * hdpe_demand * hdpe_cost)) / 100
+
+    # PP
+    pp = Product.objects.filter(material_type='PP')
+    if not pp:
+        EOQ_pp = 0
+    else:
+        pp_demand = 0
+        pp_cost = Inventory.objects.filter(rm_type='PP').aggregate(Avg('price')).get(
+            'price__avg', 0)
+
+        for x in pp:
+            i = ClientItem.objects.filter(products_id=x)
+            for y in i:
+                pp_demand += y.quantity
+
+    EOQ_pp = (math.sqrt(2 * pp_demand * pp_cost)) / 100
+
+    # PET
+    pet = Product.objects.filter(material_type='PET')
+    if not pet:
+        EOQ_pet = 0
+    else:
+        pet_demand = 0
+        pet_cost = Inventory.objects.filter(rm_type='PET').aggregate(Avg('price')).get(
+            'price__avg', 0)
+
+        for x in pet:
+            i = ClientItem.objects.filter(products_id=x)
+            if pet_demand is None:
+                pet_demand = 0
+            for y in i:
+                pet_demand += y.quantity
+        EOQ_pet = (math.sqrt(2 * pet_demand * pet_cost)) / 100
+
+    # PE
+    pe = Product.objects.filter(material_type='PE')
+    if not pe:
+        EOQ_pe = 0
+    else:
+        pe_demand = 0
+        pe_cost = Inventory.objects.filter(rm_type='PE').aggregate(Avg('price')).get(
+            'price__avg', 0)
+
+        for x in pe:
+            i = ClientItem.objects.filter(products_id=x)
+            for y in i:
+                pe_demand += y.quantity
+
+        EOQ_pe = (math.sqrt(2 * pe_demand * pe_cost)) / 100
+
+    # HD
+    hd = Product.objects.filter(material_type='HD')
+    if not hd:
+        EOQ_hd = 0
+    else:
+        hd_demand = 0
+        hd_cost = Inventory.objects.filter(rm_type='HD').aggregate(Avg('price')).get(
+            'price__avg', 0)
+
+        for x in hd:
+            i = ClientItem.objects.filter(products_id=x)
+            for y in i:
+                hd_demand += y.quantity
+
+        EOQ_hd = (math.sqrt(2 * hd_demand * hd_cost)) / 100
+
     context = {
         'title': 'Inventory List',
         'items' : items,
         'issued_to_production' : issued_to_production,
-        'now' : datetime.now()
+        'now' : datetime.now(),
+        'spo' : spo,
+        'counts' : counts,
+        'matreqs_1st_shift' : matreqs_1st_shift,
+        'matreqs_2nd_shift' : matreqs_2nd_shift,
+        'matreqs_3rd_shift' : matreqs_3rd_shift,
+        'EOQ_ldpe': EOQ_ldpe,
+        'EOQ_lldpe': EOQ_lldpe,
+        'EOQ_hdpe': EOQ_hdpe,
+        'EOQ_pp': EOQ_pp,
+        'EOQ_pet': EOQ_pet,
+        'EOQ_pe': EOQ_pe,
+        'EOQ_hd': EOQ_hd,
     }
     return render (request, 'inventory/inventory_item_list.html', context)
 
@@ -100,8 +254,6 @@ def inventory_count_form(request, id):
             new_form.date_counted = date.today()
             new_form.save()
             form_id = new_form.pk
-            #new_form = new_form.pk
-            #form_instance = item #get current form
 
         data.quantity += int(request.POST.get('new_count'))
         data.save()
@@ -109,6 +261,7 @@ def inventory_count_form(request, id):
         return redirect('inventory:inventory_count_list', id = data.id)
 
     form.fields['spo_count'].queryset = SupplierPO.objects.filter(supplier_id=data.supplier_id)
+    form.fields['client_po'].queryset = JobOrder.objects.all()
 
     context = {
         'form' : form,
@@ -245,10 +398,6 @@ def supplierPO_form(request):
             quantity = request.session['forecast_moving_average'][1]
             date = request.session['forecast_moving_average'][0]
             delivery_date = date[:10]
-        elif request.session['forecast'] == 'ARIMA':
-            quantity = request.session['forecast_arima'][1]
-            date = request.session['forecast_arima'][0]
-            delivery_date = date[:10]
 
     else:
         delivery_date = datetime.now().date()
@@ -289,6 +438,7 @@ def supplierPO_form(request):
     form.fields["supplier"].queryset = supplier
     form.fields["delivery_date"] = forms.DateField(label='delivery_date',
                                                    widget=forms.DateInput(attrs={'value': delivery_date}))
+    form.fields["client_po"].queryset = JobOrder.objects.filter(~Q(status='Ready for delivery') & ~Q(status='Delivered'))
     # for each in formset:
     #    each.fields["quantity"] = forms.FloatField(label='quantity',
     #                                               widget=forms.NumberInput(attrs={'value': quantity}))
@@ -360,7 +510,6 @@ def inventory_forecast_details(request, pk):
 
     item = Inventory.objects.get(id=pk)
     cursor = connection.cursor()
-    #forecast_decomposition = []
     forecast_ses = []
     forecast_hwes = []
     forecast_moving_average = []
@@ -371,10 +520,6 @@ def inventory_forecast_details(request, pk):
 
     cursor.execute(query)
     df = pd.read_sql(query, connection)
-        # get_data = cursor.execute(query)
-        # df = DataFrame(get_data.fetchall())
-        # df.columns = get_data.keys()
-        #forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
 
     a = TimeSeriesForecasting.forecast_ses(df)
     a[1] = int(float(a[1]))
@@ -385,14 +530,10 @@ def inventory_forecast_details(request, pk):
     c = TimeSeriesForecasting.forecast_moving_average(df)
     c[1] = int(float(c[1]))
     forecast_moving_average.extend(c)
-    #d = TimeSeriesForecasting.forecast_arima(df)
-    #d[1] = int(float(d[1]))
-    #forecast_arima.extend(d)
 
     request.session['forecast_ses'] = forecast_ses
     request.session['forecast_hwes'] = forecast_hwes
     request.session['forecast_moving_average'] = forecast_moving_average
-    request.session['forecast_arima'] = forecast_arima
     request.session['item'] = item.id
 
     if 'ses_order' in request.GET:
@@ -404,16 +545,12 @@ def inventory_forecast_details(request, pk):
     elif 'moving_average_order' in request.GET:
         request.session['forecast'] = 'MOVING'
         return redirect('inventory:supplierPO_form')
-    elif 'arima_order' in request.GET:
-        request.session['forecast'] = 'ARIMA'
-        return redirect('inventory:supplierPO_form')
     else:
         request.session['forecast'] = None
 
 
     context = {
         'item': item,
-        #'forecast_decomposition': forecast_decomposition,
         'forecast_ses': forecast_ses,
         'forecast_hwes': forecast_hwes,
         'forecast_moving_average': forecast_moving_average,

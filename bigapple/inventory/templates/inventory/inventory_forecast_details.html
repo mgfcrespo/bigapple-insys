@@ -68,11 +68,7 @@
                                 <td>
                                     {{ forecast_ses.1 }}
                                 </td>
-                            {% endif %}
-                        </tr>
-
-                    </tbody>
-                    <tfoot class="full-width">
+                            <tfoot class="full-width">
                         <tr>
                             <th colspan="2">
                                  <form method='get'>
@@ -83,6 +79,10 @@
                             </th>
                         </tr>
                     </tfoot>
+                            {% endif %}
+                        </tr>
+
+                    </tbody>
                 </table>
             </div>
             <div class="ui tab segment" data-tab="third">
@@ -110,10 +110,7 @@
                             <td>
                                 {{ forecast_hwes.1 }}
                             </td>
-                            {% endif %}
-                        </tr>
-                    </tbody>
-                    <tfoot class="full-width">
+                            <tfoot class="full-width">
                         <tr>
                             <th colspan="2">
 
@@ -122,6 +119,9 @@
                             </th>
                         </tr>
                     </tfoot>
+                            {% endif %}
+                        </tr>
+                    </tbody>
 
                 </table>
             </div>
@@ -150,10 +150,7 @@
                             <td>
                                 {{ forecast_moving_average.1 }}
                             </td>
-                            {% endif %}
-                        </tr>
-                    </tbody>
-                    <tfoot class="full-width">
+                            <tfoot class="full-width">
                         <tr>
                             <th colspan="2">
                                 <input type="submit" class="ui green basic button" value="ORDER" id="moving_average_order" name="moving_average_order">
@@ -161,6 +158,10 @@
                             </th>
                         </tr>
                     </tfoot>
+                            {% endif %}
+                        </tr>
+                    </tbody>
+
                 </table>
             </div>
     </div>

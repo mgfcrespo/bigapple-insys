@@ -10,7 +10,7 @@ from collections import defaultdict
 import datetime
 from datetime import timedelta, datetime
 
-def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not_final, printing_not_final, laminating_not_final):
+def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not_final, printing_not_final, laminating_not_final, in_production):
     # Data part.
     jobs = []
     joids = []
@@ -98,6 +98,46 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
                 printing_time = int((quantity * 100) / 70000)
         else:
             printing_time = int((quantity * 100) / 70000)
+
+        if in_production:
+            print('IN_PRODUCTION')
+            print(in_production)
+            for each in in_production:
+                if each.id == df.ix[i]['id']:
+                    if each.status == 'Under Extrusion':
+                        e = ExtruderSchedule.objects.filter(Q(job_order_id=df.ix[i]['id']) & Q(ideal=False))
+                        if e:
+                            sum_number_rolls = float(e.aggregate(Sum('number_rolls'))['number_rolls__sum'])
+                            balance_number_rolls = number_rolls - sum_number_rolls
+                            quantity = balance_number_rolls * 10000
+                            extrusion_time = int((quantity * 80) / 70000)
+                    elif each.status == 'Under Cutting':
+                        extrusion_time = 0
+                        printing_time = 0
+                        laminating_time = 0
+                        c = CuttingSchedule.objects.filter(Q(job_order_id=df.ix[i]['id']) & Q(ideal=False))
+                        if c:
+                            sum_number_rolls = float(c.aggregate(Sum('number_rolls'))['number_rolls__sum'])
+                            balance_number_rolls = number_rolls - sum_number_rolls
+                            quantity = balance_number_rolls * 10000
+                            cutting_time = int((quantity * 60) / 70000)
+                    elif each.status == 'Under Laminating':
+                        extrusion_time = 0
+                        printing_time = 0
+                        l = LaminatingSchedule.objects.filter(Q(job_order_id=df.ix[i]['id']) & Q(ideal=False))
+                        if l:
+                            sum_number_rolls = float(l.aggregate(Sum('number_rolls'))['number_rolls__sum'])
+                            balance_number_rolls = number_rolls - sum_number_rolls
+                            quantity = balance_number_rolls * 10000
+                            laminating_time = int((quantity * 60) / 70000)
+                    elif each.status == 'Under Printing':
+                        extrusion_time = 0
+                        p = PrintingSchedule.objects.filter(Q(job_order_id=df.ix[i]['id']) & Q(ideal=False))
+                        if p:
+                            sum_number_rolls = float(p.aggregate(Sum('number_rolls'))['number_rolls__sum'])
+                            balance_number_rolls = number_rolls - sum_number_rolls
+                            quantity = balance_number_rolls * 10000
+                            printing_time = int((quantity * 100) / 70000)
         extrusion = []
         cutting = []
         printing = []
@@ -290,39 +330,40 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
                 '  task_%i_%i starts at %i (alt %i, machine %i, duration %i, worker %i)' %
                 (job_id, task_id, start_value, selected, machine, duration, worker))
 
-            item = ClientItem.objects.get(client_po_id=joids[job_id])
-            product = item.products
-            material = product.material_type
+            if datetime.now() + timedelta(hours=start_value) != datetime.now() + timedelta(hours=start_value + duration):
+                item = ClientItem.objects.get(client_po_id=joids[job_id])
+                product = item.products
+                material = product.material_type
 
-            phase = None
+                phase = None
 
-            if task_id == 0:
-                phase = 'Extrusion'
-            elif task_id == 1:
-                if item.printed == 1:
-                    phase = 'Printing'
-                elif item.laminate == 1:
-                    phase = 'Laminating'
-                else:
+                if task_id == 0:
+                    phase = 'Extrusion'
+                elif task_id == 1:
+                    if item.printed == 1:
+                        phase = 'Printing'
+                    elif item.laminate == 1:
+                        phase = 'Laminating'
+                    else:
+                        phase = 'Cutting'
+                elif task_id == 2:
+                    if item.laminate == 1:
+                        phase = 'Laminating'
+                    else:
+                        phase = 'Cutting'
+                elif task_id == 3:
                     phase = 'Cutting'
-            elif task_id == 2:
-                if item.laminate == 1:
-                    phase = 'Laminating'
-                else:
-                    phase = 'Cutting'
-            elif task_id == 3:
-                phase = 'Cutting'
 
-            temp_dict = {'ID': joids[job_id],
-                         'Machine': Machine.objects.get(machine_id=machine),
-                         'Task': phase,
-                         'Start': datetime.now() + timedelta(hours=start_value),
-                         'Finish': datetime.now() + timedelta(hours=start_value + duration),
-                         'Resource': material,
-                         'Worker': Employee.objects.get(id=worker)
-                         }
+                temp_dict = {'ID': joids[job_id],
+                             'Machine': Machine.objects.get(machine_id=machine),
+                             'Task': phase,
+                             'Start': datetime.now() + timedelta(hours=start_value),
+                             'Finish': datetime.now() + timedelta(hours=start_value + duration),
+                             'Resource': material,
+                             'Worker': Employee.objects.get(id=worker)
+                             }
 
-            plot_list.append(temp_dict)
+                plot_list.append(temp_dict)
 
 
     print('Solve status: %s' % solver.StatusName(status))

@@ -62,7 +62,7 @@ class InventoryCountForm(ModelForm):
 
     class Meta:
         model = InventoryCount
-        fields = ('new_count','spo_count',)
+        fields = ('new_count','spo_count', 'client_po')
 
         def __init__(self, *args, **kwargs):
             super(InventoryCountForm, self).__init__(*args, **kwargs)
@@ -98,7 +98,7 @@ class SupplierPOForm(ModelForm):
 
     class Meta:
         model = SupplierPO
-        fields = ('delivery_date', 'supplier')
+        fields = ('delivery_date', 'supplier', 'client_po')
         widgets = {
             'delivery_date': DateInput()
         }
