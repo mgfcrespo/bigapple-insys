@@ -7,12 +7,14 @@
 <div>
 
     {% csrf_token %}
-    {% include 'inventory/template_form.html' %}
 </div>
 <table class = "ui striped table center aligned">
     <thead>
     <tr>
-        <th class="three wide">Item</th>
+        <th class="two wide">Supplier</th>
+        <th class="two wide">Delivery Date</th>
+        <th class="two wide">For Client PO?</th>
+        <th class="two wide">Item</th>
         <th class="two wide">Quantity</th>
     </tr>
     </thead>
@@ -23,6 +25,10 @@
             {% if form.instance.pk %}
                 {{ form.DELETE }}
             {% endif %}
+
+            <td>{{form.supplier}}</td>
+            <td>{{form.delivery_date}}</td>
+            <td>{{form.client_po}}</td>
             <td>{{form.item}}</td>
             <td>{{form.quantity}}</td>
         </tr>

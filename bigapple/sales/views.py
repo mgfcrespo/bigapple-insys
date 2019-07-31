@@ -16,7 +16,7 @@ from inventory.forms import MaterialRequisitionForm, SupplierPOForm, SupplierPOI
 from inventory.models import Inventory, Supplier, MaterialRequisition, SupplierPO, SupplierPOItems
 from production.forms import ClientPOForm
 from production.models import JobOrder, ExtruderSchedule, PrintingSchedule, CuttingSchedule, LaminatingSchedule, Machine
-from utilities import TimeSeriesForecasting, cpsat, cpsatworkertest
+from utilities import TimeSeriesForecasting, cpsat
 from .forms import ClientPOFormItems
 from .forms import SupplierForm, ClientPaymentForm, EmployeeForm, ClientForm
 from .models import ClientItem, Client, SalesInvoice, ClientPayment, ProductionCost, Product
@@ -238,15 +238,13 @@ def confirm_client_po(request, pk):
                     else:
                         matreq = False
                         request.session['matreq_quantity'] = each.quantity/1000
-                        request.session['matreq_mat'] = x
-                        break
+                        request.session['matreq_mat'] = x.id
                         break
             else:
                 inventory = None
                 matreq = False
                 request.session['matreq_quantity'] = each.quantity / 1000
-                request.session['matreq_mat'] = x
-                break
+                request.session['matreq_mat'] = x.id
                 break
 
         if each.printed == 1:

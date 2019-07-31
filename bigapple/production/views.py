@@ -16,7 +16,7 @@ from django.forms import ModelForm, ValidationError, Form, widgets, DateTimeInpu
 from inventory.forms import MaterialRequisition
 from inventory.forms import MaterialRequisitionForm
 from sales.models import ClientItem, SalesInvoice
-from utilities import cpsat, cpsatworkertest
+from utilities import cpsat
 from sales import views as sales_views
 from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm, LaminatingScheduleForm
 from .forms import JODetailsForm
@@ -1620,83 +1620,50 @@ def sched_test(request):
     cursor.execute(query)
     df = pd.read_sql(query, connection)
 
-    data = JobOrder.objects.get(id=33)
-    item = ClientItem.objects.get(client_po_id=33)
-    e = ExtruderSchedule.objects.filter(Q(job_order_id=33) & Q(ideal=False))
-    e.job_order = id
-    form = ExtruderScheduleForm(request.POST)
-    printed = False
-    all_ideal = []
-    plot_list = []
-    now = datetime.now()
-    utc = pytz.UTC
+    ideal_sched = cpsatworkertest.flexible_jobshop(df, None, None, True, True, True, True, None)
+    workers = cpsatworkertest.shift_schedule(ideal_sched)
 
-    if request.method == 'POST':
-        data.status = 'Under Cutting'
-        data.save()
-        if form.is_valid():
-            pasok = request.POST.get('datetime_in')
-            pasok = datetime.strptime(pasok, "%Y-%m-%d %H:%M")
-            labas = request.POST.get('datetime_out')
-            labas = datetime.strptime(labas, "%Y-%m-%d %H:%M")
-            all_ideal = ExtruderSchedule.objects.filter(
-                Q(ideal=True) & Q(sked_mach=Machine.objects.get(machine_id=form['machine'].value())) & ~Q(
-                    job_order_id=33)).order_by('sked_in')
-            final = form['final'].value()
-            if all_ideal:
-                for x in all_ideal:
-                    sked_in_1 = x.sked_in - timedelta(hours=3)
-                    sked_in_2 = x.sked_in + timedelta(hours=3)
-                    sked_out_1 = x.sked_out - timedelta(hours=3)
-                    sked_out_2 = x.sked_out + timedelta(hours=3)
-                    sked_in_1 = sked_in_1.replace(tzinfo=None)
-                    sked_in_2 = sked_in_2.replace(tzinfo=None)
-                    sked_out_1 = sked_out_1.replace(tzinfo=None)
-                    sked_out_2 = sked_out_2.replace(tzinfo=None)
-                    if sked_in_1 <= pasok <= sked_in_2 or\
-                        sked_out_1 <= labas <= sked_out_2:
-                        print('resched')
-                        if final == 1:
-                            plot_list = cpsatworkertest.flexible_jobshop(df, labas, 33, False)
-                        else:
-                            plot_list = cpsatworkertest.flexible_jobshop(df, labas, 33, True)
-                    else:
-                        print('blech')
-                        pass
-
-    machines = Machine.objects.all()
-    today = date.today()
-    start_week = today - timedelta(days=today.weekday())
-    end_week = start_week + timedelta(days=7)
-    start_month = today.replace(day=1)
-    week = []
-    month = []
-    for i in range(0, 7):
-        week.append(start_week)
-        start_week += timedelta(days=1)
-    for i in range(0, calendar.monthrange(today.year, today.month)[1]):
-        month.append(start_month)
-        start_month += timedelta(days=1)
-    start_week = today - timedelta(days=today.weekday())
-    this_week = []
-    this_month = []
-
-    for i in range(len(plot_list)):
-        if start_week <= plot_list[i]['Start'].date() <= end_week:
-            this_week.append(plot_list[i])
-        if plot_list[i]['Start'].month == today.month:
-            this_month.append(plot_list[i])
-
+    for i in range(0, len(ideal_sched)):
+        for j in range(0, len(workers)):
+            if ideal_sched[i]['Task'] == 'Extrusion':
+                    new_ex = ExtruderSchedule(job_order_id=ideal_sched[i]['ID'],
+                                              ideal=True,
+                                              sked_in=ideal_sched[i]['Start'],
+                                              sked_out=ideal_sched[i]['Finish'],
+                                              sked_mach=ideal_sched[i]['Machine'],
+                                              sked_op=ideal_sched[i]['Worker'],)
+                    new_ex.save()
+                    print('saved new_ex')
+            elif ideal_sched[i]['Task'] == 'Cutting':
+                    new_cu = CuttingSchedule(job_order_id=ideal_sched[i]['ID'],
+                                              ideal=True,
+                                              sked_in=ideal_sched[i]['Start'],
+                                              sked_out=ideal_sched[i]['Finish'],
+                                              sked_mach=ideal_sched[i]['Machine'],
+                                              sked_op=ideal_sched[i]['Worker'],)
+                    new_cu.save()
+                    print('saved new_cu')
+            elif ideal_sched[i]['Task'] == 'Printing':
+                    new_pr = PrintingSchedule(job_order_id=ideal_sched[i]['ID'],
+                                              ideal=True,
+                                              sked_in=ideal_sched[i]['Start'],
+                                              sked_out=ideal_sched[i]['Finish'],
+                                              sked_mach=ideal_sched[i]['Machine'],
+                                              sked_op=ideal_sched[i]['Worker'],)
+                    new_pr.save()
+                    print('saved new_pr')
+            elif ideal_sched[i]['Task'] == 'Laminating':
+                    new_la = LaminatingSchedule(job_order_id=ideal_sched[i]['ID'],
+                                              ideal=True,
+                                              sked_in=ideal_sched[i]['Start'],
+                                              sked_out=ideal_sched[i]['Finish'],
+                                              sked_mach=ideal_sched[i]['Machine'],
+                                              sked_op=ideal_sched[i]['Worker'],)
+                    new_la.save()
+                    print('saved new_la')
 
     context = {
 
-        'machines': machines,
-        'this_week': this_week,
-        'this_month': this_month,
-        'week': week,
-        'month': month,
-        'today': today,
-        'form' : form
 
 
     }

@@ -215,7 +215,7 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
 
             num_alternatives = len(task)
             all_alternatives = range(num_alternatives)
-
+            print('1-------')
             for alt_id in range(1, num_alternatives):
                 alt_duration = task[alt_id][0]
                 min_duration = min(min_duration, alt_duration)
@@ -229,7 +229,7 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
             end = model.NewIntVar(0, horizon, 'end' + suffix_name)
             interval = model.NewIntervalVar(start, duration, end,
                                             'interval' + suffix_name)
-
+            print('2-------')
             # Store the start for the solution.
             starts[(job_id, task_id)] = start
 
@@ -272,8 +272,10 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
                 intervals_per_resources[task[0][1]].append(interval)
                 intervals_per_workers[task[0][1]].append(interval)
                 presences[(job_id, task_id, 0)] = model.NewIntVar(1, 1, '')
+            print('3-------')
 
         job_ends.append(previous_end)
+        print('4-------')
 
     # Create machines constraints.
     for machine_id, intervals in intervals_per_resources.items():
@@ -281,6 +283,7 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
 
         if len(intervals) > 1:
             model.AddNoOverlap(intervals)
+    print('5-------')
 
     # Create workers constraints.
     for worker_id, intervals in intervals_per_workers.items():
@@ -289,10 +292,13 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
         if len(intervals) > 1:
             model.AddNoOverlap(intervals)
 
+    print('6-------')
+
     # Makespan objective
     makespan = model.NewIntVar(0, horizon, 'makespan')
     model.AddMaxEquality(makespan, job_ends)
     model.Minimize(makespan)
+    print('7-------')
 
     if actual_out:
         actual_out = str(actual_out)
@@ -303,12 +309,13 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
     else:
         dateTimeDifferenceInHours = 0
 
+    print('8-------')
     # Solve model.
     solver = cp_model.CpSolver()
     status = solver.Solve(model)
     #solution_printer = SolutionPrinter()
     #status = solver.SolveWithSolutionCallback(model, solution_printer)
-
+    print('9-------')
     # Print/save final solution.
     plot_list = []
     for job_id in all_jobs:

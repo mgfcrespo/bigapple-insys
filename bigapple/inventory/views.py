@@ -367,19 +367,23 @@ def supplierPO_form(request):
     quantity = 0
     delivery_date = None
     item = None
+    supplier = None
 
-    if request.META['HTTP_REFERER'].startswith('http://127.0.0.1:8000/sales/'):
+    if request.META['HTTP_REFERER'].startswith('http://127.0.0.1:8000/sales/confirm-client-po'):
         print('sales:confirm_order')
         quantity = request.session.get('matreq_quantity')
         delivery_date = datetime.now().date()
-        if request.session['matreq_mat'] is not None:
+        if request.session.get('matreq_mat'):
             item = Inventory.objects.filter(rm_type=request.session.get('matreq_mat')).first()
             supplier = Supplier.objects.filter(id=item.supplier_id)
             item = item.id
-        elif request.session['matreq_ink'] is not None:
-            item = Inventory.objects.get(item=request.session.get('matreq_ink'))
-            supplier = Supplier.objects.filter(id=item.supplier_id)
-            item = item.id
+        elif request.session.get('matreq_ink'):
+            try:
+                item = Inventory.objects.get(item=request.session.get('matreq_ink'))
+                supplier = Supplier.objects.filter(id=item.supplier_id)
+                item = item.id
+            except Inventory.DoesNotExist:
+                item = None
 
     elif request.META['HTTP_REFERER'].startswith('http://127.0.0.1:8000/inventory/inventory-forecast-details/'):
         print('inventory:forecast')

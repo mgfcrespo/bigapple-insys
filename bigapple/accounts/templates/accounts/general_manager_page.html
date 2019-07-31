@@ -6,15 +6,15 @@
     <div>
         <div class="ui horizontal segments">
             <div class="ui segment">
-                <h4 class="ui dividing header">Purchase Order Status </h4>
+                <h4 class="ui dividing header">Purchase Order Status</h4>
                 <div>
-                    <canvas id="POstatus" width="100" height="80"></canvas>
+                    <canvas id="POstatus"></canvas>
                 </div>
             </div>
             <div class="ui segment">
                 <h4 class="ui dividing header">Sales Comparison</h4>
                 <div>
-                    <canvas id="comparisson" width="100" height="110"></canvas>
+                    <canvas id="comparisson"></canvas>
                 </div>
 
             </div>
@@ -238,7 +238,7 @@
                                                     {% if j.Start.date == d %}
                                                         Start: {{j.Start.hour}}:{{j.Start.minute}} <br>
                                                     {% endif %}
-                                                    {% if i.Finish.date == d %}
+                                                    {% if j.Finish.date == d %}
                                                         End: {{j.Finish.hour}}:{{j.Finish.minute}}
                                                     {% endif %}
                                                     </div>
@@ -262,7 +262,7 @@
         <div class="ui segment">
             <h4 class="ui dividing header">Raw Material Levels</h4>
             <div>
-                <canvas id="inventoryCanvas" width="400" height="250"></canvas>
+                <canvas id="inventoryCanvas" height="75%"></canvas>
             </div>
         </div>
     </div>
@@ -281,9 +281,9 @@
     var eoq = {
       label: "Economic Order Quantity",
       data: ['{{EOQ_ldpe}}', '{{EOQ_lldpe}}','{{EOQ_hdpe}}','{{EOQ_pp}}','{{EOQ_pe}}','{{EOQ_pet}}','{{EOQ_hd}}',],
+      type: 'line',
       backgroundColor: "rgba(99, 132, 0, 0.6)",
       borderWidth: 0,
-      yAxisID: "y-axis-eoq"
     };
 
     var inventoryData = {
@@ -296,7 +296,7 @@
         "PET",
         "HD",
       ],
-      datasets: [inventory, eoq]
+      datasets: [eoq, inventory]
     };
 
     var chartOptions = {
@@ -311,15 +311,9 @@
           {
               id: "y-axis-level",
               ticks: {
-                  beginAtZero: true
+
               }
-          },
-          {
-              id: "y-axis-eoq",
-              ticks: {
-                  beginAtZero: true
-              }
-          },
+          }
           ]
       }
     };
