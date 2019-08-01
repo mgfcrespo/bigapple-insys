@@ -25,6 +25,7 @@ urlpatterns = [
         path('shift-schedule/', views.shift_schedule, name='shift_schedule'),
         path('weekly-schedule/', views.weekly_schedule, name='weekly_schedule'),
         path('sched-test/', views.sched_test, name='sched_test'),
+        #path('to-pdf/', views.html_to_pdf_view(), name='to_pdf'),
 
 
 

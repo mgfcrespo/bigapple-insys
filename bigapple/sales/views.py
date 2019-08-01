@@ -624,13 +624,11 @@ def rush_order_assessment(request, pk):
                         request.session['matreq_quantity'] = each.quantity / 1000
                         request.session['matreq_mat'] = x
                         break
-                        break
             else:
                 inventory = None
                 matreq = False
                 request.session['matreq_quantity'] = each.quantity / 1000
                 request.session['matreq_mat'] = x
-                break
                 break
         print('matreq first run:')
         print(matreq)
@@ -646,7 +644,6 @@ def rush_order_assessment(request, pk):
                 matreq = False
                 request.session['matreq_ink'] = str(each.color)
                 request.session['matreq_quantity'] = int(each.quantity / 2500)
-                break
                 break
     print('matreq for second run:')
     print(matreq)

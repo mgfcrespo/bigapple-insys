@@ -16,7 +16,7 @@ from django.forms import ModelForm, ValidationError, Form, widgets, DateTimeInpu
 from inventory.forms import MaterialRequisition
 from inventory.forms import MaterialRequisitionForm
 from sales.models import ClientItem, SalesInvoice
-from utilities import cpsat
+from utilities import cpsat, cpsatworkertest
 from sales import views as sales_views
 from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm, LaminatingScheduleForm
 from .forms import JODetailsForm
@@ -1621,46 +1621,6 @@ def sched_test(request):
     df = pd.read_sql(query, connection)
 
     ideal_sched = cpsatworkertest.flexible_jobshop(df, None, None, True, True, True, True, None)
-    workers = cpsatworkertest.shift_schedule(ideal_sched)
-
-    for i in range(0, len(ideal_sched)):
-        for j in range(0, len(workers)):
-            if ideal_sched[i]['Task'] == 'Extrusion':
-                    new_ex = ExtruderSchedule(job_order_id=ideal_sched[i]['ID'],
-                                              ideal=True,
-                                              sked_in=ideal_sched[i]['Start'],
-                                              sked_out=ideal_sched[i]['Finish'],
-                                              sked_mach=ideal_sched[i]['Machine'],
-                                              sked_op=ideal_sched[i]['Worker'],)
-                    new_ex.save()
-                    print('saved new_ex')
-            elif ideal_sched[i]['Task'] == 'Cutting':
-                    new_cu = CuttingSchedule(job_order_id=ideal_sched[i]['ID'],
-                                              ideal=True,
-                                              sked_in=ideal_sched[i]['Start'],
-                                              sked_out=ideal_sched[i]['Finish'],
-                                              sked_mach=ideal_sched[i]['Machine'],
-                                              sked_op=ideal_sched[i]['Worker'],)
-                    new_cu.save()
-                    print('saved new_cu')
-            elif ideal_sched[i]['Task'] == 'Printing':
-                    new_pr = PrintingSchedule(job_order_id=ideal_sched[i]['ID'],
-                                              ideal=True,
-                                              sked_in=ideal_sched[i]['Start'],
-                                              sked_out=ideal_sched[i]['Finish'],
-                                              sked_mach=ideal_sched[i]['Machine'],
-                                              sked_op=ideal_sched[i]['Worker'],)
-                    new_pr.save()
-                    print('saved new_pr')
-            elif ideal_sched[i]['Task'] == 'Laminating':
-                    new_la = LaminatingSchedule(job_order_id=ideal_sched[i]['ID'],
-                                              ideal=True,
-                                              sked_in=ideal_sched[i]['Start'],
-                                              sked_out=ideal_sched[i]['Finish'],
-                                              sked_mach=ideal_sched[i]['Machine'],
-                                              sked_op=ideal_sched[i]['Worker'],)
-                    new_la.save()
-                    print('saved new_la')
 
     context = {
 

@@ -240,7 +240,8 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
             # Create alternative intervals.
             if num_alternatives > 1:
                 l_presences = []
-                for alt_id in all_alternatives:
+                for alt_id in range(0, num_alternatives, 3):
+                #for alt_id in all_alternatives:
                     alt_suffix = '_j%i_t%i_a%i' % (job_id, task_id, alt_id)
                     l_presence = model.NewBoolVar('presence' + alt_suffix)
                     l_interval = model.NewOptionalIntervalVar(
@@ -315,7 +316,7 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
             duration = jobs[job_id][task_id][0][0]
             if duration == 0:
                 continue
-            for alt_id in range(len(jobs[job_id][task_id])):
+            for alt_id in range(0, len(jobs[job_id][task_id]), 3):
                 if solver.Value(presences[(job_id, task_id, alt_id)]):
                     duration = jobs[job_id][task_id][alt_id][0]
                     machine = jobs[job_id][task_id][alt_id][1]
