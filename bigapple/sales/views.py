@@ -255,6 +255,10 @@ def confirm_client_po(request, pk):
                     color = str(each.color)
                     color_count = int(each.quantity/2500)
                     matreq = True
+                else:
+                    matreq = False
+                    request.session['matreq_ink'] = str(each.color)
+                    request.session['matreq_quantity'] = int(each.quantity / 2500)
             else:
                 matreq = False
                 request.session['matreq_ink'] = str(each.color)

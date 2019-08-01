@@ -173,6 +173,9 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
 
         jobs.append(job)
 
+    print('jobs')
+    print(jobs)
+
     num_jobs = len(jobs)
     all_jobs = range(num_jobs)
 
@@ -215,11 +218,13 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
 
             num_alternatives = len(task)
             all_alternatives = range(num_alternatives)
-            print('1-------')
             for alt_id in range(1, num_alternatives):
                 alt_duration = task[alt_id][0]
                 min_duration = min(min_duration, alt_duration)
                 max_duration = max(max_duration, alt_duration)
+
+            if min_duration != max_duration:
+                print(min_duration, max_duration)
 
             # Create main interval for the task.
             suffix_name = '_j%i_t%i' % (job_id, task_id)
@@ -227,9 +232,7 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
             duration = model.NewIntVar(min_duration, max_duration,
                                        'duration' + suffix_name)
             end = model.NewIntVar(0, horizon, 'end' + suffix_name)
-            interval = model.NewIntervalVar(start, duration, end,
-                                            'interval' + suffix_name)
-            print('2-------')
+
             # Store the start for the solution.
             starts[(job_id, task_id)] = start
 
@@ -244,24 +247,17 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
                 for alt_id in all_alternatives:
                     alt_suffix = '_j%i_t%i_a%i' % (job_id, task_id, alt_id)
                     l_presence = model.NewBoolVar('presence' + alt_suffix)
-                    l_start = model.NewIntVar(0, horizon, 'start' + alt_suffix)
-                    l_duration = task[alt_id][0]
-                    l_end = model.NewIntVar(0, horizon, 'end' + alt_suffix)
                     l_interval = model.NewOptionalIntervalVar(
-                        l_start, l_duration, l_end, l_presence,
+                        start, duration, end, l_presence,
                         'interval' + alt_suffix)
                     l_presences.append(l_presence)
-
-                    # Link the master variables with the local ones.
-                    model.Add(start == l_start).OnlyEnforceIf(l_presence)
-                    model.Add(duration == l_duration).OnlyEnforceIf(l_presence)
-                    model.Add(end == l_end).OnlyEnforceIf(l_presence)
 
                     # Add the local interval to the right machine.
                     intervals_per_resources[task[alt_id][1]].append(l_interval)
 
                     # Add the local interval to the right worker.
-                    intervals_per_workers[task[alt_id][1]].append(l_interval)
+
+                    intervals_per_workers[task[alt_id][2]].append(l_interval)
 
                     # Store the presences for the solution.
                     presences[(job_id, task_id, alt_id)] = l_presence
@@ -269,13 +265,13 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
                 # Select exactly one presence variable.
                 model.Add(sum(l_presences) == 1)
             else:
+                interval = model.NewIntervalVar(start, duration, end,
+                                                'interval' + suffix_name)
                 intervals_per_resources[task[0][1]].append(interval)
-                intervals_per_workers[task[0][1]].append(interval)
+                intervals_per_workers[task[0][2]].append(interval)
                 presences[(job_id, task_id, 0)] = model.NewIntVar(1, 1, '')
-            print('3-------')
 
         job_ends.append(previous_end)
-        print('4-------')
 
     # Create machines constraints.
     for machine_id, intervals in intervals_per_resources.items():
@@ -283,7 +279,6 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
 
         if len(intervals) > 1:
             model.AddNoOverlap(intervals)
-    print('5-------')
 
     # Create workers constraints.
     for worker_id, intervals in intervals_per_workers.items():
@@ -292,13 +287,10 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
         if len(intervals) > 1:
             model.AddNoOverlap(intervals)
 
-    print('6-------')
-
     # Makespan objective
     makespan = model.NewIntVar(0, horizon, 'makespan')
     model.AddMaxEquality(makespan, job_ends)
     model.Minimize(makespan)
-    print('7-------')
 
     if actual_out:
         actual_out = str(actual_out)
