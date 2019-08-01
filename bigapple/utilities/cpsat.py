@@ -100,8 +100,6 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
             printing_time = int((quantity * 100) / 70000)
 
         if in_production:
-            print('IN_PRODUCTION')
-            print(in_production)
             for each in in_production:
                 if each.id == df.ix[i]['id']:
                     if each.status == 'Under Extrusion':
@@ -173,8 +171,6 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
 
         jobs.append(job)
 
-    print('jobs')
-    print(jobs)
 
     num_jobs = len(jobs)
     all_jobs = range(num_jobs)
@@ -316,9 +312,9 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
             start_value = solver.Value(starts[(job_id, task_id)])
             start_value = start_value - dateTimeDifferenceInHours
             machine = -1
-            duration = -1
-            selected = -1
-            worker = -1
+            duration = jobs[job_id][task_id][0][0]
+            if duration == 0:
+                continue
             for alt_id in range(len(jobs[job_id][task_id])):
                 if solver.Value(presences[(job_id, task_id, alt_id)]):
                     duration = jobs[job_id][task_id][alt_id][0]

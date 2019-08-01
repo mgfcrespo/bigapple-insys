@@ -257,12 +257,13 @@
         </div>
     </div>
 
+
     <h3 class="ui dividing header">Inventory Dashboard</h3>
     <div class="ui horizontal segments">
         <div class="ui segment">
             <h4 class="ui dividing header">Raw Material Levels</h4>
             <div>
-                <canvas id="inventoryCanvas" height="75%"></canvas>
+                <canvas id="inventoryCanvas" width="400" height="250"></canvas>
             </div>
         </div>
     </div>
@@ -275,13 +276,12 @@
       data: ['{{ LDPE }}', '{{ LLDPE }}', '{{ HDPE }}', '{{ PP }}', '{{ PE }}', '{{ PET }}', '{{ HD }}'],
       backgroundColor: "rgba(0, 99, 132, 0.6)",
       borderWidth: 0,
-      yAxisID: "y-axis-level"
     };
 
     var eoq = {
+      type: "line",
       label: "Economic Order Quantity",
-      data: ['{{EOQ_ldpe}}', '{{EOQ_lldpe}}','{{EOQ_hdpe}}','{{EOQ_pp}}','{{EOQ_pe}}','{{EOQ_pet}}','{{EOQ_hd}}',],
-      type: 'line',
+      data: [Math.floor('{{EOQ_ldpe}}'), Math.floor('{{EOQ_lldpe}}'),Math.floor('{{EOQ_hdpe}}'),Math.floor('{{EOQ_pp}}'),Math.floor('{{EOQ_pe}}'),Math.floor('{{EOQ_pet}}'),Math.floor('{{EOQ_hd}}')],
       backgroundColor: "rgba(99, 132, 0, 0.6)",
       borderWidth: 0,
     };
@@ -296,25 +296,18 @@
         "PET",
         "HD",
       ],
-      datasets: [eoq, inventory]
+      datasets: [inventory, eoq]
     };
 
     var chartOptions = {
       scales: {
-        xAxes: [
+        yAxes:[
           {
-            barPercentage: 1,
-            categoryPercentage: 0.6
+            ticks: {
+              beginAtZero:true
+            }
           }
-        ],
-        yAxes: [
-          {
-              id: "y-axis-level",
-              ticks: {
-
-              }
-          }
-          ]
+        ]
       }
     };
 

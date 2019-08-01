@@ -212,14 +212,66 @@
     </div>
 
 
+
     <h3 class="ui dividing header">Inventory Dashboard</h3>
-        <div style="overflow-x: scroll;">
-            <div class="ui segment">
-                <h4 class="ui dividing header">Raw Material Levels</h4>
+    <div class="ui horizontal segments">
+        <div class="ui segment">
+            <h4 class="ui dividing header">Raw Material Levels</h4>
+            <div>
                 <canvas id="inventoryCanvas" width="400" height="250"></canvas>
             </div>
         </div>
     </div>
+
+</div>
+
+<script>
+    var inventory = {
+      label: "Inventory Levels",
+      data: ['{{ LDPE }}', '{{ LLDPE }}', '{{ HDPE }}', '{{ PP }}', '{{ PE }}', '{{ PET }}', '{{ HD }}'],
+      backgroundColor: "rgba(0, 99, 132, 0.6)",
+      borderWidth: 0,
+    };
+
+    var eoq = {
+      type: "line",
+      label: "Economic Order Quantity",
+      data: [Math.floor('{{EOQ_ldpe}}'), Math.floor('{{EOQ_lldpe}}'),Math.floor('{{EOQ_hdpe}}'),Math.floor('{{EOQ_pp}}'),Math.floor('{{EOQ_pe}}'),Math.floor('{{EOQ_pet}}'),Math.floor('{{EOQ_hd}}')],
+      backgroundColor: "rgba(99, 132, 0, 0.6)",
+      borderWidth: 0,
+    };
+
+    var inventoryData = {
+      labels: [
+        "LDPE",
+        "LLDPE",
+        "HDPE",
+        "PP",
+        "PE",
+        "PET",
+        "HD",
+      ],
+      datasets: [inventory, eoq]
+    };
+
+    var chartOptions = {
+      scales: {
+        yAxes:[
+          {
+            ticks: {
+              beginAtZero:true
+            }
+          }
+        ]
+      }
+    };
+
+    var barChart = new Chart(inventoryCanvas, {
+      type: "bar",
+      data: inventoryData,
+      options: chartOptions
+    });
+</script>
 
     <script>
 
@@ -304,60 +356,7 @@
         });
     </script>
     <script>
-        var inventory = {
-          label: "Inventory Levels",
-          data: ['{{ LDPE }}', '{{ LLDPE }}', '{{ HDPE }}', '{{ PP }}', '{{ PE }}', '{{ PET }}', '{{ HD }}'],
-          backgroundColor: "rgba(0, 99, 132, 0.6)",
-          borderWidth: 0,
-          yAxisID: "y-axis-level"
-        };
 
-        var eoq = {
-          label: "Economic Order Quantity",
-          data: ['{{EOQ_ldpe}}', '{{EOQ_lldpe}}','{{EOQ_hpde}}','{{EOQ_pp}}','{{EOQ_pe}}','{{EOQ_pet}}','{{EOQ_hd}}',],
-          backgroundColor: "rgba(99, 132, 0, 0.6)",
-          borderWidth: 0,
-          yAxisID: "y-axis-eoq"
-        };
-
-        var inventoryData = {
-          labels: [
-            "LDPE",
-            "LLDPE",
-            "HDPE",
-            "PP",
-            "PE",
-            "PET",
-            "HD",
-          ],
-          datasets: [inventory, eoq]
-        };
-
-        var chartOptions = {
-          scales: {
-            xAxes: [
-              {
-                barPercentage: 1,
-                categoryPercentage: 0.6
-              }
-            ],
-            yAxes: [
-              {
-                id: "y-axis-level"
-              },
-              {
-                id: "y-axis-eoq"
-              }
-            ]
-          }
-        };
-
-        var barChart = new Chart(inventoryCanvas, {
-          type: "bar",
-          data: inventoryData,
-          options: chartOptions
-        });
-    </script>
 
 </div>
 

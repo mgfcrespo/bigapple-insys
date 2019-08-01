@@ -78,118 +78,106 @@ def inventory_item_list(request):
     matreqs_3rd_shift = MaterialRequisition.objects.filter(datetime_issued__range=[shift22, shift32])
 
     # EOQ
-    # LDPE
-    ldpe = Product.objects.filter(material_type='LDPE')
-    if not ldpe:
-        EOQ_ldpe = 0
-    else:
-        ldpe_demand = 0
-        ldpe_cost = Inventory.objects.filter(rm_type='LDPE').aggregate(Avg('price')).get(
-            'price__avg', 0)
+    thisYear = date.today().year
+    lastYear = date.today().year - 1
+    thisMonth = date.today().month
+    lastMonth = date.today().month - 1
 
-        for x in ldpe:
-            i = ClientItem.objects.filter(products_id=x)
-            for y in i:
+    allItems = JobOrder.objects.filter(date_issued__year=lastYear)
+    print(allItems)
+
+    ldpe_demand = 0
+    ldpe_cost = ClientItem.objects.filter(products_id=1).aggregate(Avg('price_per_piece')).get('price_per_piece__avg',
+                                                                                               0)
+
+    lldpe_demand = 0
+    lldpe_cost = ClientItem.objects.filter(products_id=4).aggregate(Avg('price_per_piece')).get('price_per_piece__avg',
+                                                                                                0)
+
+    hdpe_demand = 0
+    hdpe_cost = ClientItem.objects.filter(products_id=2).aggregate(Avg('price_per_piece')).get('price_per_piece__avg',
+                                                                                               0)
+
+    pp_demand = 0
+    pp_cost = ClientItem.objects.filter(products_id=3).aggregate(Avg('price_per_piece')).get('price_per_piece__avg', 0)
+
+    pet_demand = 0
+    pet_cost = ClientItem.objects.filter(products_id=5).aggregate(Avg('price_per_piece')).get('price_per_piece__avg', 0)
+
+    pe_demand = 0
+    pe_cost = ClientItem.objects.filter(products_id=6).aggregate(Avg('price_per_piece')).get('price_per_piece__avg', 0)
+
+    hd_demand = 0
+    hd_cost = ClientItem.objects.filter(products_id=7).aggregate(Avg('price_per_piece')).get('price_per_piece__avg', 0)
+
+    for x in allItems:
+        i = ClientItem.objects.filter(client_po_id=x)
+        for y in i:
+            if y.products_id == 1:
+                print("LDPE: ", i)
                 ldpe_demand += y.quantity
-
-        EOQ_ldpe = (math.sqrt(2 * ldpe_demand * ldpe_cost)) / 100
-
-    # LLDPE
-    lldpe = Product.objects.filter(material_type='LLDPE')
-    if not lldpe:
-        EOQ_lldpe = 0
-    else:
-        lldpe_demand = 0
-        lldpe_cost = Inventory.objects.filter(rm_type='LLDPE').aggregate(Avg('price')).get(
-            'price__avg', 0)
-
-        for x in lldpe:
-            i = ClientItem.objects.filter(products_id=x)
-            for y in i:
+            elif y.products_id == 4:
+                print("LLDPE: ", i)
                 lldpe_demand += y.quantity
-
-        EOQ_lldpe = (math.sqrt(2 * lldpe_demand * lldpe_cost)) / 100
-
-    # HDPE
-    hdpe = Product.objects.filter(material_type='HDPE')
-    if not hdpe:
-        EOQ_hdpe = 0
-    else:
-        hdpe_demand = 0
-        hdpe_cost = Inventory.objects.filter(rm_type='HDPE').aggregate(Avg('price')).get(
-            'price__avg', 0)
-
-        for x in hdpe:
-            i = ClientItem.objects.filter(products_id=x)
-            for y in i:
+            elif y.products_id == 2:
+                print("HDPE: ", i)
                 hdpe_demand += y.quantity
-
-        EOQ_hdpe = (math.sqrt(2 * hdpe_demand * hdpe_cost)) / 100
-
-    # PP
-    pp = Product.objects.filter(material_type='PP')
-    if not pp:
-        EOQ_pp = 0
-    else:
-        pp_demand = 0
-        pp_cost = Inventory.objects.filter(rm_type='PP').aggregate(Avg('price')).get(
-            'price__avg', 0)
-
-        for x in pp:
-            i = ClientItem.objects.filter(products_id=x)
-            for y in i:
+            elif y.products_id == 3:
+                print("PP: ", i)
                 pp_demand += y.quantity
-
-    EOQ_pp = (math.sqrt(2 * pp_demand * pp_cost)) / 100
-
-    # PET
-    pet = Product.objects.filter(material_type='PET')
-    if not pet:
-        EOQ_pet = 0
-    else:
-        pet_demand = 0
-        pet_cost = Inventory.objects.filter(rm_type='PET').aggregate(Avg('price')).get(
-            'price__avg', 0)
-
-        for x in pet:
-            i = ClientItem.objects.filter(products_id=x)
-            if pet_demand is None:
-                pet_demand = 0
-            for y in i:
+            elif y.products_id == 5:
+                print("PET: ", i)
                 pet_demand += y.quantity
-        EOQ_pet = (math.sqrt(2 * pet_demand * pet_cost)) / 100
-
-    # PE
-    pe = Product.objects.filter(material_type='PE')
-    if not pe:
-        EOQ_pe = 0
-    else:
-        pe_demand = 0
-        pe_cost = Inventory.objects.filter(rm_type='PE').aggregate(Avg('price')).get(
-            'price__avg', 0)
-
-        for x in pe:
-            i = ClientItem.objects.filter(products_id=x)
-            for y in i:
+            elif y.products_id == 6:
+                print("PE: ", i)
                 pe_demand += y.quantity
-
-        EOQ_pe = (math.sqrt(2 * pe_demand * pe_cost)) / 100
-
-    # HD
-    hd = Product.objects.filter(material_type='HD')
-    if not hd:
-        EOQ_hd = 0
-    else:
-        hd_demand = 0
-        hd_cost = Inventory.objects.filter(rm_type='HD').aggregate(Avg('price')).get(
-            'price__avg', 0)
-
-        for x in hd:
-            i = ClientItem.objects.filter(products_id=x)
-            for y in i:
+            elif y.products_id == 7:
+                print("HD: ", i)
                 hd_demand += y.quantity
 
-        EOQ_hd = (math.sqrt(2 * hd_demand * hd_cost)) / 100
+    if not ldpe_demand:
+        EOQ_ldpe = 1
+    else:
+        EOQ_ldpe = (math.sqrt(2 * ldpe_demand * ldpe_cost)) / 100
+
+    if not lldpe_demand:
+        EOQ_lldpe = 1
+    else:
+        EOQ_lldpe = (math.sqrt(2 * lldpe_demand * lldpe_cost)) / 100
+
+    if not hdpe_demand:
+        EOQ_hdpe = 1
+    else:
+        EOQ_hdpe = (math.sqrt(2 * hdpe_demand * hdpe_cost)) / 100
+
+    if not pp_demand:
+        EOQ_pp = 1
+    else:
+        EOQ_pp = (math.sqrt(2 * pp_demand * pp_cost)) / 100
+
+    if not pet_demand:
+        EOQ_pet = 1
+    else:
+        EOQ_pet = (math.sqrt(2 * pet_demand * pet_cost)) / 100
+
+    if not pet_demand:
+        EOQ_pe = 1
+    else:
+        EOQ_pe = (math.sqrt(2 * pet_demand * pe_cost)) / 100
+
+    if not hd_demand:
+        EOQ_hd = 1
+    else:
+        EOQ_hd = (math.sqrt(2 * hdpe_demand * hd_cost)) / 100
+
+    EOQ_ldpe = ldpe_demand / EOQ_ldpe
+    EOQ_lldpe = lldpe_demand / EOQ_lldpe
+    EOQ_hdpe = hdpe_demand / EOQ_hdpe
+    EOQ_pe = pe_demand / EOQ_pe
+    EOQ_pet = pet_demand / EOQ_pet
+    EOQ_pp = pp_demand / EOQ_pp
+    EOQ_hd = hd_demand / EOQ_hd
+
 
     context = {
         'title': 'Inventory List',
@@ -369,8 +357,8 @@ def supplierPO_form(request):
     item = None
     supplier = None
 
-    if request.META['HTTP_REFERER'].startswith('http://127.0.0.1:8000/sales/confirm-client-po'):
-        print('sales:confirm_order')
+    if request.META['HTTP_REFERER'].startswith('http://127.0.0.1:8000/sales/'):
+        print('sales:confirm_order/rush_order_assessment')
         quantity = request.session.get('matreq_quantity')
         delivery_date = datetime.now().date()
         if request.session.get('matreq_mat'):

@@ -183,10 +183,8 @@ def po_detail_view(request, pk):
                     else:
                         matreq = False
                         break
-                        break
             else:
                 matreq = False
-                break
                 break
 
         if each.printed == 1:
@@ -196,7 +194,6 @@ def po_detail_view(request, pk):
                     matreq = True
             else:
                 matreq = False
-                break
                 break
 
     context = {'client_po': client_po,
@@ -263,7 +260,6 @@ def confirm_client_po(request, pk):
                 matreq = False
                 request.session['matreq_ink'] = str(each.color)
                 request.session['matreq_quantity'] = int(each.quantity/2500)
-                break
                 break
 
     #matreq form
