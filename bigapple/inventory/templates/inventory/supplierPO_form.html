@@ -11,32 +11,29 @@
 <table class = "ui striped table center aligned">
     <thead>
     <tr>
-        <th class="two wide">Supplier</th>
-        <th class="two wide">Delivery Date</th>
-        <th class="two wide">For Client PO?</th>
-        <th class="two wide">Item</th>
-        <th class="two wide">Quantity</th>
+        <th>Deliver Date</th>
+        <th>Supplier</th>
+        <th>PO #</th>
+        <th class="">Item</th>
+        <th class="">Quantity</th>
+
     </tr>
     </thead>
     <tbody>
-        {% for form in formset %}
 
-        <tr id="{{ form.prefix }}-row" class="formset_class">
-            {% if form.instance.pk %}
-                {{ form.DELETE }}
-            {% endif %}
-
-            <td>{{form.supplier}}</td>
+        <tr id="{{ form.prefix }}-row">
             <td>{{form.delivery_date}}</td>
+            <td>{{form.supplier}}</td>
             <td>{{form.client_po}}</td>
-            <td>{{form.item}}</td>
-            <td>{{form.quantity}}</td>
+            {% for form in formset %}
+                <td>{{form.item}}</td>
+                <td>{{form.quantity}}</td>
+            {% endfor %}
         </tr>
-        {% endfor %}
     </tbody>
     <tfoot>
         <tr>
-            <th colspan="2">
+            <th colspan="5">
             </th>
         </tr>
     </tfoot>

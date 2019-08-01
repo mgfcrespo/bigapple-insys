@@ -362,9 +362,12 @@ def supplierPO_form(request):
         quantity = request.session.get('matreq_quantity')
         delivery_date = datetime.now().date()
         if request.session.get('matreq_mat'):
-            item = Inventory.objects.filter(rm_type=request.session.get('matreq_mat')).first()
-            supplier = Supplier.objects.filter(id=item.supplier_id)
-            item = item.id
+            try:
+                item = Inventory.objects.filter(rm_type=request.session.get('matreq_mat')).first()
+                supplier = Supplier.objects.filter(id=item.supplier_id)
+                item = item.id
+            except Inventory.DoesNotExist:
+                item = None
         elif request.session.get('matreq_ink'):
             try:
                 item = Inventory.objects.get(item=request.session.get('matreq_ink'))
@@ -436,10 +439,7 @@ def supplierPO_form(request):
     #                                               widget=forms.NumberInput(attrs={'value': quantity}))
     #    each.fields["item"].queryset =  Inventory.objects.filter(id=item)
 
-    return render(request, 'inventory/supplierPO_form.html',
-                  {'formset': formset,
-                   'form': form, 'quantity':quantity, 'item':item}
-                  )
+    return render(request, 'inventory/supplierPO_form.html', {'form': SupplierPOForm, 'formset' : formset})
 
 def supplierPO_form_test(request):
     supplierpo_item_formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm, extra=1, can_delete=True)
