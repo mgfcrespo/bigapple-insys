@@ -507,8 +507,17 @@ def inventory_forecast_details(request, pk):
     forecast_moving_average = []
     forecast_arima = []
 
-    query = 'SELECT spo.date_issued, spoi.quantity FROM inventory_mgt_supplierpo spo, ' \
-            'inventory_mgt_supplierpoitems spoi where spoi.item_id = '+str(pk)+'  and spoi.supplier_po_id = spo.id'
+    if item.item_type == 'Raw Materials':
+        product = Product.objects.get(material_type=item.rm_type)
+        query = 'SELECT po.date_issued, poi.quantity FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
+                ' poi.products_id = ' + str(product.id)
+    #FIXME WHERE clause eme
+    elif item.item_type == 'Ink':
+        query = 'SELECT po.date_issued, poi.quantity FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
+                ' poi.color LIKE ' + item.item
+    else:
+        query = 'SELECT spo.date_issued, spoi.quantity FROM inventory_mgt_supplierpo spo, ' \
+                'inventory_mgt_supplierpoitems spoi where spoi.item_id = ' + str(pk) + 'and spoi.supplier_po_id = spo.id'
 
     cursor.execute(query)
     df = pd.read_sql(query, connection)

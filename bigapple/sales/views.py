@@ -694,7 +694,114 @@ def rush_order_assessment(request, pk):
                 else:
                     pass
 
-    #simulated sched
+    #Current schedule
+    plot_list = []
+    ideal = []
+    ex = []
+    for x in ExtruderSchedule.objects.filter(ideal=True):
+        job = x.job_order
+        if job.status == 'Ready for delivery' or job.status == 'Delivered':
+            pass
+        else:
+            ex.append(x)
+    ex_list = list(ex)
+    ideal.append(ex_list)
+    cu = []
+    for y in CuttingSchedule.objects.filter(ideal=True):
+        job = y.job_order
+        if job.status == 'Ready for delivery' or job.status == 'Delivered':
+            pass
+        else:
+            cu.append(y)
+    cu_list = list(cu)
+    ideal.append(cu_list)
+    pr = []
+    for z in PrintingSchedule.objects.filter(ideal=True):
+        job = z.job_order
+        if job.status == 'Ready for delivery' or job.status == 'Delivered':
+            pass
+        else:
+            pr.append(z)
+    pr_list = list(pr)
+    ideal.append(pr_list)
+    la = []
+    for a in LaminatingSchedule.objects.filter(ideal=True):
+        job = a.job_order
+        if job.status == 'Ready for delivery' or job.status == 'Delivered':
+            pass
+        else:
+            la.append(a)
+    la_list = list(la)
+    ideal.append(la_list)
+
+    if ideal:
+        if ex:
+            for i in ex:
+                job = i.job_order_id
+                item = ClientItem.objects.get(client_po_id=job)
+                product = item.products
+                mat = product.material_type
+
+                sked_dict = {'ID': job,
+                             'Task': 'Extrusion',
+                             'Start': i.sked_in,
+                             'Finish': i.sked_out,
+                             'Resource': mat,
+                             'Machine': i.sked_mach,
+                             'Worker': i.sked_op
+                             }
+                plot_list.append(sked_dict)
+        if cu:
+            for j in cu:
+                job = j.job_order_id
+                item = ClientItem.objects.get(client_po_id=job)
+                product = item.products
+                mat = product.material_type
+
+                sked_dict = {'ID': job,
+                             'Task': 'Cutting',
+                             'Start': j.sked_in,
+                             'Finish': j.sked_out,
+                             'Resource': mat,
+                             'Machine': j.sked_mach,
+                             'Worker': j.sked_op
+                             }
+                plot_list.append(sked_dict)
+        if pr:
+            for k in pr:
+                job = k.job_order_id
+                item = ClientItem.objects.get(client_po_id=job)
+                product = item.products
+                mat = product.material_type
+
+                sked_dict = {'ID': job,
+                             'Task': 'Printing',
+                             'Start': k.sked_in,
+                             'Finish': k.sked_out,
+                             'Resource': mat,
+                             'Machine': k.sked_mach,
+                             'Worker': k.sked_op
+                             }
+                plot_list.append(sked_dict)
+        if la:
+            for l in la:
+                job = l.job_order_id
+                item = ClientItem.objects.get(client_po_id=job)
+                product = item.products
+                mat = product.material_type
+
+                sked_dict = {'ID': job,
+                             'Task': 'Laminating',
+                             'Start': l.sked_in,
+                             'Finish': l.sked_out,
+                             'Resource': mat,
+                             'Machine': l.sked_mach,
+                             'Worker': l.sked_op
+                             }
+                plot_list.append(sked_dict)
+
+
+    #Simulated sched
     cursor = connection.cursor()
     query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p " \
             "WHERE p.id = i.products_id and i.client_po_id = j.id and NOT j.status = 'Waiting' and " \
@@ -713,7 +820,7 @@ def rush_order_assessment(request, pk):
     print(df)
     in_production = JobOrder.objects.filter(
         ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
-    plot_list = cpsat.flexible_jobshop(df, None, None, True, True, True, True, in_production)
+    plot_list2 = cpsat.flexible_jobshop(df, None, None, True, True, True, True, in_production)
 
     machines = Machine.objects.all()
     today = date.today()
@@ -732,14 +839,43 @@ def rush_order_assessment(request, pk):
     this_week = []
     this_month = []
 
-    for i in range(len(plot_list)):
-        if start_week <= plot_list[i]['Start'].date() <= end_week:
-            this_week.append(plot_list[i])
-        if plot_list[i]['Start'].month == today.month:
-            this_month.append(plot_list[i])
+    for i in range(len(plot_list2)):
+        if start_week <= plot_list2[i]['Start'].date() <= end_week:
+            this_week.append(plot_list2[i])
+        if plot_list2[i]['Start'].month == today.month:
+            this_month.append(plot_list2[i])
+
+    #plot_list (current) VS plot_list2 (simulated) VS job's date required
+    new_list = []
+    new_list2 = []
+    for c in range(len(plot_list)):
+        if plot_list[c]['Task'] == 'Cutting':
+            new_list.append(plot_list[c])
+    for d in range(len(plot_list2)):
+        if plot_list2[d]['Task'] == 'Cutting':
+            new_list2.append(plot_list2[d])
+
+    d_list = []
+    discrepancy = []
+    for a in range(len(new_list)):
+        for b in range(len(new_list2)):
+            if new_list[a]['ID'] == new_list2[b]['ID']:
+                job = JobOrder.objects.get(id=new_list[a]['ID'])
+                job = job.date_required
+                #job = job.replace(tzinfo=None)
+                q = new_list[a]['Finish']
+                w = new_list2[b]['Finish']
+                q = q.replace(tzinfo=None)
+                w = w.replace(tzinfo=None)
+                discrepancy = {'ID': new_list[a]['ID'],
+                               'CurrentDiff': (w - q), #Simulated VS Current; if (-), it ends EARLIER than previous sched
+                               'ClientDiff': (w.date() - job) #Simulated VS Client-suggested
+                               }
+                d_list.append(discrepancy)
+    print(d_list)
 
     if 'approve_btn' in request.POST:
-        # SAVE NEW PRODUCTION SCHEDULE
+        #SAVE NEW PRODUCTION SCHEDULE
         in_production = JobOrder.objects.filter(
             ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
         save_schedule(request, pk, None, None, True, True, True, True, in_production)
