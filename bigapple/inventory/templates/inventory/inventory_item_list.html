@@ -8,11 +8,11 @@
 		<tr>
 			<th rowspan="3">Item</th>
 			<th rowspan="3">Type</th>
+			<th rowspan="3">Qty On-hand</th>
+			<th rowspan="3">Economic Order Quantity</th>
 			<th rowspan="1">Deliveries</th>
 			<th colspan="3">Materials Requisition</th>
 			<th rowspan="3">Total Qty Issued for the Day <br>as of {{ now }}</th>
-			<th rowspan="3">Qty On-hand</th>
-			<th rowspan="3">Economic Order Quantity</th>
 			<th rowspan="3"></th>
 		</tr>
 		<tr>
@@ -36,6 +36,22 @@
 					<a href="{% url 'inventory:inventory_count_list' x.id %}">{{ x.item }}</a>
 				</td>
 				<td>{{ x.item_type }}</td>
+								<td>{{ x.quantity }}</td>
+				<td>{% if x.rm_type == 'LDPE' %}
+				{{ EOQ_ldpe }}
+				{% elif x.rm_type == 'LLDPE' %}
+				{{ EOQ_lldpe }}
+				{% elif x.rm_type == 'HDPE' %}
+				{{ EOQ_hdpe }}
+				{% elif x.rm_type == 'PP' %}
+				{{ EOQ_pp }}
+				{% elif x.rm_type == 'PET' %}
+				{{ EOQ_pet }}
+				{% elif x.rm_type == 'PE' %}
+				{{ EOQ_pe }}
+				{% elif x.rm_type == 'HD' %}
+				{{ EOQ_hd }}
+				{% endif %}</td>
 				<td>
 					{% for a in spo %}
 						{% if a.item_id == x.id %}
@@ -71,23 +87,8 @@
                     {% if every.item == x %}
 				{{ every.quantity }}
                     {% endif %}
-                {% endfor %}</td>
-				<td>{{ x.quantity }}</td>
-				<td>{% if x.rm_type == 'LDPE' %}
-				{{ EOQ_ldpe }}
-				{% elif x.rm_type == 'LLDPE' %}
-				{{ EOQ_lldpe }}
-				{% elif x.rm_type == 'HDPE' %}
-				{{ EOQ_hdpe }}
-				{% elif x.rm_type == 'PP' %}
-				{{ EOQ_pp }}
-				{% elif x.rm_type == 'PET' %}
-				{{ EOQ_pet }}
-				{% elif x.rm_type == 'PE' %}
-				{{ EOQ_pe }}
-				{% elif x.rm_type == 'HD' %}
-				{{ EOQ_hd }}
-				{% endif %}</td>
+                {% endfor %}
+				</td>
 
 				<td>
 					<a style = "padding: 5px;" href="{% url 'inventory:inventory_count_form' x.id %}">

@@ -2,48 +2,83 @@
 {% block content %}
 <h3 class="ui dividing header">Supplier Purchase Order</h3>
 
-<form id="myForm" class="ui form" action="{% url 'inventory:supplierPO_form' %}" method="POST" enctype="multipart/form-data">
+<div class="ui grid">
+    <div class="row">
+        <div class="six wide column">
+            <div class="">
+                <table class="ui striped table center aligned">
+                    <thead>
+                        <tr>
+                           <th rowspan="2">
+                               Items for Replenishment
+                           </th>
+                            <th rowspan="2">
+                                QTY On-hand
+                            </th>
+                            <th colspan="2">
+                                EOQ
+                            </th>
+                        </tr>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                {{}}
+                            </td>
+                            <td>
+                                {{}}
+                            </td>
+                            <td>
+                                {{}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="ten wide column" style="margin-top: -14px;">
+            <form id="myForm" class="ui form" action="{% url 'inventory:supplierPO_form' %}" method="POST" enctype="multipart/form-data">
+                <div>
+                    {% csrf_token %}
+                </div>
+                <table class = "ui striped table center aligned">
+                    <thead>
+                    <tr>
+                        <th>Deliver Date</th>
+                        <th>Supplier</th>
+                        <th>PO #</th>
+                        <th class="">Item</th>
+                        <th class="">Quantity</th>
 
-<div>
+                    </tr>
+                    </thead>
+                    <tbody>
 
-    {% csrf_token %}
+                        <tr id="{{ form.prefix }}-row">
+                            <td>{{form.delivery_date}}</td>
+                            <td>{{form.supplier}}</td>
+                            <td>{{form.client_po}}</td>
+                            {% for form in formset %}
+                                <td>{{form.item}}</td>
+                                <td>{{form.quantity}}</td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="5">
+                            </th>
+                        </tr>
+                    </tfoot>
+                </table>
+                {{formset.management_form}}
+                <button type="submit" class="ui small green button" onclick="return confirm('Are you sure?')">Submit</button>
+            </form>
+        </div>
+    </div>
 </div>
-<table class = "ui striped table center aligned">
-    <thead>
-    <tr>
-        <th>Deliver Date</th>
-        <th>Supplier</th>
-        <th>PO #</th>
-        <th class="">Item</th>
-        <th class="">Quantity</th>
 
-    </tr>
-    </thead>
-    <tbody>
-
-        <tr id="{{ form.prefix }}-row">
-            <td>{{form.delivery_date}}</td>
-            <td>{{form.supplier}}</td>
-            <td>{{form.client_po}}</td>
-            {% for form in formset %}
-                <td>{{form.item}}</td>
-                <td>{{form.quantity}}</td>
-            {% endfor %}
-        </tr>
-    </tbody>
-    <tfoot>
-        <tr>
-            <th colspan="5">
-            </th>
-        </tr>
-    </tfoot>
-</table>
-
-            {{formset.management_form}}
-
-
-<button type="submit" class="ui small green button" onclick="return confirm('Are you sure?')">Submit</button>
-</form>
 
 {% endblock %}
 

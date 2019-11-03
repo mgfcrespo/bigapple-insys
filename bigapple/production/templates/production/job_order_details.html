@@ -218,10 +218,9 @@
 
 <div class="ui segment">
 
-    {% if ideal_ex %}
+    {% if first_ideal_ex and last_ideal_ex %}
     <h3 class="ui dividing header">Extrusion Report</h3>
     <div class="ui two column grid">
-        {% for i in ideal_ex %}
         <div class="column">
             <table class="ui structured striped table center aligned">
                 <thead>
@@ -251,16 +250,16 @@
                 <tbody>
                     <tr>
                         <td>
-                            {{ i.sked_mach }}
+                            {{ first_ideal_ex.sked_mach }}
                         </td>
                         <td>
-                            {{ i.sked_in }}
+                            {{ first_ideal_ex.sked_in }}
                         </td>
                         <td>
-                            {{ i.sked_out }}
+                            {{ first_ideal_ex.sked_out }}
                         </td>
                         <td>
-                            {{ i.sked_op }}
+                            {{ first_ideal_ex.sked_op }}
                         </td>
                         <td>
                             {% for j in items %}
@@ -273,79 +272,78 @@
         </div>
         <div class="column">
 
-            <table class="ui structured striped table center aligned">
-                <thead>
-                    <tr>
-                    {% if first_ex %}
-                        <th colspan="5">
-                            Actual
-                        </th>
-                    </tr>
-                    <tr>
+    <table class="ui structured striped table center aligned">
+        <thead>
+            <tr>
+            {% if first_ex %}
+                            <th colspan="5">
+                                Actual
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>
+                                Machine
+                            </th>
+                            <th>
+                                Time In
+                            </th>
+                            <th>
+                                Time Out
+                            </th>
+                            <th>
+                                Operator
+                            </th>
+                            <th>
+                                Quantity
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                {{ first_ex.machine }}
+                            </td>
+                            <td>
+                                {% if first_ideal_ex.sked_in < first_ex.datetime_in %}
+                                <p style="color: red">
+                                    {{ first_ex.datetime_in }}
+                                </p>
+                                {% else %}
+                                <p style="color:green;">
+                                    {{ first_ex.datetime_in }}
+                                </p>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ first_ex.datetime_out }}
+                            </td>
+                            <td>
+                                {{ first_ex.operator.last_name }}
+                            </td>
+                            <td>
+                                N/A
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <th></th>
                         <th>
-                            Machine
+                            {% if first_ideal_ex.sked_in < first_ex.datetime_in %}
+                                    <p style="color: red">behind schedule</p>
+                                {% else %}
+                                    <p style="color: green">on time or early</p>
+                                {% endif %}
                         </th>
                         <th>
-                            Time In
-                        </th>
-                        <th>
-                            Time Out
-                        </th>
-                        <th>
-                            Operator
-                        </th>
-                        <th>
-                            Quantity
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            {{ first_ex.machine }}
-                        </td>
-                        <td>
-                            {% if i.sked_in < first_ex.datetime_in %}
-                            <p style="color: red">
-                                {{ first_ex.datetime_in }}
-                            </p>
-                            {% else %}
-                            <p style="color:green;">
-                                {{ first_ex.datetime_in }}
-                            </p>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {{ first_ex.datetime_out }}
-                        </td>
-                        <td>
-                            {{ first_ex.operator.last_name }}
-                        </td>
-                        <td>
-                            N/A
-                        </td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <th></th>
-                    <th>
-                        {% if i.sked_in < first_ex.datetime_in %}
-                                <p style="color: red">behind schedule</p>
-                            {% else %}
-                                <p style="color: green">on time or early</p>
-                            {% endif %}
-                    </th>
-                    <th>
 
-                    </th>
-                    <th></th>
-                    <th>
+                        </th>
+                        <th></th>
+                        <th>
 
-                    </th>
-                </tfoot>
-            </table>
+                        </th>
+                    </tfoot>
+                </table>
             {% endif %}
-
             {% if last_ex %}
             <table class="ui structured striped table center aligned">
                 <thead>
@@ -376,7 +374,7 @@
                             {{ last_ex.datetime_in }}
                             </td>
                         <td>
-                            {% if i.sked_out < last_ex.datetime_out %}
+                            {% if last_ideal_ex.sked_out < last_ex.datetime_out %}
                             <p style="color: red">
                                 {{ last_ex.datetime_out }}
                             </p>
@@ -400,7 +398,7 @@
 
                     </th>
                     <th>
-                        {% if i.sked_out < last_ex.datetime_out %}
+                        {% if last_ideal_ex.sked_out < last_ex.datetime_out %}
                             <p style="color: red">behind schedule</p>
                         {% else %}
                             <p style="color: green">on time or early</p>
@@ -416,16 +414,14 @@
         </div>
         </div>
     {% endif %}
-{% endfor %}
     {% endif %}
 </div>
 
 <div class="ui segment">
 
-    {% if ideal_cu %}
+    {% if first_ideal_cu and last_ideal_cu %}
     <h3 class="ui dividing header">Cutting Report</h3>
     <div class="ui two column grid">
-        {% for i in ideal_cu %}
         <div class="column">
             <table class="ui structured striped table center aligned">
                 <thead>
@@ -455,16 +451,16 @@
                 <tbody>
                     <tr>
                         <td>
-                            {{ i.sked_mach }}
+                            {{ first_ideal_cu.sked_mach }}
                         </td>
                         <td>
-                            {{ i.sked_in }}
+                            {{ first_ideal_cu.sked_in }}
                         </td>
                         <td>
-                            {{ i.sked_out }}
+                            {{ first_ideal_cu.sked_out }}
                         </td>
                         <td>
-                            {{ i.sked_op }}
+                            {{ first_ideal_cu.sked_op }}
                         </td>
                         <td>
                             {% for j in items %}
@@ -534,7 +530,7 @@
                 <tfoot>
                     <th></th>
                     <th>
-                        {% if i.sked_in < first_cu.datetime_in %}
+                        {% if first_ideal_cu.sked_in < first_cu.datetime_in %}
                                 <p style="color: red">behind schedule</p>
                             {% else %}
                                 <p style="color: green">on time or early</p>
@@ -581,7 +577,7 @@
                             {{ last_cu.datetime_in }}
                             </td>
                         <td>
-                            {% if i.sked_out < last_cu.datetime_out %}
+                            {% if last_ideal_cu.sked_out < last_cu.datetime_out %}
                             <p style="color: red">
                                 {{ last_cu.datetime_out }}
                             </p>
@@ -613,7 +609,7 @@
 
                     </th>
                     <th>
-                        {% if i.sked_out < last_cu.datetime_out %}
+                        {% if last_ideal_cu.sked_out < last_cu.datetime_out %}
                             <p style="color: red">behind schedule</p>
                         {% else %}
                             <p style="color: green">on time or early</p>
@@ -636,16 +632,15 @@
             </table>
         </div>
         </div>
-		{% endif %}
-{% endfor %}
+
+    {% endif %}
     {% endif %}
 </div>
 
 <div class="ui segment">
-    {% if ideal_pr %}
+    {% if first_ideal_pr and last_ideal_pr %}
     <h3 class="ui dividing header">Printing Report</h3>
     <div class="ui two column grid">
-        {% for i in ideal_pr %}
         <div class="column">
             <table class="ui structured striped table center aligned">
                 <thead>
@@ -675,16 +670,16 @@
                 <tbody>
                     <tr>
                         <td>
-                            {{ i.sked_mach }}
+                            {{ first_ideal_pr.sked_mach }}
                         </td>
                         <td>
-                            {{ i.sked_in }}
+                            {{ first_ideal_pr.sked_in }}
                         </td>
                         <td>
-                            {{ i.sked_out }}
+                            {{ first_ideal_pr.sked_out }}
                         </td>
                         <td>
-                            {{ i.sked_op }}
+                            {{ first_ideal_pr.sked_op }}
                         </td>
                         <td>
                             {% for j in items %}
@@ -729,7 +724,7 @@
                             {{ first_pr.machine }}
                         </td>
                         <td>
-                            {% if i.sked_in < first_pr.datetime_in %}
+                            {% if first_ideal_pr.sked_in < first_pr.datetime_in %}
                             <p style="color: red">
                                 {{ first_pr.datetime_in }}
                             </p>
@@ -754,7 +749,7 @@
                 <tfoot>
                     <th></th>
                     <th>
-                        {% if i.sked_in < first_pr.datetime_in %}
+                        {% if first_ideal_pr.sked_in < first_pr.datetime_in %}
                                 <p style="color: red">behind schedule</p>
                             {% else %}
                                 <p style="color: green">on time or early</p>
@@ -801,7 +796,7 @@
                             {{ last_pr.datetime_in }}
                             </td>
                         <td>
-                            {% if i.sked_out < last_pr.datetime_out %}
+                            {% if last_ideal_pr.sked_out < last_pr.datetime_out %}
                             <p style="color: red">
                                 {{ last_pr.datetime_out }}
                             </p>
@@ -825,7 +820,7 @@
 
                     </th>
                     <th>
-                        {% if i.sked_out < last_pr.datetime_out %}
+                        {% if last_ideal_pr.sked_out < last_pr.datetime_out %}
                             <p style="color: red">behind schedule</p>
                         {% else %}
                             <p style="color: green">on time or early</p>
@@ -840,15 +835,13 @@
         </div>
         </div>
 		{% endif %}
-{% endfor %}
     {% endif %}
 </div>
 
 <div class="ui segment">
-    {% if ideal_la %}
+    {% if first_ideal_la and last_ideal_la %}
     <h3 class="ui dividing header">Laminating Report</h3>
     <div class="ui two column grid">
-        {% for i in ideal_la %}
         <div class="column">
             <table class="ui structured striped table center aligned">
                 <thead>
@@ -878,16 +871,16 @@
                 <tbody>
                     <tr>
                         <td>
-                            {{ i.sked_mach }}
+                            {{ first_ideal_la.sked_mach }}
                         </td>
                         <td>
-                            {{ i.sked_in }}
+                            {{ first_ideal_la.sked_in }}
                         </td>
                         <td>
-                            {{ i.sked_out }}
+                            {{ first_ideal_la.sked_out }}
                         </td>
                         <td>
-                            {{ i.sked_op }}
+                            {{ first_ideal_la.sked_op }}
                         </td>
                         <td>
                             {% for j in items %}
@@ -932,7 +925,7 @@
                             {{ first_la.machine }}
                         </td>
                         <td>
-                            {% if i.sked_in < first_la.datetime_in %}
+                            {% if first_ideal_la.sked_in < first_la.datetime_in %}
                             <p style="color: red">
                                 {{ first_la.datetime_in }}
                             </p>
@@ -957,7 +950,7 @@
                 <tfoot>
                     <th></th>
                     <th>
-                        {% if i.sked_in < first_la.datetime_in %}
+                        {% if first_ideal_la.sked_in < first_la.datetime_in %}
                                 <p style="color: red">behind schedule</p>
                             {% else %}
                                 <p style="color: green">on time or early</p>
@@ -1004,7 +997,7 @@
                             {{ last_la.datetime_in }}
                             </td>
                         <td>
-                            {% if i.sked_out < last_la.datetime_out %}
+                            {% if last_ideal_la.sked_out < last_la.datetime_out %}
                             <p style="color: red">
                                 {{ last_la.datetime_out }}
                             </p>
@@ -1028,7 +1021,7 @@
 
                     </th>
                     <th>
-                        {% if i.sked_out < last_la.datetime_out %}
+                        {% if last_ideal_la.sked_out < last_la.datetime_out %}
                             <p style="color: red">behind schedule</p>
                         {% else %}
                             <p style="color: green">on time or early</p>
@@ -1043,7 +1036,6 @@
         </div>
         </div>
 		{% endif %}
-{% endfor %}
     {% endif %}
 </div>
 

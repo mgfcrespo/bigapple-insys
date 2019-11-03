@@ -89,7 +89,9 @@ def user_page_view(request):
         HD = Inventory.objects.filter(rm_type='HD').aggregate(Sum('quantity')).get('quantity__sum', 0)
 
         # EOQ
-        allItems = JobOrder.objects.filter(date_issued__year=lastYear)
+        Month = date.today().month - 3
+
+        allItems = JobOrder.objects.filter(date_issued__month=Month)
         print(allItems)
 
         ldpe_demand = 0
@@ -180,13 +182,13 @@ def user_page_view(request):
         else:
             EOQ_hd = (math.sqrt(2 * hdpe_demand * hd_cost)) / 100
 
-        EOQ_ldpe = ldpe_demand / EOQ_ldpe
-        EOQ_lldpe = lldpe_demand / EOQ_lldpe
-        EOQ_hdpe = hdpe_demand / EOQ_hdpe
-        EOQ_pe = pe_demand / EOQ_pe
-        EOQ_pet = pet_demand / EOQ_pet
-        EOQ_pp = pp_demand / EOQ_pp
-        EOQ_hd = hd_demand / EOQ_hd
+        EOQ_ldpe = int(ldpe_demand / EOQ_ldpe)
+        EOQ_lldpe = int(lldpe_demand / EOQ_lldpe)
+        EOQ_hdpe = int(hdpe_demand / EOQ_hdpe)
+        EOQ_pe = int(pe_demand / EOQ_pe)
+        EOQ_pet = int(pet_demand / EOQ_pet)
+        EOQ_pp = int(pp_demand / EOQ_pp)
+        EOQ_hd = int(hd_demand / EOQ_hd)
 
         status_waiting = JobOrder.objects.filter(status='Waiting').count()
         status_onqueue = JobOrder.objects.filter(status='On Queue').count()
@@ -328,7 +330,9 @@ def user_page_view(request):
             all_machines = Machine.objects.filter(state='OK')
 
             for q in range(len(plot_list)):
-                machines_in_production.append(plot_list[q]['Machine'])
+                if plot_list[q]['Machine'] not in machines_in_production:
+                    if plot_list[q]['Machine'] not in machines_in_production:
+                        machines_in_production.append(plot_list[q]['Machine'])
 
                 # Machine breakdown.
                 is_it_ok = plot_list[q]['Machine']
@@ -340,7 +344,8 @@ def user_page_view(request):
                     in_production = JobOrder.objects.filter(~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered'))
                     plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production)
                     break
-
+            #FIXME Ibalik pag ayos na ang prod
+            '''
             # Machine recently deployed.
             yung_wala = set(all_machines).difference(machines_in_production)
             yes_deployed = False
@@ -348,14 +353,12 @@ def user_page_view(request):
                 for y in range(len(plot_list)):
                     if x.machine_type == plot_list[y]['Task'] or x.machine_type == 'Extruder':
                         yes_deployed = True
-                        break
             if yung_wala and yes_deployed:
                 print('MACHINE RECENTLY DEPLOYED')
                 in_production = JobOrder.objects.filter(
                     ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered'))
                 plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production)
-            else:
-                pass
+            '''
 
         else:
             in_production = JobOrder.objects.filter(

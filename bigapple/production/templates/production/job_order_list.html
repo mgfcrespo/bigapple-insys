@@ -1,78 +1,88 @@
 {% extends 'sidebar.html' %}
 
   {% block content %}
+    <h3 class="ui dividing header">{{ title }}</h3>
 
-        <h3 class="ui dividing header">{{ title }}</h3>
-		<table class="ui sortable stripped table center aligned">
-        	<thead>
-          	<tr>
+        <table class="ui very compact striped table center aligned">
+            <thead>
+                <tr>
+                    <center><h5>Weekly Late Phase Count</h5></center>
+                    <th>
+                        Phase
+                    </th>
+                    <th>
+                        Times Late
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        Extrusion
+                    </td>
+                    <td>
+                        {{ex_late}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Laminating
+                    </td>
+                    <td>
+                        {{la_late}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Printing
+                    </td>
+                    <td>
+                        {{pr_late}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Cutting
+                    </td>
+                    <td>
+                        {{cu_late]}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="ui sortable striped table center aligned">
+            <thead>
+            <tr>
                 <th class="one wide">Job Order #</th>
                 <th class="two wide">Client</th>
-				<th class="one wide">Rush Order</th>
+                <th class="two wide">Item</th>
+                <th class="one wide">Rush Order</th>
                 <th class="one wide">Status</th>
                 <th class="two wide">Scheduled Finish Date & Time</th>
                 <th class="two wide">Update Production</th>
-          	</tr>
-    		</thead>
-    		<tbody>
+            </tr>
+            </thead>
+            <tbody>
+
             {% if data %}
                 {% for data in data %}
-                {% for each in ideal_end %}
-                        {% if data.id == each.job_order_id %}
-                            {% if each.sked_out.date < now %}
+                    {% for each in ideal_end %}
+                        {% if data.id == each.PO %}
+                            {% if each.End < now %}
                                 <tr class="negative">
-                                    <td>
-                        <a href="{% url 'production:job_order_details' data.id %}">{{ data }}</a>
-                    </td>
-                                    <td>{{data.client}}</td>
                     <td>
-                        {% if data.rush_order == 0 %}
-                            No
-                        {% else %}
-                            Yes
-                        {% endif %}
-                    </td>
-                    <td>{{ data.status }}</td>
-                    <td>{{ each.sked_out }}</td>
-                    <td class="center aligned">
-                        {% if data.status == 'On Queue' or data.status == 'Under Extrusion' %}
-                            {% for each in ex_schedule %}
-                                {% if data.id == each %}
-                                    Due this shift! <br>
-                                {% endif %}
-                            {% endfor %}
-                            <a class="ui small blue button" href="{% url 'production:add_extruder_schedule' data.id %}" style="width: 100px;">Extrusion</a>
-                        {% elif data.status == 'Under Printing'%}
-                            {% for each in pr_schedule %}
-                                {% if data.id == each %}
-                                    Due this shift! <br>
-                                {% endif %}
-                            {% endfor %}
-                            <a class="ui small yellow button" href="{% url 'production:add_printing_schedule' data.id %}" style="width: 100px;">Printing</a>
-                        {% elif data.status == 'Under Laminating' %}
-                            {% for each in la_schedule %}
-                                {% if data.id == each %}
-                                    Due this shift! <br>
-                                {% endif %}
-                            {% endfor %}
-                            <a class="ui small red button" href="{% url 'production:add_laminating_schedule' data.id %}" style="width: 100px;">Laminating</a>
-                        {% elif data.status == 'Under Cutting' %}
-                            {% for each in cu_schedule %}
-                                {% if data.id == each %}
-                                    Due this shift! <br>
-                                {% endif %}
-                            {% endfor %}
-                            <a class="ui small green button" href="{% url 'production:add_cutting_schedule' data.id %}" style="width: 100px;">Cutting</a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% else %}
-                <tr class = "row">
-                    <td> 
                         <a href="{% url 'production:job_order_details' data.id %}">{{ data }}</a>
                     </td>
                     <td>{{data.client}}</td>
                     <td>
+                        {% for x in items %}
+                            {% if x.client_po_id == data.id %}
+                                {{x.products}}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
                         {% if data.rush_order == 0 %}
                             No
                         {% else %}
@@ -80,7 +90,13 @@
                         {% endif %}
                     </td>
                     <td>{{ data.status }}</td>
-                    <td>{{ each.sked_out }}</td>
+
+                    <td>
+                        {% if each.PO == data.id %}
+							{{ each.End }}
+						{% endif %}
+                    </td>
+
                     <td class="center aligned">
                         {% if data.status == 'On Queue' or data.status == 'Under Extrusion' %}
                             {% for each in ex_schedule %}
@@ -88,34 +104,90 @@
                                     Due this shift! <br>
                                 {% endif %}
                             {% endfor %}
-                            <a class="ui small blue button" href="{% url 'production:add_extruder_schedule' data.id %}" style="width: 100px;">Extrusion</a>
+                            <a class="mini ui blue button" href="{% url 'production:add_extruder_schedule' data.id %}" style="width: 100px;">Extrusion</a>
                         {% elif data.status == 'Under Printing'%}
                             {% for each in pr_schedule %}
                                 {% if data.id == each %}
                                     Due this shift! <br>
                                 {% endif %}
                             {% endfor %}
-                            <a class="ui small yellow button" href="{% url 'production:add_printing_schedule' data.id %}" style="width: 100px;">Printing</a>
+                            <a class="mini ui yellow button" href="{% url 'production:add_printing_schedule' data.id %}" style="width: 100px;">Printing</a>
                         {% elif data.status == 'Under Laminating' %}
                             {% for each in la_schedule %}
                                 {% if data.id == each %}
                                     Due this shift! <br>
                                 {% endif %}
                             {% endfor %}
-                            <a class="ui small red button" href="{% url 'production:add_laminating_schedule' data.id %}" style="width: 100px;">Laminating</a>
+                            <a class="mini ui red button" href="{% url 'production:add_laminating_schedule' data.id %}" style="width: 100px;">Laminating</a>
                         {% elif data.status == 'Under Cutting' %}
                             {% for each in cu_schedule %}
                                 {% if data.id == each %}
                                     Due this shift! <br>
                                 {% endif %}
                             {% endfor %}
-                            <a class="ui small green button" href="{% url 'production:add_cutting_schedule' data.id %}" style="width: 100px;">Cutting</a>
+                            <a class="mini ui green button" href="{% url 'production:add_cutting_schedule' data.id %}" style="width: 100px;">Cutting</a>
                         {% endif %}
                     </td>
                 </tr>
-            {% endif %}
-            {% endif %}
-            {% endfor %}
+                            {% else %}
+                                <tr class = "row">
+                                    <td>
+                                        <a href="{% url 'production:job_order_details' data.id %}">{{ data }}</a>
+                                    </td>
+                                    <td>{{ data.client }}</td>
+                                    <td>
+                                        {% for x in items %}
+                                            {% if x.client_po_id == data.id %}
+                                                {{x.products}}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% if data.rush_order == 0 %}
+                                            No
+                                        {% else %}
+                                            Yes
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ data.status }}</td>
+                                    <td>{% if each.PO == data.id %}
+                                            {{ each.End }}
+                                        {% endif %}</td>
+                                    <td class="center aligned">
+                                        {% if data.status == 'On Queue' or data.status == 'Under Extrusion' %}
+                                            {% for each in ex_schedule %}
+                                                {% if data.id == each %}
+                                                    Due this shift! <br>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <a class="mini ui blue button" href="{% url 'production:add_extruder_schedule' data.id %}" style="width: 100px;">Extrusion</a>
+                                        {% elif data.status == 'Under Printing'%}
+                                            {% for each in pr_schedule %}
+                                                {% if data.id == each %}
+                                                    Due this shift! <br>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <a class="mini ui yellow button" href="{% url 'production:add_printing_schedule' data.id %}" style="width: 100px;">Printing</a>
+                                        {% elif data.status == 'Under Laminating' %}
+                                            {% for each in la_schedule %}
+                                                {% if data.id == each %}
+                                                    Due this shift! <br>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <a class="mini ui red button" href="{% url 'production:add_laminating_schedule' data.id %}" style="width: 100px;">Laminating</a>
+                                        {% elif data.status == 'Under Cutting' %}
+                                            {% for each in cu_schedule %}
+                                                {% if data.id == each. %}
+                                                    Due this shift! <br>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <a class="mini ui green button" href="{% url 'production:add_cutting_schedule' data.id %}" style="width: 100px;">Cutting</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
                 {% endfor %}
             {% else %}
             <td>
@@ -123,8 +195,9 @@
             </td>
             {% endif %}
 
-			</tbody>
-    	</table>
+            </tbody>
+        </table>
+
 
 	{% block script %}
 

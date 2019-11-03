@@ -14,7 +14,8 @@
         </div>
     </div>
 
-<div>
+
+    <div style="overflow-x: scroll">
     <div class="ui top attached tabular menu">
         <div class="active item" data-tab="first">Week of {{ today }}</div>
         <div class="item" data-tab="second">
@@ -47,16 +48,17 @@
     </div>
     <div class="ui bottom attached active tab segment" data-tab="first">
         <div style="overflow-x: scroll;">
-            <table class="ui celled center aligned table">
+            <table class="ui celled center aligned very small compact table">
                 <thead>
                     <tr>
-                        <th>Machine</th>
+                        <th class="one wide">Machine</th>
                         {% for a in week %}
-                        <th>{{ a }}</th>
+                        <th class="one wide">{{ a }}</th>
                         {% endfor %}
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="top aligned">
+
                 {% for x in machines %}
                     <tr>
                         <td>
@@ -67,25 +69,31 @@
                             <i class="red times circle outline icon"></i>
                             {% endif %}
                         </td>
+
                         {% for b in week %}
                             <td>
-                                {% for i in this_week %}
-                                    {% if i.Start.date == b and i.Machine == x %}
+                            {% for i in this_week %}
 
-                                            <br>
-                                            <a href="{% url 'production:job_order_details' i.ID %}">Job {{ i.ID }}</a><br>
-                                            <i>Employee:</i> {{ i.Worker }}<br>
-                                            <i>RM:</i> {{ i.Resource }}<br>
-                                            {% if i.Start.date == b %}
-                                                <i>Start: </i> {{ i.Start.hour }}:{{ i.Start.minute }} <br>
-                                            {% endif %}
-                                            {% if i.Finish.date == b %}
-                                                <i>End: </i> {{ i.Finish.hour }}:{{ i.Finish.minute }} <br>
-                                            {% endif %}
-                                            <br>
+                                {% if i.Start.date == b and i.Machine == x %}
 
+                                    <div class="ui mini message">
+
+
+                                    <a href="{% url 'production:job_order_details' i.ID %}" class="ui black header">Job {{ i.ID }}</a><br>
+
+                                    Employee: {{ i.Worker }}<br>
+                                    RM: {{ i.Resource }}<br>
+                                    {% if i.Start.date == b %}
+                                        Start: {{ i.Start.hour }}:{{ i.Start.minute }} <br>
                                     {% endif %}
-                                {% endfor %}
+                                    {% if i.Finish.date == b %}
+                                        End: {{ i.Finish.hour }}:{{ i.Finish.minute }} <br>
+                                    {% endif %}
+
+                                </div>
+
+                                {% endif %}
+                            {% endfor %}
                             </td>
                         {% endfor %}
                     </tr>
@@ -105,7 +113,7 @@
                         {% endfor %}
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="top aligned">
                 {% for y in machines %}
                     <tr>
                         <td>
@@ -120,17 +128,22 @@
                             <td>
                                 {% for j in this_month %}
                                     {% if j.Start.date == d and j.Machine == y %}
-                                            <br>
-                                            <a href="{% url 'production:job_order_details' j.ID %}">Job {{ j.ID }}</a><br>
-                                            <i>Employee:</i> {{ j.Worker }}<br>
-                                            <i>RM:</i> {{ j.Resource }}<br>
-                                            {% if j.Start.date == d %}
-                                                <i>Start: </i> {{ j.Start.hour }}:{{ j.Start.minute }} <br>
-                                            {% endif %}
-                                            {% if j.Finish.date == d %}
-                                                <i>End: </i> {{ j.Finish.hour }}:{{ j.Finish.minute }} <br>
-                                            {% endif %}
-                                            <br>
+
+                                    <div class="ui mini message">
+
+                                        <a href="{% url 'production:job_order_details' j.ID %}" class="ui black header">Job {{ j.ID }}</a><br>
+
+                                        Employee: {{ j.Worker }}<br>
+                                        RM: {{ j.Resource }}<br>
+                                        {% if j.Start.date == b %}
+                                            Start: {{ j.Start.hour }}:{{ j.Start.minute }} <br>
+                                        {% endif %}
+                                        {% if j.Finish.date == b %}
+                                            End: {{ j.Finish.hour }}:{{ j.Finish.minute }} <br>
+                                        {% endif %}
+
+                                    </div>
+
                                     {% endif %}
                                 {% endfor %}
                             </td>
@@ -141,7 +154,7 @@
             </table>
         </div>
     </div>
+    </div>
 
-</div>
 
 {% endblock %}

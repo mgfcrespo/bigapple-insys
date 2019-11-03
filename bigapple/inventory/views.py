@@ -78,12 +78,9 @@ def inventory_item_list(request):
     matreqs_3rd_shift = MaterialRequisition.objects.filter(datetime_issued__range=[shift22, shift32])
 
     # EOQ
-    thisYear = date.today().year
-    lastYear = date.today().year - 1
-    thisMonth = date.today().month
-    lastMonth = date.today().month - 1
+    Month = date.today().month - 3
 
-    allItems = JobOrder.objects.filter(date_issued__year=lastYear)
+    allItems = JobOrder.objects.filter(date_issued__month=Month)
     print(allItems)
 
     ldpe_demand = 0
@@ -170,13 +167,13 @@ def inventory_item_list(request):
     else:
         EOQ_hd = (math.sqrt(2 * hdpe_demand * hd_cost)) / 100
 
-    EOQ_ldpe = ldpe_demand / EOQ_ldpe
-    EOQ_lldpe = lldpe_demand / EOQ_lldpe
-    EOQ_hdpe = hdpe_demand / EOQ_hdpe
-    EOQ_pe = pe_demand / EOQ_pe
-    EOQ_pet = pet_demand / EOQ_pet
-    EOQ_pp = pp_demand / EOQ_pp
-    EOQ_hd = hd_demand / EOQ_hd
+    EOQ_ldpe = int(ldpe_demand / EOQ_ldpe)
+    EOQ_lldpe = int(lldpe_demand / EOQ_lldpe)
+    EOQ_hdpe = int(hdpe_demand / EOQ_hdpe)
+    EOQ_pe = int(pe_demand / EOQ_pe)
+    EOQ_pet = int(pet_demand / EOQ_pet)
+    EOQ_pp = int(pp_demand / EOQ_pp)
+    EOQ_hd = int(hd_demand / EOQ_hd)
 
 
     context = {
@@ -356,6 +353,111 @@ def supplierPO_form(request):
     delivery_date = None
     item = None
     supplier = None
+    suggestions = []
+
+    inventory = Inventory.objects.all()
+
+    # EOQ
+    Month = datetime.date.today().month - 3
+
+    allItems = JobOrder.objects.filter(date_issued__month=Month)
+    print(allItems)
+
+    ldpe_demand = 0
+    ldpe_cost = ClientItem.objects.filter(products_id=1).aggregate(Avg('price_per_piece')).get('price_per_piece__avg',
+                                                                                               0)
+
+    lldpe_demand = 0
+    lldpe_cost = ClientItem.objects.filter(products_id=4).aggregate(Avg('price_per_piece')).get('price_per_piece__avg',
+                                                                                                0)
+
+    hdpe_demand = 0
+    hdpe_cost = ClientItem.objects.filter(products_id=2).aggregate(Avg('price_per_piece')).get('price_per_piece__avg',
+                                                                                               0)
+
+    pp_demand = 0
+    pp_cost = ClientItem.objects.filter(products_id=3).aggregate(Avg('price_per_piece')).get('price_per_piece__avg', 0)
+
+    pet_demand = 0
+    pet_cost = ClientItem.objects.filter(products_id=5).aggregate(Avg('price_per_piece')).get('price_per_piece__avg', 0)
+
+    pe_demand = 0
+    pe_cost = ClientItem.objects.filter(products_id=6).aggregate(Avg('price_per_piece')).get('price_per_piece__avg', 0)
+
+    hd_demand = 0
+    hd_cost = ClientItem.objects.filter(products_id=7).aggregate(Avg('price_per_piece')).get('price_per_piece__avg', 0)
+
+    for x in allItems:
+        i = ClientItem.objects.filter(client_po_id=x)
+        for y in i:
+            if y.products_id == 1:
+                print("LDPE: ", i)
+                ldpe_demand += y.quantity
+            elif y.products_id == 4:
+                print("LLDPE: ", i)
+                lldpe_demand += y.quantity
+            elif y.products_id == 2:
+                print("HDPE: ", i)
+                hdpe_demand += y.quantity
+            elif y.products_id == 3:
+                print("PP: ", i)
+                pp_demand += y.quantity
+            elif y.products_id == 5:
+                print("PET: ", i)
+                pet_demand += y.quantity
+            elif y.products_id == 6:
+                print("PE: ", i)
+                pe_demand += y.quantity
+            elif y.products_id == 7:
+                print("HD: ", i)
+                hd_demand += y.quantity
+
+    if not ldpe_demand:
+        EOQ_ldpe = 1
+    else:
+        EOQ_ldpe = (math.sqrt(2 * ldpe_demand * ldpe_cost)) / 100
+
+    if not lldpe_demand:
+        EOQ_lldpe = 1
+    else:
+        EOQ_lldpe = (math.sqrt(2 * lldpe_demand * lldpe_cost)) / 100
+
+    if not hdpe_demand:
+        EOQ_hdpe = 1
+    else:
+        EOQ_hdpe = (math.sqrt(2 * hdpe_demand * hdpe_cost)) / 100
+
+    if not pp_demand:
+        EOQ_pp = 1
+    else:
+        EOQ_pp = (math.sqrt(2 * pp_demand * pp_cost)) / 100
+
+    if not pet_demand:
+        EOQ_pet = 1
+    else:
+        EOQ_pet = (math.sqrt(2 * pet_demand * pet_cost)) / 100
+
+    if not pet_demand:
+        EOQ_pe = 1
+    else:
+        EOQ_pe = (math.sqrt(2 * pet_demand * pe_cost)) / 100
+
+    if not hd_demand:
+        EOQ_hd = 1
+    else:
+        EOQ_hd = (math.sqrt(2 * hdpe_demand * hd_cost)) / 100
+
+    EOQ_ldpe = int(ldpe_demand / EOQ_ldpe)
+    EOQ_lldpe = int(lldpe_demand / EOQ_lldpe)
+    EOQ_hdpe = int(hdpe_demand / EOQ_hdpe)
+    EOQ_pe = int(pe_demand / EOQ_pe)
+    EOQ_pet = int(pet_demand / EOQ_pet)
+    EOQ_pp = int(pp_demand / EOQ_pp)
+    EOQ_hd = int(hd_demand / EOQ_hd)
+
+    suggested = []
+    #TODO Get quantity of all Inventory items that are of rm_type LDPE, LLDPE, etc
+
 
     if request.META['HTTP_REFERER'].startswith('http://127.0.0.1:8000/sales/'):
         print('sales:confirm_order/rush_order_assessment')
@@ -506,15 +608,15 @@ def inventory_forecast_details(request, pk):
     forecast_hwes = []
     forecast_moving_average = []
     forecast_arima = []
+    ink = str("'"+item.item+"'")
 
     if item.item_type == 'Raw Materials':
         product = Product.objects.get(material_type=item.rm_type)
-        query = 'SELECT po.date_issued, poi.quantity FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
+        query = 'SELECT po.date_issued, poi.quantity DIV 1000 AS "quantity" FROM production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
                 ' poi.products_id = ' + str(product.id)
-    #FIXME WHERE clause eme
     elif item.item_type == 'Ink':
-        query = 'SELECT po.date_issued, poi.quantity FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
-                ' poi.color LIKE ' + item.item
+        query = 'SELECT po.date_issued, `poi`.`quantity` DIV 2500 AS "quantity" FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
+                ' `poi`.`color` = '+str(ink)
     else:
         query = 'SELECT spo.date_issued, spoi.quantity FROM inventory_mgt_supplierpo spo, ' \
                 'inventory_mgt_supplierpoitems spoi where spoi.item_id = ' + str(pk) + 'and spoi.supplier_po_id = spo.id'
