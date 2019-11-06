@@ -1095,23 +1095,6 @@ def production_schedule(request):
                              'Worker' : i.sked_op
                              }
                 plot_list.append(sked_dict)
-
-        if cu:
-            for j in cu:
-                job = j.job_order_id
-                item = ClientItem.objects.get(client_po_id=job)
-                product = item.products
-                mat = product.material_type
-
-                sked_dict = {'ID': job,
-                             'Task': 'Cutting',
-                             'Start': j.sked_in,
-                             'Finish': j.sked_out,
-                             'Resource': mat,
-                             'Machine': j.sked_mach,
-                             'Worker': j.sked_op
-                             }
-                plot_list.append(sked_dict)
         if pr:
             for k in pr:
                 job = k.job_order_id
@@ -1142,6 +1125,22 @@ def production_schedule(request):
                              'Resource': mat,
                              'Machine': l.sked_mach,
                              'Worker': l.sked_op
+                             }
+                plot_list.append(sked_dict)
+        if cu:
+            for j in cu:
+                job = j.job_order_id
+                item = ClientItem.objects.get(client_po_id=job)
+                product = item.products
+                mat = product.material_type
+
+                sked_dict = {'ID': job,
+                             'Task': 'Cutting',
+                             'Start': j.sked_in,
+                             'Finish': j.sked_out,
+                             'Resource': mat,
+                             'Machine': j.sked_mach,
+                             'Worker': j.sked_op
                              }
                 plot_list.append(sked_dict)
 
@@ -1771,109 +1770,58 @@ def shift_schedule(request):
     start_time = None
     end_time = None
     today = date.today()
-    e = ExtruderSchedule.objects.all()
-    c = CuttingSchedule.objects.all()
-    l = LaminatingSchedule.objects.all()
-    p = PrintingSchedule.objects.all()
+    e = ExtruderSchedule.objects.filter(ideal=True)
+    c = CuttingSchedule.objects.filter(ideal=True)
+    l = LaminatingSchedule.objects.filter(ideal=True)
+    p = PrintingSchedule.objects.filter(ideal=True)
 
-    if time(6, 0) <= datetime.now().time() <= time(14, 0):
+    if time(6, 0) <= datetime.now().time() < time(14, 0):
         shift = 1
         for i in e:
-            sked_in = i.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 6 and sked_in.hour < 14:
-                    ex_schedule.append(i)
+            if datetime.combine(i.sked_in.date(), i.sked_in.time()) == datetime.combine(today, time(6, 0)):
+                ex_schedule.append(i)
         for j in c:
-            sked_in = j.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 6 and sked_in.hour < 14:
-                    cu_schedule.append(j)
+            if datetime.combine(j.sked_in.date(), j.sked_in.time()) == datetime.combine(today, time(6, 0)):
+                cu_schedule.append(j)
         for k in l:
-            sked_in = k.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 6 and sked_in.hour < 14:
-                    la_schedule.append(k)
+            if datetime.combine(k.sked_in.date(), k.sked_in.time()) == datetime.combine(today, time(6, 0)):
+                la_schedule.append(k)
         for x in p:
-            sked_in = x.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 6 and sked_in.hour < 14:
-                    pr_schedule.append(x)
+            if datetime.combine(x.sked_in.date(), x.sked_in.time()) == datetime.combine(today, time(6, 0)):
+                pr_schedule.append(x)
 
-
-    elif time(14, 0) <= datetime.now().time() <= time(22,0):
+    elif time(14, 0) <= datetime.now().time() < time(22,0):
         shift = 2
         for i in e:
-            sked_in = i.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 14 and sked_in.hour < 22:
-                    ex_schedule.append(i)
+            if datetime.combine(i.sked_in.date(), i.sked_in.time()) == datetime.combine(today, time(14, 0)):
+                ex_schedule.append(i)
         for j in c:
-            sked_in = j.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 14 and sked_in.hour < 22:
-                    cu_schedule.append(j)
+            if datetime.combine(j.sked_in.date(), j.sked_in.time()) == datetime.combine(today, time(14, 0)):
+                cu_schedule.append(j)
         for k in l:
-            sked_in = k.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 14 and sked_in.hour < 22:
-                    la_schedule.append(k)
+            if datetime.combine(k.sked_in.date(), k.sked_in.time()) == datetime.combine(today, time(14, 0)):
+                la_schedule.append(k)
         for x in p:
-            sked_in = x.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 14 and sked_in.hour < 22:
-                    pr_schedule.append(x)
+            if datetime.combine(x.sked_in.date(), x.sked_in.time()) == datetime.combine(today, time(14, 0)):
+                pr_schedule.append(x)
 
-    elif datetime.now().time() >= time(22, 0):
+    elif datetime.now().time() >= time(22, 0) or datetime.now().time() < time(6, 0):
         shift = 3
         for i in e:
-            sked_in = i.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour < 6:
-                    ex_schedule.append(i)
+            if datetime.combine(i.sked_in.date(), i.sked_in.time()) == datetime.combine(today, time(22, 0)):
+                ex_schedule.append(i)
         for j in c:
-            sked_in = j.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour < 6:
-                    cu_schedule.append(j)
+            if datetime.combine(j.sked_in.date(), j.sked_in.time()) == datetime.combine(today, time(22, 0)):
+                cu_schedule.append(j)
         for k in l:
-            sked_in = k.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour < 6:
-                    la_schedule.append(k)
+            if datetime.combine(k.sked_in.date(), k.sked_in.time()) == datetime.combine(today, time(22, 0)):
+                la_schedule.append(k)
         for x in p:
-            sked_in = x.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour < 6:
-                    pr_schedule.append(x)
-    elif datetime.now().time() <= time(6, 0):
-        shift = 3
-        for i in e:
-            sked_in = i.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour < 6:
-                    ex_schedule.append(i)
-        for j in c:
-            sked_in = j.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour < 6:
-                    cu_schedule.append(j)
-        for k in l:
-            sked_in = k.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour < 6:
-                    la_schedule.append(k)
-        for x in p:
-            sked_in = x.sked_in
-            if sked_in:
-                if sked_in.year == today.year and sked_in.month == today.month and sked_in.day == today.day and sked_in.hour >= 22 and sked_in.hour < 6:
-                    pr_schedule.append(x)
+            if datetime.combine(x.sked_in.date(), x.sked_in.time()) == datetime.combine(today, time(22, 0)):
+                pr_schedule.append(x)
+
     else:
         shift = 0
-
-
-    print('SHIFT SKED')
-    print(shift)
-    print(ex_schedule)
 
     now = datetime.now()
 

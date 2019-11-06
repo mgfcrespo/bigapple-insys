@@ -155,7 +155,16 @@ def inventory_item_list(request):
 
     items = Inventory.objects.all()
     today = date.today()
-    issued_to_production = MaterialRequisition.objects.filter(datetime_issued__startswith=today)
+    issued_to_production = []
+    matreqs = MaterialRequisition.objects.filter(datetime_issued__startswith=today)
+    for every in items:
+        req_sum_item = 0
+        for each in matreqs:
+            if each.item == every:
+                req_sum_item += each.quantity
+        issued_to_production.append({'Item' : every,
+                                     'QTY' : req_sum_item})
+
     spo_items = SupplierPOItems.objects.all()
     spo = []
     supplier_po = SupplierPO.objects.filter(date_issued=today)
@@ -234,11 +243,6 @@ def inventory_count_form(request, id):
         employee_id = request.session['session_userid']
         current_employee = Employee.objects.get(id=employee_id)
         if form.is_valid():
-            #i = data
-            #item = i #item previously counted
-            #print(item)
-            #if item.exists():
-              #counted = i.latest('time')#get latest
             new_form = form.save(commit=False)
             new_form.count_person = current_employee
             new_form.old_count = data.quantity

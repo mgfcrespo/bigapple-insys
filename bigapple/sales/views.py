@@ -122,11 +122,14 @@ def po_list_view(request):
         client_po = JobOrder.objects.filter(client = Client.objects.get(accounts_id = id))
         x = 'Client'
         for each in client_po:
+            ideal_scheds = []
             for every in ideal:
                 if every.job_order_id == each.id:
-
-                    end_dates.append({'End' : every.sked_out.date(),
-                                      'PO' : each.id})
+                    ideal_scheds.append(every)
+            ideal_scheds.sort(key=lambda i: i.sked_out)
+            if ideal_scheds:
+                end_dates.append({'End': ideal_scheds[-1].sked_out.date(),
+                                  'PO': each.id})
     elif employee:
         x = 'Employee'
         if Employee.objects.get(accounts_id = id).position == "Sales Coordinator" or "General Manager":
@@ -148,6 +151,15 @@ def po_list_view(request):
               for y in customer:
                   if a.client_id == y.id:
                      client_po.append(a)
+            for each in client_po:
+                ideal_scheds = []
+                for every in ideal:
+                    if every.job_order_id == each.id:
+                        ideal_scheds.append(every)
+                ideal_scheds.sort(key=lambda i: i.sked_out)
+                if ideal_scheds:
+                    end_dates.append({'End': ideal_scheds[-1].sked_out.date(),
+                                      'PO': each.id})
 
     context = {
         'title' : "Client Purchase Orders",
@@ -287,7 +299,7 @@ def confirm_client_po(request, pk):
                         new_form = form1.save(commit=False)
                         new_form.client_item = every
                         new_form.item = Inventory.objects.filter(rm_type=x).first()
-                        new_form.quantity = every.quantity/1000 #TODO: Ensure quantity (raw mat to product ratio)
+                        new_form.quantity = every.quantity/1000 #TODO Ensure quantity (raw mat to product ratio)
                         new_form.save()
 
                         #matreq = MaterialRequisition.objects.get(id = new_form.pk)
@@ -303,7 +315,7 @@ def confirm_client_po(request, pk):
                 supplierpo_item_formset = inlineformset_factory(SupplierPO, SupplierPOItems, form=SupplierPOItemsForm,
                                                                 extra=1,
                                                                 can_delete=True)
-                form = SupplierPO(supplier=supplier, delivery_date=delivery_date, date_issued=date.today())
+                form = SupplierPO(supplier=supplier, delivery_date=delivery_date, date_issued=date.today(), client_po=clientpo)
                 form.save()
                 form_item = SupplierPOItems(supplier_po=form, item=item, quantity=cylinder_count)
                 form_item.save()
@@ -486,31 +498,34 @@ def create_client_po(request):
             if every.client_po_id == each.id:
                 items.append(every.products_id)
 
-    item = most_common(items)
-    item = Product.objects.get(id=item)
-    cursor = connection.cursor()
     forecast_ses = []
     forecast_hwes = []
     forecast_moving_average = []
+    product = None
 
-    query = 'SELECT po.date_issued, poi.quantity FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
-            'po.client_id = ' + str(request.session['session_userid']) + ' AND poi.client_po_id = po.id AND poi.products_id = ' + str(item.id)
+    if items:
+        item = most_common(items)
+        item = Product.objects.get(id=item)
+        cursor = connection.cursor()
 
-    cursor.execute(query)
-    df = pd.read_sql(query, connection)
+        query = 'SELECT po.date_issued, poi.quantity FROM  production_mgt_joborder po, sales_mgt_clientitem poi WHERE ' \
+                'po.client_id = ' + str(request.session['session_userid']) + ' AND poi.client_po_id = po.id AND poi.products_id = ' + str(item.id)
 
-    product = item
+        cursor.execute(query)
+        df = pd.read_sql(query, connection)
 
-    # forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
-    a = TimeSeriesForecasting.forecast_ses(df)
-    a[1] = int(float(a[1]))
-    forecast_ses.extend(a)
-    b = TimeSeriesForecasting.forecast_hwes(df)
-    b[1] = int(float(b[1]))
-    forecast_hwes.extend(b)
-    c = TimeSeriesForecasting.forecast_moving_average(df)
-    c[1] = int(float(c[1]))
-    forecast_moving_average.extend(c)
+        product = item
+
+        # forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
+        a = TimeSeriesForecasting.forecast_ses(df)
+        a[1] = int(float(a[1]))
+        forecast_ses.extend(a)
+        b = TimeSeriesForecasting.forecast_hwes(df)
+        b[1] = int(float(b[1]))
+        forecast_hwes.extend(b)
+        c = TimeSeriesForecasting.forecast_moving_average(df)
+        c[1] = int(float(c[1]))
+        forecast_moving_average.extend(c)
 
     EOQ = inventory_views.eoq()
 
@@ -1854,95 +1869,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     divide_task_1(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
                                   skedindate,
                                   shift1, shift2, shift3, new_ideal_sched, rush)
-            elif ideal_sched[x]['Task'] == 'Cutting':
-                ideal_workers = Employee.objects.filter(position='Cutting')
-                other_workers = Employee.objects.filter(
-                    Q(position='Extruder') | Q(position='Printing') | Q(position='Laminating'))
-                for each in all_skeds:
-                    if each.job_order_id == ideal_sched[x]['ID']:
-                        job_shifts.append(each)
-                job_shifts.sort(key=lambda x: x.sked_in)
-                if job_shifts:
-                    latest = job_shifts[-1]
-                for each in all_skeds:
-                    if each.sked_mach == ideal_sched[x]['Machine']:
-                        occupied_shifts.append(each)
-                occupied_shifts.sort(key=lambda x: x.sked_in)
-                if occupied_shifts:
-                    each = occupied_shifts[-1]
-                if each and latest:
-                    if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
-                        if latest is None or each.sked_in > latest.sked_in:
-                            latest = each
-                        push = 1
-                        skedindate = latest.sked_in.date() + timedelta(days=1)
-                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                    elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
-                        if latest is None or each.sked_in > latest.sked_in:
-                            latest = each
-                        push = 3
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
-                    elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
-                        if latest is None or each.sked_in > latest.sked_in:
-                            latest = each
-                        push = 2
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                elif each:
-                    if each.sked_in.time() == time(22, 0):
-                        latest = each
-                        push = 1
-                        skedindate = latest.sked_in.date() + timedelta(days=1)
-                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                    elif each.sked_in.time() == time(14, 0):
-                        latest = each
-                        push = 3
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
-                    elif each.sked_in.time() == time(6, 0):
-                        latest = each
-                        push = 2
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                elif latest:
-                    if latest.sked_in.time() == time(22, 0):
-                        push = 1
-                        skedindate = latest.sked_in.date() + timedelta(days=1)
-                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                    elif latest.sked_in.time() == time(14, 0):
-                        push = 3
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
-                    elif latest.sked_in.time() == time(6, 0):
-                        push = 2
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                if push == 1:
-                    print('PUSH TO SHIFT 1: ' + str(ideal_sched[x]['ID']))
-                    divide_task_1(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
-                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
-                elif push == 2:
-                    print('PUSH TO SHIFT 2: ' + str(ideal_sched[x]['ID']))
-                    divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
-                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
-                elif push == 3:
-                    print('PUSH TO SHIFT 3: ' + str(ideal_sched[x]['ID']))
-                    divide_task_3(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
-                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
-                else:
-                    divide_task_1(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
-                                  skedindate,
-                                  shift1, shift2, shift3, new_ideal_sched, rush)
             elif ideal_sched[x]['Task'] == 'Printing':
                 ideal_workers = Employee.objects.filter(position='Printing')
                 other_workers = Employee.objects.filter(
@@ -2032,7 +1958,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     divide_task_1(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
                                   skedindate,
                                   shift1, shift2, shift3, new_ideal_sched, rush)
-
             elif ideal_sched[x]['Task'] == 'Laminating':
                 ideal_workers = Employee.objects.filter(position='Laminating')
                 other_workers = Employee.objects.filter(
@@ -2066,6 +1991,95 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                         skedout = datetime.datetime.combine(skedindate, time(6, 0))
                     elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
                         if each.sked_in > latest.sked_in:
+                            latest = each
+                        push = 2
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                elif each:
+                    if each.sked_in.time() == time(22, 0):
+                        latest = each
+                        push = 1
+                        skedindate = latest.sked_in.date() + timedelta(days=1)
+                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                    elif each.sked_in.time() == time(14, 0):
+                        latest = each
+                        push = 3
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
+                    elif each.sked_in.time() == time(6, 0):
+                        latest = each
+                        push = 2
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                elif latest:
+                    if latest.sked_in.time() == time(22, 0):
+                        push = 1
+                        skedindate = latest.sked_in.date() + timedelta(days=1)
+                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                    elif latest.sked_in.time() == time(14, 0):
+                        push = 3
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
+                    elif latest.sked_in.time() == time(6, 0):
+                        push = 2
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                if push == 1:
+                    print('PUSH TO SHIFT 1: ' + str(ideal_sched[x]['ID']))
+                    divide_task_1(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
+                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
+                elif push == 2:
+                    print('PUSH TO SHIFT 2: ' + str(ideal_sched[x]['ID']))
+                    divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
+                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
+                elif push == 3:
+                    print('PUSH TO SHIFT 3: ' + str(ideal_sched[x]['ID']))
+                    divide_task_3(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
+                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
+                else:
+                    divide_task_1(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
+                                  skedindate,
+                                  shift1, shift2, shift3, new_ideal_sched, rush)
+            elif ideal_sched[x]['Task'] == 'Cutting':
+                ideal_workers = Employee.objects.filter(position='Cutting')
+                other_workers = Employee.objects.filter(
+                    Q(position='Extruder') | Q(position='Printing') | Q(position='Laminating'))
+                for each in all_skeds:
+                    if each.job_order_id == ideal_sched[x]['ID']:
+                        job_shifts.append(each)
+                job_shifts.sort(key=lambda x: x.sked_in)
+                if job_shifts:
+                    latest = job_shifts[-1]
+                for each in all_skeds:
+                    if each.sked_mach == ideal_sched[x]['Machine']:
+                        occupied_shifts.append(each)
+                occupied_shifts.sort(key=lambda x: x.sked_in)
+                if occupied_shifts:
+                    each = occupied_shifts[-1]
+                if each and latest:
+                    if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                        if latest is None or each.sked_in > latest.sked_in:
+                            latest = each
+                        push = 1
+                        skedindate = latest.sked_in.date() + timedelta(days=1)
+                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                    elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
+                        if latest is None or each.sked_in > latest.sked_in:
+                            latest = each
+                        push = 3
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
+                    elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
+                        if latest is None or each.sked_in > latest.sked_in:
                             latest = each
                         push = 2
                         skedindate = latest.sked_in.date()
@@ -2228,97 +2242,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
                                   skedindate,
                                   shift1, shift2, shift3, new_ideal_sched, rush)
-
-            elif ideal_sched[x]['Task'] == 'Cutting':
-                ideal_workers = Employee.objects.filter(position='Cutting')
-                other_workers = Employee.objects.filter(
-                    Q(position='Extruder') | Q(position='Printing') | Q(position='Laminating'))
-                for each in all_skeds:
-                    if each.job_order_id == ideal_sched[x]['ID']:
-                        job_shifts.append(each)
-                job_shifts.sort(key=lambda x: x.sked_in)
-                if job_shifts:
-                    latest = job_shifts[-1]
-                for each in all_skeds:
-                    if each.sked_mach == ideal_sched[x]['Machine']:
-                        occupied_shifts.append(each)
-                occupied_shifts.sort(key=lambda x: x.sked_in)
-                if occupied_shifts:
-                    each = occupied_shifts[-1]
-                if each and latest:
-                    if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
-                        if each.sked_in > latest.sked_in:
-                            latest = each
-                        push = 1
-                        skedindate = latest.sked_in.date() + timedelta(days=1)
-                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                    elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
-                        if each.sked_in > latest.sked_in:
-                            latest = each
-                        push = 3
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
-                    elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
-                        if each.sked_in > latest.sked_in:
-                            latest = each
-                        push = 2
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                elif each:
-                    if each.sked_in.time() == time(22, 0):
-                        latest = each
-                        push = 1
-                        skedindate = latest.sked_in.date() + timedelta(days=1)
-                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                    elif each.sked_in.time() == time(14, 0):
-                        latest = each
-                        push = 3
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
-                    elif each.sked_in.time() == time(6, 0):
-                        latest = each
-                        push = 2
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                elif latest:
-                    if latest.sked_in.time() == time(22, 0):
-                        push = 1
-                        skedindate = latest.sked_in.date() + timedelta(days=1)
-                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                    elif latest.sked_in.time() == time(14, 0):
-                        push = 3
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
-                    elif latest.sked_in.time() == time(6, 0):
-                        push = 2
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                if push == 1:
-                    print('PUSH TO SHIFT 1: ' + str(ideal_sched[x]['ID']))
-                    divide_task_1(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
-                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
-                elif push == 2:
-                    print('PUSH TO SHIFT 2: ' + str(ideal_sched[x]['ID']))
-                    divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
-                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
-                elif push == 3:
-                    print('PUSH TO SHIFT 3: ' + str(ideal_sched[x]['ID']))
-                    divide_task_3(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
-                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
-                else:
-                    divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
-                                  skedindate,
-                                  shift1, shift2, shift3, new_ideal_sched, rush)
-
             elif ideal_sched[x]['Task'] == 'Printing':
                 ideal_workers = Employee.objects.filter(position='Printing')
                 other_workers = Employee.objects.filter(
@@ -2408,7 +2331,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
                                   skedindate,
                                   shift1, shift2, shift3, new_ideal_sched, rush)
-
             elif ideal_sched[x]['Task'] == 'Laminating':
                 ideal_workers = Employee.objects.filter(position='Laminating')
                 other_workers = Employee.objects.filter(
@@ -2498,7 +2420,95 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
                                   skedindate,
                                   shift1, shift2, shift3, new_ideal_sched, rush)
-
+            elif ideal_sched[x]['Task'] == 'Cutting':
+                ideal_workers = Employee.objects.filter(position='Cutting')
+                other_workers = Employee.objects.filter(
+                    Q(position='Extruder') | Q(position='Printing') | Q(position='Laminating'))
+                for each in all_skeds:
+                    if each.job_order_id == ideal_sched[x]['ID']:
+                        job_shifts.append(each)
+                job_shifts.sort(key=lambda x: x.sked_in)
+                if job_shifts:
+                    latest = job_shifts[-1]
+                for each in all_skeds:
+                    if each.sked_mach == ideal_sched[x]['Machine']:
+                        occupied_shifts.append(each)
+                occupied_shifts.sort(key=lambda x: x.sked_in)
+                if occupied_shifts:
+                    each = occupied_shifts[-1]
+                if each and latest:
+                    if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                        if each.sked_in > latest.sked_in:
+                            latest = each
+                        push = 1
+                        skedindate = latest.sked_in.date() + timedelta(days=1)
+                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                    elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
+                        if each.sked_in > latest.sked_in:
+                            latest = each
+                        push = 3
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
+                    elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
+                        if each.sked_in > latest.sked_in:
+                            latest = each
+                        push = 2
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                elif each:
+                    if each.sked_in.time() == time(22, 0):
+                        latest = each
+                        push = 1
+                        skedindate = latest.sked_in.date() + timedelta(days=1)
+                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                    elif each.sked_in.time() == time(14, 0):
+                        latest = each
+                        push = 3
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
+                    elif each.sked_in.time() == time(6, 0):
+                        latest = each
+                        push = 2
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                elif latest:
+                    if latest.sked_in.time() == time(22, 0):
+                        push = 1
+                        skedindate = latest.sked_in.date() + timedelta(days=1)
+                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                    elif latest.sked_in.time() == time(14, 0):
+                        push = 3
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
+                    elif latest.sked_in.time() == time(6, 0):
+                        push = 2
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                if push == 1:
+                    print('PUSH TO SHIFT 1: ' + str(ideal_sched[x]['ID']))
+                    divide_task_1(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
+                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
+                elif push == 2:
+                    print('PUSH TO SHIFT 2: ' + str(ideal_sched[x]['ID']))
+                    divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
+                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
+                elif push == 3:
+                    print('PUSH TO SHIFT 3: ' + str(ideal_sched[x]['ID']))
+                    divide_task_3(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
+                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
+                else:
+                    divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
+                                  skedindate,
+                                  shift1, shift2, shift3, new_ideal_sched, rush)
         elif 18 <= ideal_sched[x]['Start'].hour or ideal_sched[x]['Start'].hour > 2:
             print('JOB: ' + str(ideal_sched[x]['ID']))
             job = (ideal_sched[x]['ID'], ideal_sched[x]['Task'])
@@ -2604,97 +2614,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     divide_task_3(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
                                   skedindate,
                                   shift1, shift2, shift3, new_ideal_sched, rush)
-
-            elif ideal_sched[x]['Task'] == 'Cutting':
-                ideal_workers = Employee.objects.filter(position='Cutting')
-                other_workers = Employee.objects.filter(
-                    Q(position='Extruder') | Q(position='Printing') | Q(position='Laminating'))
-                for each in all_skeds:
-                    if each.job_order_id == ideal_sched[x]['ID']:
-                        job_shifts.append(each)
-                job_shifts.sort(key=lambda x: x.sked_in)
-                if job_shifts:
-                    latest = job_shifts[-1]
-                for each in all_skeds:
-                    if each.sked_mach == ideal_sched[x]['Machine']:
-                        occupied_shifts.append(each)
-                occupied_shifts.sort(key=lambda x: x.sked_in)
-                if occupied_shifts:
-                    each = occupied_shifts[-1]
-                if each and latest:
-                    if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
-                        if each.sked_in > latest.sked_in:
-                            latest = each
-                        push = 1
-                        skedindate = latest.sked_in.date() + timedelta(days=1)
-                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                    elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
-                        if each.sked_in > latest.sked_in:
-                            latest = each
-                        push = 3
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
-                    elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
-                        if each.sked_in > latest.sked_in:
-                            latest = each
-                        push = 2
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                elif each:
-                    if each.sked_in.time() == time(22, 0):
-                        latest = each
-                        push = 1
-                        skedindate = latest.sked_in.date() + timedelta(days=1)
-                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                    elif each.sked_in.time() == time(14, 0):
-                        latest = each
-                        push = 3
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
-                    elif each.sked_in.time() == time(6, 0):
-                        latest = each
-                        push = 2
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                elif latest:
-                    if latest.sked_in.time() == time(22, 0):
-                        push = 1
-                        skedindate = latest.sked_in.date() + timedelta(days=1)
-                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                    elif latest.sked_in.time() == time(14, 0):
-                        push = 3
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
-                    elif latest.sked_in.time() == time(6, 0):
-                        push = 2
-                        skedindate = latest.sked_in.date()
-                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                if push == 1:
-                    print('PUSH TO SHIFT 1: ' + str(ideal_sched[x]['ID']))
-                    divide_task_1(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
-                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
-                elif push == 2:
-                    print('PUSH TO SHIFT 2: ' + str(ideal_sched[x]['ID']))
-                    divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
-                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
-                elif push == 3:
-                    print('PUSH TO SHIFT 3: ' + str(ideal_sched[x]['ID']))
-                    divide_task_3(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
-                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
-                else:
-                    divide_task_3(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
-                                  skedindate,
-                                  shift1, shift2, shift3, new_ideal_sched, rush)
-
             elif ideal_sched[x]['Task'] == 'Printing':
                 ideal_workers = Employee.objects.filter(position='Printing')
                 other_workers = Employee.objects.filter(
@@ -2784,11 +2703,99 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     divide_task_3(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
                                   skedindate,
                                   shift1, shift2, shift3, new_ideal_sched, rush)
-
             elif ideal_sched[x]['Task'] == 'Laminating':
                 ideal_workers = Employee.objects.filter(position='Laminating')
                 other_workers = Employee.objects.filter(
                     Q(position='Extruder') | Q(position='Cutting') | Q(position='Printing'))
+                for each in all_skeds:
+                    if each.job_order_id == ideal_sched[x]['ID']:
+                        job_shifts.append(each)
+                job_shifts.sort(key=lambda x: x.sked_in)
+                if job_shifts:
+                    latest = job_shifts[-1]
+                for each in all_skeds:
+                    if each.sked_mach == ideal_sched[x]['Machine']:
+                        occupied_shifts.append(each)
+                occupied_shifts.sort(key=lambda x: x.sked_in)
+                if occupied_shifts:
+                    each = occupied_shifts[-1]
+                if each and latest:
+                    if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                        if each.sked_in > latest.sked_in:
+                            latest = each
+                        push = 1
+                        skedindate = latest.sked_in.date() + timedelta(days=1)
+                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                    elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
+                        if each.sked_in > latest.sked_in:
+                            latest = each
+                        push = 3
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
+                    elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
+                        if each.sked_in > latest.sked_in:
+                            latest = each
+                        push = 2
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                elif each:
+                    if each.sked_in.time() == time(22, 0):
+                        latest = each
+                        push = 1
+                        skedindate = latest.sked_in.date() + timedelta(days=1)
+                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                    elif each.sked_in.time() == time(14, 0):
+                        latest = each
+                        push = 3
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
+                    elif each.sked_in.time() == time(6, 0):
+                        latest = each
+                        push = 2
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                elif latest:
+                    if latest.sked_in.time() == time(22, 0):
+                        push = 1
+                        skedindate = latest.sked_in.date() + timedelta(days=1)
+                        skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                    elif latest.sked_in.time() == time(14, 0):
+                        push = 3
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(6, 0))
+                    elif latest.sked_in.time() == time(6, 0):
+                        push = 2
+                        skedindate = latest.sked_in.date()
+                        skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                        skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                if push == 1:
+                    print('PUSH TO SHIFT 1: ' + str(ideal_sched[x]['ID']))
+                    divide_task_1(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
+                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
+                elif push == 2:
+                    print('PUSH TO SHIFT 2: ' + str(ideal_sched[x]['ID']))
+                    divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
+                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
+                elif push == 3:
+                    print('PUSH TO SHIFT 3: ' + str(ideal_sched[x]['ID']))
+                    divide_task_3(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
+                                  skedindate, shift1, shift2, shift3, new_ideal_sched, rush)
+                else:
+                    divide_task_3(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, skedin, skedout,
+                                  skedindate,
+                                  shift1, shift2, shift3, new_ideal_sched, rush)
+            elif ideal_sched[x]['Task'] == 'Cutting':
+                ideal_workers = Employee.objects.filter(position='Cutting')
+                other_workers = Employee.objects.filter(
+                    Q(position='Extruder') | Q(position='Printing') | Q(position='Laminating'))
                 for each in all_skeds:
                     if each.job_order_id == ideal_sched[x]['ID']:
                         job_shifts.append(each)

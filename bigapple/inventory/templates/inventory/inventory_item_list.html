@@ -83,11 +83,12 @@
 							: {{ e.quantity }},
 						{% endif %}
 					{% endfor %}</td>
-				<td>{% for every in issued_to_production %}
-                    {% if every.item == x %}
-				{{ every.quantity }}
+				<td>
+					{% for every in issued_to_production %}
+                    {% if every.Item == x %}
+					{{ every.QTY }}
                     {% endif %}
-                {% endfor %}
+                	{% endfor %}
 				</td>
 
 				<td>

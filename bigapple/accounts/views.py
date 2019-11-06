@@ -351,31 +351,29 @@ def user_page_view(request):
                     if each.client_po_id == every.id:
                         mga_item.append(each.products_id)
 
-            itong_item = most_common(mga_item)
-            itong_item = Product.objects.get(id=itong_item)
-
             forecast_ses = []
             forecast_hwes = []
             forecast_moving_average = []
-            forecast_arima = []
 
-            df_client = client_demand_query(user.client.id, itong_item.id)
+            if mga_item:
+                itong_item = most_common(mga_item)
+                itong_item = Product.objects.get(id=itong_item)
 
-            product = itong_item
+                df_client = client_demand_query(user.client.id, itong_item.id)
 
-            # forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
-            a = TimeSeriesForecasting.forecast_ses(df_client)
-            a[1] = int(float(a[1]))
-            forecast_ses.extend(a)
-            b = TimeSeriesForecasting.forecast_hwes(df_client)
-            b[1] = int(float(b[1]))
-            forecast_hwes.extend(b)
-            c = TimeSeriesForecasting.forecast_moving_average(df_client)
-            c[1] = int(float(c[1]))
-            forecast_moving_average.extend(c)
-            #d = TimeSeriesForecasting.forecast_arima(df_client)
-            #d[1] = int(float(d[1]))
-            #forecast_arima.extend(d)
+                product = itong_item
+
+                # forecast_decomposition.append(TimeSeriesForecasting.forecast_decomposition(df))
+                a = TimeSeriesForecasting.forecast_ses(df_client)
+                a[1] = int(float(a[1]))
+                forecast_ses.extend(a)
+                b = TimeSeriesForecasting.forecast_hwes(df_client)
+                b[1] = int(float(b[1]))
+                forecast_hwes.extend(b)
+                c = TimeSeriesForecasting.forecast_moving_average(df_client)
+                c[1] = int(float(c[1]))
+                forecast_moving_average.extend(c)
+
 
         elif employee:
             x = 'Employee'
