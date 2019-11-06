@@ -17,7 +17,7 @@ from django import forms
 from django.forms import ModelForm, ValidationError, Form, widgets, DateTimeInput
 from inventory.forms import MaterialRequisition
 from inventory.forms import MaterialRequisitionForm
-from sales.models import ClientItem, SalesInvoice
+from sales.models import ClientItem, SalesInvoice, Product
 from utilities import cpsat, cpsatworkertest
 from sales import views as sales_views
 from .forms import ExtruderScheduleForm, PrintingScheduleForm, CuttingScheduleForm, LaminatingScheduleForm
@@ -438,6 +438,29 @@ def finished_job_order_list_view(request):
 
     return render(request, 'production/finished_job_order_list.html', context)
 
+def late_phase_count(phase, extrusion_late, cutting_late, laminating_late, printing_late):
+    if date.today().weekday() == 0:
+        extrusion_late = 0
+        cutting_late = 0
+        laminating_late = 0
+        printing_late = 0
+    else:
+        if phase == 1:
+            extrusion_late += 1
+        elif phase == 2:
+            printing_late += 1
+        elif phase == 3:
+            laminating_late += 1
+        elif phase == 4:
+            cutting_late += 1
+
+    late_count = {'Extrusion' : extrusion_late,
+                  'Cutting' : cutting_late,
+                  'Printing' : laminating_late,
+                  'Laminating' : printing_late}
+
+    return late_count
+
 # EXTRUDER 
 def add_extruder_schedule(request, id):
     data = JobOrder.objects.get(id=id)
@@ -483,12 +506,12 @@ def add_extruder_schedule(request, id):
                         if final == 1:
                             in_production = JobOrder.objects.filter(
                                 ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
-                            sales_views.save_schedule(request, None, labas, id, False, True, True, True, in_production)
+                            sales_views.save_schedule(request, None, labas, id, False, True, True, True, in_production, False)
                             print('resched, final')
                         else:
                             in_production = JobOrder.objects.filter(
                                 ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
-                            sales_views.save_schedule(request, None, labas, id, True, True, True, True, in_production)
+                            sales_views.save_schedule(request, None, labas, id, True, True, True, True, in_production, False)
                             print('resched, not final')
             if form.final:
                 if printed:
@@ -621,12 +644,12 @@ def add_printing_schedule(request, id):
                         if final == 1:
                             in_production = JobOrder.objects.filter(
                                 ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
-                            sales_views.save_schedule(request, None, labas, id, True, True, False, True, in_production)
+                            sales_views.save_schedule(request, None, labas, id, True, True, False, True, in_production, False)
                             print('resched, final')
                         else:
                             in_production = JobOrder.objects.filter(
                                 ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
-                            sales_views.save_schedule(request, None, labas, id, True, True, True, True, in_production)
+                            sales_views.save_schedule(request, None, labas, id, True, True, True, True, in_production, False)
                             print('resched, not final')
             if form.final:
                 if laminate:
@@ -755,11 +778,11 @@ def add_cutting_schedule(request, id):
                         if final == 1:
                             in_production = JobOrder.objects.filter(
                                 ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
-                            sales_views.save_schedule(request, None, labas, id, True, False, True, True, in_production)
+                            sales_views.save_schedule(request, None, labas, id, True, False, True, True, in_production, False)
                             print('resched, final')
                         else:
                             in_production = JobOrder.objects.filter(~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
-                            sales_views.save_schedule(request, None, labas, id, True, True, True, True, in_production)
+                            sales_views.save_schedule(request, None, labas, id, True, True, True, True, in_production, False)
                             print('resched, not final')
         if form.final:
             data.status = 'Ready for delivery'
@@ -882,12 +905,12 @@ def add_laminating_schedule(request, id):
                         if final == 1:
                             in_production = JobOrder.objects.filter(
                                 ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
-                            sales_views.save_schedule(request, None, labas, id, True, True, True, False, in_production)
+                            sales_views.save_schedule(request, None, labas, id, True, True, True, False, in_production, False)
                             print('resched, final')
                         else:
                             in_production = JobOrder.objects.filter(
                                 ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
-                            sales_views.save_schedule(request, None, labas, id, True, True, True, True, in_production)
+                            sales_views.save_schedule(request, None, labas, id, True, True, True, True, in_production, False)
                             print('resched, not final')
             if form.final:
                 data.status = 'Under Cutting'
@@ -1022,7 +1045,8 @@ def production_schedule(request):
         else:
             ex.append(x)
     ex_list = list(ex)
-    ideal.append(ex_list)
+    if ex_list:
+        ideal.append(ex_list)
     cu = []
     for y in CuttingSchedule.objects.filter(ideal=True):
         job = y.job_order
@@ -1031,7 +1055,8 @@ def production_schedule(request):
         else:
             cu.append(y)
     cu_list = list(cu)
-    ideal.append(cu_list)
+    if cu_list:
+        ideal.append(cu_list)
     pr = []
     for z in PrintingSchedule.objects.filter(ideal=True):
         job = z.job_order
@@ -1040,7 +1065,8 @@ def production_schedule(request):
         else:
             pr.append(z)
     pr_list = list(pr)
-    ideal.append(pr_list)
+    if pr_list:
+        ideal.append(pr_list)
     la = []
     for a in LaminatingSchedule.objects.filter(ideal=True):
         job = a.job_order
@@ -1049,7 +1075,8 @@ def production_schedule(request):
         else:
             la.append(a)
     la_list = list(la)
-    ideal.append(la_list)
+    if la_list:
+        ideal.append(la_list)
 
     if ideal:
         if ex:
@@ -1135,7 +1162,7 @@ def production_schedule(request):
                 print('MACHINE BREAKDOWN')
                 in_production = JobOrder.objects.filter(
                     ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered'))
-                plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production)
+                plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production, False)
                 break
 
         # Machine recently deployed.
@@ -1150,7 +1177,7 @@ def production_schedule(request):
             print('MACHINE RECENTLY DEPLOYED')
             in_production = JobOrder.objects.filter(
                 ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered'))
-            plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production)
+            plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production, False)
 
         '''
         #All machines of machine_type breakdown.
@@ -1195,14 +1222,21 @@ def production_schedule(request):
         print('NO IDEAL')
         in_production = JobOrder.objects.filter(
             ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
-        plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production)
+        plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production, False)
 
     today = date.today()
     start_week = today - timedelta(days=today.weekday())
     end_week = start_week + timedelta(days=7)
     start_month = today.replace(day=1)
+    day = []
     week = []
     month = []
+    start_day = time(6, 0)
+    day.append(start_day)
+    mid_day = time(14, 0)
+    day.append(mid_day)
+    end_day = time(22, 0)
+    day.append(end_day)
     for i in range(0,7):
         week.append(start_week)
         start_week += timedelta(days=1)
@@ -1210,6 +1244,7 @@ def production_schedule(request):
         month.append(start_month)
         start_month += timedelta(days=1)
     start_week = today - timedelta(days=today.weekday())
+    this_day = []
     this_week = []
     this_month = []
 
@@ -1219,16 +1254,50 @@ def production_schedule(request):
         if plot_list[i]['Start'].month == today.month:
             this_month.append(plot_list[i])
 
+    for x in this_month:
+        for y in month:
+            if x['Start'].date() == y:
+                this_day.append(x)
+
+    shift_list = []
+
+    shift1_str = '6::00::00'
+    shift2_str = '14::00::00'
+    shift3_str = '22::00::00'
+
+    shifts = {
+        'shift1': datetime.strptime(shift1_str, '%H::%M::%S').time(),
+        'shift2': datetime.strptime(shift2_str, '%H::%M::%S').time(),
+        'shift3': datetime.strptime(shift3_str, '%H::%M::%S').time()
+    }
+
+    shift_list.append(shifts)
+
+    items = []
+    products = []
+
+    for x in ClientItem.objects.all():
+        items.append(x)
+
+    for y in Product.objects.all():
+        products.append(y)
 
     context = {
+        'products': products,
+        'items': items,
+        'shifts': shift_list,
+        'ideal': ideal,
         'plot_list': plot_list,
-        'machines' : machines,
-        'this_week' : this_week,
-        'this_month' : this_month,
-        'week' : week,
-        'month' : month,
-        'today' : today
+        'machines': machines,
+        'this_day': this_day,
+        'this_week': this_week,
+        'this_month': this_month,
+        'week': week,
+        'month': month,
+        'today': today,
+        'day': day
     }
+
 
     return render(request, 'production/production_schedule.html', context)
 
@@ -1263,8 +1332,16 @@ def extruder_machine_schedule(request):
     start_week = today - timedelta(days=today.weekday())
     end_week = start_week + timedelta(days=7)
     start_month = today.replace(day=1)
+    day = []
     week = []
     month = []
+    start_day = time(6, 0)
+    day.append(start_day)
+    mid_day = time(14, 0)
+    day.append(mid_day)
+    end_day = time(22, 0)
+    day.append(end_day)
+
     for i in range(0, 7):
         week.append(start_week)
         start_week += timedelta(days=1)
@@ -1272,6 +1349,8 @@ def extruder_machine_schedule(request):
         month.append(start_month)
         start_month += timedelta(days=1)
     start_week = today - timedelta(days=today.weekday())
+
+    this_day = []
     this_week = []
     this_month = []
 
@@ -1281,7 +1360,45 @@ def extruder_machine_schedule(request):
         if plot_list[i]['Start'].month == today.month:
             this_month.append(plot_list[i])
 
+    for x in this_month:
+        for y in month:
+            if x['Start'].date() == y:
+                this_day.append(x)
+
+    shift_list = []
+
+    shift1_str = '6::00::00'
+    shift2_str = '14::00::00'
+    shift3_str = '22::00::00'
+
+    shifts = {
+        'shift1': datetime.strptime(shift1_str, '%H::%M::%S').time(),
+        'shift2': datetime.strptime(shift2_str, '%H::%M::%S').time(),
+        'shift3': datetime.strptime(shift3_str, '%H::%M::%S').time()
+    }
+
+    shift_list.append(shifts)
+    print(this_day)
+    for x in day:
+        for b in range(len(this_day)):
+            if this_day[b]['Start'].hour == x.hour:
+                print('pass')
+
+    items = []
+    products = []
+
+    for x in ClientItem.objects.all():
+        items.append(x)
+
+    for y in Product.objects.all():
+        products.append(y)
+
     context = {
+        'day': day,
+        'products': products,
+        'items': items,
+        'shifts': shift_list,
+        'this_day': this_day,
         'plot_list': plot_list,
         'machines': machines,
         'this_week': this_week,
@@ -1324,8 +1441,16 @@ def printing_machine_schedule(request):
     start_week = today - timedelta(days=today.weekday())
     end_week = start_week + timedelta(days=7)
     start_month = today.replace(day=1)
+    day = []
     week = []
     month = []
+    start_day = time(6, 0)
+    day.append(start_day)
+    mid_day = time(14, 0)
+    day.append(mid_day)
+    end_day = time(22, 0)
+    day.append(end_day)
+
     for i in range(0, 7):
         week.append(start_week)
         start_week += timedelta(days=1)
@@ -1333,6 +1458,8 @@ def printing_machine_schedule(request):
         month.append(start_month)
         start_month += timedelta(days=1)
     start_week = today - timedelta(days=today.weekday())
+
+    this_day = []
     this_week = []
     this_month = []
 
@@ -1342,7 +1469,45 @@ def printing_machine_schedule(request):
         if plot_list[i]['Start'].month == today.month:
             this_month.append(plot_list[i])
 
+    for x in this_month:
+        for y in month:
+            if x['Start'].date() == y:
+                this_day.append(x)
+
+    shift_list = []
+
+    shift1_str = '6::00::00'
+    shift2_str = '14::00::00'
+    shift3_str = '22::00::00'
+
+    shifts = {
+        'shift1': datetime.strptime(shift1_str, '%H::%M::%S').time(),
+        'shift2': datetime.strptime(shift2_str, '%H::%M::%S').time(),
+        'shift3': datetime.strptime(shift3_str, '%H::%M::%S').time()
+    }
+
+    shift_list.append(shifts)
+    print(this_day)
+    for x in day:
+        for b in range(len(this_day)):
+            if this_day[b]['Start'].hour == x.hour:
+                print('pass')
+
+    items = []
+    products = []
+
+    for x in ClientItem.objects.all():
+        items.append(x)
+
+    for y in Product.objects.all():
+        products.append(y)
+
     context = {
+        'day': day,
+        'products': products,
+        'items': items,
+        'shifts': shift_list,
+        'this_day': this_day,
         'plot_list': plot_list,
         'machines': machines,
         'this_week': this_week,
@@ -1385,8 +1550,16 @@ def laminating_machine_schedule(request):
     start_week = today - timedelta(days=today.weekday())
     end_week = start_week + timedelta(days=7)
     start_month = today.replace(day=1)
+    day = []
     week = []
     month = []
+    start_day = time(6, 0)
+    day.append(start_day)
+    mid_day = time(14, 0)
+    day.append(mid_day)
+    end_day = time(22, 0)
+    day.append(end_day)
+
     for i in range(0, 7):
         week.append(start_week)
         start_week += timedelta(days=1)
@@ -1394,6 +1567,8 @@ def laminating_machine_schedule(request):
         month.append(start_month)
         start_month += timedelta(days=1)
     start_week = today - timedelta(days=today.weekday())
+
+    this_day = []
     this_week = []
     this_month = []
 
@@ -1403,7 +1578,45 @@ def laminating_machine_schedule(request):
         if plot_list[i]['Start'].month == today.month:
             this_month.append(plot_list[i])
 
+    for x in this_month:
+        for y in month:
+            if x['Start'].date() == y:
+                this_day.append(x)
+
+    shift_list = []
+
+    shift1_str = '6::00::00'
+    shift2_str = '14::00::00'
+    shift3_str = '22::00::00'
+
+    shifts = {
+        'shift1': datetime.strptime(shift1_str, '%H::%M::%S').time(),
+        'shift2': datetime.strptime(shift2_str, '%H::%M::%S').time(),
+        'shift3': datetime.strptime(shift3_str, '%H::%M::%S').time()
+    }
+
+    shift_list.append(shifts)
+    print(this_day)
+    for x in day:
+        for b in range(len(this_day)):
+            if this_day[b]['Start'].hour == x.hour:
+                print('pass')
+
+    items = []
+    products = []
+
+    for x in ClientItem.objects.all():
+        items.append(x)
+
+    for y in Product.objects.all():
+        products.append(y)
+
     context = {
+        'day': day,
+        'products': products,
+        'items': items,
+        'shifts': shift_list,
+        'this_day': this_day,
         'plot_list': plot_list,
         'machines': machines,
         'this_week': this_week,
@@ -1446,8 +1659,16 @@ def cutting_machine_schedule(request):
     start_week = today - timedelta(days=today.weekday())
     end_week = start_week + timedelta(days=7)
     start_month = today.replace(day=1)
+    day = []
     week = []
     month = []
+    start_day = time(6, 0)
+    day.append(start_day)
+    mid_day = time(14, 0)
+    day.append(mid_day)
+    end_day = time(22, 0)
+    day.append(end_day)
+
     for i in range(0, 7):
         week.append(start_week)
         start_week += timedelta(days=1)
@@ -1455,6 +1676,8 @@ def cutting_machine_schedule(request):
         month.append(start_month)
         start_month += timedelta(days=1)
     start_week = today - timedelta(days=today.weekday())
+
+    this_day = []
     this_week = []
     this_month = []
 
@@ -1464,7 +1687,45 @@ def cutting_machine_schedule(request):
         if plot_list[i]['Start'].month == today.month:
             this_month.append(plot_list[i])
 
+    for x in this_month:
+        for y in month:
+            if x['Start'].date() == y:
+                this_day.append(x)
+
+    shift_list = []
+
+    shift1_str = '6::00::00'
+    shift2_str = '14::00::00'
+    shift3_str = '22::00::00'
+
+    shifts = {
+        'shift1': datetime.strptime(shift1_str, '%H::%M::%S').time(),
+        'shift2': datetime.strptime(shift2_str, '%H::%M::%S').time(),
+        'shift3': datetime.strptime(shift3_str, '%H::%M::%S').time()
+    }
+
+    shift_list.append(shifts)
+    print(this_day)
+    for x in day:
+        for b in range(len(this_day)):
+            if this_day[b]['Start'].hour == x.hour:
+                print('pass')
+
+    items = []
+    products = []
+
+    for x in ClientItem.objects.all():
+        items.append(x)
+
+    for y in Product.objects.all():
+        products.append(y)
+
     context = {
+        'day': day,
+        'products': products,
+        'items': items,
+        'shifts': shift_list,
+        'this_day': this_day,
         'plot_list': plot_list,
         'machines': machines,
         'this_week': this_week,
@@ -1473,8 +1734,6 @@ def cutting_machine_schedule(request):
         'month': month,
         'today': today
     }
-
-
     return render(request, 'production/cutting_machine_schedule.html', context)
 
 def production_report(request):
@@ -1681,8 +1940,21 @@ def weekly_schedule(request):
     }
     return render(request, 'production/weekly_schedule.html', context)
 
-
 def sched_test(request):
+    cursor = connection.cursor()
+    query = "SELECT j.id, i.laminate, i.printed, p.material_type FROM production_mgt_joborder j, sales_mgt_clientitem i, sales_mgt_product p " \
+            "WHERE p.id = i.products_id and i.client_po_id = j.id and " \
+            "NOT j.status=" + "'Waiting'" + " and NOT j.status=" + "'Ready for delivery'" + " and NOT j.status =" + "'Delivered'"
+    cursor.execute(query)
+    df = pd.read_sql(query, connection)
+
+    ideal_sched = cpsatworkertest.flexible_jobshop(df, None, None, True, True, True, True, None)
+
+    context = {}
+
+    return render(request, 'production/sched_test.html', context)
+
+def sched_test_2(request):
     ideal_ex = ExtruderSchedule.objects.filter(ideal=True)
     ideal_cu = CuttingSchedule.objects.filter(ideal=True)
     ideal_la = LaminatingSchedule.objects.filter(ideal=True)
@@ -1747,7 +2019,6 @@ def sched_test(request):
     else:
         pass
 
-    #TODO edit
     ideal_sched = cpsat.flexible_jobshop(df, None, None, True, True, True, True, None)
 
     [print("%s %s %s %s %s %s %s\n" % (item['ID'], item['Machine'], item['Task'], item['Start'], item['Finish'], item['Resource'], item['Worker']))

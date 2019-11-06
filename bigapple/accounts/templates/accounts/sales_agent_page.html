@@ -2,14 +2,108 @@
 {% block content %}
 
     <h3 class="ui dividing header">Sales Dashboard</h3>
-    <div class="ui horizontal segments">
-        <div class="ui segment">
-            <h4 class="ui dividing header">Purchase Order Status </h4>
-            <div id="salesRatio"></div>
+        <div>
+        <div class="ui horizontal segments">
+            <div class="ui segment">
+                <h4 class="ui dividing header">Purchase Order Status</h4>
+                <div>
+                    <canvas id="POstatus"></canvas>
+                </div>
+            </div>
+            <div class="ui segment">
+                <h4 class="ui dividing header">Sales Comparison</h4>
+                <div>
+                    <canvas id="comparisson"></canvas>
+                </div>
+
+            </div>
         </div>
-        <div class="ui segment">
-            <h4 class="ui dividing header">Sales Comparison</h4>
-            <div id="POComparison"></div>
+        <div class="ui horizontal segments">
+            <div class="ui segment">
+                <h4 class="ui dividing header">Rush Orders</h4>
+                {% if rush_order %}
+                <div class="ui two cards">
+                    {% for rush_order in rush_order %}
+                    <div class="ui card">
+                        <div class="content center aligned">
+                            <div class="header">
+                                <h3>{{ rush_order }}</h3>
+                            </div>
+                            <div class="meta">
+                                {{ rush_order.client }}
+                            </div>
+                        </div>
+                        <div class="content">
+                            <div class="row">
+                                Total Amount: {{ rush_order.total_amount }}
+                            </div>
+                            <div class="row">
+                                Date Issued: {{ rush_order.date_issued }}
+                            </div>
+                            <div class="row">
+                                Date Required: {{ rush_order.date_required }}
+                            </div>
+                            <div>
+                                Remarks: {{ rush_order.remarks }}
+                            </div>
+                        </div>
+                        <div class="content center aligned">
+                            <a class="ui yellow button" href="{% url 'sales:rush_order_assessment' rush_order.id %}">View Assessment</a>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+                {% else %}
+                <div class="ui positive icon message">
+                    <i class="check icon"></i>
+                    <div class="content">
+                        <div class="header">
+                            No rush orders!
+                        </div>
+                        <p>
+                            There are currently no pending rush orders.
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="ui segment">
+                <h4 class="ui dividing header">Overdue Sales Invoices</h4>
+                <table class="ui striped table center aligned">
+                    <thead>
+                        <tr>
+                            <th>Sales Invoice #</th>
+                            <th>Client</th>
+                            <th>Days Overdue</th>
+                            <th>Amount Due</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% if invoice %}
+                        {% for SalesInvoice in invoice  %}
+                        <tr>
+                            <td><a href="{% url 'sales:sales_invoice_details' SalesInvoice.id %}"> {{ SalesInvoice.id }} </a></td>
+                            <td> {{ SalesInvoice.client }} </td>
+                            <td> {{ SalesInvoice.days_overdue }} </td>
+                            <td> {{ SalesInvoice.amount_due }} </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <td>
+                        <p>There are no Invoices to display</p>
+                    </td>
+                    {% endif %}
+                    </tbody>
+                    <tfoot class="full-width">
+                        <tr>
+                            <th colspan="5">
+                                <a href="{%url 'sales:sales_invoice_list'%}">See more</a>
+                            </th>
+                        </tr>
+                    </tfoot>
+
+                </table>
+            </div>
         </div>
     </div>
     <div class="ui horizontal segments">
@@ -153,201 +247,349 @@
 
 
     <h3 class="ui dividing header">Production Dashboard</h3>
-
-    <div style="overflow-x: scroll">
-    <div class="ui top attached tabular menu">
-    <div class="active item" data-tab="first">Week of {{ today }}</div>
-    <div class="item" data-tab="second">
-    {% if today.month == 1 %}
-        January {{ today.year }}
-    {% elif today.month == 2 %}
-        February {{ today.year }}
-    {% elif today.month == 3 %}
-        March {{ today.year }}
-    {% elif today.month == 4 %}
-        April {{ today.year }}
-    {% elif today.month == 5 %}
-        May {{ today.year }}
-    {% elif today.month == 6 %}
-        June {{ today.year }}
-    {% elif today.month == 7 %}
-        July {{ today.year }}
-    {% elif today.month == 8 %}
-        August {{ today.year }}
-    {% elif today.month == 9 %}
-        September {{ today.year }}
-    {% elif today.month == 10 %}
-        October {{ today.year }}
-    {% elif today.month == 11 %}
-        November {{ today.year }}
-    {% elif today.month == 12 %}
-        December {{ today.year }}
-    {% endif %}
-    </div>
-    </div>
-    <div class="ui bottom attached active tab segment" data-tab="first">
-    <div style="overflow-x: scroll;">
-        <table class="ui celled center aligned very small compact table">
-            <thead>
-                <tr>
-                    <th class="one wide">Machine</th>
-                    {% for a in week %}
-                    <th class="one wide">{{ a }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody class="top aligned">
-
-            {% for x in machines %}
-                <tr>
-                    <td>
-                        <a href="#">Machine {{x.machine_id}} : {{x.machine_type}}</a>
-                        {% if x.state == 'OK' %}
-                        <i class="green check circle outline icon"></i>
-                        {% else %}
-                        <i class="red times circle outline icon"></i>
-                        {% endif %}
-                    </td>
-
-                    {% for b in week %}
-                        <td>
-                        {% for i in this_week %}
-
-                            {% if i.Start.date == b and i.Machine == x %}
-
-                                <div class="ui mini message">
-
-
-                                <a href="{% url 'production:job_order_details' i.ID %}" class="ui black header">Job {{ i.ID }}</a><br>
-
-                                Employee: {{ i.Worker }}<br>
-                                RM: {{ i.Resource }}<br>
-                                {% if i.Start.date == b %}
-                                    Start: {{ i.Start.hour }}:{{ i.Start.minute }} <br>
-                                {% endif %}
-                                {% if i.Finish.date == b %}
-                                    End: {{ i.Finish.hour }}:{{ i.Finish.minute }} <br>
-                                {% endif %}
-
-                            </div>
-
-                            {% endif %}
-                        {% endfor %}
-                        </td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    </div>
-    <div class="ui bottom attached tab segment" data-tab="second">
-    <div style="overflow-x: scroll;">
-        <table class="ui celled center aligned table">
-            <thead>
-                <tr>
-                   <th>Machine</th>
-                    {% for c in month %}
-                    <th>{{ c.day }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody class="top aligned">
-            {% for y in machines %}
-                <tr>
-                    <td>
-                        <a href="#">Machine {{y.machine_id}} : {{y.machine_type}}</a>
-                        {% if y.state == 'OK' %}
-                        <i class="green check circle outline icon"></i>
-                        {% else %}
-                        <i class="red times circle outline icon"></i>
-                        {% endif %}
-                    </td>
-                    {% for d in month %}
-                        <td>
-                            {% for j in this_month %}
-                                {% if j.Start.date == d and j.Machine == y %}
-
-                                <div class="ui mini message">
-
-                                    <a href="{% url 'production:job_order_details' j.ID %}" class="ui black header">Job {{ j.ID }}</a><br>
-
-                                    Employee: {{ j.Worker }}<br>
-                                    RM: {{ j.Resource }}<br>
-                                    {% if j.Start.date == b %}
-                                        Start: {{ j.Start.hour }}:{{ j.Start.minute }} <br>
-                                    {% endif %}
-                                    {% if j.Finish.date == b %}
-                                        End: {{ j.Finish.hour }}:{{ j.Finish.minute }} <br>
-                                    {% endif %}
-
-                                </div>
-
-                                {% endif %}
+    <div>
+        <div class="ui top attached tabular menu">
+            <div class="active item" data-tab="first">Week of {{ today }}</div>
+            <div class="item" data-tab="second">
+            {% if today.month == 1 %}
+                January {{ today.year }}
+            {% elif today.month == 2 %}
+                February {{ today.year }}
+            {% elif today.month == 3 %}
+                March {{ today.year }}
+            {% elif today.month == 4 %}
+                April {{ today.year }}
+            {% elif today.month == 5 %}
+                May {{ today.year }}
+            {% elif today.month == 6 %}
+                June {{ today.year }}
+            {% elif today.month == 7 %}
+                July {{ today.year }}
+            {% elif today.month == 8 %}
+                August {{ today.year }}
+            {% elif today.month == 9 %}
+                September {{ today.year }}
+            {% elif today.month == 10 %}
+                October {{ today.year }}
+            {% elif today.month == 11 %}
+                November {{ today.year }}
+            {% elif today.month == 12 %}
+                December {{ today.year }}
+            {% endif %}
+            </div>
+        </div>
+        <div class="ui bottom attached active tab segment" data-tab="first">
+            <div style="overflow-x: scroll">
+                <table class="ui celled center aligned table">
+                    <thead>
+                        <tr>
+                           <th class="two wide" rowspan="2">Machine</th>
+                            {% for a in week %}
+                            <th colspan="3">{{ a }}</th>
                             {% endfor %}
-                        </td>
-                    {% endfor %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    </div>
-    </div>
+                        </tr>
+                        <tr>
+                            {% for a in week %}
+                                {% for day in day %}
+                                <th>{{day}}</th>
+                                {% endfor %}
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody class="top aligned">
 
-    <script>
-        google.charts.load('current', {'packages':['corechart', 'bar']});
+                        {% for machine in machines %}
 
-        //for sales2
-        google.charts.setOnLoadCallback(salesComparisonChart);
+                        <tr>
 
-        function salesComparisonChart() {
+                            <td>
+
+                                <a href="#">Machine {{machine.machine_id}} : {{machine.machine_type}}</a>
+                                {% if machine.state == 'OK' %}
+                                <i class="green check circle outline icon"></i>
+                                {% else %}
+                                <i class="red times circle outline icon"></i>
+                                {% endif %}
+
+                            </td>
+
+                            {% for a in week %}
+
+                                {% for b in day %}
+
+                                    <td class="top aligned">
+                                        {% for c in this_day %}
+
+                                                {% if c.Machine == machine and c.Start.date == a and c.Start.time == b %}
+                                                    <div class="ui mini message" style="width: 100px">
+
+                                                        {% for x in plot_list %}
+                                                                {% if x.ID == c.ID and x.Machine == machine and x.Start.time == b %}
+
+                                                                    <a href="{% url 'production:job_order_details' c.ID %}" class="ui black header" style="margin-bottom: -10px;">Job {{ c.ID }}</a><br>
+                                                                    <div>{{ x.Worker }}</div>
+                                                                    <div style="background-color: transparent; margin-right: -15px;" class="ui top right attached label"data-tooltip="
+                                                                        Raw Material: {{ c.Resource }},
+                                                                        {% for i in items %}
+                                                                        {% for j in products %}
+                                                                        {% if i.client_po_id == c.ID %}
+                                                                        {% if j.id == i.products_id %}
+                                                                        Item and quantity: {{j.products}} x {{ i.quantity }}
+                                                                        {% endif %}
+                                                                        {% endif %}
+                                                                        {% endfor %}
+                                                                        {% endfor %}
+                                                                        "
+                                                                        {% if c.Start.date == week|first %}
+                                                                            data-position="right center">
+                                                                        {% elif c.Start.date == week|last %}
+                                                                            data-position="left center">
+                                                                        {% else %}
+                                                                            data-position="bottom center">
+                                                                        {% endif %}
+                                                                        <i class="question circle icon"></i>
+                                                                    </div>
+
+                                                                {% endif %}
+                                                        {% endfor %}
+
+                                                    </div>
+                                                {% endif %}
+                                        {% endfor %}
+                                    </td>
+
+                                {% endfor %}
+
+                            {% endfor %}
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="second">
+            <div style="overflow-x: scroll">
+                <table class="ui celled center aligned table">
+                    <thead>
+                        <tr>
+                           <th class="two wide" rowspan="2">Machine</th>
+                            {% for a in month %}
+                            <th colspan="3">{{ a }}</th>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for a in month %}
+                                {% for day in day %}
+                                <th>{{day}}</th>
+                                {% endfor %}
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody class="top aligned">
+
+                        {% for machine in machines %}
+
+                        <tr>
+
+                            <td>
+
+                                <a href="#">Machine {{machine.machine_id}} : {{machine.machine_type}}</a>
+                                {% if machine.state == 'OK' %}
+                                <i class="green check circle outline icon"></i>
+                                {% else %}
+                                <i class="red times circle outline icon"></i>
+                                {% endif %}
+
+                            </td>
+
+                            {% for a in month %}
+
+                                {% for b in day %}
+
+                                    <td class="top aligned">
+                                        {% for c in this_day %}
+                                            {% if c.Machine == machine and c.Start.date == a and c.Start.time == b %}
+                                                    <div class="ui mini message" style="width: 100px">
+
+                                                        {% for x in plot_list %}
+                                                                {% if x.ID == c.ID and x.Machine == machine and x.Start.time == b %}
+
+                                                                    <a href="{% url 'production:job_order_details' c.ID %}" class="ui black header" style="margin-bottom: -10px;">Job {{ c.ID }}</a><br>
+                                                                    <div>{{ x.Worker }}</div>
+                                                                    <div style="background-color: transparent; margin-right: -15px;" class="ui top right attached label"data-tooltip="
+                                                                        Raw Material: {{ c.Resource }},
+                                                                        {% for i in items %}
+                                                                        {% for j in products %}
+                                                                        {% if i.client_po_id == c.ID %}
+                                                                        {% if j.id == i.products_id %}
+                                                                        Item and quantity: {{j.products}} x {{ i.quantity }}
+                                                                        {% endif %}
+                                                                        {% endif %}
+                                                                        {% endfor %}
+                                                                        {% endfor %}
+                                                                        "
+                                                                        {% if c.Start.date == week|first %}
+                                                                            data-position="right center">
+                                                                        {% elif c.Start.date == week|last %}
+                                                                            data-position="left center">
+                                                                        {% else %}
+                                                                            data-position="bottom center">
+                                                                        {% endif %}
+                                                                        <i class="question circle icon"></i>
+                                                                    </div>
+
+                                                                {% endif %}
+                                                        {% endfor %}
+
+                                                    </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+
+                                {% endfor %}
+
+                            {% endfor %}
+
+                        </tr>
+
+                        {% endfor %}
 
 
-            var POComparison = google.visualization.arrayToDataTable([
-                ['Year', '{{lastMonth}}', "{{thisMonth}}"],
-                ['{{lastYear}}', parseInt('{{POs_lastMonthLastYear.count}}'), parseInt('{{POs_lastYear.count}}')],
-                ['{{thisYear}}', parseInt('{{POs_lastMonth.count}}'), parseInt('{{POs.count}}')]
-            ]);
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
 
-            var options = {
-              width: 400,
-              height: 300,
-              legend: { position: 'none' }
-            };
+<script>
+    var canvas = document.getElementById("POstatus");
+    var ctx = canvas.getContext('2d');
 
-            var chart2 = new google.charts.Bar(document.getElementById('POComparison'));
+    var data = {
+        labels:['Waiting', 'On Queue', 'Extrusion', 'Printing', 'Cutting', 'Packaging', 'Ready for Delivery'],
+        datasets: [
+        {
+            fill: true,
+            backgroundColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(41,200,64, 1)',
+            ],
+            data:[
+                '{{status_waiting}}',
+                '{{status_onqueue}}',
+                '{{status_extrusion}}',
+                '{{status_printing}}',
+                '{{status_cutting}}',
+                '{{status_packaging}}',
+                '{{status_ready}}'
+            ],}
+        ]
+    };
 
-            chart2.draw(POComparison, options);
-          }
+    // Notice the rotation from the documentation.
 
-        //for PO ratio
-            google.charts.setOnLoadCallback(drawChart);
+    var options = {
+        rotation: -0.7 * Math.PI
+    };
 
-            function drawChart() {
-            var Sales1 = google.visualization.arrayToDataTable([
-              ['Status', 'Amount'],
-              ['Waiting', parseInt("{{ status_waiting }}")],
-              ['On Queue', parseInt("{{ status_onqueue }}")],
-              ['Extrusion', parseInt("{{ status_extrusion }}")],
-              ['Printing', parseInt("{{ status_printing }}")],
-              ['Cutting', parseInt("{{ status_cutting }}")],
-              ['Packaging', parseInt("{{ status_packaging }}")],
-              ['Ready for Delivery', parseInt("{{ status_ready }}")],
-            ]);
+    // Chart declaration:
+    var myBarChart = new Chart(ctx, {
+    type: 'pie',
+    data: data,
+    options: options
+    });
+</script>
 
-            var options = {
-              title: 'PO Status',
-              width: 500,
-              height: 300,
-              pieHole: .3,
-            };
+<script>
 
-            var chart = new google.visualization.PieChart(document.getElementById('salesRatio'));
-            chart.draw(Sales1, options);
-          }
-    </script>
+    var thisMonth = '{{thisMonth}}'
 
+    var month1, month2
+
+    if (thisMonth == 1){
+        month1 = 'January'
+        month2 = 'December'
+    }
+    else if (thisMonth == 2){
+        month1 = 'February'
+        month2 = "January"
+    }
+    else if (thisMonth == 3){
+        month1 = 'March'
+        month2 = "February"
+    }
+    else if (thisMonth == 4){
+        month1 = 'April'
+        month2 = "March"
+    }
+    else if (thisMonth == 5){
+        month1 = 'May'
+        month2 = 'April'
+    }
+    else if (thisMonth == 6){
+        month1 = 'June'
+        month2 = 'May'
+    }
+    else if (thisMonth == 7){
+        month1 = 'July'
+        month2 = 'June'
+    }
+    else if (thisMonth == 8){
+        month1 = 'August'
+        month2 = 'July'
+    }
+    else if (thisMonth == 9){
+        month1 = 'September'
+        month2 = 'August'
+    }
+    else if (thisMonth == 10){
+        month1 = 'October'
+        month2 = 'September'
+    }
+    else if (thisMonth == 11){
+        month1 = 'November'
+        month2 = 'October'
+    }
+    else if (thisMonth == 12){
+        month1 = 'December'
+        month2 = 'November'
+    }
+
+    var ctx = document.getElementById('comparisson');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels:[ month2 + ' {{lastYear}}', month1 + ' {{lastYear}}',  month2 + ' {{thisYear}}', month1 + ' {{thisYear}}'],
+            datasets: [{
+            data:[
+                parseInt('{{POs_lastMonthlastYear.count}}'),
+                parseInt('{{POs_lastYear.count}}'),
+                parseInt('{{POs_lastMonth.count}}'),
+                parseInt('{{POs.count}}'),
+            ],
+            backgroundColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(54, 162, 235, 1)',
+            ]
+            }]
+        },
+        options: {
+            legend:{
+                display:false,
+            }
+        }
+    });
+</script>
 </div>
 
 {% endblock %}

@@ -28,6 +28,7 @@ from inventory.models import Inventory, SupplierPOItems
 from utilities import TimeSeriesForecasting, cpsat
 from sales import views as sales_views
 from django.db.models import Q
+from inventory import views as inventory_views
 
 import math
 
@@ -76,7 +77,16 @@ def user_page_view(request):
         JobOrder_data = JobOrder.objects.all()
 
         JobOrder_data10 = JobOrder.objects.exclude(status='Delivered').order_by('-date_issued')[:10]
-        ideal_end = CuttingSchedule.objects.filter(ideal=True)
+        ideal_end = []
+        ideal_end_1 = CuttingSchedule.objects.filter(ideal=True)
+        for job in JobOrder_data10:
+            ends = []
+            for each in ideal_end_1:
+                if job.id == each.job_order_id:
+                    ends.append(each)
+            if ends:
+                ends.sort(key=lambda i: i.sked_in)
+                ideal_end.append(ends[-1])
         JobOrder_data5 = JobOrder.objects.order_by('-id')[:5]
         rush_order = JobOrder.objects.filter(status='Waiting').order_by('date_required').exclude(rush_order=False)[:4]
 
@@ -87,108 +97,6 @@ def user_page_view(request):
         PET = Inventory.objects.filter(rm_type='PET').aggregate(Sum('quantity')).get('quantity__sum', 0)
         PE = Inventory.objects.filter(rm_type='PE').aggregate(Sum('quantity')).get('quantity__sum', 0)
         HD = Inventory.objects.filter(rm_type='HD').aggregate(Sum('quantity')).get('quantity__sum', 0)
-
-        # EOQ
-        Month = date.today().month - 3
-
-        allItems = JobOrder.objects.filter(date_issued__month=Month)
-        print(allItems)
-
-        ldpe_demand = 0
-        ldpe_cost = ClientItem.objects.filter(products_id=1).aggregate(Avg('price_per_piece')).get(
-            'price_per_piece__avg', 0)
-
-        lldpe_demand = 0
-        lldpe_cost = ClientItem.objects.filter(products_id=4).aggregate(Avg('price_per_piece')).get(
-            'price_per_piece__avg', 0)
-
-        hdpe_demand = 0
-        hdpe_cost = ClientItem.objects.filter(products_id=2).aggregate(Avg('price_per_piece')).get(
-            'price_per_piece__avg', 0)
-
-        pp_demand = 0
-        pp_cost = ClientItem.objects.filter(products_id=3).aggregate(Avg('price_per_piece')).get('price_per_piece__avg',
-                                                                                                 0)
-
-        pet_demand = 0
-        pet_cost = ClientItem.objects.filter(products_id=5).aggregate(Avg('price_per_piece')).get(
-            'price_per_piece__avg', 0)
-
-        pe_demand = 0
-        pe_cost = ClientItem.objects.filter(products_id=6).aggregate(Avg('price_per_piece')).get('price_per_piece__avg',
-                                                                                                 0)
-
-        hd_demand = 0
-        hd_cost = ClientItem.objects.filter(products_id=7).aggregate(Avg('price_per_piece')).get('price_per_piece__avg',
-                                                                                                 0)
-
-        for x in allItems:
-            i = ClientItem.objects.filter(client_po_id=x)
-            for y in i:
-                if y.products_id == 1:
-                    print("LDPE: ", i)
-                    ldpe_demand += y.quantity
-                elif y.products_id == 4:
-                    print("LLDPE: ", i)
-                    lldpe_demand += y.quantity
-                elif y.products_id == 2:
-                    print("HDPE: ", i)
-                    hdpe_demand += y.quantity
-                elif y.products_id == 3:
-                    print("PP: ", i)
-                    pp_demand += y.quantity
-                elif y.products_id == 5:
-                    print("PET: ", i)
-                    pet_demand += y.quantity
-                elif y.products_id == 6:
-                    print("PE: ", i)
-                    pe_demand += y.quantity
-                elif y.products_id == 7:
-                    print("HD: ", i)
-                    hd_demand += y.quantity
-
-        if not ldpe_demand:
-            EOQ_ldpe = 1
-        else:
-            EOQ_ldpe = (math.sqrt(2 * ldpe_demand * ldpe_cost)) / 100
-
-        if not lldpe_demand:
-            EOQ_lldpe = 1
-        else:
-            EOQ_lldpe = (math.sqrt(2 * lldpe_demand * lldpe_cost)) / 100
-
-        if not hdpe_demand:
-            EOQ_hdpe = 1
-        else:
-            EOQ_hdpe = (math.sqrt(2 * hdpe_demand * hdpe_cost)) / 100
-
-        if not pp_demand:
-            EOQ_pp = 1
-        else:
-            EOQ_pp = (math.sqrt(2 * pp_demand * pp_cost)) / 100
-
-        if not pet_demand:
-            EOQ_pet = 1
-        else:
-            EOQ_pet = (math.sqrt(2 * pet_demand * pet_cost)) / 100
-
-        if not pet_demand:
-            EOQ_pe = 1
-        else:
-            EOQ_pe = (math.sqrt(2 * pet_demand * pe_cost)) / 100
-
-        if not hd_demand:
-            EOQ_hd = 1
-        else:
-            EOQ_hd = (math.sqrt(2 * hdpe_demand * hd_cost)) / 100
-
-        EOQ_ldpe = int(ldpe_demand / EOQ_ldpe)
-        EOQ_lldpe = int(lldpe_demand / EOQ_lldpe)
-        EOQ_hdpe = int(hdpe_demand / EOQ_hdpe)
-        EOQ_pe = int(pe_demand / EOQ_pe)
-        EOQ_pet = int(pet_demand / EOQ_pet)
-        EOQ_pp = int(pp_demand / EOQ_pp)
-        EOQ_hd = int(hd_demand / EOQ_hd)
 
         status_waiting = JobOrder.objects.filter(status='Waiting').count()
         status_onqueue = JobOrder.objects.filter(status='On Queue').count()
@@ -231,7 +139,8 @@ def user_page_view(request):
             else:
                 ex.append(x)
         ex_list = list(ex)
-        ideal.append(ex_list)
+        if ex_list:
+            ideal.append(ex_list)
         cu = []
         for y in CuttingSchedule.objects.filter(ideal=True):
             job = y.job_order
@@ -240,7 +149,8 @@ def user_page_view(request):
             else:
                 cu.append(y)
         cu_list = list(cu)
-        ideal.append(cu_list)
+        if cu_list:
+            ideal.append(cu_list)
         pr = []
         for z in PrintingSchedule.objects.filter(ideal=True):
             job = z.job_order
@@ -249,7 +159,8 @@ def user_page_view(request):
             else:
                 pr.append(z)
         pr_list = list(pr)
-        ideal.append(pr_list)
+        if pr_list:
+            ideal.append(pr_list)
         la = []
         for a in LaminatingSchedule.objects.filter(ideal=True):
             job = a.job_order
@@ -258,7 +169,8 @@ def user_page_view(request):
             else:
                 la.append(a)
         la_list = list(la)
-        ideal.append(la_list)
+        if la_list:
+            ideal.append(la_list)
 
         if ideal:
             if ex:
@@ -342,10 +254,9 @@ def user_page_view(request):
                 else:
                     print('MACHINE BREAKDOWN')
                     in_production = JobOrder.objects.filter(~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered'))
-                    plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production)
+                    plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production, False)
                     break
-            #FIXME Ibalik pag ayos na ang prod
-            '''
+
             # Machine recently deployed.
             yung_wala = set(all_machines).difference(machines_in_production)
             yes_deployed = False
@@ -357,20 +268,27 @@ def user_page_view(request):
                 print('MACHINE RECENTLY DEPLOYED')
                 in_production = JobOrder.objects.filter(
                     ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered'))
-                plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production)
-            '''
+                plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production, False)
 
         else:
             in_production = JobOrder.objects.filter(
                 ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered'))
-            plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production)
+            plot_list = sales_views.save_schedule(request, None, None, None, True, True, True, True, in_production, False)
 
         today = date.today()
         start_week = today - timedelta(days=today.weekday())
         end_week = start_week + timedelta(days=7)
         start_month = today.replace(day=1)
+        day = []
         week = []
         month = []
+        start_day = time(6, 0)
+        day.append(start_day)
+        mid_day = time(14, 0)
+        day.append(mid_day)
+        end_day = time(22, 0)
+        day.append(end_day)
+
         for i in range(0, 7):
             week.append(start_week)
             start_week += timedelta(days=1)
@@ -378,6 +296,8 @@ def user_page_view(request):
             month.append(start_month)
             start_month += timedelta(days=1)
         start_week = today - timedelta(days=today.weekday())
+
+        this_day = []
         this_week = []
         this_month = []
 
@@ -386,6 +306,34 @@ def user_page_view(request):
                 this_week.append(plot_list[i])
             if plot_list[i]['Start'].month == today.month:
                 this_month.append(plot_list[i])
+
+        for x in this_month:
+            for y in month:
+                if x['Start'].date() == y:
+                    this_day.append(x)
+
+        shift_list = []
+
+        shift1_str = '6::00::00'
+        shift2_str = '14::00::00'
+        shift3_str = '22::00::00'
+
+        shifts = {
+            'shift1': datetime.datetime.strptime(shift1_str, '%H::%M::%S').time(),
+            'shift2': datetime.datetime.strptime(shift2_str, '%H::%M::%S').time(),
+            'shift3': datetime.datetime.strptime(shift3_str, '%H::%M::%S').time()
+        }
+
+        shift_list.append(shifts)
+
+        items = []
+        products = []
+
+        for x in ClientItem.objects.all():
+            items.append(x)
+
+        for y in Product.objects.all():
+            products.append(y)
 
         client = Client.objects.filter(accounts_id=id)
         employee = Employee.objects.filter(accounts_id=id)
@@ -446,23 +394,29 @@ def user_page_view(request):
         invoice = SalesInvoice.objects.filter(status='Late')[:10]
 
         context = {
-            'EOQ_ldpe': EOQ_ldpe,
-            'EOQ_lldpe': EOQ_lldpe,
-            'EOQ_hdpe': EOQ_hdpe,
-            'EOQ_pp': EOQ_pp,
-            'EOQ_pet': EOQ_pet,
-            'EOQ_pe': EOQ_pe,
-            'EOQ_hd': EOQ_hd,
+            'EOQ_ldpe' : inventory_views.eoq().get('EOQ_ldpe'),
+            'EOQ_lldpe': inventory_views.eoq().get('EOQ_lldpe'),
+            'EOQ_hdpe': inventory_views.eoq().get('EOQ_hdpe'),
+            'EOQ_pe': inventory_views.eoq().get('EOQ_pe'),
+            'EOQ_pet': inventory_views.eoq().get('EOQ_pet'),
+            'EOQ_pp': inventory_views.eoq().get('EOQ_pp'),
+            'EOQ_hd': inventory_views.eoq().get('EOQ_hd'),
 
             'invoice': invoice,
             'client_po': client_po,
 
+            'products': products,
+            'items': items,
+            'shifts': shift_list,
+            'plot_list': plot_list,
             'machines': machines,
+            'this_day': this_day,
             'this_week': this_week,
             'this_month': this_month,
             'week': week,
             'month': month,
             'today': today,
+            'day': day,
             'ideal_end' : ideal_end,
 
             'POs_lastMonth': POs_lastMonth,

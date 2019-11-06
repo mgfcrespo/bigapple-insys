@@ -1,7 +1,6 @@
 {% extends "sidebar.html" %} {% block content %}
 
 <h3 class="ui dividing header">Create Purchase Order</h3>
-
     <form id="myForm" class="ui form" action="{% url 'sales:create-client-po-form' %}" method="POST" enctype="multipart/form-data">
 
         <div class="ui segment">
@@ -160,11 +159,13 @@
                         </tr>
                     </thead>
                     <tbody>
+					{% for each in order %}
                         <tr>
                             <td>
-								{}
-                                {{}}
+                                {{each.products}}
                             </td>
+						</tr>
+					{% endfor %}
                     </tbody>
                 </table>
             </div>

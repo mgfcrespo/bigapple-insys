@@ -177,7 +177,7 @@
                                             <a class="mini ui red button" href="{% url 'production:add_laminating_schedule' data.id %}" style="width: 100px;">Laminating</a>
                                         {% elif data.status == 'Under Cutting' %}
                                             {% for each in cu_schedule %}
-                                                {% if data.id == each. %}
+                                                {% if data.id == each %}
                                                     Due this shift! <br>
                                                 {% endif %}
                                             {% endfor %}

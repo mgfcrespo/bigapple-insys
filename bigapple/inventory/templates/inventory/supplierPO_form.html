@@ -22,17 +22,33 @@
                         </tr>
                     </thead>
                     <tbody>
+                    {% for each in replenish %}
                         <tr>
                             <td>
-                                {{}}
+                                {{ each.item }}
                             </td>
                             <td>
-                                {{}}
+                                {{ each.quantity }}
                             </td>
                             <td>
-                                {{}}
+                                {% if each.rm_type == 'LDPE' %}
+                                    {{ EOQ_ldpe }}
+                                {% elif each.rm_type == 'LLDPE' %}
+                                    {{ EOQ_lldpe }}
+                                {% elif each.rm_type == 'HDPE' %}
+                                    {{ EOQ_hdpe }}
+                                {% elif each.rm_type == 'Pelletized PE' %}
+                                    {{ EOQ_pe }}
+                                {% elif each.rm_type == 'Pelletized HD' %}
+                                    {{ EOQ_hd }}
+                                {% elif each.rm_type == 'PET' %}
+                                    {{ EOQ_pet }}
+                                {% elif each.rm_type == 'PP' %}
+                                    {{ EOQ_pp }}
+                                {% endif %}
                             </td>
                         </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>

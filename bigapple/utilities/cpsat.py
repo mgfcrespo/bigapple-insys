@@ -137,9 +137,9 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
                             quantity = balance_number_rolls * 10000
                             printing_time = int((quantity * 100) / 70000)
         extrusion = []
-        cutting = []
         printing = []
         laminating = []
+        cutting = []
         job = []
 
         for e in e_mach:
@@ -163,9 +163,9 @@ def flexible_jobshop(df, actual_out, job_match, extrusion_not_final, cutting_not
                     job.append(laminating)
             else:
                 pass
-        for ct in c_mach:
-            for d in c_work:
-                cutting.append((cutting_time, ct, d))
+        for c in c_mach:
+            for d in e_work:
+                cutting.append((cutting_time, c, d))
         if cutting_not_final:
             job.append(cutting)
 
