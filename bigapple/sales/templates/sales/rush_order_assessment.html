@@ -132,7 +132,7 @@
                 </thead>
                 <tbody class="top aligned">
 
-                    {% for machine in machines %}
+                   {% for machine in machines %}
 
                     <tr>
 
@@ -152,10 +152,8 @@
                             {% for b in day %}
 
                                 <td class="top aligned">
-
                                     {% for c in plot_list2 %}
-                                        {% if c.Machine == machine and c.Start.date == a and c.Start.time == b%}
-
+                                        {% if c.Machine == machine and c.Start.date == a and c.Start.time == b %}
                                             <div class="ui
 
                                             {% for discrepancy in discrepancy %}
@@ -174,78 +172,72 @@
                                                     <a href="{% url 'production:job_order_details' c.ID %}" class="ui black header">Job {{ c.ID }}</a><br>
                                                 {% endif %}
 
-                                                {% for x in plot_list2 %}
-                                                    {% if y.job_order.id == c.ID and y.sked_mach == machine and y.sked_in.time == b %}
-
-                                                        <div>{{ y.sked_op }}</div>
-                                                        <div style="background-color: transparent; margin-right: -15px;" class="ui top right attached label"data-tooltip="
-                                                            Raw Material: {{ c.Resource }},
-                                                            {% for i in items %}
-                                                            {% for j in products %}
-                                                            {% if i.client_po_id == c.ID %}
-                                                            {% if j.id == i.products_id %}
-                                                            Item and quantity: {{j.products}} x {{ i.quantity }}
-                                                            {% endif %}
-                                                            {% endif %}
-                                                            {% endfor %}
-                                                            {% endfor %}
-                                                            "
-                                                            {% if c.Start.date == week|first %}
-                                                                data-position="right center">
-                                                            {% elif c.Start.date == week|last %}
-                                                                data-position="left center">
-                                                            {% else %}
-                                                                data-position="bottom center">
-                                                            {% endif %}
-                                                            <i class="question circle icon"></i>
-                                                        </div>
-
-                                                        <div>
-                                                            {% for discrepancy in discrepancy %}
-                                                                {% if discrepancy.ID == c.ID %}
-                                                                    {% if discrepancy.CurrentDiff %}
-                                                                        {% if discrepancy.CurrentDiff > 0 %}
-                                                                            <div class="ui circular mini green icon button" data-tooltip="This Job Order was moved {{ discrepancy.CurrentDiff }} earlier"
-                                                                                 {% if c.Start.date == week|first %}
-                                                                                    data-position="right center">
-                                                                                 {% elif i.Start.date == week|last %}
-                                                                                    data-position="left center">
-                                                                                 {% else %}
-                                                                                    data-position="bottom center">
-                                                                                 {% endif %}
-                                                                                <b>!</b>
-                                                                            </div>
-                                                                        {% else %}
-                                                                            <div class="mini ui circular red label center aligned" data-tooltip="This Job Order was moved {{ discrepancy.CurrentDiff }} later"
-                                                                                 {% if c.Start.date == week|first %}
-                                                                                    data-position="right center">
-                                                                                 {% elif c.Start.date == week|last %}
-                                                                                    data-position="left center">
-                                                                                 {% else %}
-                                                                                    data-position="bottom center">
-                                                                                 {% endif %}
-                                                                                <b>!</b>
-                                                                            </div>
-                                                                        {% endif %}
-                                                                    {% endif %}
-                                                                    {% if discrepancy.ClientDiff %}
-                                                                        <div class="mini ui yellow circular label" data-tooltip="{{ discrepancy.ClientDiff }} days passed the client's expected delivery date."
-                                                                            {% if c.Start.date == week|first %}
-                                                                                data-position="right center">
-                                                                             {% elif c.Start.date == week|last %}
-                                                                                data-position="left center">
-                                                                             {% else %}
-                                                                                data-position="bottom center">
-                                                                             {% endif %}
-                                                                            <b>!</b>
-                                                                        </div>
-                                                                    {% endif %}
-                                                                {%endif%}
-                                                            {% endfor %}
-                                                        </div>
-
+                                                <div>{{ c.Worker }}</div>
+                                                <div style="background-color: transparent; margin-right: -15px;" class="ui top right attached label"data-tooltip="
+                                                    Raw Material: {{ c.Resource }},
+                                                    {% for i in items %}
+                                                    {% for j in products %}
+                                                    {% if i.client_po_id == c.ID %}
+                                                    {% if j.id == i.products_id %}
+                                                    Item and quantity: {{j.products}} x {{ i.quantity }}
                                                     {% endif %}
-                                                {% endfor %}
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                    {% endfor %}
+                                                    "
+                                                    {% if c.Start.date == week|first %}
+                                                        data-position="right center">
+                                                    {% elif c.Start.date == week|last %}
+                                                        data-position="left center">
+                                                    {% else %}
+                                                        data-position="bottom center">
+                                                    {% endif %}
+                                                    <i class="question circle icon"></i>
+                                                </div>
+
+                                                <div>
+                                                    {% for discrepancy in discrepancy %}
+                                                        {% if discrepancy.ID == c.ID %}
+                                                            {% if discrepancy.CurrentDiff %}
+                                                                {% if discrepancy.CurrentDiff > 0 %}
+                                                                    <div class="ui circular mini green icon button" data-tooltip="This Job Order was moved {{ discrepancy.CurrentDiff }} earlier"
+                                                                         {% if c.Start.date == week|first %}
+                                                                            data-position="right center">
+                                                                         {% elif i.Start.date == week|last %}
+                                                                            data-position="left center">
+                                                                         {% else %}
+                                                                            data-position="bottom center">
+                                                                         {% endif %}
+                                                                        <b>!</b>
+                                                                    </div>
+                                                                {% else %}
+                                                                    <div class="mini ui circular red label center aligned" data-tooltip="This Job Order was moved {{ discrepancy.CurrentDiff }} later"
+                                                                         {% if c.Start.date == week|first %}
+                                                                            data-position="right center">
+                                                                         {% elif c.Start.date == week|last %}
+                                                                            data-position="left center">
+                                                                         {% else %}
+                                                                            data-position="bottom center">
+                                                                         {% endif %}
+                                                                        <b>!</b>
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                            {% if discrepancy.ClientDiff %}
+                                                                <div class="mini ui yellow circular label" data-tooltip="{{ discrepancy.ClientDiff }} days passed the client's expected delivery date."
+                                                                    {% if c.Start.date == week|first %}
+                                                                        data-position="right center">
+                                                                     {% elif c.Start.date == week|last %}
+                                                                        data-position="left center">
+                                                                     {% else %}
+                                                                        data-position="bottom center">
+                                                                     {% endif %}
+                                                                    <b>!</b>
+                                                                </div>
+                                                            {% endif %}
+                                                        {%endif%}
+                                                    {% endfor %}
+                                                </div>
 
                                             </div>
 
@@ -258,9 +250,11 @@
 
                         {% endfor %}
 
+
                     </tr>
 
                     {% endfor %}
+
 
                 </tbody>
             </table>
@@ -285,11 +279,9 @@
                     </tr>
                 </thead>
                 <tbody class="top aligned">
+                   {% for machine in machines %}
 
-                    {% for machine in machines %}
-
-                    <tr>
-
+                   <tr>
                         <td>
 
                             <a href="#">Machine {{machine.machine_id}} : {{machine.machine_type}}</a>
@@ -298,7 +290,6 @@
                             {% else %}
                             <i class="red times circle outline icon"></i>
                             {% endif %}
-
                         </td>
 
                         {% for a in month %}
@@ -306,7 +297,7 @@
                             {% for b in day %}
 
                                 <td class="top aligned">
-                                    {% for c in this_day %}
+                                    {% for c in plot_list2 %}
                                         {% if c.Machine == machine and c.Start.date == a and c.Start.time == b %}
                                             <div class="ui
 
@@ -326,85 +317,78 @@
                                                     <a href="{% url 'production:job_order_details' c.ID %}" class="ui black header">Job {{ c.ID }}</a><br>
                                                 {% endif %}
 
-                                                {% for x in ideal %}
-                                                    {% for y in x %}
-                                                        {% if y.job_order.id == c.ID and y.sked_mach == machine and y.sked_in.time == b %}
+                                                <div>{{ c.Worker }}</div>
+                                                <div style="background-color: transparent; margin-right: -15px;" class="ui top right attached label"data-tooltip="
+                                                    Raw Material: {{ c.Resource }},
+                                                    {% for i in items %}
+                                                    {% for j in products %}
+                                                    {% if i.client_po_id == c.ID %}
+                                                    {% if j.id == i.products_id %}
+                                                    Item and quantity: {{j.products}} x {{ i.quantity }}
+                                                    {% endif %}
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                    {% endfor %}
+                                                    "
+                                                    {% if c.Start.date == month|first %}
+                                                        data-position="right center">
+                                                    {% elif c.Start.date == month|last %}
+                                                        data-position="left center">
+                                                    {% else %}
+                                                        data-position="bottom center">
+                                                    {% endif %}
+                                                    <i class="question circle icon"></i>
+                                                </div>
 
-                                                            <div>{{ y.sked_op }}</div>
-                                                            <div style="background-color: transparent; margin-right: -15px;" class="ui top right attached label"data-tooltip="
-                                                                Raw Material: {{ c.Resource }},
-                                                                {% for i in items %}
-                                                                {% for j in products %}
-                                                                {% if i.client_po_id == c.ID %}
-                                                                {% if j.id == i.products_id %}
-                                                                Item and quantity: {{j.products}} x {{ i.quantity }}
-                                                                {% endif %}
-                                                                {% endif %}
-                                                                {% endfor %}
-                                                                {% endfor %}
-                                                                "
-                                                                {% if c.Start.date == month|first %}
-                                                                    data-position="right center">
-                                                                {% elif c.Start.date == month|last %}
-                                                                    data-position="left center">
+                                                <div>
+                                                    {% for discrepancy in discrepancy %}
+                                                        {% if discrepancy.ID == c.ID %}
+                                                            {% if discrepancy.CurrentDiff %}
+                                                                {% if discrepancy.CurrentDiff > 0 %}
+                                                                    <div class="ui circular mini green icon button" data-tooltip="This Job Order was moved {{ discrepancy.CurrentDiff }} earlier"
+                                                                         {% if c.Start.date == month|first %}
+                                                                            data-position="right center">
+                                                                         {% elif i.Start.date == month|last %}
+                                                                            data-position="left center">
+                                                                         {% else %}
+                                                                            data-position="bottom center">
+                                                                         {% endif %}
+                                                                        <b>!</b>
+                                                                    </div>
                                                                 {% else %}
-                                                                    data-position="bottom center">
+                                                                    <div class="mini ui circular red label center aligned" data-tooltip="This Job Order was moved {{ discrepancy.CurrentDiff }} later"
+                                                                         {% if c.Start.date == month|first %}
+                                                                            data-position="right center">
+                                                                         {% elif c.Start.date == month|last %}
+                                                                            data-position="left center">
+                                                                         {% else %}
+                                                                            data-position="bottom center">
+                                                                         {% endif %}
+                                                                        <b>!</b>
+                                                                    </div>
                                                                 {% endif %}
-                                                                <i class="question circle icon"></i>
-                                                            </div>
-
-                                                            <div>
-                                                                {% for discrepancy in discrepancy %}
-                                                                    {% if discrepancy.ID == c.ID %}
-                                                                        {% if discrepancy.CurrentDiff %}
-                                                                            {% if discrepancy.CurrentDiff > 0 %}
-                                                                                <div class="ui circular mini green icon button" data-tooltip="This Job Order was moved {{ discrepancy.CurrentDiff }} earlier"
-                                                                                     {% if c.Start.date == month|first %}
-                                                                                        data-position="right center">
-                                                                                     {% elif i.Start.date == month|last %}
-                                                                                        data-position="left center">
-                                                                                     {% else %}
-                                                                                        data-position="bottom center">
-                                                                                     {% endif %}
-                                                                                    <b>!</b>
-                                                                                </div>
-                                                                            {% else %}
-                                                                                <div class="mini ui circular red label center aligned" data-tooltip="This Job Order was moved {{ discrepancy.CurrentDiff }} later"
-                                                                                     {% if c.Start.date == month|first %}
-                                                                                        data-position="right center">
-                                                                                     {% elif c.Start.date ==  month|last %}
-                                                                                        data-position="left center">
-                                                                                     {% else %}
-                                                                                        data-position="bottom center">
-                                                                                     {% endif %}
-                                                                                    <b>!</b>
-                                                                                </div>
-                                                                            {% endif %}
-                                                                        {% endif %}
-                                                                        {% if discrepancy.ClientDiff %}
-                                                                            <div class="mini ui yellow circular label" data-tooltip="{{ discrepancy.ClientDiff }} days passed the client's expected delivery date."
-                                                                                {% if c.Start.date == month|first %}
-                                                                                    data-position="right center">
-                                                                                 {% elif c.Start.date == week|last %}
-                                                                                    data-position="left center">
-                                                                                 {% else %}
-                                                                                    data-position="bottom center">
-                                                                                 {% endif %}
-                                                                                <b>!</b>
-                                                                            </div>
-                                                                        {% endif %}
-                                                                    {%endif%}
-                                                                {% endfor %}
-                                                            </div>
-
-
-                                                        {% endif %}
-                                                    {% endfor%}
-                                                {% endfor %}
+                                                            {% endif %}
+                                                            {% if discrepancy.ClientDiff %}
+                                                                <div class="mini ui yellow circular label" data-tooltip="{{ discrepancy.ClientDiff }} days passed the client's expected delivery date."
+                                                                    {% if c.Start.date == month|first %}
+                                                                        data-position="right center">
+                                                                     {% elif c.Start.date == month|last %}
+                                                                        data-position="left center">
+                                                                     {% else %}
+                                                                        data-position="bottom center">
+                                                                     {% endif %}
+                                                                    <b>!</b>
+                                                                </div>
+                                                            {% endif %}
+                                                        {%endif%}
+                                                    {% endfor %}
+                                                </div>
 
                                             </div>
+
                                         {% endif %}
                                     {% endfor %}
+
                                 </td>
 
                             {% endfor %}
@@ -412,10 +396,7 @@
                         {% endfor %}
 
                     </tr>
-
-                    {% endfor %}
-
-
+                   {% endfor %}
                 </tbody>
             </table>
             </div>
@@ -423,6 +404,8 @@
     </div>
 </div>
 
-
+{% for c in plot_list2 %}
+    {{c.sked_op}}
+{% endfor%}
 
 {% endblock %}

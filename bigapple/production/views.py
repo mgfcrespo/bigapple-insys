@@ -190,18 +190,35 @@ def job_order_details(request, id):
         else:
             la_done = False
 
-    ideal_ex = ExtruderSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True)).order_by('-sked_in')
-    first_ideal_ex = ideal_ex.first()
-    last_ideal_ex = ideal_ex.last()
-    ideal_cu = CuttingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True)).order_by('-sked_in')
-    first_ideal_cu = ideal_cu.first()
-    last_ideal_cu = ideal_cu.last()
-    ideal_pr = PrintingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True)).order_by('-sked_in')
-    first_ideal_pr = ideal_pr.first()
-    last_ideal_pr = ideal_pr.last()
-    ideal_la = LaminatingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True)).order_by('-sked_in')
-    first_ideal_la = ideal_la.first()
-    last_ideal_la = ideal_la.last()
+    first_ideal_cu = None
+    first_ideal_pr = None
+    first_ideal_la = None
+    first_ideal_ex = None
+    last_ideal_cu = None
+    last_ideal_pr = None
+    last_ideal_la = None
+    last_ideal_ex = None
+
+    ideal_ex = list(ExtruderSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True)))
+    if ideal_ex:
+        ideal_ex.sort(key=lambda i: i.sked_in)
+        first_ideal_ex = ideal_ex[0]
+        last_ideal_ex = ideal_ex[-1]
+    ideal_cu = list(CuttingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True)))
+    if ideal_cu:
+        ideal_cu.sort(key=lambda i: i.sked_in)
+        first_ideal_cu = ideal_cu[0]
+        last_ideal_cu = ideal_cu[-1]
+    ideal_pr = list(PrintingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True)))
+    if ideal_pr:
+        ideal_pr.sort(key=lambda i: i.sked_in)
+        first_ideal_pr = ideal_pr[0]
+        last_ideal_pr = ideal_pr[-1]
+    ideal_la = list(LaminatingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True)))
+    if ideal_la:
+        ideal_la.sort(key=lambda i: i.sked_in)
+        first_ideal_la = ideal_la[0]
+        last_ideal_la = ideal_la[-1]
 
     if extrusion.count() > 0:
         first_ex = ExtruderSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).earliest('datetime_in')
@@ -492,11 +509,11 @@ def add_extruder_schedule(request, id):
                 ~Q(job_order_id=id)).order_by('sked_in')
             final = request.POST.get('final')
             if all_ideal:
-                for x in all_ideal:
-                    sked_in_1 = x.sked_in - timedelta(hours=3)
-                    sked_in_2 = x.sked_in + timedelta(hours=3)
-                    sked_out_1 = x.sked_out - timedelta(hours=3)
-                    sked_out_2 = x.sked_out + timedelta(hours=3)
+                for xy in all_ideal:
+                    sked_in_1 = xy.sked_in - timedelta(hours=3)
+                    sked_in_2 = xy.sked_in + timedelta(hours=3)
+                    sked_out_1 = xy.sked_out - timedelta(hours=3)
+                    sked_out_2 = xy.sked_out + timedelta(hours=3)
                     sked_in_1 = sked_in_1.replace(tzinfo=None)
                     sked_in_2 = sked_in_2.replace(tzinfo=None)
                     sked_out_1 = sked_out_1.replace(tzinfo=None)
@@ -660,7 +677,7 @@ def add_printing_schedule(request, id):
                     data.save()
             else:
                 data.save()
-    return redirect('production:job_order_details', id=data.id)
+        return redirect('production:job_order_details', id=data.id)
 
     number_rolls = float(item.quantity / 10000)
     weight_rolls = number_rolls * 5

@@ -328,7 +328,7 @@
                     <tfoot>
                         <th></th>
                         <th>
-                            {% if first_ideal_ex.sked_in <= first_ex.datetime_in %}
+                            {% if first_ideal_ex.sked_in < first_ex.datetime_in %}
                                     <p style="color: red">behind schedule</p>
                                 {% else %}
                                     <p style="color: green">on time or early</p>

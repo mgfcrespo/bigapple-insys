@@ -854,9 +854,9 @@ def rush_order_assessment(request, pk):
                              }
                 plot_list.append(sked_dict)
 
-    ideal_ex = ExtruderSchedule.objects.filter(ideal=True)
+    ideal_cu = CuttingSchedule.objects.filter(ideal=True)
     all_jobs = []
-    for every in ideal_ex:
+    for every in ideal_cu:
         if every.job_order_id not in all_jobs:
             all_jobs.append(every.job_order)
 
@@ -880,8 +880,6 @@ def rush_order_assessment(request, pk):
     in_production = JobOrder.objects.filter(
         ~Q(status='On Queue') & ~Q(status='Ready for delivery') & ~Q(status='Delivered') & ~Q(status='Waiting'))
     plot_list2 = save_schedule(request, pk, None, None, True, True, True, True, in_production, True)
-    print('plot_list2')
-    print(plot_list2)
 
     machines = Machine.objects.all()
     today = date.today()
@@ -909,26 +907,28 @@ def rush_order_assessment(request, pk):
     #plot_list (current) VS plot_list2 (simulated) VS job's date required
     new_list = []
     new_list2 = []
-    for c in range(len(plot_list)):
-        for e in all_jobs:
-            all_cutting = []
-            if plot_list[c]['Task'] == 'Cutting':
+    for e in all_jobs:
+        all_cutting = []
+        for c in range(len(plot_list)):
+            if plot_list[c]['Task'] == 'Cutting' and plot_list[c]['ID'] == e.id:
                 all_cutting.append(plot_list[c])
-            if all_cutting:
-                all_cutting.sort(key=lambda i: i['Finish'])
-                new_list.append(all_cutting[-1])
-    for d in range(len(plot_list2)):
-        for f in all_jobs:
-            all_cutting2 = []
-            if plot_list2[d]['Task'] == 'Cutting':
+        if all_cutting:
+            all_cutting.sort(key=lambda i: i['Finish'])
+            new_list.append(all_cutting[-1])
+
+    for f in all_jobs:
+        all_cutting2 = []
+        for d in range(len(plot_list2)):
+            if plot_list2[d]['Task'] == 'Cutting'and plot_list2[d]['ID'] == f.id:
                 all_cutting2.append(plot_list2[d])
-            if all_cutting2:
-                all_cutting2.sort(key=lambda i: i['Finish'])
-                new_list2.append(all_cutting2[-1])
+        if all_cutting2:
+            all_cutting2.sort(key=lambda i: i['Finish'])
+            new_list2.append(all_cutting2[-1])
 
     d_list = []
     discrepancy = []
     for a in range(len(new_list)):
+        meron = False
         for b in range(len(new_list2)):
             if new_list[a]['ID'] == new_list2[b]['ID']:
                 job = JobOrder.objects.get(id=new_list[a]['ID'])
@@ -949,7 +949,13 @@ def rush_order_assessment(request, pk):
                                # Simulated VS Current; if (-), it ends EARLIER than previous sched
                                'ClientDiff': ClientDiff  # Simulated VS Client-suggested
                                }
-                d_list.append(discrepancy)
+
+                for each in range(len(d_list)):
+                    if d_list[each]['ID'] == new_list[a]['ID']:
+                        meron = True
+                        break
+                if not meron:
+                    d_list.append(discrepancy)
 
     if 'approve_btn' in request.POST:
         #SAVE NEW PRODUCTION SCHEDULE
