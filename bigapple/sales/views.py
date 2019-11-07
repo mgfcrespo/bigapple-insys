@@ -854,6 +854,11 @@ def rush_order_assessment(request, pk):
                              }
                 plot_list.append(sked_dict)
 
+    ideal_ex = ExtruderSchedule.objects.filter(ideal=True)
+    all_jobs = []
+    for every in ideal_ex:
+        if every.job_order_id not in all_jobs:
+            all_jobs.append(every.job_order)
 
     #Simulated sched
     cursor = connection.cursor()
@@ -905,11 +910,21 @@ def rush_order_assessment(request, pk):
     new_list = []
     new_list2 = []
     for c in range(len(plot_list)):
-        if plot_list[c]['Task'] == 'Cutting':
-            new_list.append(plot_list[c])
+        for e in all_jobs:
+            all_cutting = []
+            if plot_list[c]['Task'] == 'Cutting':
+                all_cutting.append(plot_list[c])
+            if all_cutting:
+                all_cutting.sort(key=lambda i: i['Finish'])
+                new_list.append(all_cutting[-1])
     for d in range(len(plot_list2)):
-        if plot_list2[d]['Task'] == 'Cutting':
-            new_list2.append(plot_list2[d])
+        for f in all_jobs:
+            all_cutting2 = []
+            if plot_list2[d]['Task'] == 'Cutting':
+                all_cutting2.append(plot_list2[d])
+            if all_cutting2:
+                all_cutting2.sort(key=lambda i: i['Finish'])
+                new_list2.append(all_cutting2[-1])
 
     d_list = []
     discrepancy = []
@@ -1262,6 +1277,7 @@ def assign_operator(ideal_workers, other_workers, all_skeds, ideal_sched, x, job
             if ideal_sched[x]['Task'] == 'Extrusion':
                 if rush:
                     operator = q
+                    return operator
                     break
                 else:
                     e = ExtruderSchedule(job_order_id=ideal_sched[x]['ID'], ideal=True, sked_op=q, sked_in=skedin, sked_out=skedout,
@@ -1274,6 +1290,7 @@ def assign_operator(ideal_workers, other_workers, all_skeds, ideal_sched, x, job
             elif ideal_sched[x]['Task'] == 'Cutting':
                 if rush:
                     operator = q
+                    return operator
                     break
                 else:
                     c = CuttingSchedule(job_order_id=ideal_sched[x]['ID'], ideal=True, sked_op=q, sked_in=skedin, sked_out=skedout,
@@ -1286,6 +1303,7 @@ def assign_operator(ideal_workers, other_workers, all_skeds, ideal_sched, x, job
             elif ideal_sched[x]['Task'] == 'Printing':
                 if rush:
                     operator = q
+                    return operator
                     break
                 else:
                     p = PrintingSchedule(job_order_id=ideal_sched[x]['ID'], ideal=True, sked_op=q, sked_in=skedin, sked_out=skedout,
@@ -1298,6 +1316,7 @@ def assign_operator(ideal_workers, other_workers, all_skeds, ideal_sched, x, job
             elif ideal_sched[x]['Task'] == 'Laminating':
                 if rush:
                     operator = q
+                    return operator
                     break
                 else:
                     l = LaminatingSchedule(job_order_id=ideal_sched[x]['ID'], ideal=True, sked_op=q, sked_in=skedin, sked_out=skedout,
@@ -1323,6 +1342,7 @@ def assign_operator(ideal_workers, other_workers, all_skeds, ideal_sched, x, job
                 if ideal_sched[x]['Task'] == 'Extrusion':
                     if rush:
                         operator = e
+                        return operator
                         break
                     else:
                         e = ExtruderSchedule(job_order_id=ideal_sched[x]['ID'], ideal=True, sked_op=e, sked_in=skedin, sked_out=skedout,
@@ -1335,6 +1355,7 @@ def assign_operator(ideal_workers, other_workers, all_skeds, ideal_sched, x, job
                 elif ideal_sched[x]['Task'] == 'Cutting':
                     if rush:
                         operator = e
+                        return operator
                         break
                     else:
                         c = CuttingSchedule(job_order_id=ideal_sched[x]['ID'], ideal=True, sked_op=e, sked_in=skedin, sked_out=skedout,
@@ -1347,6 +1368,7 @@ def assign_operator(ideal_workers, other_workers, all_skeds, ideal_sched, x, job
                 elif ideal_sched[x]['Task'] == 'Printing':
                     if rush:
                         operator = e
+                        return operator
                         break
                     else:
                         p = PrintingSchedule(job_order_id=ideal_sched[x]['ID'], ideal=True, sked_op=e, sked_in=skedin, sked_out=skedout,
@@ -1359,6 +1381,7 @@ def assign_operator(ideal_workers, other_workers, all_skeds, ideal_sched, x, job
                 elif ideal_sched[x]['Task'] == 'Laminating':
                     if rush:
                         operator = e
+                        return operator
                         break
                     else:
                         l = LaminatingSchedule(job_order_id=ideal_sched[x]['ID'], ideal=True, sked_op=e, sked_in=skedin, sked_out=skedout,
@@ -1373,6 +1396,7 @@ def assign_operator(ideal_workers, other_workers, all_skeds, ideal_sched, x, job
         if ideal_sched[x]['Task'] == 'Extrusion':
             if rush:
                 operator = None
+                return operator
             else:
                 e = ExtruderSchedule(job_order_id=ideal_sched[x]['ID'], ideal=True, sked_op=None, sked_in=skedin, sked_out=skedout,
                                  sked_mach=ideal_sched[x]['Machine'])
@@ -1382,6 +1406,7 @@ def assign_operator(ideal_workers, other_workers, all_skeds, ideal_sched, x, job
         elif ideal_sched[x]['Task'] == 'Cutting':
             if rush:
                 operator = None
+                return operator
             else:
                 c = CuttingSchedule(job_order_id=ideal_sched[x]['ID'], ideal=True, sked_op=None, sked_in=skedin, sked_out=skedout,
                              sked_mach=ideal_sched[x]['Machine'])
@@ -1391,6 +1416,7 @@ def assign_operator(ideal_workers, other_workers, all_skeds, ideal_sched, x, job
         elif ideal_sched[x]['Task'] == 'Printing':
             if rush:
                 operator = None
+                return operator
             else:
                 p = PrintingSchedule(job_order_id=ideal_sched[x]['ID'], ideal=True, sked_op=None, sked_in=skedin, sked_out=skedout,
                              sked_mach=ideal_sched[x]['Machine'])
@@ -1400,6 +1426,7 @@ def assign_operator(ideal_workers, other_workers, all_skeds, ideal_sched, x, job
         elif ideal_sched[x]['Task'] == 'Laminating':
             if rush:
                 operator = None
+                return operator
             else:
                 l = LaminatingSchedule(job_order_id=ideal_sched[x]['ID'], ideal=True, sked_op=None, sked_in=skedin, sked_out=skedout,
                              sked_mach=ideal_sched[x]['Machine'])

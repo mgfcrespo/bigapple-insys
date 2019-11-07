@@ -79,7 +79,7 @@
                                                     <div class="ui mini message" style="width: 100px">
 
                                                         {% for x in plot_list %}
-                                                                {% if x.ID == c.ID and x.Machine == machine and x.Start.time == b %}
+                                                                {% if x.ID == c.ID and x.Machine == machine and x.Start.time == b and x.Start.date == a %}
 
                                                                     <a href="{% url 'production:job_order_details' c.ID %}" class="ui black header" style="margin-bottom: -10px;">Job {{ c.ID }}</a><br>
                                                                     <div>{{ x.Worker }}</div>
@@ -170,7 +170,7 @@
                                                     <div class="ui mini message" style="width: 100px">
 
                                                         {% for x in plot_list %}
-                                                                {% if x.ID == c.ID and x.Machine == machine and x.Start.time == b %}
+                                                                {% if x.ID == c.ID and x.Machine == machine and x.Start.time == b  and x.Start.date == a %}
 
                                                                     <a href="{% url 'production:job_order_details' c.ID %}" class="ui black header" style="margin-bottom: -10px;">Job {{ c.ID }}</a><br>
                                                                     <div>{{ x.Worker }}</div>
