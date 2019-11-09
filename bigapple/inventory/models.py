@@ -8,6 +8,8 @@ from django.utils import timezone
 
 # Create your models here.
 
+local = timezone.now() + timedelta(hours=8)
+
 class Inventory(models.Model):
     ITEM_TYPES = (
         ('Raw Materials', 'Raw Materials'),
@@ -106,7 +108,7 @@ class MaterialRequisition(models.Model):
         ('Pending', 'Pending'),
     )
 
-    datetime_issued = models.DateTimeField('datetime_issued', default=timezone.now)
+    datetime_issued = models.DateTimeField('datetime_issued', default=local)
     shift = models.IntegerField(null=True, blank=True)
     item = models.ForeignKey(Inventory, on_delete=models.CASCADE)
     quantity = models.IntegerField()

@@ -133,9 +133,7 @@
                 <tbody class="top aligned">
 
                    {% for machine in machines %}
-
                     <tr>
-
                         <td>
 
                             <a href="#">Machine {{machine.machine_id}} : {{machine.machine_type}}</a>
@@ -144,16 +142,14 @@
                             {% else %}
                             <i class="red times circle outline icon"></i>
                             {% endif %}
-
                         </td>
 
                         {% for a in week %}
 
                             {% for b in day %}
-
                                 <td class="top aligned">
                                     {% for c in plot_list2 %}
-                                        {% if c.Machine == machine and c.Start.date == a and c.Start.time == b %}
+                                        {% if c.Machine == machine and c.Start.date == a  and c.Start.time == b %}
                                             <div class="ui
 
                                             {% for discrepancy in discrepancy %}
@@ -223,8 +219,8 @@
                                                                     </div>
                                                                 {% endif %}
                                                             {% endif %}
-                                                            {% if discrepancy.ClientDiff %}
-                                                                <div class="mini ui yellow circular label" data-tooltip="{{ discrepancy.ClientDiff }} days passed the client's expected delivery date."
+                                                            {% if discrepancy.ClientDiff > 0 %}
+                                                                <div class="mini ui yellow circular label" data-tooltip="Moved {{ discrepancy.ClientDiff }} days past the client's suggested delivery date."
                                                                     {% if c.Start.date == week|first %}
                                                                         data-position="right center">
                                                                      {% elif c.Start.date == week|last %}
@@ -238,22 +234,16 @@
                                                         {%endif%}
                                                     {% endfor %}
                                                 </div>
-
-                                            </div>
-
                                         {% endif %}
                                     {% endfor %}
-
                                 </td>
 
                             {% endfor %}
 
                         {% endfor %}
 
-
                     </tr>
-
-                    {% endfor %}
+                   {% endfor %}
 
 
                 </tbody>
@@ -280,7 +270,6 @@
                 </thead>
                 <tbody class="top aligned">
                    {% for machine in machines %}
-
                    <tr>
                         <td>
 
@@ -303,13 +292,13 @@
 
                                             {% for discrepancy in discrepancy %}
                                                 {% if discrepancy.ID == c.ID %}
-                                                    {% if discrepancy.CurrentDiff %}
+                                                    {% if discrepancy.CurrentDiff.days > 0 %}
                                                         negative
                                                     {% endif %}
                                                 {%endif%}
                                             {% endfor %}
 
-                                            mini message">
+                                            mini message" style="width: 100px;">
 
                                                 {% if c.ID == rush_order.id %}
                                                     <a href="{% url 'production:job_order_details' c.ID %}" class="ui yellow header">Job {{ c.ID }}</a><br>
@@ -344,8 +333,8 @@
                                                     {% for discrepancy in discrepancy %}
                                                         {% if discrepancy.ID == c.ID %}
                                                             {% if discrepancy.CurrentDiff %}
-                                                                {% if discrepancy.CurrentDiff > 0 %}
-                                                                    <div class="ui circular mini green icon button" data-tooltip="This Job Order was moved {{ discrepancy.CurrentDiff }} earlier"
+                                                                {% if discrepancy.CurrentDiff.days < 0 %}
+                                                                    <div class="ui circular mini green icon button" data-tooltip="This Job Order was moved {{ discrepancy.CurrentDiff.days }} days earlier"
                                                                          {% if c.Start.date == month|first %}
                                                                             data-position="right center">
                                                                          {% elif i.Start.date == month|last %}
@@ -355,8 +344,8 @@
                                                                          {% endif %}
                                                                         <b>!</b>
                                                                     </div>
-                                                                {% else %}
-                                                                    <div class="mini ui circular red label center aligned" data-tooltip="This Job Order was moved {{ discrepancy.CurrentDiff }} later"
+                                                                {% elif discrepancy.CurrentDiff.days > 0 %}
+                                                                    <div class="mini ui circular red label center aligned" data-tooltip="This Job Order was moved {{ discrepancy.CurrentDiff.days }} days later"
                                                                          {% if c.Start.date == month|first %}
                                                                             data-position="right center">
                                                                          {% elif c.Start.date == month|last %}
@@ -368,8 +357,8 @@
                                                                     </div>
                                                                 {% endif %}
                                                             {% endif %}
-                                                            {% if discrepancy.ClientDiff %}
-                                                                <div class="mini ui yellow circular label" data-tooltip="{{ discrepancy.ClientDiff }} days passed the client's expected delivery date."
+                                                            {% if discrepancy.ClientDiff.days > 0 %}
+                                                                <div class="mini ui yellow circular label" data-tooltip="Currently {{ discrepancy.ClientDiff.days }} days past the client's suggested delivery date."
                                                                     {% if c.Start.date == month|first %}
                                                                         data-position="right center">
                                                                      {% elif c.Start.date == month|last %}
@@ -403,9 +392,5 @@
         </div>
     </div>
 </div>
-
-{% for c in plot_list2 %}
-    {{c.sked_op}}
-{% endfor%}
 
 {% endblock %}

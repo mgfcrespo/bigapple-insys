@@ -485,7 +485,7 @@ def add_extruder_schedule(request, id):
     e = ExtruderSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=False))
     e.job_order = id
     form = ExtruderScheduleForm(request.POST)
-    ideal = ExtruderSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()
+    ideal = ExtruderSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).order_by('sked_in')
     printed = False
     if item.printed == 1:
         printed = True
@@ -566,11 +566,15 @@ def add_extruder_schedule(request, id):
         core_weight = core_weight
         output_kilos = weight_rolls
 
-    if ideal is not None:
-        sked_in = ideal.sked_in
-        sked_out = ideal.sked_out
-        sked_op = ideal.sked_op
-        sked_mach = ideal.sked_mach
+    if ideal and not e:
+        sked_in = ideal.first().sked_in
+        sked_out = ideal.first().sked_out
+        sked_op = ideal.first().sked_op
+        sked_mach = ideal.first().sked_mach
+    elif e:
+        exists = len(e)
+        sked_in = ideal[exists].sked_in
+        sked_out = ideal[exists].sked_out
     else:
         sked_in = datetime.now()
         sked_out = datetime.now() + timedelta(days=int((item.quantity * 80)/70000))
@@ -591,7 +595,6 @@ def add_extruder_schedule(request, id):
     else:
         shift = 0
 
-    #TODO Add Machine and Worker initial placeholder
     form.fields["machine"].queryset = Machine.objects.filter(Q(machine_type='Extruder') & Q(state='OK'))
     form.fields["operator"].queryset = Employee.objects.filter(Q(position='Extruder') | Q(position='Cutting') | Q(position='Laminating') | Q(position='Printing'))
     form.fields["job_order"].queryset = JobOrder.objects.filter(id=id)
@@ -616,7 +619,7 @@ def add_printing_schedule(request, id):
     data = JobOrder.objects.get(id=id)
     form = PrintingScheduleForm(request.POST)
     item = ClientItem.objects.get(client_po_id=id)
-    ideal = PrintingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()
+    ideal = PrintingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).order_by('sked_in')
     p = PrintingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=False))
     p.job_order = id
     items = ClientItem.objects.filter(client_po=id)
@@ -703,9 +706,15 @@ def add_printing_schedule(request, id):
         core_weight = core_weight
         output_kilos = weight_rolls
 
-    if ideal is not None:
-        sked_in = ideal.sked_in
-        sked_out = ideal.sked_out
+    if ideal and not p:
+        sked_in = ideal.first().sked_in
+        sked_out = ideal.first().sked_out
+        sked_op = ideal.first().sked_op
+        sked_mach = ideal.first().sked_mach
+    elif p:
+        exists = len(p)
+        sked_in = ideal[exists].sked_in
+        sked_out = ideal[exists].sked_out
     else:
         sked_in = datetime.now()
         sked_out = datetime.now() + timedelta(days=int((item.quantity * 100) / 70000))
@@ -755,7 +764,7 @@ def add_cutting_schedule(request, id):
     form = CuttingScheduleForm(request.POST)
     invoice = SalesInvoice.objects.get(client_po=data)
     client = data.client
-    ideal = CuttingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()
+    ideal = CuttingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).order_by('sked_in')
 
     c = CuttingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=False))
     c.job_order = id
@@ -833,9 +842,15 @@ def add_cutting_schedule(request, id):
         output_kilos = output_kilos
         quantity = quantity
 
-    if ideal is not None:
-        sked_in = ideal.sked_in
-        sked_out = ideal.sked_out
+    if ideal and not c:
+        sked_in = ideal.first().sked_in
+        sked_out = ideal.first().sked_out
+        sked_op = ideal.first().sked_op
+        sked_mach = ideal.first().sked_mach
+    elif c:
+        exists = len(c)
+        sked_in = ideal[exists].sked_in
+        sked_out = ideal[exists].sked_out
     else:
         sked_in = datetime.now()
         sked_out = datetime.now() + timedelta(days=int((quantity * 60) / 70000))
@@ -884,7 +899,7 @@ def add_laminating_schedule(request, id):
     form = LaminatingScheduleForm(request.POST)
     l = LaminatingSchedule.objects.filter(Q(job_order_id = id) & Q(ideal=False))
     item = ClientItem.objects.get(client_po_id=id)
-    ideal = LaminatingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).first()
+    ideal = LaminatingSchedule.objects.filter(Q(job_order_id=id) & Q(ideal=True)).order_by('sked_in')
     l.job_order = id
 
     if l.count == 0:
@@ -936,9 +951,15 @@ def add_laminating_schedule(request, id):
 
     quantity = item.quantity
 
-    if ideal is not None:
-        sked_in = ideal.sked_in
-        sked_out = ideal.sked_out
+    if ideal and not l:
+        sked_in = ideal.first().sked_in
+        sked_out = ideal.first().sked_out
+        sked_op = ideal.first().sked_op
+        sked_mach = ideal.first().sked_mach
+    elif l:
+        exists = len(l)
+        sked_in = ideal[exists].sked_in
+        sked_out = ideal[exists].sked_out
     else:
         sked_in = datetime.now()
         sked_out = datetime.now() + timedelta(days=int((quantity * 60)/70000))
