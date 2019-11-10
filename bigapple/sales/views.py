@@ -285,7 +285,6 @@ def confirm_client_po(request, pk):
 
     #matreq form
     if request.method == "POST" and 'confirm_btn' in request.POST:
-
         if matreq:
             # SAVE NEW PRODUCTION SCHEDULE
             in_production = JobOrder.objects.filter(
@@ -302,11 +301,6 @@ def confirm_client_po(request, pk):
                         new_form.item = Inventory.objects.filter(rm_type=x).first()
                         new_form.quantity = every.quantity/1000 #TODO Ensure quantity (raw mat to product ratio)
                         new_form.save()
-
-                        #matreq = MaterialRequisition.objects.get(id = new_form.pk)
-                        #matreq.client_item = every
-                        #matreq.item = Inventory.objects.filter(rm_type=x).first()
-                        #matreq.save()
 
             if each.printed == 1:
                 supplier = Supplier.objects.get(id=2)
@@ -658,6 +652,7 @@ def rush_order_assessment(request, pk):
                    (300/every.quantity) - (
                                every.length * every.width * every.thickness )) / (
                               every.length * every.width * every.thickness )
+        profit = round(profit, 2)
     #matreq determinant
     products = []
     material = []
@@ -718,11 +713,6 @@ def rush_order_assessment(request, pk):
                         new_form.save()
                         print('MATREQ FORM SAVED')
 
-                        #matreq = MaterialRequisition.objects.get(id = new_form.pk)
-                        #matreq.client_item = every
-                        #matreq.item = Inventory.objects.filter(rm_type=x).first()
-                        #matreq.save()
-
             if each.printed == 1:
                 supplier = Supplier.objects.get(id=2)
                 delivery_date = date.today() + timedelta(days=7)
@@ -731,7 +721,7 @@ def rush_order_assessment(request, pk):
                 supplierpo_item_formset = inlineformset_factory(SupplierPO, SupplierPOItems,
                                                                 form=SupplierPOItemsForm, extra=1,
                                                                 can_delete=True)
-                form = SupplierPO(supplier=supplier, delivery_date=delivery_date, date_issued=date.today())
+                form = SupplierPO(supplier=supplier, delivery_date=delivery_date, date_issued=date.today(), client_po=rush_order)
                 form.save()
                 form_item = SupplierPOItems(supplier_po=form, item=item, quantity=cylinder_count)
                 form_item.save()
@@ -746,8 +736,6 @@ def rush_order_assessment(request, pk):
                         ink_form.item = Inventory.objects.get(item=color)
                         ink_form.quantity = color_count
                         ink_form.save()
-                else:
-                    pass
 
     #Current schedule
     plot_list = []
@@ -1497,6 +1485,7 @@ def divide_task_1(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, 
     new_ideal_sched.append(sked_dict)
     if rush:
         copy_ideal_sched.append(sked_dict)
+        print(sked_dict)
     duration = ideal_sched[x]['Finish'] - ideal_sched[x]['Start']
     duration -= timedelta(hours=8)
     duration = math.ceil(duration.total_seconds() / 3600)
@@ -1526,6 +1515,7 @@ def divide_task_1(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, 
             new_ideal_sched.append(sked_dict)
             if rush:
                 copy_ideal_sched.append(sked_dict)
+                print(sked_dict)
             count -= 1
         #Shift 3
         if count > 0:
@@ -1550,8 +1540,8 @@ def divide_task_1(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, 
             new_ideal_sched.append(sked_dict)
             if rush:
                 copy_ideal_sched.append(sked_dict)
+                print(sked_dict)
             count -= 1
-            skedindate += timedelta(days=1)
         #Shift 1 next day
         if count > 0:
             all_skeds = []
@@ -1559,6 +1549,7 @@ def divide_task_1(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, 
             all_skeds.extend(CuttingSchedule.objects.filter(ideal=True))
             all_skeds.extend(PrintingSchedule.objects.filter(ideal=True))
             all_skeds.extend(LaminatingSchedule.objects.filter(ideal=True))
+            skedindate += timedelta(days=1)
             skedin = datetime.datetime.combine(skedindate, time(6, 0))
             skedout = datetime.datetime.combine(skedindate, time(14, 0))
             shift1.append((job, skedindate))
@@ -1575,6 +1566,7 @@ def divide_task_1(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, 
             new_ideal_sched.append(sked_dict)
             if rush:
                 copy_ideal_sched.append(sked_dict)
+                print(sked_dict)
             count -= 1
 
     if count == 0:
@@ -1596,6 +1588,7 @@ def divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, 
     new_ideal_sched.append(sked_dict)
     if rush:
         copy_ideal_sched.append(sked_dict)
+        print(sked_dict)
     duration = ideal_sched[x]['Finish'] - ideal_sched[x]['Start']
     duration -= timedelta(hours=8)
     duration = math.ceil(duration.total_seconds() / 3600)
@@ -1625,8 +1618,8 @@ def divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, 
             new_ideal_sched.append(sked_dict)
             if rush:
                 copy_ideal_sched.append(sked_dict)
+                print(sked_dict)
             count -= 1
-            skedindate += timedelta(days=1)
         #Shift 1 next day
         if count > 0:
             all_skeds = []
@@ -1634,6 +1627,7 @@ def divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, 
             all_skeds.extend(CuttingSchedule.objects.filter(ideal=True))
             all_skeds.extend(PrintingSchedule.objects.filter(ideal=True))
             all_skeds.extend(LaminatingSchedule.objects.filter(ideal=True))
+            skedindate += timedelta(days=1)
             skedin = datetime.datetime.combine(skedindate, time(6, 0))
             skedout = datetime.datetime.combine(skedindate, time(14, 0))
             shift1.append((job, skedindate))
@@ -1650,6 +1644,7 @@ def divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, 
             new_ideal_sched.append(sked_dict)
             if rush:
                 copy_ideal_sched.append(sked_dict)
+                print(sked_dict)
             count -= 1
         #Shift 2 next day
         if count > 0:
@@ -1674,6 +1669,7 @@ def divide_task_2(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, 
             new_ideal_sched.append(sked_dict)
             if rush:
                 copy_ideal_sched.append(sked_dict)
+                print(sked_dict)
             count -= 1
 
     if count == 0:
@@ -1695,6 +1691,7 @@ def divide_task_3(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, 
     new_ideal_sched.append(sked_dict)
     if rush:
         copy_ideal_sched.append(sked_dict)
+        print(sked_dict)
     duration = ideal_sched[x]['Finish'] - ideal_sched[x]['Start']
     duration -= timedelta(hours=8)
     duration = math.ceil(duration.total_seconds() / 3600)
@@ -1725,6 +1722,7 @@ def divide_task_3(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, 
             new_ideal_sched.append(sked_dict)
             if rush:
                 copy_ideal_sched.append(sked_dict)
+                print(sked_dict)
             count -= 1
         #Shift 2 next day
         if count > 0:
@@ -1749,8 +1747,8 @@ def divide_task_3(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, 
             new_ideal_sched.append(sked_dict)
             if rush:
                 copy_ideal_sched.append(sked_dict)
+                print(sked_dict)
             count -= 1
-            skedindate += timedelta(days=1)
         #Shift 3 next day
         if count > 0:
             all_skeds = []
@@ -1774,8 +1772,8 @@ def divide_task_3(ideal_workers, other_workers, all_skeds, ideal_sched, x, job, 
             new_ideal_sched.append(sked_dict)
             if rush:
                 copy_ideal_sched.append(sked_dict)
+                print(sked_dict)
             count -= 1
-            skedindate += timedelta(days=1)
 
     if count == 0:
         print('SEPARATED TO SHIFTS: ' + str(ideal_sched[x]['ID']))
@@ -1799,75 +1797,133 @@ def divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin,
                     job_shifts.append(copy_ideal_sched[every])
             if ideal_sched[x]['Machine'] == copy_ideal_sched[every]['Machine']:
                 occupied_shifts.append(copy_ideal_sched[every])
+
         job_shifts.sort(key=lambda a: a['Start'])
         occupied_shifts.sort(key=lambda b: b['Start'])
+
         if job_shifts and occupied_shifts:
             latest = job_shifts[-1]
             each = occupied_shifts[-1]
-            if each['Start'] > latest['Start']:
-                latest = each
-            if 18 <= latest['Start'].hour > 2:
-                push = 1
-                if latest['Start'].hour >= 18:
-                    skedindate = latest['Start'].date() + timedelta(days=1)
-                else:
+            if latest['Start'] >= ideal_sched[x]['Start'] or each['Start'] >= ideal_sched[x]['Start']:
+                if each['Start'] > latest['Start']:
+                    latest = each
+                if 18 <= latest['Start'].hour or latest['Start'].hour < 2:
+                    push = 1
+                    if latest['Start'].hour >= 18:
+                        skedindate = latest['Start'].date() + timedelta(days=1)
+                    else:
+                        skedindate = latest['Start'].date()
+                    skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                    skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                elif 10 <= latest['Start'].hour < 18:
+                    push = 3
                     skedindate = latest['Start'].date()
-                skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                copy_ideal_sched.append({'Start' : skedin,
-                                            'Finish' : skedout,
-                                            'ID' : ideal_sched[x]['ID'],
-                                            'Task' : ideal_sched[x]['Task']})
-            elif 10 <= latest['Start'].hour < 18:
-                push = 3
-                skedindate = latest['Start'].date()
-                skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
-            elif 2 <= latest['Start'].hour < 10:
-                push = 2
-                skedindate = latest['Start'].date()
-                skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                    skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                    skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                elif 2 <= latest['Start'].hour < 10:
+                    push = 2
+                    skedindate = latest['Start'].date()
+                    skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                    skedout = datetime.datetime.combine(skedindate, time(22, 0))
+            else:
+                if 18 <= ideal_sched[x]['Start'].hour or ideal_sched[x]['Start'].hour < 2:
+                    push = 1
+                    if ideal_sched[x]['Start'].hour >= 18:
+                        skedindate = ideal_sched[x]['Start'].date() + timedelta(days=1)
+                    else:
+                        skedindate = ideal_sched[x]['Start'].date()
+                    skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                    skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                elif 10 <= ideal_sched[x]['Start'].hour < 18:
+                    push = 3
+                    skedindate = ideal_sched[x]['Start'].date()
+                    skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                    skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                elif 2 <= ideal_sched[x]['Start'].hour < 10:
+                    push = 2
+                    skedindate = ideal_sched[x]['Start'].date()
+                    skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                    skedout = datetime.datetime.combine(skedindate, time(22, 0))
         elif occupied_shifts:
-            latest = occupied_shifts[-1]
-            if 18 <= latest['Start'].hour > 2:
-                push = 1
-                if latest['Start'].hour >= 18:
-                    skedindate = latest['Start'].date() + timedelta(days=1)
-                else:
+            if occupied_shifts[-1]['Start'] >= ideal_sched[x]['Start']:
+                latest = occupied_shifts[-1]
+                if 18 <= latest['Start'].hour or latest['Start'].hour < 2:
+                    push = 1
+                    if latest['Start'].hour >= 18:
+                        skedindate = latest['Start'].date() + timedelta(days=1)
+                    else:
+                        skedindate = latest['Start'].date()
+                    skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                    skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                elif 10 <= latest['Start'].hour < 18:
+                    push = 3
                     skedindate = latest['Start'].date()
-                skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                skedout = datetime.datetime.combine(skedindate, time(14, 0))
-            elif 10 <= latest['Start'].hour < 18:
-                push = 3
-                skedindate = latest['Start'].date()
-                skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
-            elif 2 <= latest['Start'].hour < 10:
-                push = 2
-                skedindate = latest['Start'].date()
-                skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                    skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                    skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                elif 2 <= latest['Start'].hour < 10:
+                    push = 2
+                    skedindate = latest['Start'].date()
+                    skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                    skedout = datetime.datetime.combine(skedindate, time(22, 0))
+            else:
+                if 18 <= ideal_sched[x]['Start'].hour or ideal_sched[x]['Start'].hour < 2:
+                    push = 1
+                    if ideal_sched[x]['Start'].hour >= 18:
+                        skedindate = ideal_sched[x]['Start'].date() + timedelta(days=1)
+                    else:
+                        skedindate = ideal_sched[x]['Start'].date()
+                    skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                    skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                elif 10 <= ideal_sched[x]['Start'].hour < 18:
+                    push = 3
+                    skedindate = ideal_sched[x]['Start'].date()
+                    skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                    skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                elif 2 <= ideal_sched[x]['Start'].hour < 10:
+                    push = 2
+                    skedindate = ideal_sched[x]['Start'].date()
+                    skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                    skedout = datetime.datetime.combine(skedindate, time(22, 0))
         elif job_shifts:
-            latest = job_shifts[-1]
-            if 18 <= latest['Start'].hour > 2:
-                push = 1
-                if latest['Start'].hour >= 18:
-                    skedindate = latest['Start'].date() + timedelta(days=1)
-                else:
+            if job_shifts[-1]['Start'] >= ideal_sched[x]['Start']:
+                latest = job_shifts[-1]
+                if 18 <= latest['Start'].hour < 2:
+                    push = 1
+                    if latest['Start'].hour >= 18:
+                        skedindate = latest['Start'].date() + timedelta(days=1)
+                    else:
+                        skedindate = latest['Start'].date()
+                    skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                    skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                elif 10 <= latest['Start'].hour < 18:
+                    push = 3
                     skedindate = latest['Start'].date()
-                skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                skedout = datetime.datetime.combine(skedindate, time(14, 0))
-            elif 10 <= latest['Start'].hour < 18:
-                push = 3
-                skedindate = latest['Start'].date()
-                skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
-            elif 2 <= latest['Start'].hour < 10:
-                push = 2
-                skedindate = latest['Start'].date()
-                skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                    skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                    skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                elif 2 <= latest['Start'].hour < 10:
+                    push = 2
+                    skedindate = latest['Start'].date()
+                    skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                    skedout = datetime.datetime.combine(skedindate, time(22, 0))
+            elif ideal_sched[x]['Start'] > job_shifts[-1]['Start']:
+                if 18 <= ideal_sched[x]['Start'].hour or ideal_sched[x]['Start'].hour < 2:
+                    push = 1
+                    if ideal_sched[x]['Start'].hour >= 18:
+                        skedindate = ideal_sched[x]['Start'].date() + timedelta(days=1)
+                    else:
+                        skedindate = ideal_sched[x]['Start'].date()
+                    skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                    skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                elif 10 <= ideal_sched[x]['Start'].hour < 18:
+                    push = 3
+                    skedindate = ideal_sched[x]['Start'].date()
+                    skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                    skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                elif 2 <= ideal_sched[x]['Start'].hour < 10:
+                    push = 2
+                    skedindate = ideal_sched[x]['Start'].date()
+                    skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                    skedout = datetime.datetime.combine(skedindate, time(22, 0))
 
     return {'push' : push,
             'skedindate' : skedindate,
@@ -1977,10 +2033,12 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     Q(position='Cutting') | Q(position='Printing') | Q(position='Laminating'))
                 # If someone from ideal_workers =! sked_op of any ideal schedule of that day, assign shift.
                 if rush:
-                    push = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('push')
-                    skedindate = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedindate')
-                    skedin = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedin')
-                    skedout = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedout')
+                    result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each)
+                    print(result)
+                    push = result['push']
+                    skedindate = result['skedindate']
+                    skedin = result['skedin']
+                    skedout = result['skedout']
                 else:
                     job_shifts = []
                     if job_shifts:
@@ -1992,28 +2050,25 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     if occupied_shifts:
                         each = occupied_shifts[-1]
                     if each and latest:
-                        if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
-                            if latest is None or each.sked_in > latest.sked_in:
+                        if each.sked_in.replace(tzinfo=None) >= skedin or latest.sked_in.replace(tzinfo=None) >= skedin:
+                            if each.sked_in > latest.sked_in:
                                 latest = each
-                            push = 1
-                            skedindate = latest.sked_in.date() + timedelta(days=1)
-                            skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                        elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
-                            if latest is None or each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 3
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                            skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
-                        elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
-                            if latest is None or each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 2
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif each:
+                            if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                                push = 1
+                                skedindate = latest.sked_in.date() + timedelta(days=1)
+                                skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                            elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
+                                push = 3
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                                skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                            elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
+                                push = 2
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                    elif each and each.sked_in.replace(tzinfo=None) >= skedin:
                         if each.sked_in.time() == time(22, 0):
                             latest = each
                             push = 1
@@ -2032,7 +2087,7 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                             skedindate = latest.sked_in.date()
                             skedin = datetime.datetime.combine(skedindate, time(14, 0))
                             skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif latest:
+                    elif latest and latest.sked_in.replace(tzinfo=None) >= skedin:
                         if latest.sked_in.time() == time(22, 0):
                             push = 1
                             skedindate = latest.sked_in.date() + timedelta(days=1)
@@ -2069,10 +2124,13 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 other_workers = Employee.objects.filter(
                     Q(position='Extruder') | Q(position='Cutting') | Q(position='Laminating'))
                 if rush:
-                    push = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('push')
-                    skedindate = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedindate')
-                    skedin = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedin')
-                    skedout = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedout')
+                    result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
+                                              job_shifts, occupied_shifts, latest, each)
+
+                    push = result['push']
+                    skedindate = result['skedindate']
+                    skedin = result['skedin']
+                    skedout = result['skedout']
                 else:
                     for each in all_skeds:
                         if each.job_order_id == ideal_sched[x]['ID'] and type(each) == ExtruderSchedule:
@@ -2087,28 +2145,25 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     if occupied_shifts:
                         each = occupied_shifts[-1]
                     if each and latest:
-                        if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
-                            if latest is None or each.sked_in > latest.sked_in:
+                        if each.sked_in.replace(tzinfo=None) >= skedin or latest.sked_in.replace(tzinfo=None) >= skedin:
+                            if each.sked_in > latest.sked_in:
                                 latest = each
-                            push = 1
-                            skedindate = latest.sked_in.date() + timedelta(days=1)
-                            skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                        elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
-                            if latest is None or each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 3
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                            skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
-                        elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
-                            if latest is None or each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 2
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif each:
+                            if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                                push = 1
+                                skedindate = latest.sked_in.date() + timedelta(days=1)
+                                skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                            elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
+                                push = 3
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                                skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                            elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
+                                push = 2
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                    elif each and each.sked_in.replace(tzinfo=None) >= skedin:
                         if each.sked_in.time() == time(22, 0):
                             latest = each
                             push = 1
@@ -2127,7 +2182,7 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                             skedindate = latest.sked_in.date()
                             skedin = datetime.datetime.combine(skedindate, time(14, 0))
                             skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif latest:
+                    elif latest and latest.sked_in.replace(tzinfo=None) >= skedin:
                         if latest.sked_in.time() == time(22, 0):
                             push = 1
                             skedindate = latest.sked_in.date() + timedelta(days=1)
@@ -2164,10 +2219,13 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 other_workers = Employee.objects.filter(
                     Q(position='Extruder') | Q(position='Cutting') | Q(position='Printing'))
                 if rush:
-                    push = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('push')
-                    skedindate = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedindate')
-                    skedin = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedin')
-                    skedout = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedout')
+                    result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
+                                              job_shifts, occupied_shifts, latest, each)
+                    print(result)
+                    push = result['push']
+                    skedindate = result['skedindate']
+                    skedin = result['skedin']
+                    skedout = result['skedout']
                 else:
                     for each in all_skeds:
                         if each.job_order_id == ideal_sched[x]['ID']:
@@ -2183,28 +2241,25 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     if occupied_shifts:
                         each = occupied_shifts[-1]
                     if each and latest:
-                        if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                        if each.sked_in.replace(tzinfo=None) >= skedin or latest.sked_in.replace(tzinfo=None) >= skedin:
                             if each.sked_in > latest.sked_in:
                                 latest = each
-                            push = 1
-                            skedindate = latest.sked_in.date() + timedelta(days=1)
-                            skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                        elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 3
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                            skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
-                        elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 2
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif each:
+                            if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                                push = 1
+                                skedindate = latest.sked_in.date() + timedelta(days=1)
+                                skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                            elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
+                                push = 3
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                                skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                            elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
+                                push = 2
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                    elif each and each.sked_in.replace(tzinfo=None) >= skedin:
                         if each.sked_in.time() == time(22, 0):
                             latest = each
                             push = 1
@@ -2223,7 +2278,7 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                             skedindate = latest.sked_in.date()
                             skedin = datetime.datetime.combine(skedindate, time(14, 0))
                             skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif latest:
+                    elif latest and latest.sked_in.replace(tzinfo=None) >= skedin:
                         if latest.sked_in.time() == time(22, 0):
                             push = 1
                             skedindate = latest.sked_in.date() + timedelta(days=1)
@@ -2260,10 +2315,13 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 other_workers = Employee.objects.filter(
                     Q(position='Extruder') | Q(position='Printing') | Q(position='Laminating'))
                 if rush:
-                    push = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('push')
-                    skedindate = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedindate')
-                    skedin = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedin')
-                    skedout = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedout')
+                    result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
+                                              job_shifts, occupied_shifts, latest, each)
+                    print(result)
+                    push = result['push']
+                    skedindate = result['skedindate']
+                    skedin = result['skedin']
+                    skedout = result['skedout']
                 else:
                     for each in all_skeds:
                         if each.job_order_id == ideal_sched[x]['ID']:
@@ -2278,28 +2336,25 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     if occupied_shifts:
                         each = occupied_shifts[-1]
                     if each and latest:
-                        if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
-                            if latest is None or each.sked_in > latest.sked_in:
+                        if each.sked_in.replace(tzinfo=None) >= skedin or latest.sked_in.replace(tzinfo=None) >= skedin:
+                            if each.sked_in > latest.sked_in:
                                 latest = each
-                            push = 1
-                            skedindate = latest.sked_in.date() + timedelta(days=1)
-                            skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                        elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
-                            if latest is None or each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 3
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                            skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
-                        elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
-                            if latest is None or each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 2
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif each:
+                            if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                                push = 1
+                                skedindate = latest.sked_in.date() + timedelta(days=1)
+                                skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                            elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
+                                push = 3
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                                skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                            elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
+                                push = 2
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                    elif each and each.sked_in.replace(tzinfo=None) >= skedin:
                         if each.sked_in.time() == time(22, 0):
                             latest = each
                             push = 1
@@ -2318,7 +2373,7 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                             skedindate = latest.sked_in.date()
                             skedin = datetime.datetime.combine(skedindate, time(14, 0))
                             skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif latest:
+                    elif latest and latest.sked_in.replace(tzinfo=None) >= skedin:
                         if latest.sked_in.time() == time(22, 0):
                             push = 1
                             skedindate = latest.sked_in.date() + timedelta(days=1)
@@ -2371,10 +2426,13 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 ideal_workers = Employee.objects.filter(position='Extruder')
                 other_workers = Employee.objects.filter(Q(position='Cutting') | Q(position='Printing') | Q(position='Laminating'))
                 if rush:
-                    push = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('push')
-                    skedindate = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedindate')
-                    skedin = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedin')
-                    skedout = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedout')
+                    result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
+                                              job_shifts, occupied_shifts, latest, each)
+                    print(result)
+                    push = result['push']
+                    skedindate = result['skedindate']
+                    skedin = result['skedin']
+                    skedout = result['skedout']
                 else:
                     job_shifts = []
                     if job_shifts:
@@ -2386,28 +2444,25 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     if occupied_shifts:
                         each = occupied_shifts[-1]
                     if each and latest:
-                        if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                        if each.sked_in.replace(tzinfo=None) >= skedin or latest.sked_in.replace(tzinfo=None) >= skedin:
                             if each.sked_in > latest.sked_in:
                                 latest = each
-                            push = 1
-                            skedindate = latest.sked_in.date() + timedelta(days=1)
-                            skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                        elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 3
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                            skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
-                        elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 2
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif each:
+                            if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                                push = 1
+                                skedindate = latest.sked_in.date() + timedelta(days=1)
+                                skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                            elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
+                                push = 3
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                                skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                            elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
+                                push = 2
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                    elif each and each.sked_in.replace(tzinfo=None) >= skedin:
                         if each.sked_in.time() == time(22, 0):
                             latest = each
                             push = 1
@@ -2426,7 +2481,7 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                             skedindate = latest.sked_in.date()
                             skedin = datetime.datetime.combine(skedindate, time(14, 0))
                             skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif latest:
+                    elif latest and latest.sked_in.replace(tzinfo=None) >= skedin:
                         if latest.sked_in.time() == time(22, 0):
                             push = 1
                             skedindate = latest.sked_in.date() + timedelta(days=1)
@@ -2463,10 +2518,13 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 other_workers = Employee.objects.filter(
                     Q(position='Extruder') | Q(position='Cutting') | Q(position='Laminating'))
                 if rush:
-                    push = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('push')
-                    skedindate = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedindate')
-                    skedin = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedin')
-                    skedout = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedout')
+                    result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
+                                              job_shifts, occupied_shifts, latest, each)
+                    print(result)
+                    push = result['push']
+                    skedindate = result['skedindate']
+                    skedin = result['skedin']
+                    skedout = result['skedout']
                 else:
                     for each in all_skeds:
                         if each.job_order_id == ideal_sched[x]['ID'] and type(each) == ExtruderSchedule:
@@ -2481,28 +2539,25 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     if occupied_shifts:
                         each = occupied_shifts[-1]
                     if each and latest:
-                        if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                        if each.sked_in.replace(tzinfo=None) >= skedin or latest.sked_in.replace(tzinfo=None) >= skedin:
                             if each.sked_in > latest.sked_in:
                                 latest = each
-                            push = 1
-                            skedindate = latest.sked_in.date() + timedelta(days=1)
-                            skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                        elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 3
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                            skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
-                        elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 2
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif each:
+                            if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                                push = 1
+                                skedindate = latest.sked_in.date() + timedelta(days=1)
+                                skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                            elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
+                                push = 3
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                                skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                            elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
+                                push = 2
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                    elif each and each.sked_in.replace(tzinfo=None) >= skedin:
                         if each.sked_in.time() == time(22, 0):
                             latest = each
                             push = 1
@@ -2521,7 +2576,7 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                             skedindate = latest.sked_in.date()
                             skedin = datetime.datetime.combine(skedindate, time(14, 0))
                             skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif latest:
+                    elif latest and latest.sked_in.replace(tzinfo=None) >= skedin:
                         if latest.sked_in.time() == time(22, 0):
                             push = 1
                             skedindate = latest.sked_in.date() + timedelta(days=1)
@@ -2558,10 +2613,13 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 other_workers = Employee.objects.filter(
                     Q(position='Extruder') | Q(position='Cutting') | Q(position='Printing'))
                 if rush:
-                    push = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('push')
-                    skedindate = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedindate')
-                    skedin = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedin')
-                    skedout = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedout')
+                    result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
+                                              job_shifts, occupied_shifts, latest, each)
+                    print(result)
+                    push = result['push']
+                    skedindate = result['skedindate']
+                    skedin = result['skedin']
+                    skedout = result['skedout']
                 else:
                     for each in all_skeds:
                         if each.job_order_id == ideal_sched[x]['ID']:
@@ -2577,28 +2635,25 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     if occupied_shifts:
                         each = occupied_shifts[-1]
                     if each and latest:
-                        if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                        if each.sked_in.replace(tzinfo=None) >= skedin or latest.sked_in.replace(tzinfo=None) >= skedin:
                             if each.sked_in > latest.sked_in:
                                 latest = each
-                            push = 1
-                            skedindate = latest.sked_in.date() + timedelta(days=1)
-                            skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                        elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 3
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                            skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
-                        elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 2
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif each:
+                            if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                                push = 1
+                                skedindate = latest.sked_in.date() + timedelta(days=1)
+                                skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                            elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
+                                push = 3
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                                skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                            elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
+                                push = 2
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                    elif each and each.sked_in.replace(tzinfo=None) >= skedin:
                         if each.sked_in.time() == time(22, 0):
                             latest = each
                             push = 1
@@ -2617,7 +2672,7 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                             skedindate = latest.sked_in.date()
                             skedin = datetime.datetime.combine(skedindate, time(14, 0))
                             skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif latest:
+                    elif latest and latest.sked_in.replace(tzinfo=None) >= skedin:
                         if latest.sked_in.time() == time(22, 0):
                             push = 1
                             skedindate = latest.sked_in.date() + timedelta(days=1)
@@ -2654,10 +2709,13 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 other_workers = Employee.objects.filter(
                     Q(position='Extruder') | Q(position='Printing') | Q(position='Laminating'))
                 if rush:
-                    push = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('push')
-                    skedindate = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedindate')
-                    skedin = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedin')
-                    skedout = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedout')
+                    result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
+                                              job_shifts, occupied_shifts, latest, each)
+                    print(result)
+                    push = result['push']
+                    skedindate = result['skedindate']
+                    skedin = result['skedin']
+                    skedout = result['skedout']
                 else:
                     for each in all_skeds:
                         if each.job_order_id == ideal_sched[x]['ID']:
@@ -2672,28 +2730,25 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     if occupied_shifts:
                         each = occupied_shifts[-1]
                     if each and latest:
-                        if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                        if each.sked_in.replace(tzinfo=None) >= skedin or latest.sked_in.replace(tzinfo=None) >= skedin:
                             if each.sked_in > latest.sked_in:
                                 latest = each
-                            push = 1
-                            skedindate = latest.sked_in.date() + timedelta(days=1)
-                            skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                        elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 3
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate + timedelta(days=1), time(22, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(6, 0))
-                        elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 2
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif each:
+                            if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                                push = 1
+                                skedindate = latest.sked_in.date() + timedelta(days=1)
+                                skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                            elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
+                                push = 3
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                                skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                            elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
+                                push = 2
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                    elif each and each.sked_in.replace(tzinfo=None) >= skedin:
                         if each.sked_in.time() == time(22, 0):
                             latest = each
                             push = 1
@@ -2712,7 +2767,7 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                             skedindate = latest.sked_in.date()
                             skedin = datetime.datetime.combine(skedindate, time(14, 0))
                             skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif latest:
+                    elif latest and latest.sked_in.replace(tzinfo=None) >= skedin:
                         if latest.sked_in.time() == time(22, 0):
                             push = 1
                             skedindate = latest.sked_in.date() + timedelta(days=1)
@@ -2765,10 +2820,13 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 ideal_workers = Employee.objects.filter(position='Extruder')
                 other_workers = Employee.objects.filter(Q(position='Cutting') | Q(position='Printing') | Q(position='Laminating'))
                 if rush:
-                    push = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('push')
-                    skedindate = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedindate')
-                    skedin = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedin')
-                    skedout = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedout')
+                    result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
+                                              job_shifts, occupied_shifts, latest, each)
+                    print(result)
+                    push = result['push']
+                    skedindate = result['skedindate']
+                    skedin = result['skedin']
+                    skedout = result['skedout']
                 else:
                     job_shifts = []
                     if job_shifts:
@@ -2780,28 +2838,25 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     if occupied_shifts:
                         each = occupied_shifts[-1]
                     if each and latest:
-                        if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                        if each.sked_in.replace(tzinfo=None) >= skedin or latest.sked_in.replace(tzinfo=None) >= skedin:
                             if each.sked_in > latest.sked_in:
                                 latest = each
-                            push = 1
-                            skedindate = latest.sked_in.date() + timedelta(days=1)
-                            skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                        elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 3
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                            skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
-                        elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 2
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif each:
+                            if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                                push = 1
+                                skedindate = latest.sked_in.date() + timedelta(days=1)
+                                skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                            elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
+                                push = 3
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                                skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                            elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
+                                push = 2
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                    elif each and each.sked_in.replace(tzinfo=None) >= skedin:
                         if each.sked_in.time() == time(22, 0):
                             latest = each
                             push = 1
@@ -2820,7 +2875,7 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                             skedindate = latest.sked_in.date()
                             skedin = datetime.datetime.combine(skedindate, time(14, 0))
                             skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif latest:
+                    elif latest and latest.sked_in.replace(tzinfo=None) >= skedin:
                         if latest.sked_in.time() == time(22, 0):
                             push = 1
                             skedindate = latest.sked_in.date() + timedelta(days=1)
@@ -2857,10 +2912,13 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 other_workers = Employee.objects.filter(
                     Q(position='Extruder') | Q(position='Cutting') | Q(position='Laminating'))
                 if rush:
-                    push = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('push')
-                    skedindate = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedindate')
-                    skedin = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedin')
-                    skedout = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedout')
+                    result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
+                                              job_shifts, occupied_shifts, latest, each)
+                    print(result)
+                    push = result['push']
+                    skedindate = result['skedindate']
+                    skedin = result['skedin']
+                    skedout = result['skedout']
                 else:
                     for each in all_skeds:
                         if each.job_order_id == ideal_sched[x]['ID'] and type(each) == ExtruderSchedule:
@@ -2875,28 +2933,25 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     if occupied_shifts:
                         each = occupied_shifts[-1]
                     if each and latest:
-                        if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                        if each.sked_in.replace(tzinfo=None) >= skedin or latest.sked_in.replace(tzinfo=None) >= skedin:
                             if each.sked_in > latest.sked_in:
                                 latest = each
-                            push = 1
-                            skedindate = latest.sked_in.date() + timedelta(days=1)
-                            skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                        elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 3
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                            skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
-                        elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 2
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif each:
+                            if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                                push = 1
+                                skedindate = latest.sked_in.date() + timedelta(days=1)
+                                skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                            elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
+                                push = 3
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                                skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                            elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
+                                push = 2
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                    elif each and each.sked_in.replace(tzinfo=None) >= skedin:
                         if each.sked_in.time() == time(22, 0):
                             latest = each
                             push = 1
@@ -2915,7 +2970,7 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                             skedindate = latest.sked_in.date()
                             skedin = datetime.datetime.combine(skedindate, time(14, 0))
                             skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif latest:
+                    elif latest and latest.sked_in.replace(tzinfo=None) >= skedin:
                         if latest.sked_in.time() == time(22, 0):
                             push = 1
                             skedindate = latest.sked_in.date() + timedelta(days=1)
@@ -2952,10 +3007,13 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 other_workers = Employee.objects.filter(
                     Q(position='Extruder') | Q(position='Cutting') | Q(position='Printing'))
                 if rush:
-                    push = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('push')
-                    skedindate = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedindate')
-                    skedin = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedin')
-                    skedout = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedout')
+                    result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
+                                              job_shifts, occupied_shifts, latest, each)
+                    print(result)
+                    push = result['push']
+                    skedindate = result['skedindate']
+                    skedin = result['skedin']
+                    skedout = result['skedout']
                 else:
                     for each in all_skeds:
                         if each.job_order_id == ideal_sched[x]['ID']:
@@ -2971,28 +3029,25 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     if occupied_shifts:
                         each = occupied_shifts[-1]
                     if each and latest:
-                        if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                        if each.sked_in.replace(tzinfo=None) >= skedin or latest.sked_in.replace(tzinfo=None) >= skedin:
                             if each.sked_in > latest.sked_in:
                                 latest = each
-                            push = 1
-                            skedindate = latest.sked_in.date() + timedelta(days=1)
-                            skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                        elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 3
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                            skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
-                        elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 2
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif each:
+                            if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                                push = 1
+                                skedindate = latest.sked_in.date() + timedelta(days=1)
+                                skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                            elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
+                                push = 3
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                                skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                            elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
+                                push = 2
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                    elif each and each.sked_in.replace(tzinfo=None) >= skedin:
                         if each.sked_in.time() == time(22, 0):
                             latest = each
                             push = 1
@@ -3011,7 +3066,7 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                             skedindate = latest.sked_in.date()
                             skedin = datetime.datetime.combine(skedindate, time(14, 0))
                             skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif latest:
+                    elif latest and latest.sked_in.replace(tzinfo=None) >= skedin:
                         if latest.sked_in.time() == time(22, 0):
                             push = 1
                             skedindate = latest.sked_in.date() + timedelta(days=1)
@@ -3048,10 +3103,13 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 other_workers = Employee.objects.filter(
                     Q(position='Extruder') | Q(position='Printing') | Q(position='Laminating'))
                 if rush:
-                    push = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('push')
-                    skedindate = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedindate')
-                    skedin = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedin')
-                    skedout = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each).get('skedout')
+                    result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
+                                              job_shifts, occupied_shifts, latest, each)
+                    print(result)
+                    push = result['push']
+                    skedindate = result['skedindate']
+                    skedin = result['skedin']
+                    skedout = result['skedout']
                 else:
                     for each in all_skeds:
                         if each.job_order_id == ideal_sched[x]['ID']:
@@ -3066,28 +3124,25 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                     if occupied_shifts:
                         each = occupied_shifts[-1]
                     if each and latest:
-                        if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                        if each.sked_in.replace(tzinfo=None) >= skedin or latest.sked_in.replace(tzinfo=None) >= skedin:
                             if each.sked_in > latest.sked_in:
                                 latest = each
-                            push = 1
-                            skedindate = latest.sked_in.date() + timedelta(days=1)
-                            skedin = datetime.datetime.combine(skedindate, time(6, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(14, 0))
-                        elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 3
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(22, 0))
-                            skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
-                        elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
-                            if each.sked_in > latest.sked_in:
-                                latest = each
-                            push = 2
-                            skedindate = latest.sked_in.date()
-                            skedin = datetime.datetime.combine(skedindate, time(14, 0))
-                            skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif each:
+                            if each.sked_in.time() == time(22, 0) or latest.sked_in.time() == time(22, 0):
+                                push = 1
+                                skedindate = latest.sked_in.date() + timedelta(days=1)
+                                skedin = datetime.datetime.combine(skedindate, time(6, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(14, 0))
+                            elif each.sked_in.time() == time(14, 0) or latest.sked_in.time() == time(14, 0):
+                                push = 3
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(22, 0))
+                                skedout = datetime.datetime.combine(skedindate + timedelta(days=1), time(6, 0))
+                            elif each.sked_in.time() == time(6, 0) or latest.sked_in.time() == time(6, 0):
+                                push = 2
+                                skedindate = latest.sked_in.date()
+                                skedin = datetime.datetime.combine(skedindate, time(14, 0))
+                                skedout = datetime.datetime.combine(skedindate, time(22, 0))
+                    elif each and each.sked_in.replace(tzinfo=None) >= skedin:
                         if each.sked_in.time() == time(22, 0):
                             latest = each
                             push = 1
@@ -3106,7 +3161,7 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                             skedindate = latest.sked_in.date()
                             skedin = datetime.datetime.combine(skedindate, time(14, 0))
                             skedout = datetime.datetime.combine(skedindate, time(22, 0))
-                    elif latest:
+                    elif latest and latest.sked_in.replace(tzinfo=None) >= skedin:
                         if latest.sked_in.time() == time(22, 0):
                             push = 1
                             skedindate = latest.sked_in.date() + timedelta(days=1)
