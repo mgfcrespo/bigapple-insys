@@ -1,71 +1,103 @@
 {% extends "sidebar.html" %} {% block content %}
 
 <h3 class="ui dividing header">Create Purchase Order</h3>
-    <form id="myForm" class="ui form" action="{% url 'sales:create-client-po-form' %}" method="POST" enctype="multipart/form-data">
 
-        <div class="ui segment">
-            <b><i class="exclamation triangle icon"></i>Note: </b>Minimum Order Quantity per item is 10,000 pcs. Order quantities below MOQ will be priced based on MOQ
-        </div>
+<form id="myForm" class="ui form" action="{% url 'sales:create-client-po-form' %}" method="POST" enctype="multipart/form-data">
 
-        <div>
-            {% csrf_token %}
-            {% include 'sales/template_form.html' %}
-        </div>
-        <table class = "ui striped table center aligned">
-            <thead>
-            <tr>
-                <th class="two wide">Item</th>
-                <th class="one wide">Width (inches)</th>
-                <th class="one wide">Length (inches)</th>
-                <th class="one wide">Thickness (inches)</th>
-                <th class="one wide">Gusset</th>
-                <th class="one wide">Color</th>
-                <th class="two wide">Quantity</th>
-                <th class="one wide">Laminated</th>
-                <th class="one wide">Printed</th>
-            </tr>
-            </thead>
-            <tbody>
-                {% for form in formset.forms %}
-                <tr id="{{ form.prefix }}-row" class="formset_class">
-                    {% if form.instance.pk %} {{ form.DELETE }}{% endif %}
-                    <td>{{form.products}}</td>
-                    <td>{{form.width}}</td>
-                    <td>{{form.length}}</td>
-                    <td>{{form.thickness}}</td>
-                    <td>{{form.gusset}}</td>
-                    <td>{{form.color}}</td>
-                    <td>{{form.quantity}}</td>
-                    <td>{{form.laminate}}</td>
-                    <td>{{form.printed}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th colspan="7">
-                    </th>
-                    <th>
+	{% if credit_status %}
+	<div class="ui negative icon message">
+		<i class="times circle icon"></i>
+		<div class="content"><div class="header">
+			You have an overdue balance with the company.
+		</div>
+		<p>
+			Please settle any pending balance immediately as it will affect this order's confirmation.
+		</p>
+		</div>
+	</div>
+	{% else %}
+	<div class="ui positive icon message">
+		<i class="check circle icon"></i>
+		<div class="content"><div class="header">
+			Credit status cleared.
+		</div>
+		<p>
+			You have no overdue balance in the company's records.
+		</p>
+		</div>
+	</div>
+	{% endif %}
 
-                    </th>
-                    <th>
+	<div class="ui icon info message">
+		<i class="exclamation triangle icon"></i>
+		<div class="content"><div class="header">
+			Note:
+		</div>
+		<p>
+			Minimum Order Quantity per item is 10,000 pcs. Order quantities below MOQ will be priced based on MOQ
+		</p>
+		</div>
+	</div>
 
-                    </th>
-                </tr>
-            </tfoot>
-        </table>
+	<div>
+		{% csrf_token %}
+		{% include 'sales/template_form.html' %}
+	</div>
 
-        {{formset.management_form}}
+	<table class = "ui striped table center aligned">
+		<thead>
+			<tr>
+				<th class="two wide">Item</th>
+				<th class="one wide">Width (inches)</th>
+				<th class="one wide">Length (inches)</th>
+				<th class="one wide">Thickness (inches)</th>
+				<th class="one wide">Gusset</th>
+				<th class="one wide">Color</th>
+				<th class="two wide">Quantity</th>
+				<th class="one wide">Laminated</th>
+				<th class="one wide">Printed</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for form in formset.forms %}
+			<tr id="{{ form.prefix }}-row" class="formset_class">
+				{% if form.instance.pk %} {{ form.DELETE }}{% endif %}
+				<td>{{form.products}}</td>
+				<td>{{form.width}}</td>
+				<td>{{form.length}}</td>
+				<td>{{form.thickness}}</td>
+				<td>{{form.gusset}}</td>
+				<td>{{form.color}}</td>
+				<td>{{form.quantity}}</td>
+				<td>{{form.laminate}}</td>
+				<td>{{form.printed}}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 
-		<button type="submit" class="ui small green button" onclick="return confirm('Are you sure you want to proceed?')">Submit</button>
-	</form>
+	{{formset.management_form}}
 
+	<button type="submit" class="ui small green button" onclick="return confirm('Are you sure you want to proceed?')">Submit</button>
+</form>
+{% if matreq %}
+
+{% else %}
+<div class="ui yellow attached message">
+	<div class="content">
+		<div class="header">
+			Big Apple may have to process this order longer.
+		</div>
+		<p>
+			The company may have to procure materials first before being able to process this order.
+		</p>
+	</div>
+</div>
+{% endif %}
 
 <h3 class="ui dividing header">Your Demand Forecast</h3>
 <div class="ui horizontal segments">
 	<div class="ui segment">
-		<h4	class="ui dividing header">Demand Forecast</h4>
-
 		<h5 class="ui dividing header">{{product.products}}</h5>
 		<div>
 			<div class="ui very compact secondary menu">
@@ -147,79 +179,29 @@
 			</div>
 		</div>
 	</div>
-
-	<div class="">
-                <table class="ui striped table center aligned">
-                    <thead>
-                        <tr>
-                           <th rowspan="2">
-							   Suggested Products (as per Inventory Stock)
-                           </th>
-                        </tr>
-                        </tr>
-                    </thead>
-                    <tbody>
-					{% for each in order %}
-                        <tr>
-                            <td>
-                                {{each.products}}
-                            </td>
-						</tr>
-					{% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
+	<div class="ui segment">
+		<h5 class="ui dividing header">Suggested Products (as per Inventory Stock)</h5>
+		<table class="ui striped table center aligned">
+			<thead>
+				<tr>
+				   <th rowspan="1">
+					   Product
+				   </th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for each in order %}
+				<tr>
+					<td>
+						{{each.products}}
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
 </div>
 
-<!-- {% if credit_status %}
-        <div class="ui negative icon message">
-            <i class="times circle icon"></i>
-            <div class="content"><div class="header">
-                You have an overdue balance with the company.
-            </div>
-            <p>
-                Please settle this immediately as it will affect this order's confirmation.
-            </p>
-            </div>
-        </div>
-{% else %}
-        <div class="ui positive icon message">
-            <i class="check circle icon"></i>
-            <div class="content"><div class="header">
-                Credit status cleared.
-            </div>
-            <p>
-                You have no overdue balance in the company's records.
-            </p>
-            </div>
-        </div>
-{% endif %}
-{% if matreq %}
-	<div class="ui positive icon message">
-		<i class="check circle icon"></i>
-		<div class="content">
-			<div class="header">
-				There are enough materials in the site's warehouse to produce this order.
-			</div>
-			<p>
-				Big Apple can proceed with processing this order without having to procure materials.
-			</p>
-		</div>
-	</div>
-{% else %}
-	<div class="ui negative icon message">
-		<i class="times circle icon"></i>
-		<div class="content">
-			<div class="header">
-			   There are not enough materials in the site's warehouse to produce this order at the moment.
-			</div>
-			<p>
-				Big Apple will have to procure materials first before being able to process this order.
-			</p>
-		</div>
-	</div>
-{% endif %} -->
 
 <!--
 <p>Total: </p><input id ="Total" type="number">
@@ -239,7 +221,7 @@
 
 </script> -->
 
-<script>
+	<script>
         $( document ).ready(function() {
             $(function() {
                 $('#myForm .formset_class').formset({

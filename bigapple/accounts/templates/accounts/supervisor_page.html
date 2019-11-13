@@ -46,7 +46,7 @@
                         <tr>
                             {% for a in week %}
                                 {% for day in day %}
-                                <th>{{day}}</th>
+                                <th rowspan="2">{{day}}</th>
                                 {% endfor %}
                             {% endfor %}
                         </tr>
@@ -57,7 +57,7 @@
 
                         <tr>
 
-                            <td>
+                            <td style="">
 
                                 <a href="#">Machine {{machine.machine_id}} : {{machine.machine_type}}</a>
                                 {% if machine.state == 'OK' %}
@@ -73,44 +73,57 @@
                                 {% for b in day %}
 
                                     <td class="top aligned">
-                                        {% for c in this_day %}
 
+                                        {% for c in this_day %}
                                                 {% if c.Machine == machine and c.Start.date == a and c.Start.time == b %}
-                                                    <div class="ui mini message" style="width: 100px">
+
+                                                        {% if c.Task == 'Extrusion' %}
+                                                            <div style="margin-top: -22px;"><a class="mini ui blue circular label">{{machine}}</a></div>
+                                                        {% elif c.Task == 'Printing' %}
+                                                            <div style="margin-top: -22px;"><a class="mini ui yellow circular label">{{machine}}</a></div>
+                                                        {% elif c.Task == 'Laminating' %}
+                                                            <div style="margin-top: -22px;"><a class="mini ui red circular label">{{machine}}</a></div>
+                                                        {% elif c.Task == 'Cutting' %}
+                                                            <div style="margin-top: -22px;"><a class="mini ui green circular label">{{machine}}</a></div>
+                                                        {% endif %}
+
+                                                        <div class="ui mini message" style="width: 100px">
+
+                                                        <a href="{% url 'production:job_order_details' c.ID %}" class="ui black header" style="margin-bottom: -10px;">Job {{ c.ID }}</a><br>
 
                                                         {% for x in plot_list %}
-                                                                {% if x.ID == c.ID and x.Machine == machine and x.Start.time == b and x.Start.date == a %}
+                                                            {% if x.ID == c.ID and x.Machine == machine and x.Start.time == b and x.Start.date == a %}
 
-                                                                    <a href="{% url 'production:job_order_details' c.ID %}" class="ui black header" style="margin-bottom: -10px;">Job {{ c.ID }}</a><br>
-                                                                    <div>{{ x.Worker }}</div>
-                                                                    <div style="background-color: transparent; margin-right: -15px;" class="ui top right attached label"data-tooltip="
-                                                                        Raw Material: {{ c.Resource }},
-                                                                        {% for i in items %}
-                                                                        {% for j in products %}
-                                                                        {% if i.client_po_id == c.ID %}
-                                                                        {% if j.id == i.products_id %}
-                                                                        Item and quantity: {{j.products}} x {{ i.quantity }}
-                                                                        {% endif %}
-                                                                        {% endif %}
-                                                                        {% endfor %}
-                                                                        {% endfor %}
-                                                                        "
-                                                                        {% if c.Start.date == week|first %}
-                                                                            data-position="right center">
-                                                                        {% elif c.Start.date == week|last %}
-                                                                            data-position="left center">
-                                                                        {% else %}
-                                                                            data-position="bottom center">
-                                                                        {% endif %}
-                                                                        <i class="question circle icon"></i>
-                                                                    </div>
+                                                                <div>{{ x.Worker }}</div>
 
-                                                                {% endif %}
+                                                            {% endif %}
                                                         {% endfor %}
 
+                                                        <div style="background-color: transparent; margin-right: -15px;" class="ui top right attached label"data-tooltip="
+                                                            Raw Material: {{ c.Resource }},
+                                                            {% for i in items %}
+                                                            {% for j in products %}
+                                                            {% if i.client_po_id == c.ID %}
+                                                            {% if j.id == i.products_id %}
+                                                            Item and quantity: {{j.products}} x {{ i.quantity }}
+                                                            {% endif %}
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                            {% endfor %}
+                                                            "
+                                                            {% if c.Start.date == week|first %}
+                                                                data-position="right center">
+                                                            {% elif c.Start.date == week|last %}
+                                                                data-position="left center">
+                                                            {% else %}
+                                                                data-position="bottom center">
+                                                            {% endif %}
+                                                            <i class="question circle icon"></i>
+                                                        </div>
                                                     </div>
                                                 {% endif %}
                                         {% endfor %}
+
                                     </td>
 
                                 {% endfor %}
@@ -167,10 +180,21 @@
                                     <td class="top aligned">
                                         {% for c in this_day %}
                                             {% if c.Machine == machine and c.Start.date == a and c.Start.time == b %}
+
+                                                    {% if c.Task == 'Extrusion' %}
+                                                        <div style="margin-top: -22px;"><a class="mini ui blue circular label">{{machine}}</a></div>
+                                                    {% elif c.Task == 'Printing' %}
+                                                        <div style="margin-top: -22px;"><a class="mini ui yellow circular label">{{machine}}</a></div>
+                                                    {% elif c.Task == 'Laminating' %}
+                                                        <div style="margin-top: -22px;"><a class="mini ui red circular label">{{machine}}</a></div>
+                                                    {% elif c.Task == 'Cutting' %}
+                                                        <div style="margin-top: -22px;"><a class="mini ui green circular label">{{machine}}</a></div>
+                                                    {% endif %}
+
                                                     <div class="ui mini message" style="width: 100px">
 
                                                         {% for x in plot_list %}
-                                                                {% if x.ID == c.ID and x.Machine == machine and x.Start.time == b  and x.Start.date == a %}
+                                                                {% if x.ID == c.ID and x.Machine == machine and x.Start.time == b and x.Start.date == a %}
 
                                                                     <a href="{% url 'production:job_order_details' c.ID %}" class="ui black header" style="margin-bottom: -10px;">Job {{ c.ID }}</a><br>
                                                                     <div>{{ x.Worker }}</div>
@@ -186,9 +210,9 @@
                                                                         {% endfor %}
                                                                         {% endfor %}
                                                                         "
-                                                                        {% if c.Start.date == week|first %}
+                                                                        {% if c.Start.date == month|first %}
                                                                             data-position="right center">
-                                                                        {% elif c.Start.date == week|last %}
+                                                                        {% elif c.Start.date == month|last %}
                                                                             data-position="left center">
                                                                         {% else %}
                                                                             data-position="bottom center">
@@ -202,6 +226,8 @@
                                                     </div>
                                             {% endif %}
                                         {% endfor %}
+
+
                                     </td>
 
                                 {% endfor %}
@@ -300,12 +326,63 @@
 
 
     <h3 class="ui dividing header">Inventory Dashboard</h3>
-    <div style="overflow-x: scroll;">
+    <div class="ui horizontal segments">
         <div class="ui segment">
             <h4 class="ui dividing header">Raw Material Levels</h4>
-            <canvas id="inventoryCanvas" width="400" height="250"></canvas>
+            <div>
+                <canvas id="inventoryCanvas" width="400" height="250"></canvas>
+            </div>
         </div>
     </div>
+
 </div>
+
+<script>
+    var inventory = {
+      label: "Inventory Levels",
+      data: ['{{ LDPE }}', '{{ LLDPE }}', '{{ HDPE }}', '{{ PP }}', '{{ PE }}', '{{ PET }}', '{{ HD }}'],
+      backgroundColor: "rgba(0, 99, 132, 0.6)",
+      borderWidth: 0,
+    };
+
+    var eoq = {
+      type: "line",
+      label: "Economic Order Quantity",
+      data: [Math.floor('{{EOQ_ldpe}}'), Math.floor('{{EOQ_lldpe}}'),Math.floor('{{EOQ_hdpe}}'),Math.floor('{{EOQ_pp}}'),Math.floor('{{EOQ_pe}}'),Math.floor('{{EOQ_pet}}'),Math.floor('{{EOQ_hd}}')],
+      backgroundColor: "rgba(99, 132, 0, 0.6)",
+      borderWidth: 0,
+    };
+
+    var inventoryData = {
+      labels: [
+        "LDPE",
+        "LLDPE",
+        "HDPE",
+        "PP",
+        "PE",
+        "PET",
+        "HD",
+      ],
+      datasets: [inventory, eoq]
+    };
+
+    var chartOptions = {
+      scales: {
+        yAxes:[
+          {
+            ticks: {
+              beginAtZero:true
+            }
+          }
+        ]
+      }
+    };
+
+    var barChart = new Chart(inventoryCanvas, {
+      type: "bar",
+      data: inventoryData,
+      options: chartOptions
+    });
+</script>
 
 {% endblock %}

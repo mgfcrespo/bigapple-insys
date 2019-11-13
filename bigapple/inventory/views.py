@@ -34,31 +34,31 @@ def eoq():
     month = month.month
 
     allItems = JobOrder.objects.filter(date_issued__month=month)
-    ldpe_demand = 0
+    ldpe_demand = 1000
     ldpe_cost = Product.objects.filter(material_type='LDPE').aggregate(Avg('prod_price')).get('prod_price__avg',
                                                                                               0)
 
-    lldpe_demand = 0
+    lldpe_demand = 1000
     lldpe_cost = Product.objects.filter(material_type='LLDPE').aggregate(Avg('prod_price')).get('prod_price__avg',
                                                                                                 0)
 
-    hdpe_demand = 0
+    hdpe_demand = 1000
     hdpe_cost = Product.objects.filter(material_type='HDPE').aggregate(Avg('prod_price')).get('prod_price__avg',
                                                                                               0)
 
-    pp_demand = 0
+    pp_demand = 1000
     pp_cost = Product.objects.filter(material_type='PP').aggregate(Avg('prod_price')).get('prod_price__avg',
                                                                                           0)
 
-    pet_demand = 0
+    pet_demand = 1000
     pet_cost = Product.objects.filter(material_type='PET').aggregate(Avg('prod_price')).get('prod_price__avg',
                                                                                             0)
 
-    pe_demand = 0
+    pe_demand = 1000
     pe_cost = Product.objects.filter(material_type='Pelletized PE').aggregate(Avg('prod_price')).get('prod_price__avg',
                                                                                                      0)
 
-    hd_demand = 0
+    hd_demand = 1000
     hd_cost = Product.objects.filter(material_type='Pelletized HD').aggregate(Avg('prod_price')).get('prod_price__avg',
                                                                                                      0)
 
@@ -80,40 +80,40 @@ def eoq():
             elif y.products.material_type == 'Pelletized HD':
                 hd_demand += y.quantity / 1000
 
-    if not ldpe_demand:
-        EOQ_ldpe = 1
+    if ldpe_demand and ldpe_cost:
+        EOQ_ldpe = (math.sqrt(2 * ldpe_demand * ldpe_cost)) / 1000
     else:
-        EOQ_ldpe = (math.sqrt(2 * ldpe_demand * ldpe_cost)) / 100
+        EOQ_ldpe = 1000
 
-    if not lldpe_demand:
-        EOQ_lldpe = 1
+    if lldpe_demand and lldpe_cost:
+        EOQ_lldpe = (math.sqrt(2 * lldpe_demand * lldpe_cost)) / 1000
     else:
-        EOQ_lldpe = (math.sqrt(2 * lldpe_demand * lldpe_cost)) / 100
+        EOQ_lldpe = 1000
 
-    if not hdpe_demand:
-        EOQ_hdpe = 1
+    if hdpe_demand and hdpe_cost:
+        EOQ_hdpe = (math.sqrt(2 * hdpe_demand * hdpe_cost)) / 1000
     else:
-        EOQ_hdpe = (math.sqrt(2 * hdpe_demand * hdpe_cost)) / 100
+        EOQ_hdpe = 1000
 
-    if not pp_demand:
-        EOQ_pp = 1
+    if pp_demand and pp_demand:
+        EOQ_pp = (math.sqrt(2 * pp_demand * pp_cost)) / 1000
     else:
-        EOQ_pp = (math.sqrt(2 * pp_demand * pp_cost)) / 100
+        EOQ_pp = 1000
 
-    if not pet_demand:
-        EOQ_pet = 1
+    if pet_demand and pet_cost:
+        EOQ_pet = (math.sqrt(2 * pet_demand * pet_cost)) / 1000
     else:
-        EOQ_pet = (math.sqrt(2 * pet_demand * pet_cost)) / 100
+        EOQ_pet = 1000
 
-    if not pet_demand:
-        EOQ_pe = 1
+    if pe_demand and pe_cost:
+        EOQ_pe = (math.sqrt(2 * pet_demand * pe_cost)) / 1000
     else:
-        EOQ_pe = (math.sqrt(2 * pet_demand * pe_cost)) / 100
+        EOQ_pe = 1000
 
-    if not hd_demand:
-        EOQ_hd = 1
+    if hd_demand and hd_cost:
+        EOQ_hd = (math.sqrt(2 * hdpe_demand * hd_cost)) / 1000
     else:
-        EOQ_hd = (math.sqrt(2 * hdpe_demand * hd_cost)) / 100
+        EOQ_hd = 1000
 
     EOQ_ldpe = int(ldpe_demand / EOQ_ldpe)
     EOQ_lldpe = int(lldpe_demand / EOQ_lldpe)

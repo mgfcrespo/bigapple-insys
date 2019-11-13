@@ -189,19 +189,19 @@ def job_order_list(request):
 
         if ex_done:
             last_ex = ExtruderSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
-            if last_ex > last_ideal_ex:
+            if last_ex.datetime_in > last_ideal_ex.sked_in:
                 ex_late += 1
         if cu_done:
             last_cu = CuttingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
-            if last_cu > last_ideal_cu:
+            if last_cu.datetime_in > last_ideal_cu.sked_in:
                 cu_late += 1
         if pr_done:
             last_pr = PrintingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
-            if last_pr > last_ideal_pr:
+            if last_pr.datetime_in > last_ideal_pr.sked_in:
                 pr_late += 1
         if la_done:
             last_la = LaminatingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
-            if last_la > last_ideal_la:
+            if last_la.datetime_in > last_ideal_la.sked_in:
                 la_late += 1
 
     if request.session['session_position'] == "General Manager":

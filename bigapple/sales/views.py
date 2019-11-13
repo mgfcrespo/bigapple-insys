@@ -2034,7 +2034,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 # If someone from ideal_workers =! sked_op of any ideal schedule of that day, assign shift.
                 if rush:
                     result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout, job_shifts, occupied_shifts, latest, each)
-                    print(result)
                     push = result['push']
                     skedindate = result['skedindate']
                     skedin = result['skedin']
@@ -2221,7 +2220,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 if rush:
                     result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
                                               job_shifts, occupied_shifts, latest, each)
-                    print(result)
                     push = result['push']
                     skedindate = result['skedindate']
                     skedin = result['skedin']
@@ -2317,7 +2315,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 if rush:
                     result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
                                               job_shifts, occupied_shifts, latest, each)
-                    print(result)
                     push = result['push']
                     skedindate = result['skedindate']
                     skedin = result['skedin']
@@ -2428,7 +2425,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 if rush:
                     result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
                                               job_shifts, occupied_shifts, latest, each)
-                    print(result)
                     push = result['push']
                     skedindate = result['skedindate']
                     skedin = result['skedin']
@@ -2520,7 +2516,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 if rush:
                     result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
                                               job_shifts, occupied_shifts, latest, each)
-                    print(result)
                     push = result['push']
                     skedindate = result['skedindate']
                     skedin = result['skedin']
@@ -2615,7 +2610,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 if rush:
                     result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
                                               job_shifts, occupied_shifts, latest, each)
-                    print(result)
                     push = result['push']
                     skedindate = result['skedindate']
                     skedin = result['skedin']
@@ -2711,7 +2705,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 if rush:
                     result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
                                               job_shifts, occupied_shifts, latest, each)
-                    print(result)
                     push = result['push']
                     skedindate = result['skedindate']
                     skedin = result['skedin']
@@ -2822,7 +2815,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 if rush:
                     result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
                                               job_shifts, occupied_shifts, latest, each)
-                    print(result)
                     push = result['push']
                     skedindate = result['skedindate']
                     skedin = result['skedin']
@@ -2914,7 +2906,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 if rush:
                     result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
                                               job_shifts, occupied_shifts, latest, each)
-                    print(result)
                     push = result['push']
                     skedindate = result['skedindate']
                     skedin = result['skedin']
@@ -3009,7 +3000,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 if rush:
                     result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
                                               job_shifts, occupied_shifts, latest, each)
-                    print(result)
                     push = result['push']
                     skedindate = result['skedindate']
                     skedin = result['skedin']
@@ -3105,7 +3095,6 @@ def save_schedule(request, pk, actual_out, job_match, extrusion_not_final, cutti
                 if rush:
                     result = divide_task_rush(ideal_sched, x, copy_ideal_sched, push, skedindate, skedin, skedout,
                                               job_shifts, occupied_shifts, latest, each)
-                    print(result)
                     push = result['push']
                     skedindate = result['skedindate']
                     skedin = result['skedin']
