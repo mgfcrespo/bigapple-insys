@@ -188,20 +188,30 @@ def job_order_list(request):
             last_ideal_la = ideal_la[-1]
 
         if ex_done:
-            last_ex = ExtruderSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
-            if last_ex.datetime_in > last_ideal_ex.sked_in:
+            last_ex = list(extrusion)[-1]
+            if last_ex.datetime_in.replace(tzinfo=None) > last_ideal_ex.sked_in.replace(tzinfo=None):
                 ex_late += 1
+        elif datetime.now().replace(tzinfo=None) > last_ideal_ex.sked_in.replace(tzinfo=None):
+            ex_late += 1
         if cu_done:
-            last_cu = CuttingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
-            if last_cu.datetime_in > last_ideal_cu.sked_in:
+            last_cu = list(cutting)[-1]
+            if last_cu.datetime_in.replace(tzinfo=None) > last_ideal_cu.sked_in.replace(tzinfo=None):
                 cu_late += 1
-        if pr_done:
-            last_pr = PrintingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
-            if last_pr.datetime_in > last_ideal_pr.sked_in:
+        elif datetime.now().replace(tzinfo=None) > last_ideal_cu.sked_in.replace(tzinfo=None):
+            ex_late += 1
+        if ClientItem.objects.get(client_po_id=data.id).printed == 1:
+            if pr_done:
+                last_pr = list(printing)[-1]
+                if last_pr.datetime_in.replace(tzinfo=None) > last_ideal_pr.sked_in.replace(tzinfo=None):
+                    pr_late += 1
+            elif datetime.now().replace(tzinfo=None) > last_ideal_pr.sked_in.replace(tzinfo=None):
                 pr_late += 1
-        if la_done:
-            last_la = LaminatingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
-            if last_la.datetime_in > last_ideal_la.sked_in:
+        if ClientItem.objects.get(client_po_id=data.id).laminate == 1:
+            if la_done:
+                last_la = list(extrusion)[-1]
+                if last_la.datetime_in.replace(tzinfo=None) > last_ideal_la.sked_in.replace(tzinfo=None):
+                    la_late += 1
+            elif datetime.now().replace(tzinfo=None) > last_ideal_la.sked_in.replace(tzinfo=None):
                 la_late += 1
 
     if request.session['session_position'] == "General Manager":
@@ -595,8 +605,12 @@ def add_extruder_schedule(request, id):
         sked_mach = ideal.first().sked_mach
     elif e:
         exists = len(e)
-        sked_in = ideal[exists].sked_in
-        sked_out = ideal[exists].sked_out
+        if ideal[exists]:
+            sked_in = ideal[exists].sked_in
+            sked_out = ideal[exists].sked_out
+        else:
+            sked_in = datetime.now()
+            sked_out = datetime.now() + timedelta(days=int((item.quantity * 80) / 70000))
     else:
         sked_in = datetime.now()
         sked_out = datetime.now() + timedelta(days=int((item.quantity * 80)/70000))
@@ -735,8 +749,12 @@ def add_printing_schedule(request, id):
         sked_mach = ideal.first().sked_mach
     elif p:
         exists = len(p)
-        sked_in = ideal[exists].sked_in
-        sked_out = ideal[exists].sked_out
+        if ideal[exists]:
+            sked_in = ideal[exists].sked_in
+            sked_out = ideal[exists].sked_out
+        else:
+            sked_in = datetime.now()
+            sked_out = datetime.now() + timedelta(days=int((item.quantity * 100) / 70000))
     else:
         sked_in = datetime.now()
         sked_out = datetime.now() + timedelta(days=int((item.quantity * 100) / 70000))
@@ -871,8 +889,12 @@ def add_cutting_schedule(request, id):
         sked_mach = ideal.first().sked_mach
     elif c:
         exists = len(c)
-        sked_in = ideal[exists].sked_in
-        sked_out = ideal[exists].sked_out
+        if ideal[exists]:
+            sked_in = ideal[exists].sked_in
+            sked_out = ideal[exists].sked_out
+        else:
+            sked_in = datetime.now()
+            sked_out = datetime.now() + timedelta(days=int((item.quantity * 60) / 70000))
     else:
         sked_in = datetime.now()
         sked_out = datetime.now() + timedelta(days=int((quantity * 60) / 70000))
@@ -980,8 +1002,12 @@ def add_laminating_schedule(request, id):
         sked_mach = ideal.first().sked_mach
     elif l:
         exists = len(l)
-        sked_in = ideal[exists].sked_in
-        sked_out = ideal[exists].sked_out
+        if ideal[exists]:
+            sked_in = ideal[exists].sked_in
+            sked_out = ideal[exists].sked_out
+        else:
+            sked_in = datetime.now()
+            sked_out = datetime.now() + timedelta(days=int((item.quantity * 60) / 70000))
     else:
         sked_in = datetime.now()
         sked_out = datetime.now() + timedelta(days=int((quantity * 60)/70000))
