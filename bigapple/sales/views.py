@@ -10,6 +10,7 @@ from django.shortcuts import render, HttpResponseRedirect, HttpResponse, Http404
 from pandas import DataFrame
 from django.contrib import messages
 import math
+from collections import Counter
 from django.utils import timezone
 
 
@@ -46,8 +47,192 @@ def most_common(lst):
         return None
 
 def sales_exception_report(request):
+    today = date.today()
+    this_year = today.year
+    last_year = today.year - 1
+    start_week = today - timedelta(days=today.weekday())
+    end_week = start_week + timedelta(days=7)
+    orders = JobOrder.objects.filter(date_issued__range=[start_week, end_week])
+    items = ClientItem.objects.all()
+    rush = []
+    invoices = SalesInvoice.objects.filter(date_issued__range=[start_week, end_week])
+    late_invoices = []
+    to_deliver = JobOrder.objects.filter(Q(status='Ready for delivery') | Q(status='Delivered'))
+    late_deliveries = []
+    for each in orders:
+        if each.rush_order == 1:
+            rush.append(each)
+    for x in invoices:
+        if x.status == 'Late':
+            late_invoices.append(x)
+    for y in to_deliver:
+        if y.status == 'Ready for delivery' and start_week <= y.date_issued <= end_week:
+            if y.date_required < today:
+                late_deliveries.append(y)
+        elif y.status == 'Delivered' and start_week <= y.date_issued <= end_week:
+            if y.date_required < y.date_delivered:
+                late_deliveries.append(y)
+    rush_count = 0
+    for i in rush:
+        rush_count += 1
+    invoice_count = 0
+    for i in late_invoices:
+        invoice_count += 1
+    delivery_count = 0
+    for i in late_deliveries:
+        delivery_count += 1
 
-    context = {}
+    #FOR THE YEAR
+    orders_this_year = JobOrder.objects.filter(date_issued__year=this_year)
+    orders_last_year = JobOrder.objects.filter(date_issued__year=last_year)
+    rush_this_year = []
+    rush_last_year = []
+    invoices_this_year = SalesInvoice.objects.filter(date_issued__year=this_year)
+    invoices_last_year = SalesInvoice.objects.filter(date_issued__year=last_year)
+    late_invoices_this_year = []
+    late_invoices_last_year = []
+    to_deliver_this_year = []
+    to_deliver_last_year = []
+    late_deliveries_this_year = []
+    late_deliveries_last_year = []
+    for each in orders_this_year:
+        if each.rush_order == 1:
+            rush_this_year.append(each)
+        if each.status == 'Ready for delivery' or each.status == 'Delivered':
+            to_deliver_this_year.append(each)
+    for each in orders_last_year:
+        if each.rush_order == 1:
+            rush_last_year.append(each)
+        if each.status == 'Ready for delivery' or each.status == 'Delivered':
+            to_deliver_last_year.append(each)
+    for x in invoices_this_year:
+        if x.status == 'Late':
+            late_invoices_this_year.append(x)
+    for x in invoices_last_year:
+        if x.status == 'Late':
+            late_invoices_last_year.append(x)
+    for y in to_deliver_this_year:
+        if y.status == 'Ready for delivery':
+            if y.date_required < today:
+                late_deliveries_this_year.append(y)
+        elif y.status == 'Delivered':
+            if y.date_required < y.date_delivered:
+                late_deliveries_this_year.append(y)
+    for y in to_deliver_last_year:
+        if y.status == 'Ready for delivery':
+            if y.date_required < today:
+                late_deliveries_last_year.append(y)
+        elif y.status == 'Delivered':
+            if y.date_required < y.date_delivered:
+                late_deliveries_last_year.append(y)
+    rush_count = 0
+    for i in rush:
+        rush_count += 1
+    invoice_count = 0
+    for i in late_invoices:
+        invoice_count += 1
+    delivery_count = 0
+    for i in late_deliveries:
+        delivery_count += 1
+
+    rush_this_year_count = 0
+    for i in rush_this_year:
+        rush_this_year_count += 1
+    invoice_this_year_count = 0
+    for i in late_invoices_this_year:
+        invoice_this_year_count += 1
+    delivery_this_year_count = 0
+    for i in late_deliveries_this_year:
+        delivery_this_year_count += 1
+
+    rush_last_year_count = 0
+    for i in rush_last_year:
+        rush_last_year_count += 1
+    invoice_last_year_count = 0
+    for i in late_invoices_last_year:
+        invoice_last_year_count += 1
+    delivery_last_year_count = 0
+    for i in late_deliveries_last_year:
+        delivery_last_year_count += 1
+
+    client_po_list = []
+    clients = Client.objects.all()
+    high_clients = []
+    low_clients = []
+    for i in JobOrder.objects.filter(date_issued__year=this_year):
+        client_po_list.append(str(i.client.id))
+
+    c = Counter(client_po_list).most_common(6)
+    count = 0
+    for each in c:
+        if count < 3:
+            high_clients.append({'Client' : Client.objects.get(id=c[count][0]),
+                                'Agent': Employee.objects.get(id=Client.objects.get(id=c[count][0]).sales_agent.id),
+                                'Orders' : c[count][1]
+                                 }
+                                )
+            count += 1
+    for each in clients:
+        if str(each.id) not in client_po_list:
+            low_clients.append({'Client' : Client.objects.get(id=each.id),
+                                    'Agent': Employee.objects.get(id=Client.objects.get(id=each.id).sales_agent.id),
+                                    'Orders' : 0
+                                     }
+                                    )
+
+    products = Product.objects.all()
+    item_list = []
+    product_list = []
+    high_items = []
+    low_items = []
+    for i in JobOrder.objects.filter(date_issued__year=this_year):
+        item_list.extend(ClientItem.objects.filter(client_po=i))
+    for j in item_list:
+        product_list.append(str(j.products.id))
+
+    d = Counter(product_list).most_common(5)
+    count2 = 0
+    for each in d:
+        high_items.append({'Item' : Product.objects.get(id=d[count2][0]),
+                           'Times': d[count2][0],
+                           'Qty' : ClientItem.objects.filter(products_id=d[count2][0]).aggregate(Sum('quantity'))['quantity__sum']
+                           })
+        count2 += 1
+    for each in products:
+        if str(each.id) not in product_list:
+            low_items.append({'Item' : Product.objects.get(id=each.id),
+                                    'Times': 0,
+                                    'Qty' : ClientItem.objects.filter(products_id=each.id).aggregate(Sum('quantity'))['quantity__sum']
+                                     }
+                                    )
+
+    context = {
+        'start_week' : start_week,
+        'end_week' : end_week,
+        'order_count' : orders.count(),
+        'rush_count' : rush_count,
+        'invoice_count' : invoice_count,
+        'delivery_count' : delivery_count,
+        'rush' : rush,
+        'late_invoices' : late_invoices,
+        'late_deliveries' : late_deliveries,
+        'items' : items,
+
+        'orders_this_year_count' : orders_this_year.count(),
+        'orders_last_year_count' : orders_last_year.count(),
+        'rush_this_year_count' : rush_this_year_count,
+        'rush_last_year_count' : rush_last_year_count,
+        'invoice_this_year_count' : invoice_this_year_count,
+        'invoice_last_year_count' : invoice_last_year_count,
+        'delivery_this_year_count' : delivery_this_year_count,
+        'delivery_last_year_count' : delivery_last_year_count,
+
+        'high_clients' : high_clients,
+        'low_clients' : low_clients,
+        'high_items' : high_items,
+        'low_items' : low_items,
+
+    }
     return render(request, 'sales/sales_exception_report.html', context)
 
 

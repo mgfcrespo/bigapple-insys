@@ -1,12 +1,12 @@
 {% extends 'sidebar.html' %} {% block content %}
 <div class="print-container">
-    <h2 class="ui dividing header">Sales Exception Report for the week of DD/MM/YYYY to DD/MM/YYYY</h2>
+    <h2 class="ui dividing header">Sales Exception Report for the week of {{start_week}} to {{end_week}}</h2>
     <div class="ui four cards">
         <div class="card">
             <div class="content">
                 <div class="center aligned header">Total Purchase Orders </div>
                 <div class="center aligned description">
-                    <h3>24</h3>
+                    <h3>{{order_count}}</h3>
                 </div>
             </div>
         </div>
@@ -15,7 +15,7 @@
             <div class="content">
                 <div class="center aligned header">Total Rush Orders </div>
                 <div class="center aligned description">
-                  <h3>3</h3>
+                  <h3>{{rush_count}}</h3>
                 </div>
             </div>
         </div>
@@ -24,7 +24,7 @@
             <div class="content">
                 <div class="center aligned header">Total Overdue Payments </div>
                 <div class="center aligned description">
-                    <h3>5</h3>
+                    <h3>{{invoice_count}}</h3>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
             <div class="content">
                 <div class="center aligned header">Delayed Deliveries </div>
                 <div class="center aligned description">
-                    <h3>5</h3>
+                    <h3>{{delivery_count}}</h3>
                 </div>
             </div>
         </div>
@@ -53,12 +53,23 @@
                 </tr>
             </thead>
             <tbody>
+            {% for each in rush %}
                 <tr>
-                    <td>PO 0001</td>
-                    <td>Client</td>
-                    <td>Sales Agent</td>
-                    <td>1000</td>
-                    <td>Sando Bag</td>
+                    <td>{{ each.id }}</td>
+                    <td>{{ each.client }}</td>
+                    <td>{{ each.client.sales_agent }}</td>
+                    {% if items %}
+                        {% for every in items %}
+                            {% if every.client_po == each %}
+                                <td>{{ every.quantity }}</td>
+                                <td>{{ every.products }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <td></td>
+                        <td></td>
+                    {% endif %}
+            {% endfor %}
                 </tr>
             </tbody>
         </table>
@@ -77,13 +88,24 @@
                 </tr>
             </thead>
             <tbody>
+            {% for each in late_deliveries %}
                 <tr>
-                    <td>PO 0001</td>
-                    <td>1000</td>
-                    <td>Sando Bag</td>
-                    <td>00/00/00</td>
-                    <td>00/00/00</td>
+                    <td>{{ each.id }}</td>
+                    {% if items %}
+                        {% for every in items %}
+                            {% if every.client_po == each %}
+                                <td>{{ every.quantity }}</td>
+                                <td>{{ every.products }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <td></td>
+                        <td></td>
+                    {% endif %}
+                    <td>{{ each.date_required }}</td>
+                    <td>{{ each.date_delivered }}</td>
                 </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>
@@ -102,14 +124,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>0001</td>
-                    <td>Client</td>
-                    <td>Sales Agent</td>
-                    <td>1000</td>
-                    <td>800</td>
-                    <td>200</td>
-                </tr>
+                {% for each in late_invoices %}
+                    <tr>
+                        <td>{{ each.id }}</td>
+                        <td>{{ each.client }}</td>
+                        <td>{{ each.client.sales_agent }}</td>
+                        <td>{{ each.total_amount_computed }}</td>
+                        <td>{{ each.total_paid }}</td>
+                        <td>{{ each.amount_due }}</td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -120,12 +144,12 @@
             <div class="content">
                 <div class="center aligned header">Total number of orders for 2019</div>
                 <div class="center aligned description">
-                    <h3>24</h3>
+                    <h3>{{orders_this_year_count}}</h3>
                 </div>
                 <br>
                 <div class="center aligned header">Total number of orders for 2018</div>
                 <div class="center aligned description">
-                    <h3>24</h3>
+                    <h3>{{orders_last_year_count}}</h3>
                 </div>
             </div>
         </div>
@@ -134,12 +158,12 @@
             <div class="content">
                 <div class="center aligned header">Total Rush Orders for 2019</div>
                 <div class="center aligned description">
-                    <h3>3</h3>
+                    <h3>{{rush_this_year_count}}</h3>
                 </div>
                 <br>
                 <div class="center aligned header">Total Rush Orders for 2018</div>
                 <div class="center aligned description">
-                    <h3>3</h3>
+                    <h3{{rush_last_year_count}}</h3>
                 </div>
             </div>
         </div>
@@ -147,12 +171,12 @@
             <div class="content">
                 <div class="center aligned header">Overdue Payments for 2019</div>
                 <div class="center aligned description">
-                    <h3>3</h3>
+                    <h3>{{invoice_this_year_count}}</h3>
                 </div>
                 <br>
                 <div class="center aligned header">Overdue Payments for 2018</div>
                 <div class="center aligned description">
-                    <h3>3</h3>
+                    <h3>{{invoice_last_year_count}}</h3>
                 </div>
             </div>
         </div>
@@ -160,12 +184,12 @@
             <div class="content">
                 <div class="center aligned header">Delayed Deliveries for 2019</div>
                 <div class="center aligned description">
-                    <h3>3</h3>
+                    <h3>{{delivery_this_year_count}}</h3>
                 </div>
                 <br>
                 <div class="center aligned header">Delayed Deliveries for 2018</div>
                 <div class="center aligned description">
-                    <h3>3</h3>
+                    <h3>{{delivery_this_year_count}}</h3>
                 </div>
             </div>
         </div>
@@ -182,16 +206,16 @@
                         <th>Client</th>
                         <th>Sales Agent</th>
                         <th>Number of Orders</th>
-                        <th>Total Amount</th>
                     </tr>
                 </thead>
                 <tbody>
+                {% for each in high_clients %}
                     <tr>
-                        <td>Client</td>
-                        <td>Sales Agent</td>
-                        <td>1000</td>
-                        <td>800,000.00</td>
+                        <td>{{ each.Client }}</td>
+                        <td>{{ each.Agent }}</td>
+                        <td>{{ each.Orders }}</td>
                     </tr>
+                {% endfor %}
                 </tbody>
             </table>
             </div>
@@ -203,16 +227,16 @@
                             <th>Client</th>
                             <th>Sales Agent</th>
                             <th>Number of Orders</th>
-                            <th>Total Amount</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Client</td>
-                            <td>Sales Agent</td>
-                            <td>2</td>
-                            <td>10,000.00</td>
-                        </tr>
+                       {% for each in low_clients %}
+                    <tr>
+                        <td>{{ each.Client }}</td>
+                        <td>{{ each.Agent }}</td>
+                        <td>{{ each.Orders }}</td>
+                    </tr>
+                {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -231,11 +255,13 @@
                         </tr>
                     </thead>
                     <tbody>
+                    {% for each in high_items %}
                         <tr>
-                            <td>Frozen Food Bag</td>
-                            <td>1000</td>
-                            <td>1,000,000</td>
+                            <td>{{ each.Item }}</td>
+                            <td>{{ each.Times }}</td>
+                            <td>{{ each.Qty }}</td>
                         </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -250,11 +276,13 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for each in low_items %}
                         <tr>
-                            <td>Sando Bag</td>
-                            <td>50</td>
-                            <td>10,000</td>
+                            <td>{{ each.Item }}</td>
+                            <td>{{ each.Times }}</td>
+                            <td>{{ each.Qty }}</td>
                         </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
