@@ -4,6 +4,9 @@ from .import views
 
 app_name='production'
 urlpatterns = [
+
+        path('production-exception-report/', views.production_exception_report, name='production_exception_report'),
+
         url(r'^production_details/', views.production_details, name='production_details'),
         path('overall-production-schedule/', views.production_schedule, name='production_schedule'),
 

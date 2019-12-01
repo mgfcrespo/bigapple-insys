@@ -1,0 +1,19 @@
+@media print {
+
+    .no-print {
+        display: none;
+    }
+
+    .print-container {
+        position: relative;
+    !important;
+        padding: 5px;
+    !important;
+        margin-left: -250px;
+    !important;
+        left: 0px;
+    !important;
+        top: 0px;
+    !important;
+    }
+}

@@ -5,6 +5,9 @@ from django.views.generic import TemplateView
 
 app_name='sales'
 urlpatterns = [
+
+			path('sales-exception-report/', views.sales_exception_report, name='sales_exception_report'),
+
 			#PO urls
 			path('po-list-view/', views.po_list_view, name='po-list-view'),
 			path('po-list-view/PO<int:pk>/', views.po_detail_view, name='po-detail-view'),

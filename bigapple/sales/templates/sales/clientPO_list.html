@@ -29,20 +29,32 @@
                         {% endif %}
                     </td>
 				<td>{{ each.total_amount }}</td>
-				<td>{% if each.status == 'Waiting' and x == 'Employee' %}
-					{% if each.rush_order == 0 %}
-						<a href="{% url 'sales:confirm-client-po' each.id %}">{{ each.status }}</a>
-					{% elif each.rush_order == 1 %}
-						<a href="{% url 'sales:rush_order_assessment' each.id %}">{{ each.status }}</a>
-					{% endif %}
+				<td>
+					{% if each.status == 'Waiting' and x == 'Employee' %}
+						{% if each.rush_order == 0 %}
+							<a href="{% url 'sales:confirm-client-po' each.id %}">{{ each.status }}</a>
+						{% elif each.rush_order == 1 %}
+							<a href="{% url 'sales:rush_order_assessment' each.id %}">{{ each.status }}</a>
+						{% endif %}
 					{% else %}
-					{{ each.status }}</td>
+						{{ each.status }}
+
+				</td>
 					{% endif %}
-				<td>{% for x in end_dates %}
+				<td>
+					{% for x in end_dates %}
 						{% if x.PO == each.id %}
 							{{ x.End }}
 						{% endif %}
 					{% endfor %}
+
+					{% if each.status == 'Waiting' and x == 'Employee' %}
+
+						{% if today >= each.date_required  %}
+							<b style="color:red;">Past Date Required</b>
+						{% endif %}
+
+					{% endif %}
 				</td>
 
 			</tr>

@@ -96,6 +96,7 @@
 			</div>
 			<div class="ui active tab segment" data-tab="second">
 				<table class="ui small compact striped table center aligned">
+					{% if forecast_ses %}
 					<thead>
 						<tr>
 							<th>
@@ -115,6 +116,9 @@
 								{{ forecast_ses.1 }}
 							</td>
 						</tr>
+					{% else %}
+					<tr>Insufficient data to generate forecast!</tr>
+					{% endif %}
 					</tbody>
 				</table>
 			</div>

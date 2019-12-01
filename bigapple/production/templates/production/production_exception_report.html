@@ -1,0 +1,122 @@
+{% extends 'sidebar.html' %} {% block content %}
+ 
+<div class="print-container">
+ 
+  <h2 class="ui dividing header">Production Exception Report for the week of {{ start_week }} to {{ end_week }}</h2>
+   
+  <div class="ui three cards">
+      <div class="card">
+          <div class="content">
+              <div class="center aligned header">Total Job Orders Processed</div>
+              <div class="center aligned description">
+                  <h3>{{job_count}}</h3>
+              </div>
+          </div>
+      </div>
+   
+      <div class="card">
+          <div class="content">
+              <div class="center aligned header">Total Delayed Starts</div>
+              <div class="center aligned description">
+                  <h3>{{delayed_start_count}}</h3>
+              </div>
+          </div>
+      </div>
+   
+      <div class="card">
+          <div class="content">
+              <div class="center aligned header">Total Delayed Ends</div>
+              <div class="center aligned description">
+                  <h3>{{delayed_end_count}}</h3>
+              </div>
+          </div>
+      </div>
+  </div>
+   
+   
+  <h3 class="ui dividing header">Delayed Starts</h3>
+  <div>
+      <table class="ui striped table center aligned">
+          <thead>
+              <tr>
+                  <th>Job Order ID</th>
+                  <th>Phase</th>
+                  <th>Machine Number</th>
+                  <th>Ideal Start</th>
+                  <th>Actual Start</th>
+              </tr>
+          </thead>
+          <tbody>
+            {% for each in delayed_start %}
+              <tr>
+                  <td>{{ each.Job }}</td>
+                  <td>{{ each.Phase }}</td>
+                  <td>{{ each.Machine }}</td>
+                  <td>{{ each.Ideal }}</td>
+                  <td>{{ each.Actual }}</td>
+              </tr>
+          {% endfor %}
+          </tbody>
+      </table>
+  </div>
+   
+  <h3 class="ui dividing header">Delayed Ends</h3>
+  <div>
+      <div>
+          <table class="ui striped table center aligned">
+              <thead>
+                  <tr>
+                      <th>Job Order ID</th>
+                      <th>Phase</th>
+                      <th>Machine Number</th>
+                      <th>Ideal End</th>
+                      <th>Actual End</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for each in delayed_end %}
+              <tr>
+                  <td>{{ each.Job }}</td>
+                  <td>{{ each.Phase }}</td>
+                  <td>{{ each.Machine }}</td>
+                  <td>{{ each.Ideal }}</td>
+                  <td>{{ each.Actual }}</td>
+              </tr>
+          {% endfor %}
+              </tbody>
+          </table>
+      </div>
+  </div>
+   
+  <h3 class="ui dividing header">Insufficient Quantity</h3>
+  <div>
+      <table class="ui striped table center aligned">
+          <thead>
+              <tr>
+                  <th>Job Order ID</th>
+                  <th>Expected Quantity</th>
+                  <th>Actual Quantity</th>
+              </tr>
+          </thead>
+          <tbody>
+          {% for each in sufficient %}
+              <tr>
+                  <td>{{ each.Job }}</td>
+                  <td>{{ each.Expected }}</td>
+                  <td>{{ each.Actual }}</td>
+              </tr>
+          {% endfor %}
+          </tbody>
+      </table>
+  </div>
+    
+</div>
+ 
+<div class="no-print row" style="margin-top: 15px;">
+    <button class="ui labeled icon button" onclick="window.print()">
+      <i class="print icon"></i> Print Report
+    </button>
+</div>
+
+
+{% endblock %}

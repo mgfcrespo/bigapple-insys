@@ -31,6 +31,197 @@ from django.views.generic import View
 from utilities import shift_scheduling_sat
 
 # Create your views here.
+
+def production_exception_report(request):
+    delayed_start = []
+    delayed_end = []
+    sufficient = []
+    today = date.today()
+    start_week = today - timedelta(days=today.weekday())
+    end_week = start_week + timedelta(days=7)
+    jobs = JobOrder.objects.filter(date_issued__range=[start_week, end_week])
+
+    for data in jobs:
+        extrusion = ExtruderSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).order_by('datetime_in')
+        printing = PrintingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).order_by('datetime_in')
+        cutting = CuttingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).order_by('datetime_in')
+        laminating = LaminatingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).order_by('datetime_in')
+        items = ClientItem.objects.filter(client_po=data)
+        ex_done = False
+        pr_done = False
+        cu_done = False
+        la_done = False
+
+        for x in extrusion:
+            if x.final:
+                ex_done = True
+                break
+            else:
+                ex_done = False
+        for y in printing:
+            if y.final:
+                pr_done = True
+                break
+            else:
+                pr_done = False
+        for z in cutting:
+            if z.final:
+                cu_done = True
+                break
+            else:
+                cu_done = False
+        for a in laminating:
+            if a.final:
+                la_done = True
+                break
+            else:
+                la_done = False
+
+        first_ideal_cu = None
+        first_ideal_pr = None
+        first_ideal_la = None
+        first_ideal_ex = None
+        last_ideal_cu = None
+        last_ideal_pr = None
+        last_ideal_la = None
+        last_ideal_ex = None
+
+        ideal_ex = list(ExtruderSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True)))
+        if ideal_ex:
+            ideal_ex.sort(key=lambda i: i.sked_in)
+            first_ideal_ex = ideal_ex[0]
+            last_ideal_ex = ideal_ex[-1]
+        ideal_cu = list(CuttingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True)))
+        if ideal_cu:
+            ideal_cu.sort(key=lambda i: i.sked_in)
+            first_ideal_cu = ideal_cu[0]
+            last_ideal_cu = ideal_cu[-1]
+        ideal_pr = list(PrintingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True)))
+        if ideal_pr:
+            ideal_pr.sort(key=lambda i: i.sked_in)
+            first_ideal_pr = ideal_pr[0]
+            last_ideal_pr = ideal_pr[-1]
+        ideal_la = list(LaminatingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=True)))
+        if ideal_la:
+            ideal_la.sort(key=lambda i: i.sked_in)
+            first_ideal_la = ideal_la[0]
+            last_ideal_la = ideal_la[-1]
+
+        if extrusion.count() > 0:
+            first_ex = ExtruderSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).earliest('datetime_in')
+        else:
+            first_ex = []
+        if cutting.count() > 0:
+            first_cu = CuttingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).earliest('datetime_in')
+        else:
+            first_cu = []
+        if printing.count() > 0:
+            first_pr = PrintingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).earliest('datetime_in')
+        else:
+            first_pr = []
+        if laminating.count() > 0:
+            first_la = LaminatingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).earliest('datetime_in')
+        else:
+            first_la = []
+
+        if ex_done:
+            last_ex = ExtruderSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
+            if last_ideal_ex.sked_out < last_ex.datetime_out:
+                delayed_end.append({'Job' : data.id,
+                                      'Phase' : 'Extrusion',
+                                      'Machine' : last_ex.machine,
+                                      'Ideal' : last_ideal_ex.sked_out,
+                                      'Actual' : last_ex.datetime_out})
+        else:
+            last_ex = []
+        if cu_done:
+            last_cu = CuttingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
+            if last_ideal_cu.sked_out < last_cu.datetime_out:
+                delayed_end.append({'Job' : data.id,
+                                      'Phase' : 'Cutting',
+                                      'Machine' : last_cu.machine,
+                                      'Ideal' : last_ideal_cu.sked_out,
+                                      'Actual' : last_cu.datetime_out})
+            for x in items:
+                quan = int(x.quantity * 0.1)
+                tity = x.quantity
+                break
+            if abs(tity - last_cu.quantity) < quan:
+                sufficient.append({'Job' : data.id,
+                                   'Expected' : tity,
+                                   'Actual' : last_cu.quantity})
+        else:
+            last_cu = []
+        if pr_done:
+            last_pr = PrintingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
+            if last_ideal_pr.sked_out < last_pr.datetime_out:
+                delayed_end.append({'Job' : data.id,
+                                      'Phase' : 'Printing',
+                                      'Machine' : last_pr.machine,
+                                      'Ideal' : last_ideal_pr.sked_out,
+                                      'Actual' : last_pr.datetime_out})
+        else:
+            last_pr = []
+        if la_done:
+            last_la = LaminatingSchedule.objects.filter(Q(job_order=data.id) & Q(ideal=False)).latest('datetime_out')
+            if last_ideal_la.sked_out < last_la.datetime_out:
+                delayed_end.append({'Job' : data.id,
+                                      'Phase' : 'Laminating',
+                                      'Machine' : last_la.machine,
+                                      'Ideal' : last_ideal_la.sked_out,
+                                      'Actual' : last_la.datetime_out})
+        else:
+            last_la = []
+
+        if first_ideal_ex and first_ex:
+            if first_ideal_ex.sked_in < first_ex.datetime_in:
+                delayed_start.append({'Job' : data.id,
+                                      'Phase' : 'Extrusion',
+                                      'Machine' : first_ex.machine,
+                                      'Ideal' : first_ideal_ex.sked_in,
+                                      'Actual' : first_ex.datetime_in
+                })
+        if first_ideal_cu and first_cu:
+            if first_ideal_cu.sked_in < first_ex.datetime_cu:
+                delayed_start.append({'Job' : data.id,
+                                      'Phase' : 'Cutting',
+                                      'Machine' : first_cu.machine,
+                                      'Ideal' : first_ideal_cu.sked_in,
+                                      'Actual' : first_cu.datetime_in
+                })
+        if first_ideal_pr and first_pr:
+            if first_ideal_pr.sked_in < first_pr.datetime_in:
+                delayed_start.append({'Job' : data.id,
+                                      'Phase' : 'Printing',
+                                      'Machine' : first_pr.machine,
+                                      'Ideal' : first_ideal_pr.sked_in,
+                                      'Actual' : first_pr.datetime_in
+                })
+        if first_ideal_la and first_la:
+            if first_ideal_la.sked_in < first_la.datetime_in:
+                delayed_start.append({'Job' : data.id,
+                                      'Phase' : 'Laminating',
+                                      'Machine' : first_la.machine,
+                                      'Ideal' : first_ideal_la.sked_in,
+                                      'Actual' : first_la.datetime_in
+                })
+    start_count = 0
+    for i in delayed_start:
+        start_count += 1
+    end_count = 0
+    for i in delayed_end:
+        end_count += 1
+    context = {
+        'start_week' : start_week,
+        'end_week' : end_week,
+        'delayed_start' : delayed_start,
+        'delayed_end' : delayed_end,
+        'delayed_start_count' : start_count,
+        'delayed_end_count' : end_count,
+        'job_count' : jobs.count(),
+        'sufficient' : sufficient
+    }
+    return render(request, 'production/production_exception_report.html', context)
 def production_details(request):
     context = {
         'title': 'Production Content'
@@ -190,28 +381,39 @@ def job_order_list(request):
         if ex_done:
             last_ex = list(extrusion)[-1]
             if last_ex.datetime_in.replace(tzinfo=None) > last_ideal_ex.sked_in.replace(tzinfo=None):
+                print('LATE: JOB '+str(data.id)+' Extrusion at '+str(last_ideal_ex.sked_in)+' < '+str(last_ex.datetime_in))
                 ex_late += 1
         elif datetime.now().replace(tzinfo=None) > last_ideal_ex.sked_in.replace(tzinfo=None):
+            print('LATE: JOB ' + str(data.id) + ' Extrusion at ' + str(last_ideal_ex.sked_in))
             ex_late += 1
         if cu_done:
             last_cu = list(cutting)[-1]
             if last_cu.datetime_in.replace(tzinfo=None) > last_ideal_cu.sked_in.replace(tzinfo=None):
+                print('LATE: JOB ' + str(data.id) + ' Cutting at ' + str(last_ideal_cu.sked_in) + ' < ' + str(
+                    last_cu.datetime_in))
                 cu_late += 1
         elif datetime.now().replace(tzinfo=None) > last_ideal_cu.sked_in.replace(tzinfo=None):
-            ex_late += 1
+            print('LATE: JOB ' + str(data.id) + ' Cutting at ' + str(last_ideal_cu.sked_in))
+            cu_late += 1
         if ClientItem.objects.get(client_po_id=data.id).printed == 1:
             if pr_done:
                 last_pr = list(printing)[-1]
                 if last_pr.datetime_in.replace(tzinfo=None) > last_ideal_pr.sked_in.replace(tzinfo=None):
+                    print('LATE: JOB ' + str(data.id) + ' Printing at ' + str(last_ideal_pr.sked_in) + ' < ' + str(
+                        last_pr.datetime_in))
                     pr_late += 1
             elif datetime.now().replace(tzinfo=None) > last_ideal_pr.sked_in.replace(tzinfo=None):
+                print('LATE: JOB ' + str(data.id) + ' Printing at ' + str(last_ideal_pr.sked_in))
                 pr_late += 1
         if ClientItem.objects.get(client_po_id=data.id).laminate == 1:
             if la_done:
                 last_la = list(extrusion)[-1]
                 if last_la.datetime_in.replace(tzinfo=None) > last_ideal_la.sked_in.replace(tzinfo=None):
+                    print('LATE: JOB ' + str(data.id) + ' Laminating at ' + str(last_ideal_la.sked_in) + ' < ' + str(
+                        last_la.datetime_in))
                     la_late += 1
             elif datetime.now().replace(tzinfo=None) > last_ideal_la.sked_in.replace(tzinfo=None):
+                print('LATE: JOB ' + str(data.id) + ' Laminating at ' + str(last_ideal_la.sked_in))
                 la_late += 1
 
     if request.session['session_position'] == "General Manager":

@@ -45,6 +45,12 @@ def most_common(lst):
     else:
         return None
 
+def sales_exception_report(request):
+
+    context = {}
+    return render(request, 'sales/sales_exception_report.html', context)
+
+
 # CRUD SUPPLIER
 def supplier_add(request):
     form = SupplierForm(request.POST)
@@ -256,13 +262,13 @@ def confirm_client_po(request, pk):
                     else:
                         matreq = False
                         request.session['matreq_quantity'] = each.quantity/1000
-                        request.session['matreq_mat'] = x.id
+                        request.session['matreq_mat'] = x
                         break
             else:
                 inventory = None
                 matreq = False
                 request.session['matreq_quantity'] = each.quantity / 1000
-                request.session['matreq_mat'] = x.id
+                request.session['matreq_mat'] = x
                 break
 
         if each.printed == 1:
